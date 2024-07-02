@@ -15,15 +15,17 @@ export default function Page({ params }: { params: { passportId: string } }) {
     ]
 
     return <>
+    <div className="px-12 lg:px-20">
         <Navbar
             tabs={tabs}
             currentTabIdx={currentTabIdx}
             setCurrentTabIdx={setCurrentTabIdx}
         />
         <section className="bg-white dark:bg-gray-900">
-            <div className="mx-auto p-8 lg:p-16">
+            <div className="py-8">
                 {tabs[currentTabIdx]?.href === '#overview' && <Overview passportUuid={params.passportId} />}
             </div>
         </section>
+        </div>
     </>
 }

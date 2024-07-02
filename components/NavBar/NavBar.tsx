@@ -24,10 +24,10 @@ export default function Navbar({ tabs, currentTabIdx, setCurrentTabIdx }: Navbar
     }
 
     return (
-        <Disclosure as="nav" className="bg-white shadow">
+        <Disclosure as="nav" className="bg-white">
             {() => (
                 <>
-                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="max-w-7xl mx-0">
                         <div className="flex h-16 justify-between">
                             <div className="flex">
                                 <div className="flex flex-shrink-0 items-center">
@@ -35,7 +35,7 @@ export default function Navbar({ tabs, currentTabIdx, setCurrentTabIdx }: Navbar
                                         className="h-8 w-auto"
                                     />
                                 </div>
-                                <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                                <div className="hidden sm:flex sm:space-x-8">
                                     {tabs.map((tab) => (
                                         <a
                                             key={tab.href}
