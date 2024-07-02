@@ -35,7 +35,7 @@ export default function Navbar({ tabs, currentTabIdx, setCurrentTabIdx }: Navbar
                                         className="h-8 w-auto"
                                     />
                                 </div>
-                                <div className="hidden sm:flex sm:space-x-8">
+                                <div className="sm:flex sm:space-x-8">
                                     {tabs.map((tab) => (
                                         <a
                                             key={tab.href}
@@ -55,25 +55,6 @@ export default function Navbar({ tabs, currentTabIdx, setCurrentTabIdx }: Navbar
                             </div>
                         </div>
                     </div>
-
-                    <DisclosurePanel className="sm:hidden">
-                        <div className="space-y-1 pb-3 pt-2">
-                            {tabs.map((tab) => (
-                                <DisclosureButton
-                                    key={tab.href}
-                                    as="a"
-                                    href={tab.href}
-                                    className={classNames(
-                                        tab.href === tabs[currentTabIdx]?.href ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
-                                            : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700',
-                                        'block border-l-4 py-2 pl-3 pr-4 text-base font-medium'
-                                    )}
-                                    onClick={() => handleTabClick(tabs.findIndex(t => t.href === tab.href))}                                >
-                                    {tab.name}
-                                </DisclosureButton>
-                            ))}
-                        </div>
-                    </DisclosurePanel>
                 </>
             )}
         </Disclosure>
