@@ -5,7 +5,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react
 interface Tab {
     name: string
     href: string
-    content: JSX.Element
+    // content: JSX.Element
 }
 
 interface NavbarProps {

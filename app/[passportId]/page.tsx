@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import Navbar from "components/NavBar/NavBar"
+import Overview from "./(components)/tabs/overview";
 
 export default function Page({ params }: { params: { passportId: string } }) {
 
     const [currentTabIdx, setCurrentTabIdx] = useState(0)
 
     const tabs = [
-        { name: 'Überblick', href: 'overview', content: <>Überblick</> },
-        { name: 'Katalog', href: 'catalog', content: <>Katalog</> },
-        { name: 'Vergleich', href: 'comparison', content: <>Vergleich</> }
+        { name: 'Überblick', href: '#overview' },
+        { name: 'Katalog', href: '#catalog' },
+        { name: 'Vergleich', href: '#comparison' }
     ]
 
     return <>
@@ -21,7 +22,7 @@ export default function Page({ params }: { params: { passportId: string } }) {
         />
         <section className="bg-white dark:bg-gray-900">
             <div className="mx-auto p-8 lg:p-16">
-                {tabs[currentTabIdx]?.content}
+                {tabs[currentTabIdx]?.href === '#overview' && <Overview passportUuid={params.passportId} />}
             </div>
         </section>
     </>
