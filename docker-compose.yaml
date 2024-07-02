@@ -1,0 +1,13 @@
+version: '3'
+services:
+  db:
+    image: 'postgres:16.3'
+    restart: always
+    ports:
+      - '65432:5432'
+    environment:
+      POSTGRES_DB: building_passport
+      POSTGRES_USER: building_passport
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
