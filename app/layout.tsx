@@ -1,6 +1,6 @@
 import "styles/global.css"
 import { Inter as FontSans } from "next/font/google"
-import { cn } from "utils"
+import { twMerge } from "tailwind-merge"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -11,7 +11,7 @@ const fontSans = FontSans({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={cn(
+      <body className={twMerge(
         "min-h-screen bg-background font-sans antialiased",
         fontSans.variable
       )}
