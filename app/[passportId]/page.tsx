@@ -4,32 +4,24 @@ import Navbar from "components/NavBar/NavBar"
 
 export default function Page({ params }: { params: { passportId: string } }) {
 
-    const tabs = [
-        { name: 'Überblick', href: '#' },
-        { name: 'Katalog', href: '#' },
-        { name: 'Vergleich', href: '#' }
-    ]
+    const [currentTabIdx, setCurrentTabIdx] = useState(1)
 
-    const [currentTab, setCurrentTab] = useState(tabs[0]!.name)
+    const tabs = [
+        { name: 'Überblick', href: 'overview', content: <>Überblick</> },
+        { name: 'Katalog', href: 'catalog', content: <>Katalog</> },
+        { name: 'Vergleich', href: 'comparison', content: <>Vergleich</> }
+    ]
 
     return <>
         <Navbar
             tabs={tabs}
-            currentTab={currentTab}
-            setCurrentTab={setCurrentTab}
+            currentTabIdx={currentTabIdx}
+            setCurrentTabIdx={setCurrentTabIdx}
         />
-        {/* Render content based on currentTab */}
-        {currentTab === 'Dashboard' && <div>Dashboard content</div>}
-        {currentTab === 'Team' && <div>Team content</div>}
-        {currentTab === 'Projects' && <div>Projects content</div>}
-        {currentTab === 'Calendar' && <div>Calendar content</div>}
-
+        currentTabIdx: {currentTabIdx} (PARENT)
         <section className="bg-white dark:bg-gray-900">
             <div className="mx-auto p-8 lg:p-16">
-
-                <h2 className="mb-4 max-w-xl text-l font-extrabold leading-none tracking-tight dark:text-white md:text-2xl xl:text-xl">Gebäuderessourcenpass</h2>
-                <p>Bundesministerium für ökologische Innovation, Biodiversitätsschutz und nachhaltigen Konsum – Dienstsitz Berlin</p>
-                <span>Passport &quot;{params.passportId}&quot;</span>
+                {tabs[currentTabIdx]?.content}
             </div>
         </section>
     </>
