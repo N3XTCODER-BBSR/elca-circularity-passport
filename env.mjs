@@ -3,6 +3,7 @@ import { z } from "zod"
 
 export const env = createEnv({
   server: {
+    DATABASE_URL: z.string().url(),
     ANALYZE: z
       .enum(["true", "false"])
       .optional()
@@ -11,5 +12,6 @@ export const env = createEnv({
   client: {},
   runtimeEnv: {
     ANALYZE: process.env.ANALYZE,
+    DATABASE_URL: process.env.DATABASE_URL,
   },
 })
