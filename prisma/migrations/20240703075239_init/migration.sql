@@ -2,7 +2,9 @@
 CREATE TABLE "Passport" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "identification" TEXT NOT NULL,
+    "buildingStructureId" TEXT NOT NULL,
+    "authorName" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
     "issueDate" TIMESTAMP(3) NOT NULL,
     "expiry" TIMESTAMP(3) NOT NULL,
 

@@ -14,9 +14,11 @@ datasource db {
 }
 
 model Passport {
-  id             String   @id @default(cuid())
-  name           String
-  identification String
-  issueDate      DateTime
-  expiry         DateTime
+  id                  String   @id @default(cuid())
+  name                String
+  buildingStructureId String
+  authorName          String
+  address             String
+  issueDate           DateTime
+  expiry              DateTime
 }
