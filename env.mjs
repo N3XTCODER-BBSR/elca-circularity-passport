@@ -8,10 +8,13 @@ export const env = createEnv({
       .enum(["true", "false"])
       .optional()
       .transform((value) => value === "true"),
+    // Add regex validation for 'ANY_STRING then COLON then ANY_STRING'
+    HTTP_BASIC_AUTH: z.string().regex(/^.+:.+$/),
   },
   client: {},
   runtimeEnv: {
     ANALYZE: process.env.ANALYZE,
     DATABASE_URL: process.env.DATABASE_URL,
+    HTTP_BASIC_AUTH: process.env.HTTP_BASIC_AUTH,
   },
 })
