@@ -1,9 +1,83 @@
-const Overview = ({ passportUuid }: { passportUuid: string }) => {
+import { PrismaClient } from '@prisma/client';
+
+const Overview = async ({ passportUuid }: { passportUuid: string }) => {
+  const prisma = new PrismaClient();
+  const passport = await prisma.passport.findUnique({
+    where: {
+      id: passportUuid,
+    },
+  });
+
   return (
     <>
-      <h2 className="mb-4 max-w-xl text-l font-extrabold leading-none tracking-tight dark:text-white md:text-2xl xl:text-xl">Gebäuderessourcenpass</h2>
+      <h2 className="mb-4 max-w-xl text-l font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
+        Gebäuderessourcenpass
+      </h2>
       <p>Bundesministerium für ökologische Innovation, Biodiversitätsschutz und nachhaltigen Konsum – Dienstsitz Berlin</p>
-      <span>Passport &quot;{passportUuid}&quot;</span>
+      <div className="mt-6 border-t border-gray-100">
+        <dl className="divide-y divide-gray-100">
+          <div className="flex flex-wrap">
+            <div className="w-full lg:w-1/2 lg:border-r-2">
+              <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
+                <dt className="text-sm font-bold leading-6 text-gray-900">Gebäude/Bauwerk-ID:</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">{passport?.buildingStructureId}</dd>
+              </div>
+              <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
+                <dt className="text-sm font-bold leading-6 text-gray-900">Adresse:</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">{passport?.address}</dd>
+              </div>
+              <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
+                <dt className="text-sm font-bold leading-6 text-gray-900">Baujahr:</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">{passport?.buildingYear}</dd>
+              </div>
+              <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
+                <dt className="text-sm font-bold leading-6 text-gray-900">Gebäudetyp:</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">{passport?.buildingType}</dd>
+              </div>
+              <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
+                <dt className="text-sm font-bold leading-6 text-gray-900">Geschossanzahl des Gebäudes:</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">{passport?.numberOfFloors}</dd>
+              </div>
+              <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
+                <dt className="text-sm font-bold leading-6 text-gray-900">NRF:</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">{passport?.nrf}</dd>
+              </div>
+            </div>
+            <div className="w-full lg:w-1/2">
+              <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
+                <dt className="text-sm font-bold leading-6 text-gray-900">BGF:</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">
+                {passport?.bgf}
+                </dd>
+              </div>
+              <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
+                <dt className="text-sm font-bold leading-6 text-gray-900">BRI:</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">{passport?.bri}</dd>
+              </div>
+              <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
+                <dt className="text-sm font-bold leading-6 text-gray-900">Grundstücksfläche:</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">
+                {passport?.plotArea}
+                </dd>
+              </div>
+              <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
+                <dt className="text-sm font-bold leading-6 text-gray-900">Anteil versiegelte Grundstücksfläche:</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">{passport?.percentageOfSealedLandArea}</dd>
+              </div>
+              <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
+                <dt className="text-sm font-bold leading-6 text-gray-900">Gesamtmasse des Gebäudes:</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">
+                {passport?.totalMassOfBuilding}
+                </dd>
+              </div>
+              <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
+                <dt className="text-sm font-bold leading-6 text-gray-900">Datenqualität:</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">{passport?.dataQuality}</dd>
+              </div>
+            </div>
+          </div>
+        </dl>
+      </div>
     </>
   );
 };
