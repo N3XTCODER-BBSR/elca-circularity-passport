@@ -22,6 +22,9 @@
     "postinstall": "npx patch-package -y",
     "coupling-graph": "npx madge --extensions js,jsx,ts,tsx,css,md,mdx ./ --exclude '.next|tailwind.config.js|reset.d.ts|prettier.config.js|postcss.config.js|playwright.config.ts|next.config.js|next-env.d.ts|instrumentation.ts|e2e/|README.md|.storybook/|.eslintrc.js' --image graph.svg"
   },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "dependencies": {
     "@headlessui/react": "^2.1.1",
     "@heroicons/react": "^2.1.4",
@@ -118,6 +121,7 @@
     "storybook": "^7.5.3",
     "tailwindcss": "^3.3.5",
     "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
     "tsc": "^2.0.4",
     "typescript": "5.4.5",
     "webpack": "5.89.0"

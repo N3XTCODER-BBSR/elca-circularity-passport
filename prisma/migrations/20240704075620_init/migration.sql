@@ -6,7 +6,7 @@ CREATE TABLE "Passport" (
     "authorName" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "issueDate" TIMESTAMP(3) NOT NULL,
-    "expiry" TIMESTAMP(3) NOT NULL,
+    "expiryDate" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Passport_pkey" PRIMARY KEY ("id")
 );
