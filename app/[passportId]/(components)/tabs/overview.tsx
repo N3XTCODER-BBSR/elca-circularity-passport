@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { InformationCircleIcon } from '@heroicons/react/20/solid'
 
 const Overview = async ({ passportUuid }: { passportUuid: string }) => {
   const prisma = new PrismaClient();
@@ -39,7 +40,7 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">{passport?.numberOfFloors}</dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
-                <dt className="text-sm font-bold leading-6 text-gray-900">NRF:</dt>
+                <dt className="text-sm font-bold leading-6 text-gray-900 flex"><InformationCircleIcon className="h-4 w-4 text-gray-400" aria-hidden="true" />NRF:</dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">{passport?.nrf}</dd>
               </div>
             </div>
@@ -47,7 +48,7 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">BGF:</dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">
-                {passport?.bgf}
+                  {passport?.bgf}
                 </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
@@ -57,7 +58,7 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Grundstücksfläche:</dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">
-                {passport?.plotArea}
+                  {passport?.plotArea}
                 </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
@@ -67,7 +68,7 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Gesamtmasse des Gebäudes:</dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 text-right">
-                {passport?.totalMassOfBuilding}
+                  {passport?.totalMassOfBuilding}
                 </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
