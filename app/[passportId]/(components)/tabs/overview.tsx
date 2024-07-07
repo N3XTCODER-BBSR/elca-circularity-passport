@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
 import { InformationCircleIcon } from '@heroicons/react/20/solid'
+import  prisma from 'prisma/prismaClient';
 
 const Overview = async ({ passportUuid }: { passportUuid: string }) => {
-  const prisma = new PrismaClient();
   const passport = await prisma.passport.findUnique({
     where: {
       id: passportUuid,
