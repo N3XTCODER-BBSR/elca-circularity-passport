@@ -11,16 +11,16 @@ interface Tab {
 interface NavbarProps {
     tabs: Tab[]
     currentTabIdx: number
-    setCurrentTabIdx: (tabIdx: number) => void
+    // setCurrentTabIdx: (tabIdx: number) => void
 }
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function Navbar({ tabs, currentTabIdx, setCurrentTabIdx }: NavbarProps) {
+export default function Navbar({ tabs, currentTabIdx }: NavbarProps) {
     const handleTabClick = (tabIdx: number) => {
-        setCurrentTabIdx(tabIdx)
+        // setCurrentTabIdx(tabIdx)
     }
 
     return (
