@@ -24,6 +24,10 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Lint check
         run: yarn lint
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          HTTP_BASIC_AUTH: ${{ secrets.HTTP_BASIC_AUTH }}
+
       - name: Format check
         run: yarn prettier
       - name: Unit & Integration tests
