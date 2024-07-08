@@ -1,5 +1,12 @@
+// IMPORTANT SEMANTICS: 
+// Building project
+   // Passport
+     // UUID
+     // Version
+    //  => Url of passport would be xxxx/passport/{UUID}/{Version}
 {
-    "passwordId": "string",
+    "passportId": "string",
+    "versionTag": "string",
     "generatorSoftware": { // for our case, this would be "elca passport generator"
         "name": "string",
         "version": "string",
@@ -38,6 +45,9 @@
                             "className": "string" // the actual circularity index / end-of-life class name, e.g. "A" or "AB"
                         }
                         // still most unclarity about the props here, more fields will come
+                    },
+                    "pollutants": {
+                        // fields will be defined later here
                     },
                     "ressources": {
                         "RMI mineral, kg": "string",
