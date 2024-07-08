@@ -67,17 +67,27 @@ const GeneratorSoftwareSchema = z.object({
   url: z.string(),
 });
 
+const BuildingBaseDataSchema = z.object({
+  buildingStructureId: z.string(),
+  address: z.string(),
+  buildingYear: z.number(),
+  buildingType: z.string(),
+  numberOfFloors: z.number(),
+  plotArea: z.string()
+});
+
 // Define the main schema
-const BuildingProjectSchema = z.object({
+export const PassportSchema = z.object({
   passportId: z.string(),
   versionTag: z.string(),
   generatorSoftware: GeneratorSoftwareSchema,
-  elcaProjectId: z.string(),
+  elcaProjectId: z.string(), // TODO: should get a better, more generic name (since it can also be used for different tools than elca)
   dataSchemaVersion: z.string(),
+  buildingBaseData: BuildingBaseDataSchema,
   // Add additional static properties like address if needed
   buildingComponents: z.array(BuildingComponentSchema),
 });
 
 // Type inference for TypeScript
-export type BuildingProject = z.infer<typeof BuildingProjectSchema>;
+export type Passport = z.infer<typeof PassportSchema>;
 

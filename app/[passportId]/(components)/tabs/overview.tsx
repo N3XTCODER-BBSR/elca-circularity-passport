@@ -1,5 +1,6 @@
 import { InformationCircleIcon } from "@heroicons/react/20/solid"
 import prisma from "prisma/prismaClient"
+import { Passport, PassportSchema } from "utils/zod/passportSchema"
 
 const Overview = async ({ passportUuid }: { passportUuid: string }) => {
   const passport = await prisma.passport.findUnique({
@@ -7,6 +8,8 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
       id: passportUuid,
     },
   })
+
+  const passportData: Passport = PassportSchema.parse(passport?.passportData)
 
   return (
     <>
@@ -23,31 +26,31 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Gebäude/Bauwerk-ID:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {passport?.buildingStructureId}
+                  {passportData.buildingBaseData.buildingStructureId}
                 </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Adresse:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {passport?.address}
+                  {passportData.buildingBaseData.address}
                 </dd>
               </div>
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Baujahr:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {passport?.buildingYear}
+                  {passportData.buildingBaseData.buildingYear}
                 </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Gebäudetyp:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {passport?.buildingType}
+                  {passportData.buildingBaseData.buildingType}
                 </dd>
               </div>
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Geschossanzahl des Gebäudes:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {passport?.numberOfFloors}
+                  {passportData.buildingBaseData.numberOfFloors}
                 </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
@@ -56,7 +59,7 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
                   NRF:
                 </dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {passport?.nrf}
+                  {/* {passportData?.nrf} */}
                 </dd>
               </div>
             </div>
@@ -64,37 +67,37 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">BGF:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {passport?.bgf}
+                  {/* {passportData?.bgf} */}
                 </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">BRI:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {passport?.bri}
+                  {/* {passportData?.bri} */}
                 </dd>
               </div>
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Grundstücksfläche:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {passport?.plotArea}
+                  {passportData.buildingBaseData.plotArea}
                 </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Anteil versiegelte Grundstücksfläche:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {passport?.percentageOfSealedLandArea}
+                  {/* {passportData?.percentageOfSealedLandArea} */}
                 </dd>
               </div>
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Gesamtmasse des Gebäudes:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {passport?.totalMassOfBuilding}
+                  {/* {passportData?.totalMassOfBuilding} */}
                 </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Datenqualität:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {passport?.dataQuality}
+                  {/* {passportData?.dataQuality} */}
                 </dd>
               </div>
             </div>
