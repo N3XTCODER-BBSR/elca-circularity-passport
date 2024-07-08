@@ -7,15 +7,10 @@ const fontSans = FontSans({
   variable: "--font-sans",
 })
 
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={twMerge(
-        "min-h-screen bg-background font-sans antialiased",
-        fontSans.variable
-      )}
-      >{children}</body>
+      <body className={twMerge("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>{children}</body>
     </html>
   )
 }
