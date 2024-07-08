@@ -20,6 +20,8 @@ jobs:
   analyze:
     env:
       SKIP_ENV_VALIDATION: true
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      HTTP_BASIC_AUTH: ${{ secrets.HTTP_BASIC_AUTH }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

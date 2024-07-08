@@ -13,6 +13,9 @@ jobs:
   check:
     name: Check
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      HTTP_BASIC_AUTH: ${{ secrets.HTTP_BASIC_AUTH }}
     steps:
       - uses: actions/checkout@v4
       - run: echo "node_version=$(cat .github/nodejs.version)" >> $GITHUB_ENV
@@ -24,10 +27,6 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Lint check
         run: yarn lint
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          HTTP_BASIC_AUTH: ${{ secrets.HTTP_BASIC_AUTH }}
-
       - name: Format check
         run: yarn prettier
       - name: Unit & Integration tests
