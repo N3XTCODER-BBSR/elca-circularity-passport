@@ -1,0 +1,56 @@
+{
+    "passwordId": "string",
+    "generatorSoftware": { // for our case, this would be "elca passport generator"
+        "name": "string",
+        "version": "string",
+        "url": "string"
+    },
+    "elcaProjectId": "string",
+    "dataSchemaVersion": "string",
+    // ... basic building static props like adress
+    "buildingComponents": [
+        {
+            "id": "string", // in our case, would be elca component id (still up to discussion whether it's needed for passport presentation); for other passport-generating softwares, they would use their own id
+            "uuid": "string",
+            "name": "string",
+            "layers": [
+                {
+                    // "id": "string", similar remarks are valid here as for the buildingComponents.id
+                    "mass": "number",
+                    "material": {
+                        "uuid": "string", // refers to Oekobaudat
+                        "description": "string",
+                        // potentially more simple fields here
+                        "materialReferenceDatabase": {
+                            "name": "string",
+                            "version": "string",
+                            "url": "string"
+                        }
+                    },
+                    "circularity": {
+                        "interferingSubstances": [
+                            {
+                                // Prop names here not clear yet
+                            }
+                        ],
+                        "circularityIndex": {
+                            "points": "number", 
+                            "className": "string" // the actual circularity index / end-of-life class name, e.g. "A" or "AB"
+                        }
+                        // still most unclarity about the props here, more fields will come
+                    },
+                    "ressources": {
+                        "RMI mineral, kg": "string",
+                        "RMI metallic": "string",
+                        "RMI fossil": "string",
+                        "RMI Forestry": "string",
+                        "RMI Agrar": "string",
+                        "RMI Aqua": "string",
+                        // more fields like these might come
+                    },
+                    "serviceLifeYear": "number"
+                }
+            ]
+        }
+    ]
+}
