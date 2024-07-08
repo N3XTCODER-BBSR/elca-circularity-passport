@@ -7,6 +7,7 @@ async function main() {
     create: {
       name: "Passport Demo 1",
       id: "1",
+      passportData: "dasd", 
       buildingYear: 2024,
       buildingStructureId: "UUID-12345",
       buildingType: "Bürogebäude",
