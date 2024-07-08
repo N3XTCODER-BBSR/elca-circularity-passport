@@ -10,7 +10,11 @@ export const env = createEnv({
       .transform((value) => value === "true"),
     // Add regex validation for 'ANY_STRING then COLON then ANY_STRING'
     HTTP_BASIC_AUTH: z.string().regex(/^.+:.+$/),
-    RUN_SEEDERS_ON_DEPLOY: z.boolean().optional(),
+    // RUN_SEEDERS_ON_DEPLOY: a stirng, that is either TRUE or FALSE and will be mapped to a boolean ts type
+    RUN_SEEDERS_ON_DEPLOY: z
+      .enum(["true", "false"])
+      .optional()
+      .transform((value) => value === "true"),
   },
   client: {},
   runtimeEnv: {
