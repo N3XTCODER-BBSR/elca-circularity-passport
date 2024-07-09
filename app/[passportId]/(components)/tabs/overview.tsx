@@ -9,7 +9,32 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
     },
   })
 
-  const passportData: Passport = PassportSchema.parse(passport?.passportData)
+  if(passport == null) {
+    console.error("Passport not found")
+    // TODO: show next.js error page
+    return null
+  }
+
+  let jsonObj;
+  if (typeof passport?.passportData === 'string') {
+    try {
+      jsonObj = JSON.parse(passport.passportData);
+    } catch (e) {
+      console.error("Invalid JSON string", e);
+    }
+  } else {
+    jsonObj = passport?.passportData;
+  }
+  
+
+  const passportDataParsingResult = PassportSchema.safeParse(jsonObj)
+  if (passportDataParsingResult.error) {
+    console.error("Error parsing passport data", passportDataParsingResult.error)
+    // TODO: show next.js error page
+    return null
+  }
+
+  const passportData: Passport = passportDataParsingResult.data
 
   return (
     <>
@@ -79,7 +104,7 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Grundstücksfläche:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {passportData.buildingBaseData.plotArea}
+                  {/* {passportData.buildingBaseData.plotArea} */}
                 </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
@@ -90,8 +115,7 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
               </div>
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Gesamtmasse des Gebäudes:</dt>
-                <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                </dd>
+                <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0"></dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Datenqualität:</dt>

@@ -28,7 +28,7 @@ function isAuthenticated(req: NextRequest) {
   const user = auth[0]
   const pass = auth[1]
 
-  if (user == AUTH_USER && pass == AUTH_PASS) {
+  if (user === AUTH_USER && pass === AUTH_PASS) {
     return true
   } else {
     return false
