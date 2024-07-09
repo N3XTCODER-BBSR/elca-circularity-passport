@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client"
 import { Passport } from "utils/zod/passportSchema"
 const prisma = new PrismaClient()
 async function main() {
-
   const passport1PassDataV1: Passport = {
     dataSchemaVersion: "v1",
     passportId: "1",
@@ -11,7 +10,7 @@ async function main() {
     generatorSoftware: {
       name: "ELCA Passport Generator",
       version: "1.0.0",
-      url: ""
+      url: "",
     },
     buildingBaseData: {
       buildingStructureId: "UUID-123",
@@ -19,7 +18,7 @@ async function main() {
       buildingYear: 2024,
       buildingType: "Bürogebäude",
       numberOfFloors: 8,
-      plotArea: "10000 m²"
+      plotArea: "10000 m²",
     },
     buildingComponents: [
       {
@@ -75,7 +74,6 @@ async function main() {
       },
     ],
   }
-  
 
   const passport1 = await prisma.passport.upsert({
     where: { id: "1" },

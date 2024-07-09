@@ -9,23 +9,22 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
     },
   })
 
-  if(passport == null) {
+  if (passport == null) {
     console.error("Passport not found")
     // TODO: show next.js error page
     return null
   }
 
-  let jsonObj;
-  if (typeof passport?.passportData === 'string') {
+  let jsonObj
+  if (typeof passport?.passportData === "string") {
     try {
-      jsonObj = JSON.parse(passport.passportData);
+      jsonObj = JSON.parse(passport.passportData)
     } catch (e) {
-      console.error("Invalid JSON string", e);
+      console.error("Invalid JSON string", e)
     }
   } else {
-    jsonObj = passport?.passportData;
+    jsonObj = passport?.passportData
   }
-  
 
   const passportDataParsingResult = PassportSchema.safeParse(jsonObj)
   if (passportDataParsingResult.error) {
