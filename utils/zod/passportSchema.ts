@@ -7,12 +7,6 @@ const MaterialReferenceDatabaseSchema = z.object({
   url: z.string().optional(),
 })
 
-const MaterialSchema = z.object({
-  uuid: z.string().optional(),
-  description: z.string(),
-  materialReferenceDatabase: MaterialReferenceDatabaseSchema,
-})
-
 const CircularityIndexSchema = z.object({
   points: z.number(),
   className: z.string(),

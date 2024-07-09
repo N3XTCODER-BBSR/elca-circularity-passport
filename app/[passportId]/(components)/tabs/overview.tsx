@@ -35,6 +35,8 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
 
   const passportData: Passport = passportDataParsingResult.data
 
+  const sealedPropertyAreaProportionAsPercentageStr = `${(passportData.buildingBaseData.sealedPropertyAreaProportion * 100).toFixed(2)}%`
+
   return (
     <>
       <h2 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
@@ -83,7 +85,7 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
                   NRF:
                 </dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {/* {passportData?.nrf} */}
+                  {passportData?.buildingBaseData.nrf} m²
                 </dd>
               </div>
             </div>
@@ -91,35 +93,37 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">BGF:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {/* {passportData?.bgf} */}
+                  {passportData?.buildingBaseData.bgf} m²
                 </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">BRI:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {/* {passportData?.bri} */}
+                  {passportData?.buildingBaseData.bri} m³
                 </dd>
               </div>
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Grundstücksfläche:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {/* {passportData.buildingBaseData.plotArea} */}
+                  {passportData.buildingBaseData.plotArea} m²
                 </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Anteil versiegelte Grundstücksfläche:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {/* {passportData?.percentageOfSealedLandArea} */}
+                  {sealedPropertyAreaProportionAsPercentageStr}
                 </dd>
               </div>
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Gesamtmasse des Gebäudes:</dt>
-                <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0"></dd>
+                <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
+                {passportData?.buildingBaseData.totalBuildingMass}t
+                </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Datenqualität:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {/* {passportData?.dataQuality} */}
+                  {passportData?.buildingBaseData.dataQuality}
                 </dd>
               </div>
             </div>
