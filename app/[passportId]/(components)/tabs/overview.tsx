@@ -91,7 +91,6 @@ const Overview = async ({ passportUuid }: { passportUuid: string }) => {
               <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
                 <dt className="text-sm font-bold leading-6 text-gray-900">Gesamtmasse des Gebäudes:</dt>
                 <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
-                  {/* {passportData?.totalMassOfBuilding} */}
                 </dd>
               </div>
               <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
