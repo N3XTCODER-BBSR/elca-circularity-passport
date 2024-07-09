@@ -15,21 +15,9 @@ datasource db {
 
 model Passport {
   id                         String   @id @default(cuid())
-  name                       String
+  uuid                       String   @unique
+  versionTag                 String
   passportData               Json
-  buildingStructureId        String
-  address                    String
-  buildingYear               Int
-  buildingType               String
-  numberOfFloors             Int
-  nrf                        String
-  bgf                        String
-  bri                        String
-  plotArea                   String
-  percentageOfSealedLandArea Int
-  totalMassOfBuilding        Int
-  dataQuality                String
-  authorName                 String
   issueDate                  DateTime
   expiryDate                 DateTime
 }
