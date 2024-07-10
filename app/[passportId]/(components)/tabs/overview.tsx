@@ -1,12 +1,13 @@
 import prisma from "prisma/prismaClient"
 import { Passport, PassportSchema } from "utils/zod/passportSchema"
-import Materials from "./modules/Materials"
 import BuildingBaseInformation from "./modules/BuildingBaseInformation"
+import Materials from "./modules/Materials"
+import passportParser from "utils/zod/passportParser"
 
 const Overview = async ({ uuid }: { uuid: string }) => {
   const passport = await prisma.passport.findFirst({
     where: {
-      uuid: uuid
+      uuid: uuid,
     },
   })
 
@@ -16,25 +17,7 @@ const Overview = async ({ uuid }: { uuid: string }) => {
     return null
   }
 
-  let jsonObj
-  if (typeof passport?.passportData === "string") {
-    try {
-      jsonObj = JSON.parse(passport.passportData)
-    } catch (e) {
-      console.error("Invalid JSON string", e)
-    }
-  } else {
-    jsonObj = passport?.passportData
-  }
-
-  const passportDataParsingResult = PassportSchema.safeParse(jsonObj)
-  if (passportDataParsingResult.error) {
-    console.error("Error parsing passport data", passportDataParsingResult.error)
-    // TODO: show next.js error page
-    return null
-  }
-
-  const passportData: Passport = passportDataParsingResult.data
+  const passportData: Passport = passportParser(passport.passportData)
 
   return (
     <>
@@ -45,10 +28,8 @@ const Overview = async ({ uuid }: { uuid: string }) => {
         Bundesministerium für ökologische Innovation, Biodiversitätsschutz und nachhaltigen Konsum – Dienstsitz Berlin
       </p>
       <div className="mt-6 border-gray-100">
-        
-          <Materials buildingComponents={passportData.buildingComponents} />
-          <BuildingBaseInformation passportData={passportData} />
-        
+        <Materials buildingComponents={passportData.buildingComponents} />
+        <BuildingBaseInformation passportData={passportData} />
       </div>
     </>
   )
