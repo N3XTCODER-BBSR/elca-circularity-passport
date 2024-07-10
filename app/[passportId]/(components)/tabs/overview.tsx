@@ -3,10 +3,10 @@ import { Passport, PassportSchema } from "utils/zod/passportSchema"
 import Materials from "./modules/Materials"
 import BuildingBaseInformation from "./modules/BuildingBaseInformation"
 
-const Overview = async ({ passportUuid }: { passportUuid: string }) => {
-  const passport = await prisma.passport.findUnique({
+const Overview = async ({ uuid }: { uuid: string }) => {
+  const passport = await prisma.passport.findFirst({
     where: {
-      id: passportUuid,
+      uuid: uuid
     },
   })
 

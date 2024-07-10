@@ -15,7 +15,7 @@ datasource db {
 
 model Passport {
   id           String   @id @default(cuid())
-  passportUuid String   @unique
+  uuid String   @unique
   versionTag   String
   passportData Json
   issueDate    DateTime

@@ -5,7 +5,7 @@
      // Version
     //  => Url of passport would be xxxx/passport/{UUID}/{Version}
 {
-    "passportUuid": "string",
+    "uuid": "string",
     "versionTag": "string",
     "generatorSoftware": { // for our case, this would be "elca passport generator"
         "name": "string",
