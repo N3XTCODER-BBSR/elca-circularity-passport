@@ -25,7 +25,7 @@ const PollutantsSchema = z.object({
   // Define properties here when they are clear
 })
 
-const RessourcesSchema = z.object({
+export const RessourcesSchema = z.object({
   rmiMineralKg: z.string(),
   rmiMetallic: z.string(),
   rmiFossil: z.string(),
@@ -34,7 +34,7 @@ const RessourcesSchema = z.object({
   rmiAqua: z.string(),
 })
 
-const LayerSchema = z.object({
+export const LayerSchema = z.object({
   buildingId: z.string(),
   lnr: z.number(),
   floor: z.string().optional(),
@@ -61,20 +61,23 @@ const LayerSchema = z.object({
   serviceLifeYear: z.number().optional(),
 })
 
-const BuildingComponentSchema = z.object({
+export const BuildingComponentSchema = z.object({
   id: z.string().optional(),
   uuid: z.string(),
   name: z.string(),
   layers: z.array(LayerSchema),
 })
 
-const GeneratorSoftwareSchema = z.object({
+export type BuildingComponent = z.infer<typeof BuildingComponentSchema>
+
+
+export const GeneratorSoftwareSchema = z.object({
   name: z.string(),
   version: z.string(),
   url: z.string(),
 })
 
-const BuildingBaseDataSchema = z.object({
+export const BuildingBaseDataSchema = z.object({
   buildingStructureId: z.string(),
   address: z.string(),
   buildingYear: z.number(),

@@ -1,8 +1,10 @@
 "use client"
 
+import { BuildingComponent } from "utils/zod/passportSchema"
 import BarChart from "../../BarChart"
 
-const Materials = () => {
+const Materials = ({ buildingComponents }: { buildingComponents: BuildingComponent[] }) => {
+  console.log('buildingComponents', buildingComponents)
   const keys = ["hot dog", "burger", "sandwich", "kebab"]
 
   const chartData = [
@@ -44,7 +46,7 @@ const Materials = () => {
         Materialien
       </h3>
       <div className="h-[300px]">
-      <BarChart data={chartData} indexBy={"country"} keys={keys} />
+        <BarChart data={chartData} indexBy={"country"} keys={keys} />
       </div>
     </div>
   )

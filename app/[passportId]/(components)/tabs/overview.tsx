@@ -46,7 +46,7 @@ const Overview = async ({ uuid }: { uuid: string }) => {
       </p>
       <div className="mt-6 border-gray-100">
         
-          <Materials />
+          <Materials buildingComponents={passportData.buildingComponents} />
           <BuildingBaseInformation passportData={passportData} />
         
       </div>

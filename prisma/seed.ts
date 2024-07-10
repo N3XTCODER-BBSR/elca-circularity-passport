@@ -1,3 +1,6 @@
+import fs from 'fs';
+import csv from 'csv-parser';
+
 import { PrismaClient } from "@prisma/client"
 import { Passport } from "utils/zod/passportSchema"
 const prisma = new PrismaClient()
