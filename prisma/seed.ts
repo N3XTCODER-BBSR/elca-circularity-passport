@@ -1,8 +1,9 @@
-import fs from 'fs';
-import csv from 'csv-parser';
-
 import { PrismaClient } from "@prisma/client"
-import { BuildingComponent, Layer, LayerSchema, Passport } from "utils/zod/passportSchema"
+import { Passport } from "utils/zod/passportSchema"
+
+// import { BuildingComponent, Layer, LayerSchema, Passport } from "utils/zod/passportSchema"
+// import fs from 'fs';
+// import csv from 'csv-parser';
 
 // const parseCsv = async (filePath: string): Promise<Layer[]> => {
 //   const results: BuildingComponent[] = [];
