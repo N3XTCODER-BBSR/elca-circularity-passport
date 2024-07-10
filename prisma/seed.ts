@@ -164,7 +164,7 @@ async function main() {
             room: "",
             amount: 252,
             componentGeometry: "m2",
-            mass: 24192,
+            mass: 241,
             materialDescription: "Zementestrich",
             materialDatabase: "OBD_2020_II_A2",
             serviceLife: 50,
@@ -209,7 +209,7 @@ async function main() {
       {
         uuid: "2847502",
         name: "Innenwand tragend",
-        categoryName: "Außenwände",
+        categoryName: "Innenwände",
         costGroupCategory: 340, // GROUP BY THIS FIELD
         costGroupDIN276: 341,
         layers: [
@@ -273,7 +273,7 @@ async function main() {
             room: "",
             amount: 752,
             componentGeometry: "m2",
-            mass: 37.64,
+            mass: 29.42,
             materialDescription: "Mineralische Bauprodukte",
             materialDatabase: "OBD_2020_II_A1",
             serviceLife: 50,

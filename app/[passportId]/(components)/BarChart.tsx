@@ -20,20 +20,6 @@ const BarChart = ({ data, indexBy, keys }: { data: BarDatum[]; indexBy: string; 
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
       colors={{ scheme: "category10" }}
-      fill={[
-        {
-          match: {
-            id: "fries",
-          },
-          id: "dots",
-        },
-        {
-          match: {
-            id: "sandwich",
-          },
-          id: "lines",
-        },
-      ]}
       borderColor={{
         from: "color",
         modifiers: [["darker", 1.6]],
@@ -44,7 +30,7 @@ const BarChart = ({ data, indexBy, keys }: { data: BarDatum[]; indexBy: string; 
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "country",
+        legend: "mass",
         legendPosition: "middle",
         legendOffset: 32,
         truncateTickAt: 0,
@@ -53,7 +39,7 @@ const BarChart = ({ data, indexBy, keys }: { data: BarDatum[]; indexBy: string; 
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "food",
+        legend: "Bauteilkategorien",
         legendPosition: "middle",
         legendOffset: -40,
         truncateTickAt: 0,
@@ -65,33 +51,33 @@ const BarChart = ({ data, indexBy, keys }: { data: BarDatum[]; indexBy: string; 
         from: "color",
         modifiers: [["darker", 1.6]],
       }}
-      legends={[
-        {
-          dataFrom: "keys",
-          anchor: "bottom-right",
-          direction: "column",
-          justify: false,
-          translateX: 120,
-          translateY: 0,
-          itemsSpacing: 2,
-          itemWidth: 100,
-          itemHeight: 20,
-          itemDirection: "left-to-right",
-          itemOpacity: 0.85,
-          symbolSize: 20,
-          effects: [
-            {
-              on: "hover",
-              style: {
-                itemOpacity: 1,
-              },
-            },
-          ],
-        },
-      ]}
+    //   legends={[
+    //     {
+    //       dataFrom: "keys",
+    //       anchor: "bottom-right",
+    //       direction: "column",
+    //       justify: false,
+    //       translateX: 120,
+    //       translateY: 0,
+    //       itemsSpacing: 2,
+    //       itemWidth: 100,
+    //       itemHeight: 20,
+    //       itemDirection: "left-to-right",
+    //       itemOpacity: 0.85,
+    //       symbolSize: 20,
+    //       effects: [
+    //         {
+    //           on: "hover",
+    //           style: {
+    //             itemOpacity: 1,
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   ]}
       role="application"
-      ariaLabel="Nivo bar chart demo"
-      barAriaLabel={(e) => e.id + ": " + e.formattedValue + " in country: " + e.indexValue}
+    //   ariaLabel="Nivo bar chart demo"
+    //   barAriaLabel={(e) => e.id + ": " + e.formattedValue + " in country: " + e.indexValue}
     />
   </>
 )
