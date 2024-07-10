@@ -3,9 +3,8 @@
 import { InformationCircleIcon } from "@heroicons/react/20/solid"
 import { PassportData } from "utils/zod/passportSchema"
 import InfoIcon from "./components/InfoIcon"
-import { Tooltip } from "react-tooltip"
 
-import CustomTooltip from "components/Tooltip"
+import Tooltip from "components/Tooltip"
 
 const BuildingBaseInformation = ({ passportData }: { passportData: PassportData }) => {
   const sealedPropertyAreaProportionAsPercentageStr = `${(
@@ -52,11 +51,8 @@ const BuildingBaseInformation = ({ passportData }: { passportData: PassportData 
             </div>
             <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
               <dt className="flex text-sm font-bold leading-6 text-gray-900">
-                <a id="nrf-info-anchor" className="flex items-center">
-                  <InformationCircleIcon className="h-4 w-4 text-blue-800" aria-hidden="true" />
-                </a>
                 <Tooltip
-                  anchorSelect="#nrf-info-anchor"
+                  id="#nrf"
                   content="Netto-Mietfläche eines Gebäudes, exklusive gemeinschaftlicher Bereiche wie Lobbys, Flure, Treppenhäuser und technische Räume."
                 />
                 NRF:
@@ -69,11 +65,8 @@ const BuildingBaseInformation = ({ passportData }: { passportData: PassportData 
           <div className="w-full lg:w-1/2">
             <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
               <dt className="flex text-sm font-bold leading-6 text-gray-900">
-                <a id="bgf-info-anchor" className="flex items-center">
-                  <InformationCircleIcon className="h-4 w-4 text-blue-800" aria-hidden="true" />
-                </a>
                 <Tooltip
-                  anchorSelect="#bgf-info-anchor"
+                  id="bgf"
                   content="Brutto-Grundfläche eines Gebäudes, umfasst alle innerhalb der Gebäudehülle liegenden Flächen, gemessen bis zur Außenfläche der Außenwände."
                 />
                 BGF:
@@ -84,11 +77,8 @@ const BuildingBaseInformation = ({ passportData }: { passportData: PassportData 
             </div>
             <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
               <dt className="flex text-sm font-bold leading-6 text-gray-900">
-                <a id="bri-info-anchor" className="flex items-center">
-                  <InformationCircleIcon className="h-4 w-4 text-blue-800" aria-hidden="true" />
-                </a>
                 <Tooltip
-                  anchorSelect="#bri-info-anchor"
+                  id="bri"
                   content="Brutto-Rauminhalt und bezieht sich auf das gesamte Volumen eines Gebäudes, einschließlich aller Innenräume und gemessen bis zur äußeren Begrenzung der Außenwände."
                 />
                 BRI:
@@ -106,7 +96,7 @@ const BuildingBaseInformation = ({ passportData }: { passportData: PassportData 
             <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
               <dt className="flex text-sm font-bold leading-6 text-gray-900">
                 {" "}
-                <CustomTooltip
+                <Tooltip
                   id="spap"
                   content="Anteil versiegelte Grundstücksfläche: Der prozentuale Anteil der Grundstücksfläche, die durch bauliche
           Maßnahmen wie Gebäude, Straßen oder Parkplätze bedeckt ist und damit Wasser und natürliche Abflüsse behindert."
