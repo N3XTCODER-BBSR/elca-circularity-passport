@@ -1,5 +1,9 @@
+"use client"; 
+
 import { InformationCircleIcon } from "@heroicons/react/20/solid"
 import { Passport } from "utils/zod/passportSchema"
+import InfoIcon from "./components/InfoIcon"
+import { Tooltip } from "react-tooltip"
 
 const BuildingBaseInformation = ({ passportData }: { passportData: Passport }) => {
   const sealedPropertyAreaProportionAsPercentageStr = `${(
@@ -46,7 +50,8 @@ const BuildingBaseInformation = ({ passportData }: { passportData: Passport }) =
             </div>
             <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
               <dt className="flex text-sm font-bold leading-6 text-gray-900">
-                <InformationCircleIcon className="h-4 w-4 text-gray-400" aria-hidden="true" />
+                <a id="nrf-info-anchor" className="flex items-center"><InformationCircleIcon className="h-4 w-4 text-blue-800" aria-hidden="true" /></a>
+                <Tooltip anchorSelect="#nrf-info-anchor" content="Netto-Mietfläche eines Gebäudes, exklusive gemeinschaftlicher Bereiche wie Lobbys, Flure, Treppenhäuser und technische Räume." />
                 NRF:
               </dt>
               <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
