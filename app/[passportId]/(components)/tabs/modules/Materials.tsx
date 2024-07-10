@@ -5,6 +5,7 @@ import BarChart from "../../BarChart"
 
 const Materials = ({ buildingComponents }: { buildingComponents: BuildingComponent[] }) => {
   console.log('buildingComponents', buildingComponents)
+  
   const keys = ["hot dog", "burger", "sandwich", "kebab"]
 
   const chartData = [

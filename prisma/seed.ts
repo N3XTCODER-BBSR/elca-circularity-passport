@@ -108,21 +108,21 @@ async function main() {
     },
     buildingComponents: [
       {
-        uuid: "UUID-12345",
-        name: "Fassade",
+        uuid: "7548707",
+        name: "Kellerboden",
+        categoryName: "Gründung",
+        costGroupCategory: 320,
+        costGroupDIN276: 324,
         layers: [
           {
             buildingId: "3444a12c-8da3-42b1-88ee-a5d65ade1785",
             lnr: 0,
             floor: "",
             room: "",
-            componentNumber: "7548707",
-            componentName: "Kellerboden",
-            costGroupDIN276: "324",
             amount: 252,
             componentGeometry: "m2",
             mass: 17.64,
-            materialDescription: "PVC Plastisol",
+            materialDescription: "Metalle",
             materialDatabase: "OBD_2020_II_A1",
             serviceLife: 50,
             technicalServiceLife: 50,
@@ -162,9 +162,6 @@ async function main() {
             lnr: 1,
             floor: "",
             room: "",
-            componentNumber: "7548707",
-            componentName: "Kellerboden",
-            costGroupDIN276: "324",
             amount: 252,
             componentGeometry: "m2",
             mass: 24192,
@@ -203,19 +200,29 @@ async function main() {
             },
             serviceLifeYear: 50,
           },
+        ],
+      }, 
+      
+      
+      
+      
+      {
+        uuid: "2847502",
+        name: "Innenwand tragend",
+        categoryName: "Außenwände",
+        costGroupCategory: 340, // GROUP BY THIS FIELD
+        costGroupDIN276: 341,
+        layers: [
           {
-            buildingId: "3444a12c-8da3-42b1-88ee-a5d65ade1787",
-            lnr: 2,
+            buildingId: "3444a12c-8da3-42b1-88ee-a5d65ade1785",
+            lnr: 0,
             floor: "",
             room: "",
-            componentNumber: "7548707",
-            componentName: "Kellerboden",
-            costGroupDIN276: "324",
-            amount: 252,
+            amount: 752,
             componentGeometry: "m2",
-            mass: 11869.2,
-            materialDescription: "Bewehrungsstahl",
-            materialDatabase: "OBD_2020_II_A3",
+            mass: 37.64, // AGGREGATE THIS
+            materialDescription: "Mineralische Bauprodukte",
+            materialDatabase: "OBD_2020_II_A1",
             serviceLife: 50,
             technicalServiceLife: 50,
             uuidProduct: "",
@@ -223,7 +230,60 @@ async function main() {
             manufacturerName: "",
             proofDocument: "",
             versionDate: "",
-            wasteCode: "10113",
+            wasteCode: "10106",
+            circularity: {
+              interferingSubstances: [
+                // Assuming these are static, can be adjusted as needed
+                {
+                  // Sample interfering substance
+                },
+              ],
+              circularityIndex: {
+                points: 10,
+                className: "A",
+              },
+            },
+            pollutants: {
+              // Define properties here when they are clear
+            },
+            ressources: {
+              rmiMineralKg: "1000",
+              rmiMetallic: "1000",
+              rmiFossil: "1000",
+              rmiForestry: "1000",
+              rmiAgrar: "1000",
+              rmiAqua: "1000",
+            },
+            serviceLifeYear: 50,
+          },
+        ],
+      },
+      
+      {
+        uuid: "2847502",
+        name: "Außenwand N",
+        categoryName: "Außenwände",
+        costGroupCategory: 330,
+        costGroupDIN276: 331,
+        layers: [
+          {
+            buildingId: "3444a12c-8da3-42b1-88ee-a5d65ade1785",
+            lnr: 0,
+            floor: "",
+            room: "",
+            amount: 752,
+            componentGeometry: "m2",
+            mass: 37.64,
+            materialDescription: "Mineralische Bauprodukte",
+            materialDatabase: "OBD_2020_II_A1",
+            serviceLife: 50,
+            technicalServiceLife: 50,
+            uuidProduct: "",
+            productDescription: "",
+            manufacturerName: "",
+            proofDocument: "",
+            versionDate: "",
+            wasteCode: "10106",
             circularity: {
               interferingSubstances: [
                 // Assuming these are static, can be adjusted as needed

@@ -39,9 +39,6 @@ export const LayerSchema = z.object({
   lnr: z.number(),
   floor: z.string().optional(),
   room: z.string().optional(),
-  componentNumber: z.string(),
-  componentName: z.string(),
-  costGroupDIN276: z.string(),
   amount: z.number(),
   componentGeometry: z.enum(["m2", "m3", "kg", "m", "unit"]),
   mass: z.number(),
@@ -67,6 +64,9 @@ export const BuildingComponentSchema = z.object({
   id: z.string().optional(),
   uuid: z.string(),
   name: z.string(),
+  categoryName: z.string(),
+  costGroupCategory: z.number(),
+  costGroupDIN276: z.number(),
   layers: z.array(LayerSchema),
 })
 
