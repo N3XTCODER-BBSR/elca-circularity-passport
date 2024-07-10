@@ -4,7 +4,7 @@ const prisma = new PrismaClient()
 async function main() {
   const passport1PassDataV1: Passport = {
     dataSchemaVersion: "v1",
-    passportId: "1",
+    passportUuid: "42d42e5b-5340-4657",
     versionTag: "1.0.0",
     elcaProjectId: "",
     generatorSoftware: {
@@ -184,7 +184,7 @@ async function main() {
     update: {},
     create: {
       id: "1",
-      uuid: "UUID-123",
+      passportUuid: "42d42e5b-5340-4657",
       versionTag: "1",
       passportData: JSON.stringify(passport1PassDataV1),
       issueDate: new Date("2024-04-02"),

@@ -1,7 +1,7 @@
 import Navbar from "components/NavBar/NavBar"
 import Overview from "./(components)/tabs/overview"
 
-export default function Page({ params }: { params: { passportId: string } }) {
+export default function Page({ params }: { params: { passportUuid: string } }) {
   // const [currentTabIdx, setCurrentTabIdx] = useState(0)
   const currentTabIdx = 0
   // TODO: refactor this: either use partial rendering (mixing server and client rendering)
@@ -24,7 +24,7 @@ export default function Page({ params }: { params: { passportId: string } }) {
         />
         <section className="bg-white dark:bg-gray-900">
           <div className="py-8">
-            {tabs[currentTabIdx]?.href === "#overview" && <Overview passportUuid={params.passportId} />}
+            {tabs[currentTabIdx]?.href === "#overview" && <Overview passportUuid={params.passportUuid} />}
           </div>
         </section>
       </div>

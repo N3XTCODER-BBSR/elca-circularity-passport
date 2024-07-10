@@ -14,10 +14,10 @@ datasource db {
 }
 
 model Passport {
-  id                         String   @id @default(cuid())
-  uuid                       String   @unique
-  versionTag                 String
-  passportData               Json
-  issueDate                  DateTime
-  expiryDate                 DateTime
+  id           String   @id @default(cuid())
+  passportUuid String   @unique
+  versionTag   String
+  passportData Json
+  issueDate    DateTime
+  expiryDate   DateTime
 }

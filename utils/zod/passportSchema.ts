@@ -96,7 +96,7 @@ const BuildingBaseDataSchema = z.object({
 
 // Define the main schema
 export const PassportSchema = z.object({
-  passportId: z.string(),
+  passportUuid: z.string(),
   versionTag: z.string(),
   generatorSoftware: GeneratorSoftwareSchema,
   elcaProjectId: z.string(),
