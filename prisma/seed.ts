@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client"
-import { Passport } from "utils/zod/passportSchema"
+import { PassportData } from "utils/zod/passportSchema"
 
 // import { BuildingComponent, Layer, LayerSchema, Passport } from "utils/zod/passportSchema"
 // import fs from 'fs';
@@ -78,7 +78,7 @@ import { Passport } from "utils/zod/passportSchema"
 
 const prisma = new PrismaClient()
 async function main() {
-  const passport1PassDataV1: Passport = {
+  const passport1PassDataV1: PassportData = {
     dataSchemaVersion: "v1",
     uuid: "42d42e5b-5340-4657",
     versionTag: "1.0.0",

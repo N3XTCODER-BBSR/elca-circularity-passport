@@ -100,7 +100,7 @@ export const BuildingBaseDataSchema = z.object({
 })
 
 // Define the main schema
-export const PassportSchema = z.object({
+export const PassportDataSchema = z.object({
   uuid: z.string(),
   versionTag: z.string(),
   generatorSoftware: GeneratorSoftwareSchema,
@@ -111,4 +111,4 @@ export const PassportSchema = z.object({
 })
 
 // Type inference for TypeScript
-export type Passport = z.infer<typeof PassportSchema>
+export type PassportData = z.infer<typeof PassportDataSchema>

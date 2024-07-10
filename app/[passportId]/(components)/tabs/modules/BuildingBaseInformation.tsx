@@ -1,11 +1,11 @@
 "use client"
 
 import { InformationCircleIcon } from "@heroicons/react/20/solid"
-import { Passport } from "utils/zod/passportSchema"
+import { PassportData } from "utils/zod/passportSchema"
 import InfoIcon from "./components/InfoIcon"
 import { Tooltip } from "react-tooltip"
 
-const BuildingBaseInformation = ({ passportData }: { passportData: Passport }) => {
+const BuildingBaseInformation = ({ passportData }: { passportData: PassportData }) => {
   const sealedPropertyAreaProportionAsPercentageStr = `${(
     passportData.buildingBaseData.sealedPropertyAreaProportion * 100
   ).toFixed(2)}%`

@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client"
-import { Passport, PassportSchema } from "./passportSchema"
+import { PassportData, PassportDataSchema } from "./passportSchema"
 
 const passportParser = (passportDataJson: Prisma.JsonValue) => {
   let jsonObj
@@ -14,14 +14,14 @@ const passportParser = (passportDataJson: Prisma.JsonValue) => {
     jsonObj = passportDataJson
   }
 
-  const passportDataParsingResult = PassportSchema.safeParse(jsonObj)
+  const passportDataParsingResult = PassportDataSchema.safeParse(jsonObj)
   if (passportDataParsingResult.error) {
     console.error("Error parsing passport data", passportDataParsingResult.error)
     // TODO: show next.js error page
     throw new Error("Error parsing passport data")
   }
 
-  const passportData: Passport = passportDataParsingResult.data
+  const passportData: PassportData = passportDataParsingResult.data
 
   return passportData
 }

@@ -1,23 +1,10 @@
 import prisma from "prisma/prismaClient"
-import { Passport, PassportSchema } from "utils/zod/passportSchema"
+import { PassportData, PassportDataSchema } from "utils/zod/passportSchema"
 import BuildingBaseInformation from "./modules/BuildingBaseInformation"
 import Materials from "./modules/Materials"
 import passportParser from "utils/zod/passportParser"
 
-const Overview = async ({ uuid }: { uuid: string }) => {
-  const passport = await prisma.passport.findFirst({
-    where: {
-      uuid: uuid,
-    },
-  })
-
-  if (passport == null) {
-    console.error("Passport not found")
-    // TODO: show next.js error page
-    return null
-  }
-
-  const passportData: Passport = passportParser(passport.passportData)
+const Overview = async ({ passportData }: { passportData: PassportData }) => {
 
   return (
     <>
