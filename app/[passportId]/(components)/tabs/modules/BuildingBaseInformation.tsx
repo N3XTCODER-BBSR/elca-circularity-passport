@@ -1,4 +1,4 @@
-"use client"; 
+"use client"
 
 import { InformationCircleIcon } from "@heroicons/react/20/solid"
 import { Passport } from "utils/zod/passportSchema"
@@ -50,8 +50,13 @@ const BuildingBaseInformation = ({ passportData }: { passportData: Passport }) =
             </div>
             <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
               <dt className="flex text-sm font-bold leading-6 text-gray-900">
-                <a id="nrf-info-anchor" className="flex items-center"><InformationCircleIcon className="h-4 w-4 text-blue-800" aria-hidden="true" /></a>
-                <Tooltip anchorSelect="#nrf-info-anchor" content="Netto-Mietfläche eines Gebäudes, exklusive gemeinschaftlicher Bereiche wie Lobbys, Flure, Treppenhäuser und technische Räume." />
+                <a id="nrf-info-anchor" className="flex items-center">
+                  <InformationCircleIcon className="h-4 w-4 text-blue-800" aria-hidden="true" />
+                </a>
+                <Tooltip
+                  anchorSelect="#nrf-info-anchor"
+                  content="Netto-Mietfläche eines Gebäudes, exklusive gemeinschaftlicher Bereiche wie Lobbys, Flure, Treppenhäuser und technische Räume."
+                />
                 NRF:
               </dt>
               <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
@@ -61,13 +66,31 @@ const BuildingBaseInformation = ({ passportData }: { passportData: Passport }) =
           </div>
           <div className="w-full lg:w-1/2">
             <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
-              <dt className="text-sm font-bold leading-6 text-gray-900">BGF:</dt>
+              <dt className="flex text-sm font-bold leading-6 text-gray-900">
+                <a id="bgf-info-anchor" className="flex items-center">
+                  <InformationCircleIcon className="h-4 w-4 text-blue-800" aria-hidden="true" />
+                </a>
+                <Tooltip
+                  anchorSelect="#bgf-info-anchor"
+                  content="Brutto-Grundfläche eines Gebäudes, umfasst alle innerhalb der Gebäudehülle liegenden Flächen, gemessen bis zur Außenfläche der Außenwände."
+                />
+                BGF:
+              </dt>
               <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
                 {passportData?.buildingBaseData.bgf} m²
               </dd>
             </div>
             <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
-              <dt className="text-sm font-bold leading-6 text-gray-900">BRI:</dt>
+              <dt className="flex text-sm font-bold leading-6 text-gray-900">
+                <a id="bri-info-anchor" className="flex items-center">
+                  <InformationCircleIcon className="h-4 w-4 text-blue-800" aria-hidden="true" />
+                </a>
+                <Tooltip
+                  anchorSelect="#bri-info-anchor"
+                  content="Brutto-Rauminhalt und bezieht sich auf das gesamte Volumen eines Gebäudes, einschließlich aller Innenräume und gemessen bis zur äußeren Begrenzung der Außenwände."
+                />
+                BRI:
+              </dt>
               <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
                 {passportData?.buildingBaseData.bri} m³
               </dd>
@@ -79,7 +102,17 @@ const BuildingBaseInformation = ({ passportData }: { passportData: Passport }) =
               </dd>
             </div>
             <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
-              <dt className="text-sm font-bold leading-6 text-gray-900">Anteil versiegelte Grundstücksfläche:</dt>
+              <dt className="flex text-sm font-bold leading-6 text-gray-900">
+                {" "}
+                <a id="spap-info-anchor" className="flex items-center">
+                  <InformationCircleIcon className="h-4 w-4 text-blue-800" aria-hidden="true" />
+                </a>
+                <Tooltip
+                  anchorSelect="#spap-info-anchor"
+                  content="Anteil versiegelte Grundstücksfläche: Der prozentuale Anteil der Grundstücksfläche, die durch bauliche Maßnahmen wie Gebäude, Straßen oder Parkplätze bedeckt ist und damit Wasser und natürliche Abflüsse behindert."
+                />
+                Anteil versiegelte Grundstücksfläche:
+              </dt>
               <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
                 {sealedPropertyAreaProportionAsPercentageStr}
               </dd>
