@@ -61,6 +61,8 @@ export const LayerSchema = z.object({
   serviceLifeYear: z.number().optional(),
 })
 
+export type Layer = z.infer<typeof LayerSchema>
+
 export const BuildingComponentSchema = z.object({
   id: z.string().optional(),
   uuid: z.string(),
