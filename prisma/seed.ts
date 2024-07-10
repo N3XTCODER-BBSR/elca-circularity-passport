@@ -2,7 +2,75 @@ import fs from 'fs';
 import csv from 'csv-parser';
 
 import { PrismaClient } from "@prisma/client"
-import { Passport } from "utils/zod/passportSchema"
+import { BuildingComponent, LayerSchema, Passport } from "utils/zod/passportSchema"
+
+const parseCsv = async (filePath: string): Promise<BuildingComponent[]> => {
+  const results: BuildingComponent[] = [];
+  const buildingComponentsMap: Record<string, BuildingComponent> = {};
+
+  return new Promise((resolve, reject) => {
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on('data', (data) => {
+        // Convert CSV row to Layer
+        const layer = LayerSchema.parse({
+          buildingId: data.buildingId,
+          lnr: parseInt(data.lnr, 10),
+          floor: data.floor,
+          room: data.room,
+          componentNumber: data.componentNumber,
+          componentName: data.componentName,
+          costGroupDIN276: data.costGroupDIN276,
+          amount: parseFloat(data.amount),
+          componentGeometry: data.componentGeometry,
+          mass: parseFloat(data.mass),
+          materialDescription: data.materialDescription,
+          materialDatabase: data.materialDatabase,
+          serviceLife: parseInt(data.serviceLife, 10),
+          technicalServiceLife: parseInt(data.technicalServiceLife, 10),
+          uuidProduct: data.uuidProduct,
+          productDescription: data.productDescription,
+          manufacturerName: data.manufacturerName,
+          proofDocument: data.proofDocument,
+          versionDate: data.versionDate,
+          wasteCode: data.wasteCode,
+          circularity: data.circularity ? JSON.parse(data.circularity) : undefined,
+          pollutants: data.pollutants ? JSON.parse(data.pollutants) : undefined,
+          ressources: data.ressources ? JSON.parse(data.ressources) : undefined,
+          serviceLifeYear: data.serviceLifeYear ? parseInt(data.serviceLifeYear, 10) : undefined,
+        });
+
+        if (!buildingComponentsMap[data.uuid]) {
+          buildingComponentsMap[data.uuid] = {
+            id: data.id,
+            uuid: data.uuid,
+            name: data.name,
+            layers: [],
+          };
+        }
+
+        buildingComponentsMap[data.uuid].layers.push(layer);
+      })
+      .on('end', () => {
+        resolve(Object.values(buildingComponentsMap));
+      })
+      .on('error', (error) => {
+        reject(error);
+      });
+  });
+}
+
+// Example usage
+const filePath = './layerSeedingData_2024-07-10.csv';
+parseCsv(filePath)
+  .then((buildingComponents) => {
+    console.log(buildingComponents);
+  })
+  .catch((error) => {
+    console.error('Error parsing CSV:', error);
+  });
+
+
 const prisma = new PrismaClient()
 async function main() {
   const passport1PassDataV1: Passport = {
