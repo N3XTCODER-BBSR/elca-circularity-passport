@@ -104,13 +104,16 @@ const BuildingBaseInformation = ({ passportData }: { passportData: PassportData 
             <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
               <dt className="flex text-sm font-bold leading-6 text-gray-900">
                 {" "}
-                <a id="spap-info-anchor" className="flex items-center">
+                <a data-tooltip-id="FOO" className="flex items-center">
                   <InformationCircleIcon className="h-4 w-4 text-blue-800" aria-hidden="true" />
                 </a>
-                <Tooltip
-                  anchorSelect="#spap-info-anchor"
-                  content="Anteil versiegelte Grundstücksfläche: Der prozentuale Anteil der Grundstücksfläche, die durch bauliche Maßnahmen wie Gebäude, Straßen oder Parkplätze bedeckt ist und damit Wasser und natürliche Abflüsse behindert."
-                />
+                <Tooltip id="FOO">
+                  <div className="max-w-md">
+                    Anteil versiegelte Grundstücksfläche: Der prozentuale Anteil der Grundstücksfläche, die durch
+                    bauliche Maßnahmen wie Gebäude, Straßen oder Parkplätze bedeckt ist und damit Wasser und natürliche
+                    Abflüsse behindert.
+                  </div>
+                </Tooltip>
                 Anteil versiegelte Grundstücksfläche:
               </dt>
               <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
