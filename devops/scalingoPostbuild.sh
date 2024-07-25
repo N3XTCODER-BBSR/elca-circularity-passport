@@ -4,7 +4,7 @@ RUN_SEEDERS_ON_DEPLOY=${RUN_SEEDERS_ON_DEPLOY:-0}
 
 set -eux -o pipefail
 
-# npx next build
+npx next build
 npx prisma migrate deploy
 
 if [ "${RUN_SEEDERS_ON_DEPLOY}" == 1 ]; then
