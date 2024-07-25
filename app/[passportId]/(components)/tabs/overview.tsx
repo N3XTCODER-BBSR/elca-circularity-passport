@@ -14,6 +14,7 @@ const Overview = async ({ passportData }: { passportData: PassportData }) => {
         Bundesministerium für ökologische Innovation, Biodiversitätsschutz und nachhaltigen Konsum – Dienstsitz Berlin
       </p>
       <div className="mt-6 border-gray-100">
+        <BuildingBaseInformation passportData={passportData} className="mt-16" />
         <Materials buildingComponents={passportData.buildingComponents} className="mt-16" />
         <Resources
           buildingComponents={passportData.buildingComponents}
@@ -21,7 +22,6 @@ const Overview = async ({ passportData }: { passportData: PassportData }) => {
           className="mt-16"
         />
         <Circularity buildingComponents={passportData.buildingComponents} className="mt-16" />
-        <BuildingBaseInformation passportData={passportData} className="mt-16" />
       </div>
     </>
   )
