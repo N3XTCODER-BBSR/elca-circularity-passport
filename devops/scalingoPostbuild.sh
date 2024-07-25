@@ -7,7 +7,7 @@ set -eux -o pipefail
 npx prisma migrate deploy
 npx next build
 
-if [ "${RUN_SEEDERS_ON_DEPLOY}" == 1 ]; then
+if [ "${RUN_SEEDERS_ON_DEPLOY}" == "1" ] || [ "${RUN_SEEDERS_ON_DEPLOY}" == "true" ]; then
   echo "Seeding database"
   npx prisma db seed
 fi
