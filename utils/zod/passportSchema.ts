@@ -7,9 +7,16 @@ const MaterialReferenceDatabaseSchema = z.object({
   url: z.string().optional(),
 })
 
-const CircularityIndexSchema = z.object({
+export const MaterialSchema = z.object({
+  materialDescription: z.string(),
+  classificationNumber: z.string(),
+  classification: z.string(),
+  materialDatabase: z.string(),
+})
+export type Material = z.infer<typeof MaterialSchema>
+
+const EolSchema = z.object({
   points: z.number(),
-  className: z.string(),
 })
 
 const InterferingSubstancesSchema = z.object({
@@ -18,7 +25,7 @@ const InterferingSubstancesSchema = z.object({
 
 const CircularitySchema = z.object({
   interferingSubstances: z.array(InterferingSubstancesSchema).optional(),
-  circularityIndex: CircularityIndexSchema.optional(),
+  eol: EolSchema.optional(),
 })
 
 const PollutantsSchema = z.object({
@@ -26,24 +33,27 @@ const PollutantsSchema = z.object({
 })
 
 export const RessourcesSchema = z.object({
-  rmiMineralKg: z.string(),
-  rmiMetallic: z.string(),
-  rmiFossil: z.string(),
-  rmiForestry: z.string(),
-  rmiAgrar: z.string(),
-  rmiAqua: z.string(),
+  rmiMineral: z.number(),
+  rmiMetallic: z.number(),
+  rmiFossil: z.number(),
+  rmiForestry: z.number(),
+  rmiAgrar: z.number(),
+  rmiAqua: z.number(),
+  gwpAB6C: z.number(),
+  penrtAB6C: z.number(),
 })
 
+export type Ressources = z.infer<typeof RessourcesSchema>
+
 export const LayerSchema = z.object({
-  buildingId: z.string(),
+  // buildingId: z.string(),
   lnr: z.number(),
   floor: z.string().optional(),
   room: z.string().optional(),
   amount: z.number(),
   componentGeometry: z.enum(["m2", "m3", "kg", "m", "unit"]),
   mass: z.number(),
-  materialDescription: z.string(),
-  materialDatabase: z.string(),
+  material: MaterialSchema,
   serviceLife: z.number(),
   technicalServiceLife: z.number(),
   uuidProduct: z.string().optional(),
@@ -64,14 +74,13 @@ export const BuildingComponentSchema = z.object({
   id: z.string().optional(),
   uuid: z.string(),
   name: z.string(),
-  categoryName: z.string(),
+  costGroupCategoryName: z.string(),
   costGroupCategory: z.number(),
   costGroupDIN276: z.number(),
   layers: z.array(LayerSchema),
 })
 
 export type BuildingComponent = z.infer<typeof BuildingComponentSchema>
-
 
 export const GeneratorSoftwareSchema = z.object({
   name: z.string(),

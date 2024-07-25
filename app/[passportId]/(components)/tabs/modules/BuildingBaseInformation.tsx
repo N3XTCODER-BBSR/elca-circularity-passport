@@ -1,18 +1,20 @@
 "use client"
 
-import { InformationCircleIcon } from "@heroicons/react/20/solid"
-import { PassportData } from "utils/zod/passportSchema"
-import InfoIcon from "./components/InfoIcon"
-
 import Tooltip from "components/Tooltip"
+import { PassportData } from "utils/zod/passportSchema"
 
-const BuildingBaseInformation = ({ passportData }: { passportData: PassportData }) => {
+type BuildingBaseInformationProps = {
+  passportData: PassportData
+  className?: string // Add className as an optional prop
+}
+
+const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passportData, className }) => {
   const sealedPropertyAreaProportionAsPercentageStr = `${(
     passportData.buildingBaseData.sealedPropertyAreaProportion * 100
   ).toFixed(2)}%`
 
   return (
-    <>
+    <div className={className}>
       <h2 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
         Gebaude-Informationen
       </h2>
@@ -51,10 +53,23 @@ const BuildingBaseInformation = ({ passportData }: { passportData: PassportData 
             </div>
             <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
               <dt className="flex text-sm font-bold leading-6 text-gray-900">
-                <Tooltip
-                  id="#nrf"
-                  content="Netto-Mietfläche eines Gebäudes, exklusive gemeinschaftlicher Bereiche wie Lobbys, Flure, Treppenhäuser und technische Räume."
-                />
+                <Tooltip id="#nrf">
+                  Unter Netto-Raumfläche (NRF) versteht man die Summe der nutzbaren Grundflächen eines Gebäudes. Zur
+                  Berechnung wird sie gemäß nebenstehender Tabelle nochmals in Nutzungsgruppen unterteilt in:{" "}
+                  <ul className="list-disc">
+                    <li>
+                      die Nutzungsfläche (NUF) als zum sinngemäßen Gebrauch eines Gebäudes effektiv nutzbare Grundfläche{" "}
+                    </li>
+                    <li>
+                      die Technikfläche (TF), die der zur Unterbringung von zentralen haustechnischen Anlagen dient (z.
+                      B. Heizung, Maschinenraum für den Aufzug, Raum für Betrieb von Klimaanlagen)
+                    </li>
+                    <li>
+                      die Verkehrsfläche (VF), die dem Zugang zu den Räumen, dem Verkehr innerhalb von Gebäuden oder zum
+                      Verlassen im Notfall dient.{" "}
+                    </li>
+                  </ul>
+                </Tooltip>
                 NRF:
               </dt>
               <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
@@ -65,10 +80,10 @@ const BuildingBaseInformation = ({ passportData }: { passportData: PassportData 
           <div className="w-full lg:w-1/2">
             <div className="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
               <dt className="flex text-sm font-bold leading-6 text-gray-900">
-                <Tooltip
-                  id="bgf"
-                  content="Brutto-Grundfläche eines Gebäudes, umfasst alle innerhalb der Gebäudehülle liegenden Flächen, gemessen bis zur Außenfläche der Außenwände."
-                />
+                <Tooltip id="bgf">
+                  Brutto-Grundfläche eines Gebäudes, umfasst alle innerhalb der Gebäudehülle liegenden Flächen, gemessen
+                  bis zur Außenfläche der Außenwände.
+                </Tooltip>
                 BGF:
               </dt>
               <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
@@ -77,10 +92,10 @@ const BuildingBaseInformation = ({ passportData }: { passportData: PassportData 
             </div>
             <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
               <dt className="flex text-sm font-bold leading-6 text-gray-900">
-                <Tooltip
-                  id="bri"
-                  content="Brutto-Rauminhalt und bezieht sich auf das gesamte Volumen eines Gebäudes, einschließlich aller Innenräume und gemessen bis zur äußeren Begrenzung der Außenwände."
-                />
+                <Tooltip id="bri">
+                  Brutto-Rauminhalt und bezieht sich auf das gesamte Volumen eines Gebäudes, einschließlich aller
+                  Innenräume und gemessen bis zur äußeren Begrenzung der Außenwände.
+                </Tooltip>
                 BRI:
               </dt>
               <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
@@ -96,11 +111,11 @@ const BuildingBaseInformation = ({ passportData }: { passportData: PassportData 
             <div className="bg-white px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3">
               <dt className="flex text-sm font-bold leading-6 text-gray-900">
                 {" "}
-                <Tooltip
-                  id="spap"
-                  content="Anteil versiegelte Grundstücksfläche: Der prozentuale Anteil der Grundstücksfläche, die durch bauliche
-          Maßnahmen wie Gebäude, Straßen oder Parkplätze bedeckt ist und damit Wasser und natürliche Abflüsse behindert."
-                />
+                <Tooltip id="spap">
+                  Anteil versiegelte Grundstücksfläche: Der prozentuale Anteil der Grundstücksfläche, die durch bauliche
+                  Maßnahmen wie Gebäude, Straßen oder Parkplätze bedeckt ist und damit Wasser und natürliche Abflüsse
+                  behindert.
+                </Tooltip>
                 Anteil versiegelte Grundstücksfläche:
               </dt>
               <dd className="mt-1 text-right text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0">
@@ -122,7 +137,7 @@ const BuildingBaseInformation = ({ passportData }: { passportData: PassportData 
           </div>
         </div>
       </dl>
-    </>
+    </div>
   )
 }
 

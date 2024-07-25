@@ -32,7 +32,6 @@ export default async function Page({ params }: { params: { uuid: string } }) {
 
   return (
     <>
-
       <div className="px-12 lg:px-20">
         <Navbar
           tabs={tabs}

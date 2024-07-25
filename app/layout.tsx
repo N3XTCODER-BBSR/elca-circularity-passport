@@ -1,7 +1,7 @@
 import "styles/global.css"
+import { Metadata } from "next"
 import { Inter as FontSans } from "next/font/google"
 import { twMerge } from "tailwind-merge"
-import { Metadata } from "next"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -24,7 +24,6 @@ export const metadata: Metadata = {
     ],
   },
 }
-
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

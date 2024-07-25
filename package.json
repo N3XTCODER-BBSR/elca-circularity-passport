@@ -24,7 +24,7 @@
     "scalingo-postbuild": "./devops/scalingoPostbuild.sh"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seeding/dbSeeder.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.1",
@@ -32,6 +32,7 @@
     "@next/bundle-analyzer": "^14.2.3",
     "@nivo/bar": "^0.87.0",
     "@nivo/core": "^0.87.0",
+    "@nivo/pie": "^0.87.0",
     "@prisma/client": "5.16.1",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.0.4",
@@ -54,6 +55,7 @@
     "@semantic-release/github": "^10.0.5",
     "@semantic-release/npm": "^12.0.1",
     "@semantic-release/release-notes-generator": "^13.0.0",
+    "@szhsin/react-accordion": "^1.2.4",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@vercel/otel": "^1.8.3",
     "class-variance-authority": "^0.7.0",
@@ -74,6 +76,7 @@
     "@babel/plugin-syntax-flow": "^7.23.3",
     "@babel/plugin-transform-optional-chaining": "^7.23.4",
     "@babel/plugin-transform-react-jsx": "^7.23.4",
+    "@faker-js/faker": "^8.4.1",
     "@jest/globals": "^29.7.0",
     "@opentelemetry/api": "1.7.0",
     "@opentelemetry/resources": "1.18.1",

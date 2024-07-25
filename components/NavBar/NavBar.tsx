@@ -1,17 +1,15 @@
 "use client"
 
-import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react"
+import { Disclosure } from "@headlessui/react"
 
 interface Tab {
   name: string
   href: string
-  // content: JSX.Element
 }
 
 interface NavbarProps {
   tabs: Tab[]
   currentTabIdx: number
-  // setCurrentTabIdx: (tabIdx: number) => void
 }
 
 function classNames(...classes: string[]) {
@@ -19,8 +17,7 @@ function classNames(...classes: string[]) {
 }
 
 export default function Navbar({ tabs, currentTabIdx }: NavbarProps) {
-  const handleTabClick = (tabIdx: number) => {
-    // setCurrentTabIdx(tabIdx)
+  const handleTabClick = (_tabIdx: number) => {
   }
 
   return (
@@ -30,9 +27,6 @@ export default function Navbar({ tabs, currentTabIdx }: NavbarProps) {
           <div className="mx-0 max-w-7xl">
             <div className="flex h-16 justify-between">
               <div className="flex">
-                <div className="flex flex-shrink-0 items-center">
-                  <img className="h-8 w-auto" />
-                </div>
                 <div className="sm:flex sm:space-x-8">
                   {tabs.map((tab) => (
                     <a
