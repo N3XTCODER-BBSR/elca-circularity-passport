@@ -18,6 +18,9 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
+    "paths": {
+      "app/*": ["app/*"]
+    },
     "types": ["node", "jest", "@testing-library/jest-dom"],
     "plugins": [
       {
@@ -25,6 +28,6 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mjs", "jest.config.js", ".next/types/**/*.ts", "utils/zod/passportParser"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mjs", "jest.config.js", ".next/types/**/*.ts", "app/utils/zod/passportParser"],
   "exclude": ["node_modules"]
 }
