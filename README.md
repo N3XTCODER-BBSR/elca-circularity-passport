@@ -220,13 +220,7 @@ If the required environment variables are not set, you'll get an error message:
 
 ## 🤝 Contribution
 
-Contributions are always welcome! To contribute, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch with a descriptive name.
-3. Make your changes, and commit them using the [Conventional Commits](https://www.conventionalcommits.org/) format.
-4. Push your changes to the forked repository.
-5. Create a pull request, and we'll review your changes.
+Contributions are always welcome! Check the [CONTRIBUTING.md](./CONTRIBUTING.md) file for details.
 
 ## 📜 License
 
