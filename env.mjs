@@ -20,13 +20,11 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_PASSPORT_BASE_URL: z.string().url(),
-    NEXT_PUBLIC_DOPPIO_PRINT_HOST: z.string(),
   },
   runtimeEnv: {
     ANALYZE: process.env.ANALYZE,
     DATABASE_URL: process.env.DATABASE_URL,
     DOPPIO_API_KEY: process.env.DOPPIO_API_KEY,
-    NEXT_PUBLIC_DOPPIO_PRINT_HOST: process.env.NEXT_PUBLIC_DOPPIO_PRINT_HOST,
     HTTP_BASIC_AUTH: process.env.HTTP_BASIC_AUTH,
     RUN_SEEDERS_ON_DEPLOY: process.env.RUN_SEEDERS_ON_DEPLOY,
     NEXT_PUBLIC_PASSPORT_BASE_URL: process.env.NEXT_PUBLIC_PASSPORT_BASE_URL,

@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server"
 export async function GET(req: NextRequest, { params }: { params: { passportId: string } }) {
   const { passportId } = params
 
-  //   const url = `https://${process.env.NEXT_PUBLIC_DOPPIO_PRINT_HOST}/pdf-optimized/${passportId}`
   const hostname = req.headers.get("host")
   const url = `https://${hostname}/pdf-optimized/${passportId}`
 
