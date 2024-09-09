@@ -1,48 +1,52 @@
 "use client"
 
-import { Accordion } from "@szhsin/react-accordion"
 import { useState } from "react"
-import { AccordionItem } from "app/(components)/(generic)/Accordion/AccordionItem"
+
 import VerticalNavigation from "app/(components)/(generic)/VerticalNavigation/VerticalNavigation"
 import { DinEnrichedBuildingComponent } from "app/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { PALETTE_LIFECYCLE_PHASES } from "constants/styleConstants"
 import {
+  // aggregateGwpOrPenrt,
   aggregateGwpOrPenrt,
   aggregateRmiData,
+  gwpAggregationConfig,
+  penrtAggregationConfig,
 } from "../../../../../../(modules)/(passport-overview)/resources/resources-data-aggregation"
+import ResourcesDonutChart from "../../../../../../(modules)/(passport-overview)/resources/ResourcesDonutChart"
 import ResourcesPieChart from "../../../../../../(modules)/(passport-overview)/resources/ResourcesPieChart"
+
+import PieChartLegendTable from "app/pdf-optimized/[passportId]/ResourcesModule/PieChartLegendTable"
+import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
+import DummyAccordion from "../../../DummyAccordion"
 
 const navigationSections = [
   {
-    name: "Rohstoff-einsatz (RMI) - erneuerbar",
+    name: "Rohstoffeinsatz (RMI)",
     id: "0",
   },
   {
-    name: "Rohstoff-einsatz (RMI) - nicht-erneuerbar",
+    name: "Global Warming Potential (GWP)",
     id: "1",
   },
   {
-    name: "Global Warming Potential (GWP)",
-    id: "2",
-  },
-  {
     name: "Primärenergie nicht-erneuerbar (PENRT)",
-    id: "3",
+    id: "2",
   },
 ]
 
 type ResourcesProps = {
-  buildingComponents: DinEnrichedBuildingComponent[]
+  dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
   nrf: number
   className?: string // Add className as an optional prop
 }
 
-const Resources: React.FC<ResourcesProps> = ({ buildingComponents, nrf, className }) => {
+const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nrf, className }) => {
   const [currentNavSectionId, setCurrentNavSectionId] = useState<string>("0")
 
   // TODO: consider to refactor here - each chart type should be potentially a separate component
 
   const aggregatedDataRmiRenewable = aggregateRmiData(
-    buildingComponents,
+    dinEnrichedBuildingComponents,
     [
       { propertyName: "rmiForestry", labelName: "Forst" },
       { propertyName: "rmiAqua", labelName: "Wasser" },
@@ -52,7 +56,7 @@ const Resources: React.FC<ResourcesProps> = ({ buildingComponents, nrf, classNam
   )
 
   const aggregatedDataRmiNonRenewable = aggregateRmiData(
-    buildingComponents,
+    dinEnrichedBuildingComponents,
     [
       { propertyName: "rmiMineral", labelName: "Mineralisch" },
       { propertyName: "rmiMetallic", labelName: "Metallisch" },
@@ -61,17 +65,109 @@ const Resources: React.FC<ResourcesProps> = ({ buildingComponents, nrf, classNam
     nrf
   )
 
-  const aggregatedGwp = aggregateGwpOrPenrt(buildingComponents, "gwpAB6C")
-  const aggregatedGwpTotal = Math.round(aggregatedGwp.reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0))
-  const aggregatedGwpTotalPerNrf = (aggregatedGwpTotal / nrf).toFixed(2)
+  const aggregatedDataRmi = aggregateRmiData(
+    dinEnrichedBuildingComponents,
+    [
+      { propertyName: "rmiFossil", labelName: "Fossil" },
+      { propertyName: "rmiMetallic", labelName: "Metallisch" },
+      { propertyName: "rmiMineral", labelName: "Mineralisch" },
+      { propertyName: "rmiForestry", labelName: "Forst" },
+      { propertyName: "rmiAgrar", labelName: "Agrar" },
+      { propertyName: "rmiAqua", labelName: "Wasser" },
+    ],
+    nrf
+  )
 
-  const aggregatedPenrt = aggregateGwpOrPenrt(buildingComponents, "penrtAB6C")
+  // TODO: extract this into own file
+  // e.g. constants/styleConstants.ts
+  const rmiColorsMapper = (datum: any) => {
+    const colorsMapping = {
+      Forst: "#7DC0A6",
+      Wasser: "#8ECAC4",
+      Agrar: "#B3DBB8",
+      Mineralisch: "#E1E7EF",
+      Metallisch: "#CBD5E1",
+      Fossil: "#94A3B8",
+    }
+
+    return colorsMapping[datum.id as keyof typeof colorsMapping]
+  }
+
+  const rmiLegendTableData = [
+    ...aggregatedDataRmi.aggretatedByByResourceTypeWithPercentage.map((data) => ({
+      color: rmiColorsMapper({ id: data.resourceTypeName }),
+      name: data.resourceTypeName,
+      value: data.aggregatedValue,
+      percentage: data.percentageValue,
+    })),
+  ]
+
+  const aggregatedGwp = aggregateGwpOrPenrt(dinEnrichedBuildingComponents, gwpAggregationConfig)
+
+  const aggregatedGwpTotal = Math.round(aggregatedGwp.reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0))
+  const aggregatedGwpTotalPerNrf = aggregatedGwpTotal / nrf
+
+  const aggregatedPenrt = aggregateGwpOrPenrt(dinEnrichedBuildingComponents, penrtAggregationConfig)
   const aggregatedPenrtTotal = Math.round(
     aggregatedPenrt.reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0)
   )
   const aggregatedPenrtTotalPerNrf = Math.round(aggregatedPenrtTotal / nrf)
 
+  // Add color palette
+  const gwpAndPenrtColorPalette: string[] = PALETTE_LIFECYCLE_PHASES
+  const aggregatedGwpWithColors = aggregatedGwp.map((data, idx) => ({
+    ...data,
+    color: gwpAndPenrtColorPalette[idx % gwpAndPenrtColorPalette.length]!,
+  }))
+  const aggregatedPenrtWithColors = aggregatedPenrt.map((data, idx) => ({
+    ...data,
+    color: gwpAndPenrtColorPalette[idx % gwpAndPenrtColorPalette.length]!,
+  }))
+  const colorMapper = (datum: any) => {
+    return datum.data.color
+  }
+
   const keys = ["aggregatedValue"]
+
+  const grayEmissionsTotal = aggregatedGwpWithColors
+    .filter((data) => data.pattern === "dots")
+    .map((el) => el.aggregatedValue)
+    .reduce((acc, val) => acc + val, 0)
+
+  const grayEnergyTotal = aggregatedPenrtWithColors
+    .filter((data) => data.pattern === "dots")
+    .map((el) => el.aggregatedValue)
+    .reduce((acc, val) => acc + val, 0)
+
+  const gwpLegendTableData = [
+    ...aggregatedGwpWithColors.map((data) => ({
+      color: data.color,
+      name: data.lifecycleSubphaseName,
+      value: data.aggregatedValue,
+      percentage: data.aggregatedValuePercentage,
+    })),
+    {
+      color: "white",
+      name: "Graue Emissionen, gesamt",
+      value: grayEmissionsTotal,
+      pattern: "dots",
+    },
+  ]
+
+  const penrtLegendTableData = [
+    ...aggregatedPenrtWithColors.map((data) => ({
+      color: data.color,
+      name: data.lifecycleSubphaseName,
+      value: data.aggregatedValue,
+      percentage: data.aggregatedValuePercentage,
+    })),
+    {
+      color: "white",
+      name: "Graue Energie, gesamt",
+      value: grayEnergyTotal,
+      pattern: "dots",
+    },
+  ]
 
   return (
     <div className={className}>
@@ -95,18 +191,25 @@ const Resources: React.FC<ResourcesProps> = ({ buildingComponents, nrf, classNam
               <h4 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
                 {navigationSections["0"]!.name}
               </h4>
-              <div className="h-96 w-full text-center">
-                {aggregatedDataRmiRenewable.aggregatedDataTotalPerNrf2m.toFixed(2)} t / m2 NRF
-                <ResourcesPieChart
-                  data={aggregatedDataRmiRenewable.aggretatedByByResourceTypeWithPercentage}
-                  indexBy={"resourceTypeName"}
-                  keys={keys}
+              <div className="w-full text-center">
+                <TotalAndNrfRelativeValuesDisplay
+                  totalValue={aggregatedDataRmiRenewable.aggregatedDataTotal}
+                  nrfRelativeValue={aggregatedDataRmiRenewable.aggregatedDataTotalPerNrf2m}
+                  unit="t"
                 />
-                Gesamt: <b>{aggregatedDataRmiRenewable.aggregatedDataTotal} Tonnen</b>
+                <div className="h-96">
+                  <ResourcesPieChart
+                    data={aggregatedDataRmi.aggretatedByByResourceTypeWithPercentage}
+                    indexBy={"resourceTypeName"}
+                    keys={keys}
+                    colors={rmiColorsMapper}
+                  />
+                </div>
+                <PieChartLegendTable data={rmiLegendTableData} unit="t" />
               </div>
             </div>
           )}
-          {currentNavSectionId === "1" && (
+          {/* {currentNavSectionId === "1" && (
             <div className="flex flex-col items-center justify-center">
               <h4 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
                 {navigationSections["1"]!.name}
@@ -121,47 +224,67 @@ const Resources: React.FC<ResourcesProps> = ({ buildingComponents, nrf, classNam
                 Gesamt: <b>{aggregatedDataRmiNonRenewable.aggregatedDataTotal} Tonnen</b>
               </div>
             </div>
+          )} */}
+          {currentNavSectionId === "1" && (
+            <div className="flex flex-col items-center justify-center">
+              <h4 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
+                {navigationSections["1"]!.name}
+              </h4>
+              <div className="w-full text-center">
+                <TotalAndNrfRelativeValuesDisplay
+                  totalValue={aggregatedGwpTotal}
+                  nrfRelativeValue={aggregatedGwpTotalPerNrf}
+                  unit="kg co2eq"
+                />
+                <div className="h-96">
+                  <ResourcesDonutChart
+                    labelPropertyName="lifecycleSubphaseName"
+                    patternPropertyName="pattern"
+                    colors={colorMapper}
+                    data={aggregatedGwpWithColors}
+                    indexBy={"lifecycleSubphaseId"}
+                    keys={keys}
+                  />
+                </div>
+                <PieChartLegendTable data={gwpLegendTableData} unit="kg CO2-eq" />
+              </div>
+            </div>
           )}
           {currentNavSectionId === "2" && (
             <div className="flex flex-col items-center justify-center">
               <h4 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
                 {navigationSections["2"]!.name}
               </h4>
-              <div className="h-96 w-full text-center">
-                {aggregatedGwpTotalPerNrf} kg CO2-eq/m2 NRF
-                <ResourcesPieChart data={aggregatedGwp} indexBy={"costGroupCategoryNumberAndName"} keys={keys} />
-                Gesamt: <b>{aggregatedGwpTotal} Tonnen CO2-eq</b>
-              </div>
-            </div>
-          )}
-          {currentNavSectionId === "3" && (
-            <div className="flex flex-col items-center justify-center">
-              <h4 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
-                {navigationSections["3"]!.name}
-              </h4>
-              <div className="h-96 w-full text-center">
-                {aggregatedPenrtTotalPerNrf.toFixed(2)} KwH/m2 NRF
-                <ResourcesPieChart data={aggregatedPenrt} indexBy={"costGroupCategoryNumberAndName"} keys={keys} />
-                Gesamt: <b>{aggregatedPenrtTotal.toFixed(2)} Tonnen CO2-eq</b>
+              <div className="w-full text-center">
+                <TotalAndNrfRelativeValuesDisplay
+                  totalValue={aggregatedPenrtTotal}
+                  nrfRelativeValue={aggregatedPenrtTotalPerNrf}
+                  unit="KwH"
+                />
+                {/* <ResourcesDonutChart
+                  colors={colorMapper}
+                  data={aggregatedPenrtWithColors}
+                  indexBy={"costGroupCategoryNumberAndName"}
+                  keys={keys}
+                /> */}
+                <div className="h-96">
+                  <ResourcesDonutChart
+                    labelPropertyName="lifecycleSubphaseName"
+                    patternPropertyName="pattern"
+                    colors={colorMapper}
+                    data={aggregatedPenrtWithColors}
+                    indexBy={"lifecycleSubphaseId"}
+                    keys={keys}
+                  />
+                </div>
+                <PieChartLegendTable data={penrtLegendTableData} unit="KwH" />
               </div>
             </div>
           )}
         </div>
       </div>
-      <div className="w-full">
-        <div className="mx-2 my-16 border-t">
-          <Accordion transition transitionTimeout={200}>
-            <AccordionItem header="Was ist der RMI renewable?">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-              dolore magna aliqua.
-            </AccordionItem>
-
-            <AccordionItem header="Warum ist der RMI renewable wichtig für die Nachhaltigkeit?">
-              Quisque eget luctus mi, vehicula mollis lorem. Proin fringilla vel erat quis sodales. Nam ex enim,
-              eleifend venenatis lectus vitae.
-            </AccordionItem>
-          </Accordion>
-        </div>
+      <div className="mb-16 mt-32 w-full">
+        <DummyAccordion />
       </div>
     </div>
   )

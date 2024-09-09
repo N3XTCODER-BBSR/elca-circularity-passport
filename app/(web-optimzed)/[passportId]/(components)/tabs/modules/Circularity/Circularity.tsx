@@ -5,6 +5,7 @@ import { AccordionItem } from "app/(components)/(generic)/Accordion/AccordionIte
 import { DinEnrichedBuildingComponent } from "app/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import aggregateCircularityData from "../../../../../../(modules)/(passport-overview)/circularity/circularity-data-aggregation"
 import CircularityBarChart from "../../../../../../(modules)/(passport-overview)/circularity/CircularityBarChart"
+import DummyAccordion from "../../../DummyAccordion"
 
 type CircularityProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
@@ -67,20 +68,8 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
           />
         </div>
       </div>
-      <div className="w-full">
-        <div className="mx-2 my-16 border-t">
-          <Accordion transition transitionTimeout={200}>
-            <AccordionItem header="Was ist der RMI renewable?">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-              dolore magna aliqua.
-            </AccordionItem>
-
-            <AccordionItem header="Warum ist der RMI renewable wichtig für die Nachhaltigkeit?">
-              Quisque eget luctus mi, vehicula mollis lorem. Proin fringilla vel erat quis sodales. Nam ex enim,
-              eleifend venenatis lectus vitae.
-            </AccordionItem>
-          </Accordion>
-        </div>
+      <div className="mb-16 mt-24 w-full">
+        <DummyAccordion />
       </div>
     </div>
   )

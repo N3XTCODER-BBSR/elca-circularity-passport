@@ -11,16 +11,23 @@ type BuildingBaseInformationProps = {
 }
 
 const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passportData, className }) => {
-  const sealedPropertyAreaProportionAsPercentageStr = `${(
-    passportData.buildingBaseData.sealedPropertyAreaProportion * 100
-  ).toFixed(2)}%`
-
   const buildingBaseInfoKeyValues: KeyValueTuple[] = [
-    { key: "Gebäude/Bauwerk-ID", value: passportData.buildingBaseData.buildingStructureId },
+    {
+      key: "Gebäude/Bauwerk-ID",
+      value: Object.entries(passportData.buildingBaseData.buildingStructureId)
+        .filter(([_key, value]) => value != null)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join("; "),
+    },
+    {
+      key: "Coordinates",
+      value: `${passportData.buildingBaseData.coordinates.latitude}, ${passportData.buildingBaseData.coordinates.longitude}`,
+    },
     { key: "Adresse", value: passportData.buildingBaseData.address },
-    { key: "Baujahr", value: passportData.buildingBaseData.buildingYear },
-    { key: "Gebäudetyp", value: passportData.buildingBaseData.buildingType },
-    { key: "Geschossanzahl des Gebäudes", value: passportData.buildingBaseData.numberOfFloors },
+    { key: "Jahr der Baugenehmigung", value: passportData.buildingBaseData.buildingPermitYear },
+    { key: "Jahr der Baufertigstellung", value: passportData.buildingBaseData.buildingCompletionYear },
+    { key: "Anzahl der Obergeschosse", value: passportData.buildingBaseData.numberOfUpperFloors },
+    { key: "Anzahl der Untergeschosse", value: passportData.buildingBaseData.numberOfBasementFloors },
     {
       key: "NRF",
       value: passportData.buildingBaseData.nrf.toFixed(2),
@@ -66,17 +73,7 @@ const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passp
       },
     },
     { key: "Grundstücksfläche", value: passportData.buildingBaseData.plotArea.toFixed(2) },
-    {
-      key: "Anteil versiegelte Grundstücksfläche",
-      value: sealedPropertyAreaProportionAsPercentageStr,
-      tooltip: {
-        id: "spap",
-        content:
-          "Anteil versiegelte Grundstücksfläche: Der prozentuale Anteil der Grundstücksfläche, die durch bauliche Maßnahmen wie Gebäude, Straßen oder Parkplätze bedeckt ist und damit Wasser und natürliche Abflüsse behindert.",
-      },
-    },
     { key: "Gesamtmasse des Gebäudes", value: passportData.buildingBaseData.totalBuildingMass.toFixed(0) },
-    { key: "Datenqualität", value: passportData.buildingBaseData.dataQuality },
   ]
 
   return (

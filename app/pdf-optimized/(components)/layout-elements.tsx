@@ -11,7 +11,7 @@ export const ModuleMain = ({ children }: { children: React.ReactNode }) => (
 
 // Module Section
 export const ModuleSectionContainer = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex-1">{children}</div>
+  <div className="min-w-0 flex-1">{children}</div>
 )
 export const ModuleSectionTitle = ({ title }: { title: string }) => {
   return <h2 className="mb-[2.71mm] bg-gray-200 px-[3mm] py-[1mm] text-[7.68pt] font-semibold">{title}</h2>

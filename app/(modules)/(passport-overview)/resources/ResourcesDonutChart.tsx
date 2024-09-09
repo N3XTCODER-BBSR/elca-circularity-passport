@@ -16,29 +16,41 @@ const CustomTooltip = ({ _id, _value, color, data }: any) => (
   </div>
 )
 
-const PieChart = ({
+const ResourcesDonutChart = ({
   data,
   indexBy,
+  labelPropertyName,
+  patternPropertyName,
   keys,
   colors,
+  innerRadius,
 }: {
   data: Array<{ [key: string]: string | number }>
   indexBy: string
+  labelPropertyName: string
+  patternPropertyName: string
   keys: string[]
   colors?: ((datum: any) => string) | { datum: string }
+  innerRadius?: number
 }) => (
   <ResponsivePie
     data={data.map((d) => ({
       id: d[indexBy],
       label: d.label,
+      arcLinkLabel: d[labelPropertyName],
       value: keys.reduce((acc, key) => acc + (d[key] as number), 0),
+      color: d.color,
+      pattern: d[patternPropertyName],
     }))}
-    arcLabel={(e) => `${e.data.label}`}
+    animate={false}
+    activeOuterRadiusOffset={8}
+    enableArcLabels={false}
+    enableArcLinkLabels={true}
+    arcLinkLabel={(e) => `${e.data.arcLinkLabel}`}
     margin={{ top: 20, right: 20, bottom: 40, left: 20 }}
-    innerRadius={0}
+    innerRadius={innerRadius || 0.6}
     padAngle={0.7}
     cornerRadius={3}
-    activeOuterRadiusOffset={8}
     colors={colors || { scheme: "blues" }}
     borderColor={{
       from: "color",
@@ -58,74 +70,20 @@ const PieChart = ({
         id: "dots",
         type: "patternDots",
         background: "inherit",
-        color: "rgba(255, 255, 255, 0.3)",
-        size: 4,
-        padding: 1,
+        color: "rgba(0, 0, 0, 0.15)",
+        size: 12,
+        padding: 3,
         stagger: true,
-      },
-      {
-        id: "lines",
-        type: "patternLines",
-        background: "inherit",
-        color: "rgba(255, 255, 255, 0.3)",
-        rotation: -45,
-        lineWidth: 6,
-        spacing: 10,
       },
     ]}
     fill={[
       {
-        match: {
-          id: "ruby",
-        },
+        match: (d) => d.data.pattern === "dots",
         id: "dots",
-      },
-      {
-        match: {
-          id: "c",
-        },
-        id: "dots",
-      },
-      {
-        match: {
-          id: "go",
-        },
-        id: "dots",
-      },
-      {
-        match: {
-          id: "python",
-        },
-        id: "dots",
-      },
-      {
-        match: {
-          id: "scala",
-        },
-        id: "lines",
-      },
-      {
-        match: {
-          id: "lisp",
-        },
-        id: "lines",
-      },
-      {
-        match: {
-          id: "elixir",
-        },
-        id: "lines",
-      },
-      {
-        match: {
-          id: "javascript",
-        },
-        id: "lines",
       },
     ]}
     tooltip={(datum) => <CustomTooltip {...datum} data={datum} />}
-    enableArcLabels={false}
   />
 )
 
-export default PieChart
+export default ResourcesDonutChart

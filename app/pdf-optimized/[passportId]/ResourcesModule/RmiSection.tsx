@@ -104,7 +104,7 @@ const RmiSection = ({ dinEnrichedBuildingComponents, nrf }: RmiSectionProps) => 
             </Box>
           </Box>
           <Box>
-            <PieChartLegendTable data={legendTableData} />
+            <PieChartLegendTable data={legendTableData} unit="t" />
             {/* <div className="overflow-x-auto text-[6pt]"> */}
           </Box>
           <Box>

@@ -7,12 +7,12 @@ import { Material } from "app/(utils)/data-schema/versions/v1/passportSchema"
 
 const MaterialInfo = ({ material }: { material: Material }) => {
   const materialValues = [
-    { key: "Material - Beschreibung", value: material.materialDescription },
-    { key: "Material-Klassen-ID", value: material.classificationNumber },
-    { key: "Material-Klassen-Beschreibung", value: material.classification },
+    { key: "Material-Beschreibung", value: material.materialDescription },
+    { key: "Materialgruppen-ID", value: material.materialClassId },
+    { key: "Materialgruppen-Beschreibung", value: material.materialClassDescription },
     { key: "Material-UUID", value: material.uuid },
-    { key: "Material-Datenbank", value: material.materialDatabase },
-    { key: "Nutzungs-dauer [a]", value: material.serviceLife },
+    { key: "Nutzungsdauer", value: `${material.serviceLifeInYears} Jahre` },
+    { key: "Ökobaudat-Version", value: material.oekobaudatVersion },
   ]
 
   const tradeValues = [
@@ -26,9 +26,9 @@ const MaterialInfo = ({ material }: { material: Material }) => {
   const productValues = [
     { key: "Technische Lebensdauer", value: material.product.technicalServiceLifeInYears },
     { key: "UUID Produkt", value: material.product.uuid },
-    { key: "Produkt-bezeichnung", value: material.product.description },
-    { key: "Hersteller-name", value: material.product.manufacturerName },
-    { key: "Nachweis-dokument", value: material.product.versionDate },
+    { key: "Produktbezeichnung", value: material.product.description },
+    { key: "Herstellername", value: material.product.manufacturerName },
+    { key: "Nachweisdokument", value: material.product.versionDate },
   ]
 
   return (
@@ -45,20 +45,21 @@ const MaterialInfo = ({ material }: { material: Material }) => {
           <div className="px-4 sm:col-span-2 sm:px-0">
             <dd className="mt-2 text-sm text-gray-900">
               <ul className="divide-y divide-gray-100 rounded-md border border-gray-200">
-                {material.product.proofDocumentUrls.map((url, idx) => (
+                {material.product.proofDocuments.map((document, idx) => (
                   <li key={idx} className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
                     <div className="flex w-0 flex-1 items-center">
                       <PaperClipIcon aria-hidden="true" className="size-5 shrink-0 text-gray-400" />
                       <a
-                        href={url}
+                        href={document.url}
                         target="_blank"
                         className="font-medium text-indigo-600 hover:text-indigo-500"
                         rel="noreferrer"
                       >
                         <div className="ml-4 flex min-w-0 flex-1 gap-2">
-                          <span className="truncate font-medium">{url}</span>
+                          <span className="truncate font-medium">{document.url} </span>
                         </div>
                       </a>
+                      &nbsp;({document.versionDate})
                     </div>
                   </li>
                 ))}

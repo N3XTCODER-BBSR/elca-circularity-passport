@@ -30,9 +30,6 @@ export default async function Web() {
                 passportData.uuid: {passportData.uuid}
                 <Link href={`/${passportData.uuid}`}>
                   <h3 className="mb-2 text-xl font-bold dark:text-white">{passportData.buildingBaseData.address}</h3>
-                  <p className="text-gray-500 dark:text-gray-400">
-                    {passportData.buildingBaseData.buildingStructureId}
-                  </p>
                 </Link>
               </div>
             ))}

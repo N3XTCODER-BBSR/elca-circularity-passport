@@ -43,17 +43,19 @@ const BarChart = ({ data }: { data: MaterialsBarChartDatum[] }) => {
         modifiers: [["darker", 1.6]],
       }}
       minValue={0}
-      maxValue={100}
+      maxValue="auto"
       axisTop={null}
       axisRight={null}
       axisBottom={{
-        tickValues: [0, 50, 100],
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legendPosition: "middle",
-        legendOffset: 32,
-        truncateTickAt: 0,
+        // tickValues: [0, 50, 100],
+        // tickSize: 5,
+        // tickPadding: 5,
+        // tickRotation: 0,
+        // legendPosition: "middle",
+        // legendOffset: 32,
+        // truncateTickAt: 0,
+        tickSize: 0,
+        tickPadding: -6,
         format: (value) => `${value} %`,
       }}
       axisLeft={{
@@ -67,6 +69,8 @@ const BarChart = ({ data }: { data: MaterialsBarChartDatum[] }) => {
       }}
       totalsOffset={9}
       enableLabel={false}
+      enableGridX={false}
+      enableGridY={false}
       labelSkipWidth={12}
       labelSkipHeight={12}
       labelTextColor={"white"}

@@ -1,6 +1,14 @@
-// import { raw } from "@prisma/client/runtime/library"
 import { z } from "zod"
-// import { version } from "os"
+
+const dateStringYYYYMMDDCheck = (val: string): boolean => {
+  // Check if the string matches the YYYY-MM-DD format using a regex
+  const isValidFormat = /^\d{4}-\d{2}-\d{2}$/.test(val)
+  if (!isValidFormat) return false
+
+  // Check if the string is a valid date
+  const date = new Date(val)
+  return !isNaN(date.getTime()) && val === date.toISOString().split("T")[0]
+}
 
 // Define nested schemas first for better organization and readability
 // const MaterialReferenceDatabaseSchema = z.object({
@@ -22,13 +30,20 @@ export const MaterialTradeSchema = z.object({
   area: z.number().optional(),
 })
 
+const ProofDocument = z.object({
+  url: z.string().url(),
+  versionDate: z.string().refine(dateStringYYYYMMDDCheck, {
+    message: "Invalid date format, must be YYYY-MM-DD",
+  }),
+})
+
 export const MaterialProductSchema = z.object({
   uuid: z.string().uuid().optional(),
   technicalServiceLifeInYears: z.number().min(0).optional(),
   description: z.string().optional(),
   manufacturerName: z.string().optional(),
   versionDate: z.string().optional(),
-  proofDocumentUrls: z.array(z.string().url()),
+  proofDocuments: z.array(ProofDocument),
 })
 
 export type MaterialProduct = z.infer<typeof MaterialProductSchema>
@@ -41,13 +56,20 @@ export const MaterialWasteSchema = z.object({
 
 export type MaterialWaste = z.infer<typeof MaterialWasteSchema>
 
+const MaterialGeometrySchema = z.object({
+  unit: z.enum(["m", "m2", "m3", "pieces"]),
+  amount: z.number().positive(),
+})
+
+export type MaterialGeometry = z.infer<typeof MaterialGeometrySchema>
+
 export const MaterialSchema = z.object({
   uuid: z.string(),
   materialDescription: z.string(),
-  classificationNumber: z.string(),
-  classification: z.string(),
-  materialDatabase: z.string(),
-  serviceLife: z.number().optional(), //TODO: clarify if this should be indeed optional
+  materialClassId: z.string(),
+  materialClassDescription: z.string(),
+  oekobaudatVersion: z.string(),
+  serviceLifeInYears: z.number().nonnegative(),
   trade: MaterialTradeSchema,
   product: MaterialProductSchema,
   waste: MaterialWasteSchema,
@@ -87,45 +109,31 @@ export const ResourcesRawMaterialsSchema = z.object({
 export type ResourcesRawMaterials = z.infer<typeof ResourcesRawMaterialsSchema>
 
 export const ResourcesEmbodiedEnergySchema = z.object({
-  penrtAB6C: z.number(),
+  penrtA1A2A3: z.number().describe("Primary Energy (non-renewable) in kWh"),
+  penrtB1: z.number().describe("Primary Energy (non-renewable) in kWh"),
+  penrtB4: z.number().describe("Primary Energy (non-renewable) in kWh"),
+  penrtB6: z.number().describe("Primary Energy (non-renewable) in kWh"),
+  penrtC3: z.number().describe("Primary Energy (non-renewable) in kWh"),
+  penrtC4: z.number().describe("Primary Energy (non-renewable) in kWh"),
 })
 export type ResourcesEmbodiedEnergy = z.infer<typeof ResourcesEmbodiedEnergySchema>
 
 export const ResourcesEmbodiedEmissionsSchema = z.object({
-  gwpAB6C: z.number(),
+  gwpA1A2A3: z.number().describe("Global Warming Potential in kg CO2 eq"),
+  gwpB1: z.number().describe("Global Warming Potential in kg CO2 eq"),
+  gwpB4: z.number().describe("Global Warming Potential in kg CO2 eq"),
+  gwpB6: z.number().describe("Global Warming Potential in kg CO2 eq"),
+  gwpC3: z.number().describe("Global Warming Potential in kg CO2 eq"),
+  gwpC4: z.number().describe("Global Warming Potential in kg CO2 eq"),
 })
 export type ResourcesEmbodiedEmissions = z.infer<typeof ResourcesEmbodiedEmissionsSchema>
-
-export const ResourcesCarbonContentSchema = z.object({
-  carbonContent: z.number(),
-})
-export type ResourcesCarbonContent = z.infer<typeof ResourcesCarbonContentSchema>
-
-export const ResourcesRecylingContentSchema = z.object({
-  recyclingContent: z.number(),
-})
-export type ResourcesRecylingContent = z.infer<typeof ResourcesRecylingContentSchema>
-
-export const ResourcesSustainableForestrySchema = z.object({
-  bnb117qng313Fulfilled: z.boolean().optional(),
-  fscPefcWoodContentInMPercent: z.number().optional(),
-})
-export type ResourcesSustainableForestry = z.infer<typeof ResourcesSustainableForestrySchema>
-
-export const ResourcesSustainableBuildingIndustrySchema = z.object({
-  recycledContentInMPercent: z.number().optional(),
-  qng313Fulfilled: z.boolean().optional(),
-})
-export type ResourcesSustainableBuildingIndustry = z.infer<typeof ResourcesSustainableBuildingIndustrySchema>
 
 export const RessourcesSchema = z.object({
   rawMaterials: ResourcesRawMaterialsSchema,
   embodiedEnergy: ResourcesEmbodiedEnergySchema,
   embodiedEmissions: ResourcesEmbodiedEmissionsSchema,
-  carbonContent: ResourcesCarbonContentSchema,
-  recylingContent: ResourcesRecylingContentSchema,
-  sustainableForestry: ResourcesSustainableForestrySchema,
-  sustainableBuildingIndustry: ResourcesSustainableBuildingIndustrySchema,
+  carbonContent: z.number().optional(),
+  recyclingContent: z.number().optional(),
 })
 
 export type Ressources = z.infer<typeof RessourcesSchema>
@@ -135,6 +143,7 @@ export const LayerSchema = z.object({
   lnr: z.number(),
   name: z.string(),
   mass: z.number(),
+  materialGeometry: MaterialGeometrySchema,
   material: MaterialSchema,
   ressources: RessourcesSchema,
   circularity: CircularitySchema,
@@ -148,8 +157,6 @@ export const BuildingComponentSchema = z.object({
   // id: z.string(),
   uuid: z.string(),
   name: z.string(),
-  room: z.string().optional(),
-  floor: z.string().optional(),
   costGroupDIN276: z.number(),
   layers: z.array(LayerSchema),
 })
@@ -162,24 +169,31 @@ export const GeneratorSoftwareSchema = z.object({
   url: z.string(),
 })
 
+export const BuildingStructureIdSchema = z.object({
+  "ALKIS-ID": z.string().optional(),
+  Identifikationsnummer: z.string().optional(),
+  Aktenzeichen: z.string().optional(),
+  "Lokale Gebäude-ID": z.string().optional(),
+  "Nationale UUID": z.string().optional(),
+})
+
 export const BuildingBaseDataSchema = z.object({
-  buildingStructureId: z.string(),
+  buildingStructureId: BuildingStructureIdSchema,
+  coordinates: z.object({
+    latitude: z.number(),
+    longitude: z.number(),
+  }),
   address: z.string(),
-  buildingYear: z.number(),
+  buildingPermitYear: z.number(),
+  buildingCompletionYear: z.number(),
   buildingType: z.string(),
-  numberOfFloors: z.number(),
+  numberOfUpperFloors: z.number(),
+  numberOfBasementFloors: z.number(),
   plotArea: z.number(),
   nrf: z.number().describe("Netto-Raum-Fläche"),
   bgf: z.number().describe("Brutto-Geschoss-Fläche"),
   bri: z.number().describe("Brutto-Raum-Inhalt"),
-  propertyArea: z.number(),
-  sealedPropertyAreaProportion: z.number(),
   totalBuildingMass: z.number(),
-  dataQuality: z.string(),
-  queryPlanningDocumentsAvailable: z.boolean(),
-  planningDocuments: z.string().optional(),
-  hazardousSubstanceReportAvailable: z.boolean(),
-  assessments: z.string().optional(),
 })
 
 // Define the main schema
@@ -187,20 +201,9 @@ export const PassportDataSchema = z.object({
   uuid: z.string(),
   date: z
     .string()
-    .refine(
-      (val) => {
-        // Check if the string matches the YYYY-MM-DD format using a regex
-        const isValidFormat = /^\d{4}-\d{2}-\d{2}$/.test(val)
-        if (!isValidFormat) return false
-
-        // Check if the string is a valid date
-        const date = new Date(val)
-        return !isNaN(date.getTime()) && val === date.toISOString().split("T")[0]
-      },
-      {
-        message: "Invalid date format, must be YYYY-MM-DD",
-      }
-    )
+    .refine(dateStringYYYYMMDDCheck, {
+      message: "Invalid date format, must be YYYY-MM-DD",
+    })
     .describe("Date of creation of the passport"),
   authorName: z.string().describe("Name of the person responsible for validating the passport"),
   versionTag: z.string(),

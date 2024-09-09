@@ -4,7 +4,7 @@ import SideBySideDescriptionListsWithHeadline, {
 import SingleValueDisplay from "app/(components)/(generic)/SingleValueDisplay"
 import { Ressources } from "app/(utils)/data-schema/versions/v1/passportSchema"
 
-const ResourceInfo = ({ resources }: { resources?: Ressources }) => {
+const ResourceInfo = ({ resources }: { resources: Ressources }) => {
   const rmiTotal = Math.round(
     (resources?.rawMaterials.rmiMineral || 0) +
       (resources?.rawMaterials.rmiMetallic || 0) +
@@ -24,72 +24,42 @@ const ResourceInfo = ({ resources }: { resources?: Ressources }) => {
     { key: "RMI aquatisch [kg]", value: resources?.rawMaterials.rmiAqua.toFixed(2) },
   ]
 
-  const sustainableForestryKeyValues: KeyValueTuple[] = [
-    {
-      key: "BNB 1.1.7/QNG Anlage 3 Erfüllt?",
-      value:
-        resources?.sustainableForestry?.bnb117qng313Fulfilled != null
-          ? resources?.sustainableForestry?.bnb117qng313Fulfilled
-            ? "Ja"
-            : "Nein"
-          : "N/A",
-    },
-    {
-      key: "FSC/PeFC-Holzanteil [m %]",
-      value: resources?.sustainableForestry?.fscPefcWoodContentInMPercent
-        ? `${resources?.sustainableForestry?.fscPefcWoodContentInMPercent?.toFixed(2)}%`
-        : "N/A",
-    },
-  ]
-  const sustainableBuildingIndustryKeyValues: KeyValueTuple[] = [
-    {
-      key: "QNG Anlage 3 Erfüllt?",
-      value:
-        resources?.sustainableBuildingIndustry?.qng313Fulfilled != null
-          ? resources?.sustainableBuildingIndustry?.qng313Fulfilled
-            ? "Ja"
-            : "Nein"
-          : "N/A",
-    },
-    {
-      key: " Recyclinganteil [m %]",
-      value:
-        resources?.sustainableBuildingIndustry?.recycledContentInMPercent != null
-          ? `${resources?.sustainableBuildingIndustry?.recycledContentInMPercent?.toFixed(2)}%`
-          : "N/A",
-    },
-  ]
+  // TODO: these kind of aggregation logic NEEDS to go into a central aggregation / domain logic block (code organization wise)
+  // TODO: also, it should ideally implemented in a way that is ensuring that - even if we add a new key to embodiedEnergy - we don't forget to add it to the aggregation (e.g. iterating over all keys and doing the summing dynamically)
+  const qpABC =
+    resources.embodiedEnergy.penrtA1A2A3 +
+    resources?.embodiedEnergy.penrtB1 +
+    resources?.embodiedEnergy.penrtB4 +
+    resources?.embodiedEnergy.penrtB6 +
+    resources?.embodiedEnergy.penrtC3 +
+    resources?.embodiedEnergy.penrtC4
+
+  const gwpABC =
+    resources.embodiedEmissions.gwpA1A2A3 +
+    resources?.embodiedEmissions.gwpB1 +
+    resources?.embodiedEmissions.gwpB4 +
+    resources?.embodiedEmissions.gwpB6 +
+    resources?.embodiedEmissions.gwpC3 +
+    resources?.embodiedEmissions.gwpC4
 
   return (
     <div>
       <SideBySideDescriptionListsWithHeadline headline="Raw Materials" data={resourceInfoKeyValues} />
       <SingleValueDisplay
-        headline="Graue Energie"
-        label="PENRT aus Modul A, B6, C [kWh]"
-        value={Math.floor(resources?.embodiedEnergy.penrtAB6C || 0)}
+        headline="Primärenergie-Aufwand (nicht erneuerbar, gesamt)"
+        label="kWh"
+        value={Math.floor(qpABC || 0)}
       />
-      <SingleValueDisplay
-        headline="Graue Emmision"
-        label="GWP aus Modul A, B6, C [kg CO2 eq]"
-        value={Math.floor(resources?.embodiedEmissions.gwpAB6C || 0)}
-      />
+      <SingleValueDisplay headline="Treibhaus-Potenzial (gesamt)" label="kg co2eq" value={Math.floor(gwpABC || 0)} />
       <SingleValueDisplay
         headline="Anteil des gebundenen Kohlenstoffs "
-        label="Anteil des gebundenen Kohlenstoffs  [kg]"
-        value={Math.floor(resources?.carbonContent.carbonContent || 0)}
+        label="kg"
+        value={Math.floor(resources?.carbonContent || 0)}
       />
       <SingleValueDisplay
         headline="Anteil Sekundärmaterial"
-        label="Anteil Sekundärmaterial  [kg]"
-        value={Math.floor(resources?.recylingContent.recyclingContent || 0)}
-      />
-      <SideBySideDescriptionListsWithHeadline
-        headline="Nachhaltiger Forstwirtschaft"
-        data={sustainableForestryKeyValues}
-      />
-      <SideBySideDescriptionListsWithHeadline
-        headline="Nachhaltige Bauwirtschaft"
-        data={sustainableBuildingIndustryKeyValues}
+        label="kg"
+        value={Math.floor(resources?.recyclingContent || 0)}
       />
     </div>
   )

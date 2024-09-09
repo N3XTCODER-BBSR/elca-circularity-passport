@@ -1,5 +1,8 @@
 import { Box } from "app/(components)/(generic)/layout-elements"
-import { aggregateGwpOrPenrt } from "app/(modules)/(passport-overview)/resources/resources-data-aggregation"
+import {
+  aggregateGwpOrPenrt,
+  gwpAggregationConfig,
+} from "app/(modules)/(passport-overview)/resources/resources-data-aggregation"
 import { DinEnrichedBuildingComponent } from "app/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
   ModuleSectionContainer,
@@ -7,8 +10,9 @@ import {
   ModuleSectionTitle,
   TextXSLeading4,
 } from "app/pdf-optimized/(components)/layout-elements"
+import { PALETTE_LIFECYCLE_PHASES } from "constants/styleConstants"
 import PieChartLegendTable from "./PieChartLegendTable"
-import ResourcesPieChart from "./ResourcesPieChart"
+import ResourcesDonutChart from "./ResourcesDonutChart"
 
 type GwpSectionProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
@@ -19,29 +23,43 @@ type GwpSectionProps = {
 const GwpSection = ({ dinEnrichedBuildingComponents, nrf }: GwpSectionProps) => {
   const keys = ["aggregatedValue"]
 
-  const aggregatedGwp = aggregateGwpOrPenrt(dinEnrichedBuildingComponents, "gwpAB6C")
+  const aggregatedGwp = aggregateGwpOrPenrt(dinEnrichedBuildingComponents, gwpAggregationConfig)
   const aggregatedGwpTotal = Math.round(aggregatedGwp.reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0))
   const aggregatedGwpTotalPerNrf = (aggregatedGwpTotal / nrf).toFixed(2)
 
-  const colorPalette = ["#eaf1f6", "#c6d6e6", "#8fa6c5", "#a896c5", "#6b66aa", "#a6a3c7", "#8b83a6"]
+  const colorPalette: string[] = PALETTE_LIFECYCLE_PHASES
 
   const aggregatedGwpWithColors = aggregatedGwp.map((data, idx) => ({
+    ...data,
     color: colorPalette[idx % colorPalette.length]!,
-    categoryName: data.categoryName,
-    aggregatedValue: data.aggregatedValue,
-    aggregatedValuePercentage: data.aggregatedValuePercentage,
   }))
 
   const colorMapper = (datum: any) => {
     return datum.data.color
   }
 
-  const legendTableData = aggregatedGwpWithColors.map((data) => ({
-    color: data.color,
-    name: data.categoryName,
-    value: data.aggregatedValue,
-    percentage: data.aggregatedValuePercentage,
-  }))
+  // TODO: it's nto DRY since it's replicated also in the web version
+  // (and it's even multiplicated by 2) since it's the same situation for penrt
+
+  const grayEmissionsTotal = aggregatedGwpWithColors
+    .filter((data) => data.pattern === "dots")
+    .map((el) => el.aggregatedValue)
+    .reduce((acc, val) => acc + val, 0)
+
+  const legendTableData = [
+    ...aggregatedGwpWithColors.map((data) => ({
+      color: data.color,
+      name: data.lifecycleSubphaseName,
+      value: data.aggregatedValue,
+      percentage: data.aggregatedValuePercentage,
+    })),
+    {
+      color: "white",
+      name: "Graue Emissionen",
+      value: grayEmissionsTotal,
+      pattern: "dots",
+    },
+  ]
 
   return (
     <ModuleSectionContainer>
@@ -52,12 +70,12 @@ const GwpSection = ({ dinEnrichedBuildingComponents, nrf }: GwpSectionProps) => 
           <Box>
             <Box height={24}>
               {" "}
-              <ResourcesPieChart
-                // colors={{ datum: "color" }}
+              <ResourcesDonutChart
                 colors={colorMapper}
                 data={aggregatedGwpWithColors}
                 indexBy={"costGroupCategoryNumberAndName"}
                 keys={keys}
+                patternPropertyName="pattern"
               />
             </Box>
             <Box>
@@ -76,7 +94,7 @@ const GwpSection = ({ dinEnrichedBuildingComponents, nrf }: GwpSectionProps) => 
             </Box>
           </Box>
           <Box>
-            <PieChartLegendTable data={legendTableData} />
+            <PieChartLegendTable data={legendTableData} unit="kg CO2-eq" />
           </Box>
         </Box>
       </ModuleSectionMain>

@@ -44,7 +44,7 @@ const BarChart = ({ data }: { data: MaterialsBarChartDatum[] }) => {
       data={data}
       keys={["aggregatedMassPercentage"]}
       indexBy={"categoryName"}
-      margin={{ top: 0, right: 130, bottom: 50, left: 100 }}
+      margin={{ top: 0, right: 150, bottom: 50, left: 300 }}
       padding={0.2}
       groupMode="grouped"
       layout="horizontal"

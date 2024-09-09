@@ -1,5 +1,5 @@
 import { BuildingComponent } from "app/(utils)/data-schema/versions/v1/passportSchema"
-import { aggregateMaterialsData } from "./materials-data-aggregation"
+import { aggregateMaterialsDataByBuildingComponentCategory } from "./materials-data-aggregation"
 
 describe("Materials aggregation logic", () => {
   it("should aggregate data correctly", () => {
@@ -40,9 +40,9 @@ describe("Materials aggregation logic", () => {
             componentGeometry: "m2",
             mass: innenwand1Layer1,
             material: {
-              materialDescription: "Material xy",
-              classificationNumber: "1.3.2",
-              classification: "Holz",
+              materialClassDescription: "Material xy",
+              materialClassId: "1.3.2",
+              materialClassDescription: "Holz",
               materialDatabase: "OBD_2020_II_A1",
             },
             uuidProduct: "f3b9803a-e942-44e0-b7c0-c253f92cd6e3",
@@ -55,9 +55,9 @@ describe("Materials aggregation logic", () => {
             componentGeometry: "m2",
             mass: innenwand1Layer2,
             material: {
-              materialDescription: "Beton C25/30 (Normalgewicht)",
-              classificationNumber: "1.1.01",
-              classification: "Mineralische Bauprodukte",
+              materialClassDescription: "Beton C25/30 (Normalgewicht)",
+              materialClassId: "1.1.01",
+              materialClassDescription: "Mineralische Bauprodukte",
               materialDatabase: "OBD_2020_II_A1",
             },
             uuidProduct: "2ed80ab1-2a15-41e5-8d5d-23654593e59a",
@@ -79,9 +79,9 @@ describe("Materials aggregation logic", () => {
             componentGeometry: "m2",
             mass: innenwand2Layer1,
             material: {
-              materialDescription: "Kreuzlagenholz (CLT)",
-              classificationNumber: "3.4.01",
-              classification: "Holz",
+              materialClassDescription: "Kreuzlagenholz (CLT)",
+              materialClassId: "3.4.01",
+              materialClassDescription: "Holz",
               materialDatabase: "OBD_2020_II_A1",
             },
             uuidProduct: "f3b9803a-e942-44e0-b7c0-c253f92cd6e3",
@@ -94,9 +94,9 @@ describe("Materials aggregation logic", () => {
             componentGeometry: "m2",
             mass: innenwand2Layer2,
             material: {
-              materialDescription: "Beton C25/30 (Normalgewicht)",
-              classificationNumber: "1.1.01",
-              classification: "Mineralische Bauprodukte",
+              materialClassDescription: "Beton C25/30 (Normalgewicht)",
+              materialClassId: "1.1.01",
+              materialClassDescription: "Mineralische Bauprodukte",
               materialDatabase: "OBD_2020_II_A1",
             },
             uuidProduct: "2ed80ab1-2a15-41e5-8d5d-23654593e59a",
@@ -118,9 +118,9 @@ describe("Materials aggregation logic", () => {
             componentGeometry: "m2",
             mass: aussenwand1Layer1,
             material: {
-              materialDescription: "Mechanische Lüftung mit Wärmerückgewinnung (MVHR)",
-              classificationNumber: "8.1.01",
-              classification: "Gebäudetechnik",
+              materialClassDescription: "Mechanische Lüftung mit Wärmerückgewinnung (MVHR)",
+              materialClassId: "8.1.01",
+              materialClassDescription: "Gebäudetechnik",
               materialDatabase: "OBD_2020_II_A1",
             },
             uuidProduct: "7a40b9c6-b4de-457e-9db2-69ff199eb68e",
@@ -132,9 +132,9 @@ describe("Materials aggregation logic", () => {
             componentGeometry: "m2",
             mass: aussenwand1Layer2,
             material: {
-              materialDescription: "Mineralwolle-Dämmung",
-              classificationNumber: "2.2.01",
-              classification: "Isoliermaterialien",
+              materialClassDescription: "Mineralwolle-Dämmung",
+              materialClassId: "2.2.01",
+              materialClassDescription: "Isoliermaterialien",
               materialDatabase: "OBD_2020_II_A1",
             },
             uuidProduct: "c1ef0a6c-e781-4100-9037-c161d83a93bf",
@@ -143,7 +143,7 @@ describe("Materials aggregation logic", () => {
       },
     ]
 
-    const aggregatedData = aggregateMaterialsData(buildingComponents, buildingNrf)
+    const aggregatedData = aggregateMaterialsDataByBuildingComponentCategory(buildingComponents, buildingNrf)
 
     const expectedInnenwaendeMass = innenwand1Layer1 + innenwand1Layer2 + innenwand2Layer1 + innenwand2Layer2
     const expectedAussenwaendeMass = aussenwand1Layer1 + aussenwand1Layer2
@@ -167,6 +167,6 @@ describe("Materials aggregation logic", () => {
     expect(aggregatedData.totalMass).toEqual(totalMass)
 
     const expectedTotalMassPercentage = Math.round((totalMass / buildingNrf) * 100)
-    expect(aggregatedData.totalMassPercentage).toEqual(expectedTotalMassPercentage)
+    expect(aggregatedData.totalMassRelativeToNrf).toEqual(expectedTotalMassPercentage)
   })
 })

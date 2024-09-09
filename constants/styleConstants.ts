@@ -1,0 +1,1 @@
+export const PALETTE_LIFECYCLE_PHASES = ["#FFAC81", "#E1E4A0", "#D1D770", "#B8BF36", "#C9E5D6", "#ACD7C0"]

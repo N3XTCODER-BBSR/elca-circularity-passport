@@ -76,129 +76,51 @@ const materialTradeDetails: MaterialTradeDetails[] = [
     area: 10.24,
   },
 ]
+const materialClasses = {
+  "1.1.01": "Mineralische Bauprodukte",
+  "4.3.01": "Metalle",
+  "2.4.01": "Isoliermaterialien",
+  "3.2.01": "Holz",
+  "5.1.01": "Abdeckungen",
+  "7.2.01": "Komponenten für Fenster und Vorhangfassaden",
+  "8.1.01": "Gebäudetechnik",
+}
 
-const materialDetailsWithoutUuidAndServiceLifeList = [
-  {
-    materialDescription: "Beton C25/30 (Normalgewicht)",
-    classificationNumber: "1.1.01",
-    classification: "Mineralische Bauprodukte",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Bewehrungsstahl (B500B)",
-    classificationNumber: "4.1.01",
-    classification: "Metalle",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Keramikfliesen",
-    classificationNumber: "1.3.01",
-    classification: "Mineralische Bauprodukte",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Mineralwolle-Dämmung",
-    classificationNumber: "2.2.01",
-    classification: "Isoliermaterialien",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Brettschichtholz (GL24h)",
-    classificationNumber: "3.1.01",
-    classification: "Holz",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Aluminiumblech (gewalzt)",
-    classificationNumber: "4.3.01",
-    classification: "Metalle",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Bitumen-Dachbahn",
-    classificationNumber: "5.1.01",
-    classification: "Abdeckungen",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "PVC-Fensterrahmen",
-    classificationNumber: "7.1.01",
-    classification: "Komponenten für Fenster und Vorhangfassaden",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Gipskartonplatte",
-    classificationNumber: "1.4.01",
-    classification: "Mineralische Bauprodukte",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Expandiertes Polystyrol (EPS) Dämmung",
-    classificationNumber: "2.4.01",
-    classification: "Isoliermaterialien",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Kupferblech (gewalzt)",
-    classificationNumber: "4.5.01",
-    classification: "Metalle",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Eichenholz",
-    classificationNumber: "3.2.01",
-    classification: "Holz",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Asphalt (Straßenbau)",
-    classificationNumber: "1.5.01",
-    classification: "Mineralische Bauprodukte",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Schaumglas-Dämmung",
-    classificationNumber: "2.6.01",
-    classification: "Isoliermaterialien",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Zinkblech (gewalzt)",
-    classificationNumber: "4.7.01",
-    classification: "Metalle",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Melamin-beschichtete Spanplatte",
-    classificationNumber: "3.3.01",
-    classification: "Holz",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "EPDM-Dachmembran",
-    classificationNumber: "5.2.01",
-    classification: "Abdeckungen",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Doppelverglasungseinheit",
-    classificationNumber: "7.2.01",
-    classification: "Komponenten für Fenster und Vorhangfassaden",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Kreuzlagenholz (CLT)",
-    classificationNumber: "3.4.01",
-    classification: "Holz",
-    materialDatabase: "OBD_2020_II_A1",
-  },
-  {
-    materialDescription: "Mechanische Lüftung mit Wärmerückgewinnung (MVHR)",
-    classificationNumber: "8.1.01",
-    classification: "Gebäudetechnik",
-    materialDatabase: "OBD_2020_II_A1",
-  },
+type MaterialClassId = keyof typeof materialClasses
+interface Material {
+  materialDescription: string
+  materialClassId: MaterialClassId // Only valid keys from materialClasses
+}
+
+const materials: Material[] = [
+  { materialDescription: "Beton C25/30 (Normalgewicht)", materialClassId: "1.1.01" },
+  { materialDescription: "Bewehrungsstahl (B500B)", materialClassId: "4.3.01" },
+  { materialDescription: "Keramikfliesen", materialClassId: "1.1.01" },
+  { materialDescription: "Mineralwolle-Dämmung", materialClassId: "2.4.01" },
+  { materialDescription: "Brettschichtholz (GL24h)", materialClassId: "3.2.01" },
+  { materialDescription: "Aluminiumblech (gewalzt)", materialClassId: "4.3.01" },
+  { materialDescription: "Bitumen-Dachbahn", materialClassId: "5.1.01" },
+  { materialDescription: "PVC-Fensterrahmen", materialClassId: "7.2.01" },
+  { materialDescription: "Gipskartonplatte", materialClassId: "1.1.01" },
+  { materialDescription: "Expandiertes Polystyrol (EPS) Dämmung", materialClassId: "2.4.01" },
+  { materialDescription: "Kupferblech (gewalzt)", materialClassId: "4.3.01" },
+  { materialDescription: "Eichenholz", materialClassId: "3.2.01" },
+  { materialDescription: "Asphalt (Straßenbau)", materialClassId: "1.1.01" },
+  { materialDescription: "Schaumglas-Dämmung", materialClassId: "2.4.01" },
+  { materialDescription: "Zinkblech (gewalzt)", materialClassId: "4.3.01" },
+  { materialDescription: "Melamin-beschichtete Spanplatte", materialClassId: "3.2.01" },
+  { materialDescription: "EPDM-Dachmembran", materialClassId: "5.1.01" },
+  { materialDescription: "Doppelverglasungseinheit", materialClassId: "7.2.01" },
+  { materialDescription: "Kreuzlagenholz (CLT)", materialClassId: "3.2.01" },
+  { materialDescription: "Mechanische Lüftung mit Wärmerückgewinnung (MVHR)", materialClassId: "8.1.01" },
 ]
+
+// Build material details list dynamically
+const materialDetailsWithoutUuidAndServiceLifeList = materials.map((material) => ({
+  materialDescription: material.materialDescription,
+  materialClassId: material.materialClassId,
+  materialClassDescription: materialClasses[material.materialClassId],
+}))
 
 export function generateComponents(componentCount: number, layerCount: number): BuildingComponent[] {
   const componentsWithLayers: BuildingComponent[] = []
@@ -233,10 +155,13 @@ const generateMaterialProduct = (): MaterialProduct => {
     technicalServiceLifeInYears: faker.number.int({ min: 1, max: 100 }),
     description: faker.lorem.paragraph({ min: 1, max: 3 }),
     manufacturerName: faker.company.name(),
-    proofDocumentUrls: faker.helpers.arrayElements(
+    proofDocuments: faker.helpers.arrayElements(
       [
-        "https://www.saint-gobain.com/sites/saint-gobain.com/files/media/document/20220512_IDS_VF.pdf",
-        "https://www.rigips.de/media/23851/download?attachment",
+        {
+          url: "https://www.saint-gobain.com/sites/saint-gobain.com/files/media/document/20220512_IDS_VF.pdf",
+          versionDate: "2022-05-12",
+        },
+        { url: "https://www.rigips.de/media/23851/download?attachment", versionDate: "2022-05-12" },
       ],
       {
         min: 0,
@@ -262,10 +187,15 @@ function generateSingleLayer(): Layer {
     name: faker.helpers.arrayElement(["Gypsum Plasterboard"]),
     lnr: faker.number.int({ min: 1, max: 10 }),
     mass: faker.number.float({ min: 2, max: 500 }),
+    materialGeometry: {
+      unit: faker.helpers.arrayElement(["m", "m2", "m3", "pieces"]),
+      amount: faker.number.float({ min: 1, max: 500 }),
+    },
     material: {
       ...faker.helpers.arrayElement(materialDetailsWithoutUuidAndServiceLifeList),
+      oekobaudatVersion: "OBD_2020_II_A1",
       uuid: faker.string.uuid(),
-      serviceLife: faker.number.int({ min: 1, max: 100 }),
+      serviceLifeInYears: faker.number.int({ min: 1, max: 100 }),
       trade: faker.helpers.arrayElement(materialTradeDetails),
       product: generateMaterialProduct(),
       waste: generateMaterialWaste(),
@@ -295,23 +225,23 @@ function generateSingleLayer(): Layer {
         rmiAqua: faker.number.float({ min: 2, max: 5000 }),
       },
       embodiedEnergy: {
-        penrtAB6C: faker.number.float({ min: 40, max: 15000 }),
+        penrtA1A2A3: faker.number.float({ min: 40, max: 15000 }),
+        penrtB1: faker.number.float({ min: 40, max: 15000 }),
+        penrtB4: faker.number.float({ min: 40, max: 15000 }),
+        penrtB6: faker.number.float({ min: 40, max: 15000 }),
+        penrtC3: faker.number.float({ min: 40, max: 15000 }),
+        penrtC4: faker.number.float({ min: 40, max: 15000 }),
       },
       embodiedEmissions: {
-        gwpAB6C: faker.number.float({ min: 40, max: 8000 }),
+        gwpA1A2A3: faker.number.float({ min: 40, max: 8000 }),
+        gwpB1: faker.number.float({ min: 40, max: 8000 }),
+        gwpB4: faker.number.float({ min: 40, max: 8000 }),
+        gwpB6: faker.number.float({ min: 40, max: 8000 }),
+        gwpC3: faker.number.float({ min: 40, max: 8000 }),
+        gwpC4: faker.number.float({ min: 40, max: 8000 }),
       },
-      carbonContent: {
-        carbonContent: faker.number.float({ min: 40, max: 8000 }),
-      },
-      recylingContent: {
-        recyclingContent: faker.number.float({ min: 40, max: 8000 }),
-      },
-      sustainableForestry: {
-        // TODO: check - do both fields need to be considered/handledl logically together (e.g. 'percentage value can only be xyz if the fullfilled-flag is true')?
-        bnb117qng313Fulfilled: faker.datatype.boolean(),
-        fscPefcWoodContentInMPercent: faker.number.float({ min: 0, max: 100 }),
-      },
-      sustainableBuildingIndustry: {},
+      carbonContent: faker.number.float({ min: 40, max: 8000 }),
+      recyclingContent: faker.number.float({ min: 40, max: 8000 }),
     },
   }
   return layer
@@ -321,6 +251,9 @@ export default function generatePassport(componentCount: number, layerCount: num
   const randomDate = faker.date.between("2020-01-01", "2024-12-31")
   // Format the date to YYYY-MM-DD
   const formattedRandomDate = randomDate.toISOString().split("T")[0]!
+
+  const buildingPermitYear = faker.number.int({ min: 1950, max: 2022 })
+  const buildingCompletionYear = faker.number.int({ min: buildingPermitYear, max: 2025 })
 
   const newPassportData: PassportData = {
     uuid: "a4ffd66a-c69b-4fb6-9c17-f43492db42f7",
@@ -339,24 +272,29 @@ export default function generatePassport(componentCount: number, layerCount: num
       url: "",
     },
     buildingBaseData: {
-      buildingStructureId: faker.string.uuid(),
+      buildingStructureId: {
+        "ALKIS-ID": faker.helpers.maybe(() => faker.string.alphanumeric()),
+        Identifikationsnummer: faker.helpers.maybe(() => faker.string.alphanumeric()),
+        Aktenzeichen: faker.helpers.maybe(() => faker.string.alphanumeric()),
+        "Lokale Gebäude-ID": faker.helpers.maybe(() => faker.string.alphanumeric()),
+        "Nationale UUID": faker.helpers.maybe(() => faker.string.uuid()),
+      },
+      coordinates: {
+        latitude: faker.location.latitude(),
+        longitude: faker.location.longitude(),
+      },
       address: faker.address.streetAddress() + ", " + faker.address.zipCode() + " " + faker.address.city(),
-      buildingYear: faker.number.int({ min: 1950, max: 2025 }),
+      buildingPermitYear,
+      buildingCompletionYear,
       // TODO: add more building types
       buildingType: faker.helpers.arrayElement(["1310 - Ministerien / Staatskanzleien / Landesvertretungen"]),
-      numberOfFloors: faker.number.int({ min: 1, max: 10 }),
+      numberOfUpperFloors: faker.number.int({ min: 1, max: 10 }),
+      numberOfBasementFloors: faker.number.int({ min: 1, max: 2 }),
       plotArea: faker.number.int({ min: 500, max: 5000 }),
       nrf: faker.number.float({ min: 500, max: 5000 }),
       bgf: faker.number.float({ min: 600, max: 6000 }),
       bri: faker.number.float({ min: 1500, max: 15000 }),
-      propertyArea: faker.number.int({ min: 500, max: 5000 }),
-      sealedPropertyAreaProportion: faker.number.float({ min: 0, max: 1 }),
       totalBuildingMass: faker.number.int({ min: 1000000, max: 10000000 }),
-      dataQuality: "Estimiert",
-      queryPlanningDocumentsAvailable: faker.datatype.boolean(),
-      planningDocuments: "",
-      hazardousSubstanceReportAvailable: faker.datatype.boolean(),
-      assessments: "",
     },
     buildingComponents: generateComponents(componentCount, layerCount),
   }

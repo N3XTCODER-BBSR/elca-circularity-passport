@@ -47,9 +47,9 @@ const Overview = ({ dinEnrichedPassportData }: { dinEnrichedPassportData: DinEnr
       </h2>
       <div className="mt-6 border-gray-100">
         <BuildingBaseInformation passportData={dinEnrichedPassportData} className="mt-16" />
-        <Materials dinEnrichedPassportData={dinEnrichedPassportData} className="mt-16" />
+        <Materials dinEnrichedPassportData={dinEnrichedPassportData} className="my-24" />
         <Resources
-          buildingComponents={dinEnrichedPassportData.dinEnrichedBuildingComponents}
+          dinEnrichedBuildingComponents={dinEnrichedPassportData.dinEnrichedBuildingComponents}
           nrf={dinEnrichedPassportData.buildingBaseData.nrf}
           className="mt-16"
         />

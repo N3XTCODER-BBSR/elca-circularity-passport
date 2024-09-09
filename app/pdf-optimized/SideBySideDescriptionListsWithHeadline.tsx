@@ -38,7 +38,7 @@ const SingleKeyValueTuple = ({
       )}
     >
       <dt className="font-semibold text-gray-700">{keyValueTuple?.key}: &nbsp;</dt>
-      <dd className={classNames("text-gray-600", lineClampClass)}>
+      <dd className={classNames("text-right text-gray-600", lineClampClass)}>
         {keyValueTuple?.value || (!!keyValueTuple?.key && "N/A")}
       </dd>
     </div>
@@ -51,7 +51,7 @@ const SideBySideDescriptionListsWithHeadline = ({ data }: SideBySideDescriptionL
   const chunkedArray = _.chunk(filledWithEmptyLastRow, 2)
 
   return (
-    <div className="mb-8">
+    <div className="mb-4">
       <dl className="grid grid-cols-2">
         {chunkedArray.map((chunk, idx) => (
           <div key={idx} className={classNames("col-span-2 flex flex-row", idx % 2 === 1 ? "bg-white" : "bg-gray-50")}>

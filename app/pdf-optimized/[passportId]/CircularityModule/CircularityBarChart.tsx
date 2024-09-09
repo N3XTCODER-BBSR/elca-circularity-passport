@@ -113,6 +113,8 @@ const BarChart = ({
       tooltip={(datum) => <CustomTooltip {...datum} data={datum.data} labelKey={labelKey} />}
       totalsOffset={9}
       enableLabel={false}
+      enableGridX={false}
+      enableGridY={false}
       labelPosition="end"
       role="application"
     />
