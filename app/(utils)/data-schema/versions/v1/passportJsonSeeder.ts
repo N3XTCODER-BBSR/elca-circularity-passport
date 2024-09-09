@@ -8,18 +8,6 @@ import {
   PassportData,
 } from "./passportSchema"
 
-// TODO: use this once we have clarity about material categories
-// const materialCategories = [
-//   { id: "1", name: "Mineralische Bauprodukte", obdCategories: ["1"] },
-//   { id: "2", name: "Isoliermaterialien", obdCategories: ["2"] },
-//   { id: "3", name: "Holz", obdCategories: ["3"] },
-//   { id: "4", name: "Metalle", obdCategories: ["4"] },
-//   { id: "5", name: "Abdeckungen", obdCategories: ["5"] },
-//   { id: "7", name: "Komponenten für Fenster und Vorhangfassaden", obdCategories: ["7"] },
-//   { id: "8", name: "Gebäudetechnik", obdCategories: ["8"] },
-//   { id: "9", name: "Sonstige", obdCategories: ["6", "9", "10", "100"] },
-// ]
-
 const components = [
   {
     name: "KellerBoden",

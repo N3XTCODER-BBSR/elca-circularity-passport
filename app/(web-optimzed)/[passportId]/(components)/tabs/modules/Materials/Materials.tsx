@@ -40,9 +40,6 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
     dinEnrichedPassportData.buildingBaseData.nrf
   )
 
-  // TODO: Change this so keys is not showing the costGroupCategoryID (cryptic) but the respective categoryName
-  // const keys = [...buildingComponents.map((component) => component.categoryName)]
-
   const chartDataGroupedByBuildingMaterialClass =
     aggregatedDataByByMaterialClass.aggregatedByClassIdWithPercentageSorted.map((data) => ({
       categoryName: data.materialClassDescription,
@@ -54,7 +51,7 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
 
   const chartDataGroupedByBuildingComponentCategory =
     aggregatedDataByBuildingComponentCategory.aggretatedByCategoryWithPercentageSorted.map((data) => ({
-      categoryName: data.categoryName,
+      categoryName: data.costGroupCategoryName,
       mass: data.aggregatedMass,
       aggregatedMassPercentage: data.aggregatedMassPercentage,
       // label is of format xx% (abc t)

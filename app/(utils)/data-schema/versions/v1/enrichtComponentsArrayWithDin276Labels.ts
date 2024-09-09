@@ -2,7 +2,6 @@ import { din276Hierarchy } from "./din276Mapping"
 import { BuildingComponent, PassportData } from "./passportSchema"
 
 export type DinEnrichedBuildingComponent = Omit<BuildingComponent, "costGroupDIN276"> & {
-  // TODO: consider to make these non-optional adn add validation steps or fallbacks (e.g. fall back to DIN number instead of label)
   dinComponentLevelNumber: number
   din276ComponetTypeName: string
   dinGroupLevelNumber: number

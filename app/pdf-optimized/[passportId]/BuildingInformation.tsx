@@ -35,7 +35,7 @@ const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportD
     { key: "Anzahl der Obergeschosse", value: dinEnrichedPassportData.buildingBaseData.numberOfUpperFloors },
     { key: "Anzahl der Untergeschosse", value: dinEnrichedPassportData.buildingBaseData.numberOfBasementFloors },
     { key: "Grundstücksfläche (m2)", value: dinEnrichedPassportData.buildingBaseData.plotArea.toFixed(2) },
-    //TODO: check and validate (with automatic tests) units and conversions. gesamtmasse should be (t), but seems to be (kg)
+    // TODO: check and validate (with automatic tests) units and conversions. gesamtmasse should be (t), but seems to be (kg)
     {
       key: "Gesamtmasse des Gebäudes (t)",
       value: dinEnrichedPassportData.buildingBaseData.totalBuildingMass.toFixed(0),

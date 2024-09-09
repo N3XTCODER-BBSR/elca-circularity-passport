@@ -1,7 +1,5 @@
 import { BuildingComponent, PassportData } from "./versions/v1/passportSchema"
 
-// TODO: iterate more over the generic type template
-
 export type Din276Mapping = {
   [key: string]: string
 }

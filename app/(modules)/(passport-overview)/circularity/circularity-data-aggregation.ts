@@ -33,7 +33,7 @@ const aggregateCircularityData = (buildingComponents: DinEnrichedBuildingCompone
       // TODO: improve that; either
       // a) make the circularity.eol.points mandatory in the schema
       // b) kick out the element from the collection by skipping this forEach iteration
-      const eolPointsCoefficent = layer.circularity!.eolPoints!
+      const eolPointsCoefficent = layer.circularity.eolPoints!
       const massCoefficient = layer.mass
 
       const weightedEolPoints = eolPointsCoefficent * massCoefficient

@@ -152,14 +152,14 @@ describe("Materials aggregation logic", () => {
 
     const expectedInnenwaendeMassPercentage = (expectedInnenwaendeMass / totalMass) * 100
     const aggregatedForInnenwaende = aggregatedData.aggretatedByCategoryWithPercentageSorted.find(
-      (data) => data.costGroupCategory === 340
+      (data) => data.costGroupCategoryId === 340
     )
     expect(aggregatedForInnenwaende?.aggregatedMass).toEqual(expectedInnenwaendeMass)
     expect(aggregatedForInnenwaende?.aggregatedMassPercentage).toEqual(expectedInnenwaendeMassPercentage)
 
     const expectedAussenwaendeMassPercentage = (expectedAussenwaendeMass / totalMass) * 100
     const aggregatedForAussenwaende = aggregatedData.aggretatedByCategoryWithPercentageSorted.find(
-      (data) => data.costGroupCategory === 330
+      (data) => data.costGroupCategoryId === 330
     )
     expect(aggregatedForAussenwaende?.aggregatedMass).toEqual(expectedAussenwaendeMass)
     expect(aggregatedForAussenwaende?.aggregatedMassPercentage).toEqual(expectedAussenwaendeMassPercentage)

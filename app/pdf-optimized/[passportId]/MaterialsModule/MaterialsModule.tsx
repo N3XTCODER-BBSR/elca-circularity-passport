@@ -26,9 +26,6 @@ const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportD
     dinEnrichedPassportData.buildingBaseData.nrf
   )
 
-  // TODO: Change this so keys is not showing the costGroupCategoryID (cryptic) but the respective categoryName
-  // const keys = [...buildingComponents.map((component) => component.categoryName)]
-
   const chartDataGroupedByBuildingMaterialClass =
     aggregatedDataByByMaterialClass.aggregatedByClassIdWithPercentageSorted.map((data) => ({
       categoryName: data.materialClassDescription,
@@ -40,15 +37,12 @@ const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportD
 
   const chartDataGroupedByBuildingComponentCategory =
     aggregatedDataByBuildingComponentCategory.aggretatedByCategoryWithPercentageSorted.map((data) => ({
-      categoryName: data.categoryName,
+      categoryName: data.costGroupCategoryName,
       mass: data.aggregatedMass,
       aggregatedMassPercentage: data.aggregatedMassPercentage,
       // label is of format xx% (abc t)
       label: data.label,
     }))
-
-  // TODO: Change this so keys is not showing the costGroupCategoryID (cryptic) but the respective categoryName
-  // const keys = [...buildingComponents.map((component) => component.categoryName)]
 
   return (
     <ModuleContainer>

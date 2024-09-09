@@ -80,7 +80,7 @@ export const aggregateRmiData = (
   }
 }
 
-// TODO: TECH DEBT - the whole folloing code about PENRT and GWP should:
+// TODO: TECH DEBT - the whole following code about PENRT and GWP should:
 // be extracted into its own file
 // be reviewed and refactored - even thought the goal is achieved to have one method for both PENRT and GWP, the code is not clean and not easy to read
 // also, there are two ts-ignore lines
@@ -89,7 +89,7 @@ export const aggregateRmiData = (
 //   * use just one string to indicate whether its about GWP or PENRT
 //   * or use two proxy functions around that generic methods and export/use only the proxy functions
 
-// New resources aggregation //todo: remove old
+// New resources aggregation
 type AggregatedGwpOrPenrtDataNew = {
   // lifecyclePhase: string
   lifecycleSubphaseId: string
@@ -170,13 +170,11 @@ export function aggregateGwpOrPenrt(
       aggregationConfig.labelsConfig.forEach(({ propertyName }) => {
         const totalForResource = layers.reduce((sum, layer) => {
           if (isGwpAggregationConfig(aggregationConfig)) {
-            // TODO: fix ts issues and remove ts-ignore
-            // @ts-ignore
-            return sum + (layer.ressources.embodiedEmissions[propertyName] || 0)
+            const typedPropertyName = propertyName as keyof ResourcesEmbodiedEmissions
+            return sum + (layer.ressources.embodiedEmissions[typedPropertyName] || 0)
           } else {
-            // TODO: fix ts issues and remove ts-ignore
-            // @ts-ignore
-            return sum + (layer.ressources.embodiedEnergy[propertyName] || 0)
+            const typedPropertyName = propertyName as keyof ResourcesEmbodiedEnergy
+            return sum + (layer.ressources.embodiedEnergy[typedPropertyName] || 0)
           }
         }, 0)
 

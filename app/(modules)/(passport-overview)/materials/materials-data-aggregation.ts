@@ -1,8 +1,8 @@
 import { DinEnrichedBuildingComponent } from "app/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 
 export interface AggretatedMaterialsDataByCategoryWithPercentage {
-  costGroupCategory: number
-  categoryName: string
+  costGroupCategoryId: number
+  costGroupCategoryName: string
   aggregatedMass: number
   aggregatedMassPercentage: number
   label: string
@@ -20,7 +20,7 @@ export const aggregateMaterialsDataByBuildingComponentCategory = (
   buildingNrf: number
 ): AggregatedMaterialsData => {
   // Initialize a map to store aggregated data
-  const aggregationMap = new Map<number, { categoryName: string; aggregatedMass: number }>()
+  const aggregationMap = new Map<number, { costGroupCategoryName: string; aggregatedMass: number }>()
 
   dinEnrichedBuildingComponents.forEach((component) => {
     const { dinCategoryLevelNumber, din276CategoryName, layers } = component
@@ -35,18 +35,20 @@ export const aggregateMaterialsDataByBuildingComponentCategory = (
     } else {
       // Create a new entry
       aggregationMap.set(dinCategoryLevelNumber, {
-        categoryName: din276CategoryName,
+        costGroupCategoryName: din276CategoryName,
         aggregatedMass: totalMass,
       })
     }
   })
 
-  // Convert the map to an array of AggregatedData
-  const aggretatedDataArr = Array.from(aggregationMap, ([costGroupCategory, { categoryName, aggregatedMass }]) => ({
-    costGroupCategory,
-    categoryName,
-    aggregatedMass,
-  }))
+  const aggretatedDataArr = Array.from(
+    aggregationMap,
+    ([costGroupCategoryId, { costGroupCategoryName, aggregatedMass }]) => ({
+      costGroupCategoryId,
+      costGroupCategoryName,
+      aggregatedMass,
+    })
+  )
 
   const totalMass = aggretatedDataArr.reduce((sum, { aggregatedMass }) => sum + aggregatedMass, 0)
 
@@ -110,7 +112,6 @@ export const aggregateMaterialsDataByMaterialClass = (
     })
   })
 
-  // Convert the map to an array of AggregatedData
   const aggregatedDataArr = Array.from(
     aggregationMap,
     ([materialClassId, { materialClassDescription, aggregatedMass }]) => ({

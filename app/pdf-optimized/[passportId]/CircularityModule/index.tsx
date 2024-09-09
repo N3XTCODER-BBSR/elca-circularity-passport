@@ -19,9 +19,6 @@ type CircularityProps = {
 const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents }) => {
   const aggregatedData = aggregateCircularityData(dinEnrichedBuildingComponents)
 
-  // TODO: Change this so keys is not showing the costGroupCategoryID (cryptic) but the respective categoryName
-  // const keys = [...buildingComponents.map((component) => component.categoryName)]
-
   const chartDataForAvgEolPointsPerComponentCostCategory = aggregatedData.avgEolPointsPerComponentCostCategory.map(
     (data) => ({
       ...data,
