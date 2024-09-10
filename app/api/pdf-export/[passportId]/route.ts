@@ -3,9 +3,10 @@ import { NextRequest, NextResponse } from "next/server"
 export async function GET(req: NextRequest, { params }: { params: { passportId: string } }) {
   const { passportId } = params
 
-  //   const url = `https://${process.env.NEXT_PUBLIC_DOPPIO_PRINT_HOST}/pdf-optimized/${passportId}`
+  // For now, we just always print the German version of the passport as PDF
+  const locale = "de"
   const hostname = req.headers.get("host")
-  const url = `https://${hostname}/pdf-optimized/${passportId}`
+  const url = `https://${hostname}/${locale}/pdf-optimized/${passportId}`
 
   const response = await fetch("https://api.doppio.sh/v1/render/pdf/sync", {
     method: "POST",

@@ -1,0 +1,14 @@
+// NOTE: according to docs, this file should be in /i18n/request.ts (which doesn't work)
+// https://next-intl-docs.vercel.app/docs/getting-started/app-router/with-i18n-routing#middleware
+import { notFound } from "next/navigation"
+import { getRequestConfig } from "next-intl/server"
+import { routing } from "./i18n/routing"
+
+export default getRequestConfig(async ({ locale }) => {
+  // Validate that the incoming `locale` parameter is valid
+  if (!routing.locales.includes(locale as any)) notFound()
+
+  return {
+    messages: (await import(`./messages/${locale}.json`)).default,
+  }
+})

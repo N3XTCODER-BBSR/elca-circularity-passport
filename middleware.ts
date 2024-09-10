@@ -1,43 +1,12 @@
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
+import createMiddleware from "next-intl/middleware"
+import { routing } from "./i18n/routing"
 
-const [AUTH_USER, AUTH_PASS] = (process.env.HTTP_BASIC_AUTH || ":").split(":")
-
-export function middleware(request: NextRequest) {
-  // if (!isAuthenticated(request)) {
-  //   return new NextResponse("Authentication required", {
-  //     status: 401,
-  //     headers: { "WWW-Authenticate": "Basic" },
-  //   })
-}
-
-// function isAuthenticated(req: NextRequest) {
-//   const authheader = req.headers.get("authorization") || req.headers.get("Authorization")
-
-//   if (!authheader) {
-//     return false
-//   }
-
-//   const auth = Buffer.from(authheader.split(" ")[1]!, "base64").toString().split(":")
-//   const user = auth[0]
-//   const pass = auth[1]
-
-//   if (user === AUTH_USER && pass === AUTH_PASS) {
-//     return true
-//   } else {
-//     return false
-//   }
-// }
+export default createMiddleware(routing)
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  /*
+//      * Match all request paths except for the ones starting with:
+//      * public assets/api routes/_next
+//      */
+  matcher: ["/((?!api|static|.*\\..*|_next).*)"],
 }
