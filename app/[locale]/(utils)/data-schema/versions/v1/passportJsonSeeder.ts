@@ -184,6 +184,7 @@ function generateSingleLayer(): Layer {
       oekobaudatVersion: "OBD_2020_II_A1",
       uuid: faker.string.uuid(),
       serviceLifeInYears: faker.number.int({ min: 1, max: 100 }),
+      serviceLifeTableVersion: "Version 2024",
       trade: faker.helpers.arrayElement(materialTradeDetails),
       product: generateMaterialProduct(),
       waste: generateMaterialWaste(),

@@ -70,6 +70,7 @@ export const MaterialSchema = z.object({
   materialClassDescription: z.string(),
   oekobaudatVersion: z.string(),
   serviceLifeInYears: z.number().nonnegative(),
+  serviceLifeTableVersion: z.string().describe('Version number of the service life table ("Nutzungsdauer-Tabelle")'),
   trade: MaterialTradeSchema,
   product: MaterialProductSchema,
   waste: MaterialWasteSchema,

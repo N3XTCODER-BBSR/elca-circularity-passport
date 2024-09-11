@@ -12,6 +12,7 @@ const MaterialInfo = ({ material }: { material: Material }) => {
     { key: "Materialgruppen-Beschreibung", value: material.materialClassDescription },
     { key: "Material-UUID", value: material.uuid },
     { key: "Nutzungsdauer", value: `${material.serviceLifeInYears} Jahre` },
+    { key: "Versionsnummer Nutzungsdauer-Tabelle", value: material.serviceLifeTableVersion },
     { key: "Ökobaudat-Version", value: material.oekobaudatVersion },
   ]
 
