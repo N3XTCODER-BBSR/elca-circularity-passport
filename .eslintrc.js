@@ -15,7 +15,14 @@ module.exports = {
       presets: [require.resolve("next/babel")],
     },
   },
+  plugins: ["unused-imports"],
   rules: {
+    "no-unused-vars": "warn",
+    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      { vars: "all", varsIgnorePattern: "^_", args: "after-used", argsIgnorePattern: "^_" },
+    ],
     "tailwindcss/no-custom-classname": "off",
     "testing-library/prefer-screen-queries": "off",
     "@next/next/no-html-link-for-pages": "off",
