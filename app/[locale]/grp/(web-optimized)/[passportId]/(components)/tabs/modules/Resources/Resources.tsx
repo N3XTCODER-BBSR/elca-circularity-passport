@@ -55,16 +55,6 @@ const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nr
     nrf
   )
 
-  const aggregatedDataRmiNonRenewable = aggregateRmiData(
-    dinEnrichedBuildingComponents,
-    [
-      { propertyName: "rmiMineral", labelName: "Mineralisch" },
-      { propertyName: "rmiMetallic", labelName: "Metallisch" },
-      { propertyName: "rmiFossil", labelName: "Fossil" },
-    ],
-    nrf
-  )
-
   const aggregatedDataRmi = aggregateRmiData(
     dinEnrichedBuildingComponents,
     [
@@ -209,22 +199,6 @@ const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nr
               </div>
             </div>
           )}
-          {/* {currentNavSectionId === "1" && (
-            <div className="flex flex-col items-center justify-center">
-              <h4 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
-                {navigationSections["1"]!.name}
-              </h4>
-              <div className="h-96 w-full text-center">
-                {aggregatedDataRmiNonRenewable.aggregatedDataTotalPerNrf2m.toFixed(2)} t / m2 NRF
-                <ResourcesPieChart
-                  data={aggregatedDataRmiNonRenewable.aggretatedByByResourceTypeWithPercentage}
-                  indexBy={"resourceTypeName"}
-                  keys={keys}
-                />
-                Gesamt: <b>{aggregatedDataRmiNonRenewable.aggregatedDataTotal} Tonnen</b>
-              </div>
-            </div>
-          )} */}
           {currentNavSectionId === "1" && (
             <div className="flex flex-col items-center justify-center">
               <h4 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">

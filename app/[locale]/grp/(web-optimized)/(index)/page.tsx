@@ -1,7 +1,7 @@
 import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 import passportParser from "app/[locale]/grp/(utils)/data-schema/versions/v1/passportParser"
 import prisma from "prisma/prismaClient"
-import { getTranslations } from "next-intl/server"
 
 export default async function Web() {
   const t = await getTranslations("Web")

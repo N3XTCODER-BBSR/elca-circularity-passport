@@ -1,7 +1,6 @@
 "use client"
 import { Menu } from "@headlessui/react"
 import { clsx } from "clsx"
-import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -40,7 +39,7 @@ const Dropdown = () => {
           {languages.find((lang) => lang.code === currentLocale)?.name || "Select Language"}
         </Menu.Button>
 
-        <Menu.Items className="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
           <div className="py-1">
             {languages.map((language) => (
               <Menu.Item key={language.code}>

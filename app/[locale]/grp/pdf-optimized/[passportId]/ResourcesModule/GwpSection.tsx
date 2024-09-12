@@ -1,8 +1,8 @@
-import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
 import {
   aggregateGwpOrPenrt,
   gwpAggregationConfig,
 } from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/resources-data-aggregation"
+import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
 import { DinEnrichedBuildingComponent } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
   ModuleSectionContainer,

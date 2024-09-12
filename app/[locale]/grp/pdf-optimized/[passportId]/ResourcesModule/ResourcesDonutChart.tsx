@@ -1,5 +1,4 @@
 "use client"
-import { patternDotsDef } from "@nivo/core"
 import { ResponsivePie } from "@nivo/pie"
 
 const DonutChart = ({

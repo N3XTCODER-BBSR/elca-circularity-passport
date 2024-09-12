@@ -1,6 +1,4 @@
-import SideBySideDescriptionListsWithHeadline, {
-  KeyValueTuple,
-} from "app/[locale]/grp/(components)/generic/SideBySideDescriptionListsWithHeadline"
+import SideBySideDescriptionListsWithHeadline from "app/[locale]/grp/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import SingleValueDisplay from "app/[locale]/grp/(components)/generic/SingleValueDisplay"
 import { Ressources } from "app/[locale]/grp/(utils)/data-schema/versions/v1/passportSchema"
 
