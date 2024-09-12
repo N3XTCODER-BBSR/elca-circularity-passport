@@ -1,8 +1,8 @@
 import { PaperClipIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
 import _ from "lodash"
-import { AccordionItemFull } from "app/[locale]/(components)/(generic)/Accordion/AccordionItem"
-import SideBySideDescriptionListsWithHeadline from "app/[locale]/(components)/(generic)/SideBySideDescriptionListsWithHeadline"
+import { AccordionItemFull } from "app/[locale]/(components)/generic/Accordion/AccordionItem"
+import SideBySideDescriptionListsWithHeadline from "app/[locale]/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { Material } from "app/[locale]/(utils)/data-schema/versions/v1/passportSchema"
 
 const MaterialInfo = ({ material }: { material: Material }) => {

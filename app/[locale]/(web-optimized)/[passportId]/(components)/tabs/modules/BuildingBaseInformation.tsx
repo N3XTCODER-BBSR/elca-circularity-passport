@@ -2,7 +2,7 @@
 
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
-} from "app/[locale]/(components)/(generic)/SideBySideDescriptionListsWithHeadline"
+} from "app/[locale]/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { DinEnrichedPassportData } from "app/[locale]/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 
 type BuildingBaseInformationProps = {

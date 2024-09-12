@@ -1,5 +1,5 @@
 import { Accordion } from "@szhsin/react-accordion"
-import { AccordionItem } from "app/[locale]/(components)/(generic)/Accordion/AccordionItem"
+import { AccordionItem } from "app/[locale]/(components)/generic/Accordion/AccordionItem"
 
 const DummyAccordion = () => (
   <div className="mx-2 border-t">

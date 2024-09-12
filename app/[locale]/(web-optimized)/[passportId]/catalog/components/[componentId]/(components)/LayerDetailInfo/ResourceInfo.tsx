@@ -1,7 +1,7 @@
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
-} from "app/[locale]/(components)/(generic)/SideBySideDescriptionListsWithHeadline"
-import SingleValueDisplay from "app/[locale]/(components)/(generic)/SingleValueDisplay"
+} from "app/[locale]/(components)/generic/SideBySideDescriptionListsWithHeadline"
+import SingleValueDisplay from "app/[locale]/(components)/generic/SingleValueDisplay"
 import { Ressources } from "app/[locale]/(utils)/data-schema/versions/v1/passportSchema"
 
 const ResourceInfo = ({ resources }: { resources: Ressources }) => {

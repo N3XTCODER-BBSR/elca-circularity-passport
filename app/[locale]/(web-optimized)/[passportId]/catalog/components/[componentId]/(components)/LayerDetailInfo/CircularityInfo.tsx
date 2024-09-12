@@ -1,4 +1,4 @@
-import SideBySideDescriptionListsWithHeadline from "app/[locale]/(components)/(generic)/SideBySideDescriptionListsWithHeadline"
+import SideBySideDescriptionListsWithHeadline from "app/[locale]/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import getEolClassNameByPoints from "app/[locale]/(utils)/data-schema/versions/v1/circularityDataUtils"
 import { Circularity } from "app/[locale]/(utils)/data-schema/versions/v1/passportSchema"
 

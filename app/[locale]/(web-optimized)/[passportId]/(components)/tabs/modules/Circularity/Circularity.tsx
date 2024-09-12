@@ -1,7 +1,7 @@
 "use client"
 
 import { Accordion } from "@szhsin/react-accordion"
-import { AccordionItem } from "app/[locale]/(components)/(generic)/Accordion/AccordionItem"
+import { AccordionItem } from "app/[locale]/(components)/generic/Accordion/AccordionItem"
 import aggregateCircularityData from "app/[locale]/(components)/domain-specific/modules/passport-overview/circularity/circularity-data-aggregation"
 import CircularityBarChart from "app/[locale]/(components)/domain-specific/modules/passport-overview/circularity/CircularityBarChart"
 import { DinEnrichedBuildingComponent } from "app/[locale]/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"

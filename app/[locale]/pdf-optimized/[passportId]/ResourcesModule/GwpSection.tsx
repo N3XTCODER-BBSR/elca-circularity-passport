@@ -1,4 +1,4 @@
-import { Box } from "app/[locale]/(components)/(generic)/layout-elements"
+import { Box } from "app/[locale]/(components)/generic/layout-elements"
 import {
   aggregateGwpOrPenrt,
   gwpAggregationConfig,

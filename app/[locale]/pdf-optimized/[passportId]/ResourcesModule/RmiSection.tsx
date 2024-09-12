@@ -1,4 +1,4 @@
-import { Box } from "app/[locale]/(components)/(generic)/layout-elements"
+import { Box } from "app/[locale]/(components)/generic/layout-elements"
 import { aggregateRmiData } from "app/[locale]/(components)/domain-specific/modules/passport-overview/resources/resources-data-aggregation"
 import { DinEnrichedBuildingComponent } from "app/[locale]/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
