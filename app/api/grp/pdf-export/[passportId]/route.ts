@@ -6,7 +6,7 @@ export async function GET(req: NextRequest, { params }: { params: { passportId: 
   // For now, we just always print the German version of the passport as PDF
   const locale = "de"
   const hostname = req.headers.get("host")
-  const url = `https://${hostname}/${locale}/pdf-optimized/${passportId}`
+  const url = `https://${hostname}/${locale}/grp/pdf-optimized/${passportId}`
 
   const response = await fetch("https://api.doppio.sh/v1/render/pdf/sync", {
     method: "POST",
