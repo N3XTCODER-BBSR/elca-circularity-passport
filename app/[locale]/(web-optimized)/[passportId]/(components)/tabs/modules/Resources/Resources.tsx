@@ -10,9 +10,9 @@ import {
   aggregateRmiData,
   gwpAggregationConfig,
   penrtAggregationConfig,
-} from "app/[locale]/(components)/domain-specific/(modules)/(passport-overview)/resources/resources-data-aggregation"
-import ResourcesDonutChart from "app/[locale]/(components)/domain-specific/(modules)/(passport-overview)/resources/ResourcesDonutChart"
-import ResourcesPieChart from "app/[locale]/(components)/domain-specific/(modules)/(passport-overview)/resources/ResourcesPieChart"
+} from "app/[locale]/(components)/domain-specific/modules/passport-overview/resources/resources-data-aggregation"
+import ResourcesDonutChart from "app/[locale]/(components)/domain-specific/modules/passport-overview/resources/ResourcesDonutChart"
+import ResourcesPieChart from "app/[locale]/(components)/domain-specific/modules/passport-overview/resources/ResourcesPieChart"
 import { DinEnrichedBuildingComponent } from "app/[locale]/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 
 import PieChartLegendTable from "app/[locale]/pdf-optimized/[passportId]/ResourcesModule/PieChartLegendTable"

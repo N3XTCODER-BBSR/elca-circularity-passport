@@ -1,4 +1,4 @@
-import aggregateCircularityData from "app/[locale]/(components)/domain-specific/(modules)/(passport-overview)/circularity/circularity-data-aggregation"
+import aggregateCircularityData from "app/[locale]/(components)/domain-specific/modules/passport-overview/circularity/circularity-data-aggregation"
 import { DinEnrichedBuildingComponent } from "app/[locale]/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
   Box,

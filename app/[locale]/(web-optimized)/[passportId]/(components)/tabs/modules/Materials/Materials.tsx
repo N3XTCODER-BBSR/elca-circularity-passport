@@ -4,8 +4,8 @@ import { useState } from "react"
 import {
   aggregateMaterialsDataByBuildingComponentCategory,
   aggregateMaterialsDataByMaterialClass,
-} from "app/[locale]/(components)/domain-specific/(modules)/(passport-overview)/materials/materials-data-aggregation"
-import MaterialsBarChart from "app/[locale]/(components)/domain-specific/(modules)/(passport-overview)/materials/MaterialsBarChart"
+} from "app/[locale]/(components)/domain-specific/modules/passport-overview/materials/materials-data-aggregation"
+import MaterialsBarChart from "app/[locale]/(components)/domain-specific/modules/passport-overview/materials/MaterialsBarChart"
 import { DinEnrichedPassportData } from "app/[locale]/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import DummyAccordion from "../../../DummyAccordion"
 import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
