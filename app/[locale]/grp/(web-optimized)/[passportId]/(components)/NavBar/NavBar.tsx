@@ -42,7 +42,7 @@ export default function Navbar({ passportId }: NavbarProps) {
                     return (
                       <Link
                         key={tab.href}
-                        href={`/${passportId}/${tab.href}`}
+                        href={`/grp/${passportId}/${tab.href}`}
                         className={clsx(
                           // pathname === pathWithoutTrailingSlash
                           isPathCurrentTab

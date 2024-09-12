@@ -20,7 +20,7 @@ const Page = async ({ params }: { params: { passportId: string; componentId: str
     <div>
       <Link
         className="inline-flex items-center gap-x-1.5 rounded-md bg-gray-200 px-8 py-2 text-sm font-semibold text-blue-900"
-        href={`/${params.passportId}/catalog#${component.dinComponentLevelNumber}`}
+        href={`/grp/${params.passportId}/catalog#${component.dinComponentLevelNumber}`}
       >
         <ArrowLongLeftIcon aria-hidden="true" className="-ml-0.5 size-5" />
         Zurück

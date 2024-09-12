@@ -164,7 +164,7 @@ const ComponentsTree = ({ buildingComponents }: ComponentsTreeProps) => {
           <ul className="space-y-1">
             {compontensForSelectedComponentNumber?.components.map((component) => (
               <li key={component.uuid} className="">
-                <Link href={`/${params.passportId}/catalog/components/${component.uuid}`}>
+                <Link href={`/grp/${params.passportId}/catalog/components/${component.uuid}`}>
                   <Box className="p-4">
                     <div className="w-1/3">
                       <Image src="/component_placeholder_lg.png" alt={component.name} width={200} height={200} />
