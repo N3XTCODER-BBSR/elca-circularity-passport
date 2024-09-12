@@ -60,7 +60,6 @@
     "@semantic-release/release-notes-generator": "^13.0.0",
     "@szhsin/react-accordion": "^1.2.4",
     "@t3-oss/env-nextjs": "^0.10.1",
-    "@tailwindcss/line-clamp": "^0.4.4",
     "@vercel/otel": "^1.8.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -76,8 +75,7 @@
     "react-tooltip": "^5.27.1",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8",
-    "zustand": "^4.5.4"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@babel/core": "^7.23.3",
