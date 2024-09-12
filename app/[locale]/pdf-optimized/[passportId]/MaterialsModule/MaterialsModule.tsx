@@ -1,7 +1,7 @@
 import {
   aggregateMaterialsDataByBuildingComponentCategory,
   aggregateMaterialsDataByMaterialClass,
-} from "app/[locale]/(modules)/(passport-overview)/materials/materials-data-aggregation"
+} from "app/[locale]/(components)/domain-specific/(modules)/(passport-overview)/materials/materials-data-aggregation"
 import { DinEnrichedPassportData } from "app/[locale]/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
   Box,
