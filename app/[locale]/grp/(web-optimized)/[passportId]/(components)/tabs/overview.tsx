@@ -9,7 +9,7 @@ import Resources from "./modules/Resources/Resources"
 const Overview = ({ dinEnrichedPassportData }: { dinEnrichedPassportData: DinEnrichedPassportData }) => {
   const onPdfExportClick = async () => {
     try {
-      const response = await fetch(`/api/pdf-export/${dinEnrichedPassportData.uuid}`, {})
+      const response = await fetch(`/api/grp/pdf-export/${dinEnrichedPassportData.uuid}`, {})
       if (!response.ok) {
         throw new Error("Failed to fetch PDF export")
       }

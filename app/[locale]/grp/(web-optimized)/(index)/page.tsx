@@ -28,7 +28,7 @@ export default async function Web() {
             {passportsData.map((passportData) => (
               <div key={passportData.uuid} className="flex flex-col items-center justify-center text-center">
                 passportData.uuid: {passportData.uuid}
-                <Link href={`/${passportData.uuid}`}>
+                <Link href={`${passportData.uuid}`}>
                   <h3 className="mb-2 text-xl font-bold dark:text-white">{passportData.buildingBaseData.address}</h3>
                 </Link>
               </div>
