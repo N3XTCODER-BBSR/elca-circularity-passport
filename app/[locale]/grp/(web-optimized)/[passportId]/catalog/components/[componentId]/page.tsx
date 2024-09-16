@@ -5,7 +5,7 @@ import { notFound } from "next/navigation"
 import { getDinEnrichedPassportData } from "app/[locale]/grp/(web-optimized)/[passportId]/(utils)/getPassportData"
 import ComponentLayer from "./component-layer"
 
-const Page = async ({ params }: { params: { passportId: string; componentId: string } }) => {
+const Page = async ({ params }: { params: { passportId: string; componentId: string; locale: string } }) => {
   const passportData = await getDinEnrichedPassportData(params.passportId)
 
   const component = passportData?.dinEnrichedBuildingComponents?.find(
@@ -20,7 +20,7 @@ const Page = async ({ params }: { params: { passportId: string; componentId: str
     <div>
       <Link
         className="inline-flex items-center gap-x-1.5 rounded-md bg-gray-200 px-8 py-2 text-sm font-semibold text-blue-900"
-        href={`/grp/${params.passportId}/catalog#${component.dinComponentLevelNumber}`}
+        href={`/${params.locale}/grp/${params.passportId}/catalog#${component.dinComponentLevelNumber}`}
       >
         <ArrowLongLeftIcon aria-hidden="true" className="-ml-0.5 size-5" />
         Zurück
