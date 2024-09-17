@@ -2,20 +2,19 @@
 
 import { useState } from "react"
 
+import ResourcesDonutChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/ResourcesDonutChart"
+import ResourcesPieChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/ResourcesPieChart"
+import VerticalNavigation from "app/[locale]/grp/(components)/generic/VerticalNavigation/VerticalNavigation"
+
+import PieChartLegendTable from "app/[locale]/grp/pdf-optimized/[passportId]/ResourcesModule/PieChartLegendTable"
+import { PALETTE_LIFECYCLE_PHASES } from "constants/styleConstants"
+import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
-  // aggregateGwpOrPenrt,
   aggregateGwpOrPenrt,
   aggregateRmiData,
   gwpAggregationConfig,
   penrtAggregationConfig,
-} from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/resources-data-aggregation"
-import ResourcesDonutChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/ResourcesDonutChart"
-import ResourcesPieChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/ResourcesPieChart"
-import VerticalNavigation from "app/[locale]/grp/(components)/generic/VerticalNavigation/VerticalNavigation"
-import { DinEnrichedBuildingComponent } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-
-import PieChartLegendTable from "app/[locale]/grp/pdf-optimized/[passportId]/ResourcesModule/PieChartLegendTable"
-import { PALETTE_LIFECYCLE_PHASES } from "constants/styleConstants"
+} from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 import DummyAccordion from "../../../DummyAccordion"
 import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
 
@@ -45,28 +44,10 @@ const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nr
 
   // TODO: consider to refactor here - each chart type should be potentially a separate component
 
-  const aggregatedDataRmiRenewable = aggregateRmiData(
-    dinEnrichedBuildingComponents,
-    [
-      { propertyName: "rmiForestry", labelName: "Forst" },
-      { propertyName: "rmiAqua", labelName: "Wasser" },
-      { propertyName: "rmiAgrar", labelName: "Agrar" },
-    ],
-    nrf
-  )
+  // TODO: URGENT - CHECK: Why is in this file renewable present, but not nonRenewable?
+  const aggregatedDataRmiRenewable = aggregateRmiData(dinEnrichedBuildingComponents, "renewable", nrf)
 
-  const aggregatedDataRmi = aggregateRmiData(
-    dinEnrichedBuildingComponents,
-    [
-      { propertyName: "rmiFossil", labelName: "Fossil" },
-      { propertyName: "rmiMetallic", labelName: "Metallisch" },
-      { propertyName: "rmiMineral", labelName: "Mineralisch" },
-      { propertyName: "rmiForestry", labelName: "Forst" },
-      { propertyName: "rmiAgrar", labelName: "Agrar" },
-      { propertyName: "rmiAqua", labelName: "Wasser" },
-    ],
-    nrf
-  )
+  const aggregatedDataRmi = aggregateRmiData(dinEnrichedBuildingComponents, "all", nrf)
 
   // TODO: extract this into own file
   // e.g. constants/styleConstants.ts

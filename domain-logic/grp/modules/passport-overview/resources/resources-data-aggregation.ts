@@ -1,18 +1,35 @@
-import { DinEnrichedBuildingComponent } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
   ResourcesEmbodiedEmissions,
   ResourcesEmbodiedEnergy,
   ResourcesRawMaterials,
-} from "app/[locale]/grp/(utils)/data-schema/versions/v1/passportSchema"
+} from "domain-logic/grp/data-schema/versions/v1/passportSchema"
 
 type ResourceConfig = {
   propertyName: keyof ResourcesRawMaterials
   labelName: string
 }
 
+const resourceTypesRenewable: ResourceConfig[] = [
+  { propertyName: "rmiForestry", labelName: "Forst" },
+  { propertyName: "rmiAgrar", labelName: "Agrar" },
+  { propertyName: "rmiAqua", labelName: "Wasser" },
+]
+
+const resourceTypesNonRenewable: ResourceConfig[] = [
+  { propertyName: "rmiFossil", labelName: "Fossil" },
+  { propertyName: "rmiMetallic", labelName: "Metallisch" },
+  { propertyName: "rmiMineral", labelName: "Mineralisch" },
+]
+
+const resourceTypesCategoryMapping = {
+  renewable: resourceTypesRenewable,
+  nonRenewable: resourceTypesNonRenewable,
+  all: [...resourceTypesRenewable, ...resourceTypesNonRenewable],
+}
+
 type AggretatedByByResourceTypeWithPercentage = {
   resourceTypeName: string
-  // propertyName: string
   aggregatedValue: number
   percentageValue: number
   label: string
@@ -26,9 +43,12 @@ type AggregatedRmiData = {
 
 export const aggregateRmiData = (
   buildingComponents: DinEnrichedBuildingComponent[],
-  resourceConfigs: ResourceConfig[],
+  // resourceConfigs: ResourceConfig[],
+  resourceTypesCategory: "renewable" | "nonRenewable" | "all",
   nrf: number
 ): AggregatedRmiData => {
+  const resourceConfigs = resourceTypesCategoryMapping[resourceTypesCategory]
+
   const initialResourceMap: Record<string, number> = {}
 
   const aggregatedResourceMap = buildingComponents.reduce((acc, component) => {
@@ -57,6 +77,7 @@ export const aggregateRmiData = (
 
     const label = `${aggregatedValue
       .toFixed(0)
+      // TODO: extract this out to presentation logic
       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")} Tonnen - ${percentageValue.toFixed(2)}%`
 
     return {
@@ -145,11 +166,13 @@ export type PenrtAggregationConfig = {
 
 type AggregationConfig = GwpAggregationConfig | PenrtAggregationConfig
 
+// TODO: Don't export this - handle this better here in domain logic code
 export const penrtAggregationConfig: PenrtAggregationConfig = {
   propertyName: "embodiedEnergy",
   labelsConfig: penrtLabelsConfig,
 }
 
+// TODO: Don't export this - handle this better here in domain logic code
 export const gwpAggregationConfig: GwpAggregationConfig = {
   propertyName: "embodiedEmissions",
   labelsConfig: gwpLabelsConfigs,

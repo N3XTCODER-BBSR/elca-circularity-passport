@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { Layer } from "app/[locale]/grp/(utils)/data-schema/versions/v1/passportSchema"
+import { Layer } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
 import LayerDetailInfo from "./(components)/LayerDetailInfo"
 
 type ComponentLayerProps = {

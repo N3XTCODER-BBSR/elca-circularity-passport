@@ -2,7 +2,7 @@ import { PaperClipIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
 import { AccordionItemFull } from "app/[locale]/grp/(components)/generic/Accordion/AccordionItem"
 import SideBySideDescriptionListsWithHeadline from "app/[locale]/grp/(components)/generic/SideBySideDescriptionListsWithHeadline"
-import { Material } from "app/[locale]/grp/(utils)/data-schema/versions/v1/passportSchema"
+import { Material } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
 
 const MaterialInfo = ({ material }: { material: Material }) => {
   const materialValues = [

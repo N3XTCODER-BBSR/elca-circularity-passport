@@ -34,6 +34,7 @@ const ResourcesDonutChart = ({
   innerRadius?: number
 }) => (
   <ResponsivePie
+    // TODO: Consider to move this out into domain-level logic
     data={data.map((d) => ({
       id: d[indexBy],
       label: d.label,

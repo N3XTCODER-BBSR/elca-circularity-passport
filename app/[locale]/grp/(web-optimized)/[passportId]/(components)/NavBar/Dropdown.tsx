@@ -1,8 +1,8 @@
 "use client"
 import { Menu } from "@headlessui/react"
-import { clsx } from "clsx"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import { twMerge } from "tailwind-merge"
 
 const languages = [
   { code: "de", name: "Deutsch" },
@@ -46,7 +46,7 @@ const Dropdown = () => {
                 {({ active }) => (
                   <button
                     onClick={() => updateLocale(language.code)}
-                    className={clsx(
+                    className={twMerge(
                       active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                       "block w-full px-4 py-2 text-left text-sm"
                     )}

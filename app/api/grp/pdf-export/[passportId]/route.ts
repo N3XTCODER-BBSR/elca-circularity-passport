@@ -12,7 +12,6 @@ export async function GET(req: NextRequest, { params }: { params: { passportId: 
     method: "POST",
     headers: {
       Authorization: `Bearer ${process.env.DOPPIO_API_KEY}`,
-      //   "ngrok-skip-browser-warning": "foo",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({

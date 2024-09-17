@@ -1,9 +1,4 @@
-import {
-  aggregateGwpOrPenrt,
-  gwpAggregationConfig,
-} from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/resources-data-aggregation"
 import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
-import { DinEnrichedBuildingComponent } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
   ModuleSectionContainer,
   ModuleSectionMain,
@@ -11,6 +6,11 @@ import {
   TextXSLeading4,
 } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
 import { PALETTE_LIFECYCLE_PHASES } from "constants/styleConstants"
+import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import {
+  aggregateGwpOrPenrt,
+  gwpAggregationConfig,
+} from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 import PieChartLegendTable from "./PieChartLegendTable"
 import ResourcesDonutChart from "./ResourcesDonutChart"
 
@@ -23,6 +23,7 @@ type GwpSectionProps = {
 const GwpSection = ({ dinEnrichedBuildingComponents, nrf }: GwpSectionProps) => {
   const keys = ["aggregatedValue"]
 
+  // TODO: move out gwpAggregationConfig param (at least, handle it in the domain-logic code)
   const aggregatedGwp = aggregateGwpOrPenrt(dinEnrichedBuildingComponents, gwpAggregationConfig)
   const aggregatedGwpTotal = Math.round(aggregatedGwp.reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0))
   const aggregatedGwpTotalPerNrf = (aggregatedGwpTotal / nrf).toFixed(2)
@@ -38,14 +39,14 @@ const GwpSection = ({ dinEnrichedBuildingComponents, nrf }: GwpSectionProps) => 
     return datum.data.color
   }
 
-  // TODO: it's nto DRY since it's replicated also in the web version
+  // TODO: it's not DRY since it's replicated also in the web version
   // (and it's even multiplicated by 2) since it's the same situation for penrt
-
   const grayEmissionsTotal = aggregatedGwpWithColors
     .filter((data) => data.pattern === "dots")
     .map((el) => el.aggregatedValue)
     .reduce((acc, val) => acc + val, 0)
 
+  // TODO: consider to move this into domain-logic layer
   const legendTableData = [
     ...aggregatedGwpWithColors.map((data) => ({
       color: data.color,

@@ -1,12 +1,12 @@
-import { aggregateRmiData } from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/resources-data-aggregation"
 import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
-import { DinEnrichedBuildingComponent } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
   ModuleSectionContainer,
   ModuleSectionMain,
   ModuleSectionTitle,
   TextXSLeading4,
 } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
+import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { aggregateRmiData } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 import PieChartLegendTable from "./PieChartLegendTable"
 import ResourcesPieChart from "./ResourcesPieChart"
 
@@ -19,40 +19,29 @@ type RmiSectionProps = {
 const RmiSection = ({ dinEnrichedBuildingComponents, nrf }: RmiSectionProps) => {
   const aggregatedDataRmiRenewable = aggregateRmiData(
     dinEnrichedBuildingComponents,
-    [
-      { propertyName: "rmiForestry", labelName: "Forst" },
-      { propertyName: "rmiAgrar", labelName: "Agrar" },
-      { propertyName: "rmiAqua", labelName: "Wasser" },
-    ],
+    // TODO: extract these to a constant into domain-logic
+    "renewable",
     nrf
   )
 
   const aggregatedDataRmiNonRenewable = aggregateRmiData(
     dinEnrichedBuildingComponents,
-    [
-      { propertyName: "rmiFossil", labelName: "Fossil" },
-      { propertyName: "rmiMetallic", labelName: "Metallisch" },
-      { propertyName: "rmiMineral", labelName: "Mineralisch" },
-    ],
+    // TODO: extract these to a constant into domain-logic
+    "nonRenewable",
     nrf
   )
 
   const aggregatedDataRmi = aggregateRmiData(
     dinEnrichedBuildingComponents,
-    [
-      { propertyName: "rmiFossil", labelName: "Fossil" },
-      { propertyName: "rmiMetallic", labelName: "Metallisch" },
-      { propertyName: "rmiMineral", labelName: "Mineralisch" },
-      { propertyName: "rmiForestry", labelName: "Forst" },
-      { propertyName: "rmiAgrar", labelName: "Agrar" },
-      { propertyName: "rmiAqua", labelName: "Wasser" },
-    ],
+    // TODO: extract these to a constant into domain-logic (and just merge the two arrays already defined on top for this one here)
+    "all",
     nrf
   )
 
   const keys = ["aggregatedValue"]
 
   const colorsMapper = (datum: any) => {
+    // TODO: extract these to a constant into domain-logic
     const colorsMapping = {
       Forst: "#7DC0A6",
       Wasser: "#8ECAC4",

@@ -1,5 +1,3 @@
-import aggregateCircularityData from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/circularity/circularity-data-aggregation"
-import { DinEnrichedBuildingComponent } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
   Box,
   ModuleContainer,
@@ -9,6 +7,8 @@ import {
   ModuleSectionTitle,
   ModuleTitle,
 } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
+import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import aggregateCircularityData from "domain-logic/grp/modules/passport-overview/circularity/circularity-data-aggregation"
 import CircularityBarChart from "./CircularityBarChart"
 
 type CircularityProps = {
@@ -19,6 +19,7 @@ type CircularityProps = {
 const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents }) => {
   const aggregatedData = aggregateCircularityData(dinEnrichedBuildingComponents)
 
+  // TODO: consider to move this into domain-logic layer
   const chartDataForAvgEolPointsPerComponentCostCategory = aggregatedData.avgEolPointsPerComponentCostCategory.map(
     (data) => ({
       ...data,
@@ -26,6 +27,7 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
     })
   )
 
+  // TODO: consider to move this into domain-logic layer
   const chartDataForAvgEolPoints = [
     {
       weightedAvgEolPoints: aggregatedData.totalAvgEolPoints,

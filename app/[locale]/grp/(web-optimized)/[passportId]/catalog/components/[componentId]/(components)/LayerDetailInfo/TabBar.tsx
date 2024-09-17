@@ -1,8 +1,7 @@
 "use client"
 
 import { Disclosure } from "@headlessui/react"
-import { clsx } from "clsx"
-
+import { twMerge } from "tailwind-merge"
 type TabBarProps = {
   currentTabIdx: number
   setCurrentTabIdx: (idx: number) => void
@@ -25,18 +24,11 @@ export default function Tabs({ currentTabIdx, setCurrentTabIdx }: TabBarProps) {
                     <div className="flex items-center">
                       <div className="sm:flex sm:space-x-8">
                         {tabs.map((tab, i) => {
-                          // Check if the relative path starts with the tab's href
-                          // const pathWithoutTrailingSlash = pathname.replace(/\/$/, "")
-
-                          // const isRootPath = pathname === `/${passportId}`
-
-                          // const isPathCurrentTab = (tab.href === "" && isRootPath) || (tab.href !== "" && pathname.startsWith(`/${passportId}/${tab.href}`))
-
                           return (
                             <button
                               onClick={() => setCurrentTabIdx(i)}
                               key={tab.name}
-                              className={clsx(
+                              className={twMerge(
                                 currentTabIdx === i
                                   ? "bg-gray-200 text-blue-900"
                                   : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",

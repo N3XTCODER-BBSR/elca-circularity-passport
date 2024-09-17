@@ -1,4 +1,4 @@
-import { BuildingComponent } from "app/[locale]/grp/(utils)/data-schema/versions/v1/passportSchema"
+import { BuildingComponent } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
 import { aggregateMaterialsDataByBuildingComponentCategory } from "./materials-data-aggregation"
 
 describe("Materials aggregation logic", () => {

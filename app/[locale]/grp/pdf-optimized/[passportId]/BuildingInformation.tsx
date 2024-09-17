@@ -1,11 +1,12 @@
-import { DinEnrichedPassportData } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import { ModuleTitle } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
+import { DinEnrichedPassportData } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import SideBySideDescriptionListsWithHeadline, { KeyValueTuple } from "../SideBySideDescriptionListsWithHeadline"
 
 const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportData: DinEnrichedPassportData }) => {
   const buildingBaseInfoKeyValues: KeyValueTuple[] = [
     {
       key: "Gebäude/Bauwerk-ID",
+      // TODO: Rework this (also needs design spec iteration probably)
       value: Object.entries(dinEnrichedPassportData.buildingBaseData.buildingStructureId)
         .filter(([_key, value]) => value != null)
         .map(([key, value]) => `${key}: ${value}`)

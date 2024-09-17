@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { classNames } from "app/[locale]/grp/(utils)/classnames"
+import { twMerge } from "tailwind-merge"
 import Tooltip from "./Tooltip"
 
 export type KeyValueTuple = {
@@ -25,7 +25,7 @@ const SingleKeyValueTuple = ({
 }) => {
   return (
     <div
-      className={classNames(
+      className={twMerge(
         "w-full p-2 px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-3 md:w-1/2",
         isLeft ? "md:border-r-2" : ""
       )}
@@ -52,7 +52,7 @@ const SideBySideDescriptionListsWithHeadline = ({ headline, data }: SideBySideDe
         {chunkedArray.map((chunk, idx) => (
           <div
             key={idx}
-            className={classNames(
+            className={twMerge(
               "flex flex-col px-4 md:col-span-2 md:flex-row",
               idx % 2 === 1 ? "md:bg-white" : "md:bg-gray-50"
             )}

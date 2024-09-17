@@ -1,4 +1,4 @@
-import { DinEnrichedBuildingComponent } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 
 export interface AggretatedMaterialsDataByCategoryWithPercentage {
   costGroupCategoryId: number

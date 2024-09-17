@@ -4,10 +4,10 @@ import Image from "next/image"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { twMerge } from "tailwind-merge"
 import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
-import { classNames } from "app/[locale]/grp/(utils)/classnames"
-import { DinEnrichedBuildingComponent } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import mergeDin276HierarchyWithBuildingComponents from "app/[locale]/grp/(utils)/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents"
+import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import mergeDin276HierarchyWithBuildingComponents from "domain-logic/grp/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents"
 
 type ComponentsTreeProps = {
   buildingComponents: DinEnrichedBuildingComponent[]
@@ -97,7 +97,7 @@ const ComponentsTree = ({ buildingComponents }: ComponentsTreeProps) => {
                         <button
                           onClick={() => onUpdateCateogryClick(componentsByCategory.categoryNumber)}
                           type="button"
-                          className={classNames(
+                          className={twMerge(
                             selectedCategoryNumber === componentsByCategory.categoryNumber
                               ? "bg-gray-50 text-indigo-600"
                               : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
@@ -134,7 +134,7 @@ const ComponentsTree = ({ buildingComponents }: ComponentsTreeProps) => {
               <li key={componentsByComponentNumber.componentTypeNumber}>
                 <button
                   type="button"
-                  className={classNames(
+                  className={twMerge(
                     componentsByComponentNumber.componentTypeNumber === selectedComponentsTypeNumber
                       ? "bg-gray-50 text-indigo-600"
                       : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",

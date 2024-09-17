@@ -1,6 +1,6 @@
 import SideBySideDescriptionListsWithHeadline from "app/[locale]/grp/(components)/generic/SideBySideDescriptionListsWithHeadline"
-import getEolClassNameByPoints from "app/[locale]/grp/(utils)/data-schema/versions/v1/circularityDataUtils"
-import { Circularity } from "app/[locale]/grp/(utils)/data-schema/versions/v1/passportSchema"
+import getEolClassNameByPoints from "domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import { Circularity } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
 
 const CircularityInfo = ({ circularity }: { circularity?: Circularity }) => {
   const eolClass = getEolClassNameByPoints(circularity?.eolPoints)

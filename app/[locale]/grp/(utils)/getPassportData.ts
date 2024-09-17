@@ -1,8 +1,8 @@
 import enrichComponentsArrayWithDin276Labels, {
   DinEnrichedPassportData,
-} from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import passportParser from "app/[locale]/grp/(utils)/data-schema/versions/v1/passportParser"
-import { PassportData } from "app/[locale]/grp/(utils)/data-schema/versions/v1/passportSchema"
+} from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import passportParser from "domain-logic/grp/data-schema/versions/v1/passportParser"
+import { PassportData } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
 import prisma from "prisma/prismaClient"
 
 const getPassportData = async (passportId: string): Promise<PassportData | null> => {

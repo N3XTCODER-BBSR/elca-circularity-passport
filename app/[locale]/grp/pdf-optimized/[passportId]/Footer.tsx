@@ -1,7 +1,7 @@
 "use client"
 
 import QRCode from "qrcode.react"
-import { DinEnrichedPassportData } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { DinEnrichedPassportData } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import { env } from "../../../../../env.mjs"
 
 const FooterItem = ({ title, value }: { title: string; value: string }) => {

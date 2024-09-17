@@ -1,5 +1,5 @@
-import getEolClassNameByPoints from "app/[locale]/grp/(utils)/data-schema/versions/v1/circularityDataUtils"
-import { DinEnrichedBuildingComponent } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import getEolClassNameByPoints from "domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 
 export type CirculartyDataItem = {
   categoryNumberAndName: string

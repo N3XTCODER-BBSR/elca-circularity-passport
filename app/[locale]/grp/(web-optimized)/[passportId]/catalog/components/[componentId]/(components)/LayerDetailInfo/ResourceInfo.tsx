@@ -1,8 +1,9 @@
 import SideBySideDescriptionListsWithHeadline from "app/[locale]/grp/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import SingleValueDisplay from "app/[locale]/grp/(components)/generic/SingleValueDisplay"
-import { Ressources } from "app/[locale]/grp/(utils)/data-schema/versions/v1/passportSchema"
+import { Ressources } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
 
 const ResourceInfo = ({ resources }: { resources: Ressources }) => {
+  // TODO: move this into domain logic
   const rmiTotal = Math.round(
     (resources?.rawMaterials.rmiMineral || 0) +
       (resources?.rawMaterials.rmiMetallic || 0) +

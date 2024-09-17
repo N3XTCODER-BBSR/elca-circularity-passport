@@ -1,6 +1,6 @@
 "use client"
-import { DinEnrichedBuildingComponent } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import { ModuleContainer, ModuleMain, ModuleTitle } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
+import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import GwpSection from "./GwpSection"
 import PenrtSectionSection from "./PenrtSection"
 import RmiSection from "./RmiSection"
@@ -8,7 +8,6 @@ import RmiSection from "./RmiSection"
 type ResourcesProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
   nrf: number
-  className?: string // Add className as an optional prop
 }
 
 const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nrf }) => {

@@ -1,8 +1,8 @@
 "use client"
 
-import aggregateCircularityData from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/circularity/circularity-data-aggregation"
 import CircularityBarChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/circularity/CircularityBarChart"
-import { DinEnrichedBuildingComponent } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import aggregateCircularityData from "domain-logic/grp/modules/passport-overview/circularity/circularity-data-aggregation"
 import DummyAccordion from "../../../DummyAccordion"
 
 type CircularityProps = {

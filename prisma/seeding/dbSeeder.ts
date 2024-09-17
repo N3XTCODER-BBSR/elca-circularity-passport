@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 // import { PassportData } from "utils/zod/passportSchema"
-import generatePassport from "../../app/[locale]/grp/(utils)/data-schema/versions/v1/passportJsonSeeder"
+import generatePassport from "../../domain-logic/grp/data-schema/versions/v1/passportJsonSeeder"
 
 const prisma = new PrismaClient()
 

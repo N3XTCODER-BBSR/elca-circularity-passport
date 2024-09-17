@@ -1,9 +1,4 @@
-import {
-  aggregateGwpOrPenrt,
-  penrtAggregationConfig,
-} from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/resources-data-aggregation"
 import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
-import { DinEnrichedBuildingComponent } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
   ModuleSectionContainer,
   ModuleSectionMain,
@@ -11,18 +6,23 @@ import {
   TextXSLeading4,
 } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
 import { PALETTE_LIFECYCLE_PHASES } from "constants/styleConstants"
+import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import {
+  aggregateGwpOrPenrt,
+  penrtAggregationConfig,
+} from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 import PieChartLegendTable from "./PieChartLegendTable"
 import ResourcesDonutChart from "./ResourcesDonutChart"
 
 type PenrtSectionProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
   nrf: number
-  className?: string // Add className as an optional prop
 }
 
 const PenrtSectionSection = ({ dinEnrichedBuildingComponents, nrf }: PenrtSectionProps) => {
   const keys = ["aggregatedValue"]
 
+  // TODO: move out gwpAggregationConfig param (at least, handle it in the domain-logic code)
   const aggregatedPenrt = aggregateGwpOrPenrt(dinEnrichedBuildingComponents, penrtAggregationConfig)
   const aggregatedPenrtTotal = Math.round(
     aggregatedPenrt.reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0)
@@ -48,6 +48,7 @@ const PenrtSectionSection = ({ dinEnrichedBuildingComponents, nrf }: PenrtSectio
     .map((el) => el.aggregatedValue)
     .reduce((acc, val) => acc + val, 0)
 
+  // TODO: consider to move this into domain-logic layer
   const legendTableData = [
     ...aggregatedPenrtWithColors.map((data) => ({
       color: data.color,

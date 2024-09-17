@@ -1,6 +1,7 @@
 "use client"
 
 import { BarDatum, ResponsiveBar } from "@nivo/bar"
+import getColor from "domain-logic/grp/modules/passport-overview/circularity/circularity-data-presentation-enrichment"
 
 const replaceWhiteSpaceWithLineBreak = (label: string) => label.replace(/\s+/g, "\n")
 
@@ -16,25 +17,6 @@ const CustomTooltip = ({ _id, _value, _color, data, labelKey }: any) => (
     <br />
   </div>
 )
-
-const colors = {
-  A: "#3e5529",
-  B: "#eaeee5",
-  C: "#b1cf95",
-  "C/D": "#b1cf95",
-  D: "#E2EFDA",
-  "D/E": "#E2EFDA",
-  E: "#FFD967",
-  "E/F": "#FFD967",
-  F: "#E36C0A",
-  "F/G": "#E36C0A",
-  G: "#8e4d1c",
-}
-const getColor = (bar: BarDatum) => {
-  // TODO: fix types
-  // @ts-ignore
-  return colors[bar.data.eolClass] || "black"!
-}
 
 const BarChart = ({
   data,

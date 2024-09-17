@@ -1,10 +1,10 @@
 "use client"
 
 import { Disclosure } from "@headlessui/react"
-import { clsx } from "clsx"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTranslations } from "next-intl"
+import { twMerge } from "tailwind-merge"
 import Dropdown from "./Dropdown"
 
 interface NavbarProps {
@@ -12,7 +12,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ passportId }: NavbarProps) {
-  const t = useTranslations("NavBar")
+  const t = useTranslations("Grp.Web.NavBar")
   const tabs = [
     { name: t("overview"), href: "" },
     { name: t("catalog"), href: "catalog" },
@@ -43,7 +43,7 @@ export default function Navbar({ passportId }: NavbarProps) {
                       <Link
                         key={tab.href}
                         href={`/grp/${passportId}/${tab.href}`}
-                        className={clsx(
+                        className={twMerge(
                           // pathname === pathWithoutTrailingSlash
                           isPathCurrentTab
                             ? "border-indigo-500 text-gray-900"

@@ -1,4 +1,5 @@
 import React from "react"
+import { twMerge } from "tailwind-merge"
 
 type NavigationItem = {
   name: string
@@ -9,10 +10,6 @@ interface SidebarProps {
   navigation: NavigationItem[]
   currentSectionId: string
   onSelect: (name: string) => void
-}
-
-const classNames = (...classes: (string | undefined)[]) => {
-  return classes.filter(Boolean).join(" ")
 }
 
 const VerticalNavigation: React.FC<SidebarProps> = ({ navigation, currentSectionId, onSelect }) => {
@@ -28,7 +25,7 @@ const VerticalNavigation: React.FC<SidebarProps> = ({ navigation, currentSection
                 onSelect(item.id)
                 e.stopPropagation()
               }}
-              className={classNames(
+              className={twMerge(
                 item.id === currentSectionId
                   ? "bg-gray-50 text-indigo-600"
                   : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",

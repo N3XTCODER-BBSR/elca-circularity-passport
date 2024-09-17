@@ -17,6 +17,7 @@ const PieChart = ({
   <ResponsivePie
     animate={false}
     isInteractive={false}
+    // TODO: consider to move this into domain-logic layer
     data={data.map((d) => ({
       id: d[indexBy],
       label: d.label,
@@ -38,6 +39,7 @@ const PieChart = ({
     // }}
     enableArcLabels={false}
     enableArcLinkLabels={false}
+    // TODO: consider to move this into presentation-logic layer
     defs={[
       {
         id: "dots",
@@ -58,6 +60,7 @@ const PieChart = ({
         spacing: 10,
       },
     ]}
+    // TODO: consider to move this into presentation-logic layer (and remove unused values)
     fill={[
       {
         match: {

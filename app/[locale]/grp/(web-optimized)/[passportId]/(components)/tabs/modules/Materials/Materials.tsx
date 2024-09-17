@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import MaterialsBarChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/materials/MaterialsBarChart"
+import { DinEnrichedPassportData } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
   aggregateMaterialsDataByBuildingComponentCategory,
   aggregateMaterialsDataByMaterialClass,
-} from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/materials/materials-data-aggregation"
-import MaterialsBarChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/materials/MaterialsBarChart"
-import { DinEnrichedPassportData } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+} from "domain-logic/grp/modules/passport-overview/materials/materials-data-aggregation"
 import DummyAccordion from "../../../DummyAccordion"
 import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
 

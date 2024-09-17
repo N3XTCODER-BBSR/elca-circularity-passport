@@ -17,6 +17,7 @@ const DonutChart = ({
   <ResponsivePie
     animate={false}
     isInteractive={false}
+    // TODO: consider to move this into domain-logic layer
     data={data.map((d) => ({
       id: d[indexBy],
       label: d.label,
@@ -46,6 +47,7 @@ const DonutChart = ({
     ]}
     fill={[
       {
+        // TODO: Consider to refactor this or move out into domain/presentation-logic layer
         match: (d) => d.data.pattern === "dots",
         id: "dots",
       },

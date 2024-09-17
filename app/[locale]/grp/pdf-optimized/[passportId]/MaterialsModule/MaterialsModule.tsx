@@ -1,9 +1,4 @@
 import {
-  aggregateMaterialsDataByBuildingComponentCategory,
-  aggregateMaterialsDataByMaterialClass,
-} from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/materials/materials-data-aggregation"
-import { DinEnrichedPassportData } from "app/[locale]/grp/(utils)/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import {
   Box,
   ModuleContainer,
   ModuleMain,
@@ -13,29 +8,37 @@ import {
   ModuleTitle,
   TextXSLeading4,
 } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
+import { DinEnrichedPassportData } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import {
+  aggregateMaterialsDataByBuildingComponentCategory,
+  aggregateMaterialsDataByMaterialClass,
+} from "domain-logic/grp/modules/passport-overview/materials/materials-data-aggregation"
 import MaterialsBarChart from "./MaterialsBarChart"
 
 const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportData: DinEnrichedPassportData }) => {
+  // TODO: consider to remove nrf as a param and calculate it inside the aggregation function directly
   const aggregatedDataByBuildingComponentCategory = aggregateMaterialsDataByBuildingComponentCategory(
     dinEnrichedPassportData.dinEnrichedBuildingComponents,
     dinEnrichedPassportData.buildingBaseData.nrf
   )
 
+  // TODO: consider to remove nrf as a param and calculate it inside the aggregation function directly
   const aggregatedDataByByMaterialClass = aggregateMaterialsDataByMaterialClass(
     dinEnrichedPassportData.dinEnrichedBuildingComponents,
     dinEnrichedPassportData.buildingBaseData.nrf
   )
 
+  // TODO: consider to move this into domain-logic layer
   const chartDataGroupedByBuildingMaterialClass =
     aggregatedDataByByMaterialClass.aggregatedByClassIdWithPercentageSorted.map((data) => ({
       categoryName: data.materialClassDescription,
       mass: data.aggregatedMass,
       aggregatedMassPercentage: data.aggregatedMassPercentage,
-      // label is of format xx% (abc t)
       label: data.label,
     }))
 
   const chartDataGroupedByBuildingComponentCategory =
+    // TODO: consider to move this into domain-logic layer
     aggregatedDataByBuildingComponentCategory.aggretatedByCategoryWithPercentageSorted.map((data) => ({
       categoryName: data.costGroupCategoryName,
       mass: data.aggregatedMass,

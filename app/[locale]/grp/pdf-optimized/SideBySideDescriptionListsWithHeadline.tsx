@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { classNames } from "app/[locale]/grp/(utils)/classnames"
+import { twMerge } from "tailwind-merge"
 
 export type KeyValueTuple = {
   key: string
@@ -28,9 +28,8 @@ const SingleKeyValueTuple = ({
   const height = `h-[${1 * 40}mm]`
 
   return (
-    // <div className={classNames("w-full p-2 px-0 ml-[2mm] py-[1mm] grid grid-cols-2", isLeft ? "border-r-2" : "")}>
     <div
-      className={classNames(
+      className={twMerge(
         height,
         "flex w-full justify-between px-2 leading-[5mm]",
         isLeft ? "border-r-2" : "",
@@ -38,7 +37,7 @@ const SingleKeyValueTuple = ({
       )}
     >
       <dt className="font-semibold text-gray-700">{keyValueTuple?.key}: &nbsp;</dt>
-      <dd className={classNames("text-right text-gray-600", lineClampClass)}>
+      <dd className={twMerge("text-right text-gray-600", lineClampClass)}>
         {keyValueTuple?.value || (!!keyValueTuple?.key && "N/A")}
       </dd>
     </div>
@@ -54,7 +53,7 @@ const SideBySideDescriptionListsWithHeadline = ({ data }: SideBySideDescriptionL
     <div className="mb-4">
       <dl className="grid grid-cols-2">
         {chunkedArray.map((chunk, idx) => (
-          <div key={idx} className={classNames("col-span-2 flex flex-row", idx % 2 === 1 ? "bg-white" : "bg-gray-50")}>
+          <div key={idx} className={twMerge("col-span-2 flex flex-row", idx % 2 === 1 ? "bg-white" : "bg-gray-50")}>
             <SingleKeyValueTuple keyValueTuple={chunk[0]} isLeft />
             <SingleKeyValueTuple keyValueTuple={chunk[1]} />
           </div>
