@@ -4,6 +4,8 @@ import { z } from "zod"
 export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
+    ELCA_LEGACY_DATABASE_URL: z.string().url(),
+    ELCA_LEGACY_DATABASE_HAS_SSL: z.enum(["true", "false"]).optional().transform((value) => value === "true"),
     ANALYZE: z
       .enum(["true", "false"])
       .optional()
@@ -16,7 +18,8 @@ export const env = createEnv({
       .enum(["true", "false"])
       .optional()
       .transform((value) => value === "true"),
-      NEXT_PUBLIC_PASSPORT_BASE_URL: z.string().url(),
+    NEXT_PUBLIC_PASSPORT_BASE_URL: z.string().url(),
+    NEXTAUTH_SECRET: z.string(),
   },
   client: {
     NEXT_PUBLIC_PASSPORT_BASE_URL: z.string().url(),
@@ -24,9 +27,12 @@ export const env = createEnv({
   runtimeEnv: {
     ANALYZE: process.env.ANALYZE,
     DATABASE_URL: process.env.DATABASE_URL,
+    ELCA_LEGACY_DATABASE_URL: process.env.ELCA_LEGACY_DATABASE_URL,
+    ELCA_LEGACY_DATABASE_HAS_SSL: process.env.ELCA_LEGACY_DATABASE_HAS_SSL,
     DOPPIO_API_KEY: process.env.DOPPIO_API_KEY,
     HTTP_BASIC_AUTH: process.env.HTTP_BASIC_AUTH,
-    RUN_SEEDERS_ON_DEPLOY: process.env.RUN_SEEDERS_ON_DEPLOY,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXT_PUBLIC_PASSPORT_BASE_URL: process.env.NEXT_PUBLIC_PASSPORT_BASE_URL,
+    RUN_SEEDERS_ON_DEPLOY: process.env.RUN_SEEDERS_ON_DEPLOY,
   },
 })

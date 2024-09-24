@@ -4,6 +4,10 @@ RUN_SEEDERS_ON_DEPLOY=${RUN_SEEDERS_ON_DEPLOY:-0}
 
 set -eux -o pipefail
 
+export NEXTAUTH_URL="https://${APP}.${REGION_NAME}.scalingo.io"
+echo "NEXTAUTH_URL=${NEXTAUTH_URL}" >> .env
+echo "NEXTAUTH_URL=${NEXTAUTH_URL}"
+
 npx prisma migrate deploy
 npx next build
 

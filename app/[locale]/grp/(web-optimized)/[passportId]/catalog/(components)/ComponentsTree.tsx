@@ -2,22 +2,28 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
-import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import mergeDin276HierarchyWithBuildingComponents from "domain-logic/grp/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents"
+import mergeDin276HierarchyWithBuildingComponents, {
+  ComponentWithBasicFields,
+} from "domain-logic/grp/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents"
 
-type ComponentsTreeProps = {
-  buildingComponents: DinEnrichedBuildingComponent[]
+type ComponentsTreeProps<T extends ComponentWithBasicFields> = {
+  buildingComponents: T[]
+  categoryNumbersToInclude?: number[]
+  generateLinkUrlForComponent: (component: string) => string
 }
 
-const ComponentsTree = ({ buildingComponents }: ComponentsTreeProps) => {
-  const params = useParams()
+const ComponentsTree = <T extends ComponentWithBasicFields>({
+  buildingComponents,
+  categoryNumbersToInclude,
+  generateLinkUrlForComponent,
+}: ComponentsTreeProps<T>) => {
   const router = useRouter()
 
-  const din276WithComponents = mergeDin276HierarchyWithBuildingComponents(buildingComponents)
+  const din276WithComponents = mergeDin276HierarchyWithBuildingComponents(buildingComponents, categoryNumbersToInclude)
 
   const [selectedCategoryNumber, setSelectedCategoryNumber] = useState<number | null>(null)
   const groupNumberOfSelectedCategory = Math.floor((selectedCategoryNumber || 0) / 100) * 100
@@ -164,7 +170,7 @@ const ComponentsTree = ({ buildingComponents }: ComponentsTreeProps) => {
           <ul className="space-y-1">
             {compontensForSelectedComponentNumber?.components.map((component) => (
               <li key={component.uuid} className="">
-                <Link href={`/grp/${params.passportId}/catalog/components/${component.uuid}`}>
+                <Link href={generateLinkUrlForComponent(component.uuid)}>
                   <Box className="p-4">
                     <div className="w-1/3">
                       <Image src="/component_placeholder_lg.png" alt={component.name} width={200} height={200} />

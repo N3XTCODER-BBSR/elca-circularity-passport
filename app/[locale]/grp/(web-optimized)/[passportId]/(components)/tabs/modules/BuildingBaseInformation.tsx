@@ -2,7 +2,7 @@
 
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
-} from "app/[locale]/grp/(components)/generic/SideBySideDescriptionListsWithHeadline"
+} from "app/(components)/SideBySideDescriptionListsWithHeadline"
 import { DinEnrichedPassportData } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 
 type BuildingBaseInformationProps = {

@@ -1,8 +1,54 @@
+import _ from "lodash"
 import { din276Hierarchy } from "./din276Mapping"
-import { DinEnrichedBuildingComponent } from "./enrichtComponentsArrayWithDin276Labels"
+// import { DinEnrichedBuildingComponent } from "./enrichtComponentsArrayWithDin276Labels"
 
-const mergeDin276HierarchyWithBuildingComponents = (buildingComponents: DinEnrichedBuildingComponent[]) => {
-  const mergedDin276Hierarchy = din276Hierarchy.map((group) => {
+// TODO: ADD NAMING!
+export type ComponentWithBasicFields = {
+  dinComponentLevelNumber: number
+  uuid: string
+  name: string
+}
+
+export type Din276MergedComponent = {
+  groupNumber: number
+  name: string
+  categories: {
+    categoryNumber: number
+    name: string
+    componentTypes: {
+      componentTypeNumber: number
+      name: string
+      components: ComponentWithBasicFields[]
+      numberOfComponents: number
+    }[]
+    numberOfComponents: number
+  }[]
+  numberOfComponents: number
+}
+
+const filterDinHierachysForCategoryNumbersToInclude = (categoryNumbersToInclude?: number[]) => {
+  if (categoryNumbersToInclude == null) {
+    return din276Hierarchy
+  }
+
+  const groupNumbersToInclude = _.uniq(categoryNumbersToInclude.map((el) => Math.floor(el / 100) * 100))
+  const filtered = din276Hierarchy
+    .filter((el) => groupNumbersToInclude.includes(el.number))
+    .map((group) => ({
+      ...group,
+      children: group.children.filter((cat) => categoryNumbersToInclude.includes(cat.number)),
+    }))
+
+  return filtered
+}
+
+const mergeDin276HierarchyWithBuildingComponents = (
+  buildingComponents: ComponentWithBasicFields[],
+  categoryNumbersToInclude?: number[]
+): Din276MergedComponent[] => {
+  const filteredDin276Hierarchy = filterDinHierachysForCategoryNumbersToInclude(categoryNumbersToInclude)
+
+  const mergedDin276Hierarchy: Din276MergedComponent[] = filteredDin276Hierarchy.map((group) => {
     const categories = group.children.map((category) => {
       const componentTypes = category.children.map((componentType) => {
         const components = buildingComponents.filter((buildingComponent) => {
