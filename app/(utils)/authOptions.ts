@@ -16,6 +16,7 @@ const authOptions: NextAuthOptions = {
       authorize: async (credentials) => {
         console.log("Authorizing user...")
         if (!credentials) {
+          console.error("No credentials provided.")
           return null
         }
 
