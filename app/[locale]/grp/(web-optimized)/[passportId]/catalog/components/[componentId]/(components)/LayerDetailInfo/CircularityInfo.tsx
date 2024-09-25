@@ -1,4 +1,4 @@
-import SideBySideDescriptionListsWithHeadline from "app/(components)/SideBySideDescriptionListsWithHeadline"
+import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import getEolClassNameByPoints from "domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
 import { Circularity } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
 

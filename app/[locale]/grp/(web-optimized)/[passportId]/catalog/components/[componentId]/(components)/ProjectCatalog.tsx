@@ -1,5 +1,5 @@
 "use client"
-import ComponentsTree from "app/[locale]/grp/(web-optimized)/[passportId]/catalog/(components)/ComponentsTree"
+import ComponentsTree from "app/(components)/ComponentsTree"
 import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 
 type ProjectCatalogProps = {

@@ -1,7 +1,7 @@
 "use client"
 import _ from "lodash"
 import { ElcaProjectComponent } from "app/[locale]/(circularity)/(utils)/types"
-import ComponentsTree from "app/[locale]/grp/(web-optimized)/[passportId]/catalog/(components)/ComponentsTree"
+import ComponentsTree from "app/(components)/ComponentsTree"
 import { ComponentWithBasicFields } from "domain-logic/grp/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents"
 
 type ProjectCatalogProps = {

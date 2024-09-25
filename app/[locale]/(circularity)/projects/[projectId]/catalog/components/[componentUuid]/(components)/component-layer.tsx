@@ -3,7 +3,7 @@
 import Image from "next/image"
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
-} from "app/(components)/SideBySideDescriptionListsWithHeadline"
+} from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { ElcaProjectComponentLayer } from "app/[locale]/(circularity)/(utils)/types"
 
 type ComponentLayerProps = {

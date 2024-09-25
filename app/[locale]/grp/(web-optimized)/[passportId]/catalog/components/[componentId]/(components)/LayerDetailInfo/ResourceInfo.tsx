@@ -1,5 +1,5 @@
-import SideBySideDescriptionListsWithHeadline from "app/(components)/SideBySideDescriptionListsWithHeadline"
-import SingleValueDisplay from "app/(components)/SingleValueDisplay"
+import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
+import SingleValueDisplay from "app/(components)/generic/SingleValueDisplay"
 import { Ressources } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
 
 const ResourceInfo = ({ resources }: { resources: Ressources }) => {

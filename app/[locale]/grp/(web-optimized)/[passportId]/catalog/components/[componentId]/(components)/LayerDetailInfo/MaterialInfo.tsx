@@ -1,6 +1,6 @@
 import { PaperClipIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
-import SideBySideDescriptionListsWithHeadline from "app/(components)/SideBySideDescriptionListsWithHeadline"
+import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { AccordionItemFull } from "app/[locale]/grp/(components)/generic/Accordion/AccordionItem"
 import { Material } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
 
