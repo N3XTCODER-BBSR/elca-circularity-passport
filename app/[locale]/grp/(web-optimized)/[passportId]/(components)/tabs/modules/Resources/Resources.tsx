@@ -7,7 +7,7 @@ import ResourcesPieChart from "app/[locale]/grp/(components)/domain-specific/mod
 import VerticalNavigation from "app/[locale]/grp/(components)/generic/VerticalNavigation/VerticalNavigation"
 
 import PieChartLegendTable from "app/[locale]/grp/pdf-optimized/[passportId]/ResourcesModule/PieChartLegendTable"
-import { PALETTE_LIFECYCLE_PHASES } from "constants/styleConstants"
+import { PALETTE_LIFECYCLE_PHASES, rmiColorsMapper } from "constants/styleConstants"
 import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
   aggregateGwpOrPenrt,
@@ -17,6 +17,7 @@ import {
 } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 import DummyAccordion from "../../../DummyAccordion"
 import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
+import { useTranslations } from "next-intl"
 
 const navigationSections = [
   {
@@ -36,10 +37,11 @@ const navigationSections = [
 type ResourcesProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
   nrf: number
-  className?: string // Add className as an optional prop
+  className?: string
 }
 
 const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nrf, className }) => {
+  const rmiTranslations = useTranslations("Grp.Web.sections.overview.module2Resources.rmi")
   const [currentNavSectionId, setCurrentNavSectionId] = useState<string>("0")
 
   // TODO: consider to refactor here - each chart type should be potentially a separate component
@@ -49,25 +51,10 @@ const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nr
 
   const aggregatedDataRmi = aggregateRmiData(dinEnrichedBuildingComponents, "all", nrf)
 
-  // TODO: extract this into own file
-  // e.g. constants/styleConstants.ts
-  const rmiColorsMapper = (datum: any) => {
-    const colorsMapping = {
-      Forst: "#7DC0A6",
-      Wasser: "#8ECAC4",
-      Agrar: "#B3DBB8",
-      Mineralisch: "#E1E7EF",
-      Metallisch: "#CBD5E1",
-      Fossil: "#94A3B8",
-    }
-
-    return colorsMapping[datum.id as keyof typeof colorsMapping]
-  }
-
   const rmiLegendTableData = [
     ...aggregatedDataRmi.aggretatedByByResourceTypeWithPercentage.map((data) => ({
-      color: rmiColorsMapper({ id: data.resourceTypeName }),
-      name: data.resourceTypeName,
+      color: rmiColorsMapper(data.resourceTypeName),
+      name: rmiTranslations(`names.${data.resourceTypeName}`),
       value: data.aggregatedValue,
       percentage: data.percentageValue,
     })),
@@ -140,6 +127,7 @@ const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nr
     },
   ]
 
+  // TODO: Refactor: extract each case of currentNavSectionId into separate component
   return (
     <div className={className}>
       <h2 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
@@ -171,8 +159,6 @@ const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nr
                 <div className="h-96">
                   <ResourcesPieChart
                     data={aggregatedDataRmi.aggretatedByByResourceTypeWithPercentage}
-                    indexBy={"resourceTypeName"}
-                    keys={keys}
                     colors={rmiColorsMapper}
                   />
                 </div>

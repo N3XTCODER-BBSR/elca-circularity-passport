@@ -8,7 +8,9 @@ import {
 import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import { aggregateRmiData } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 import PieChartLegendTable from "./PieChartLegendTable"
-import ResourcesPieChart from "./ResourcesPieChart"
+import { rmiColorsMapper } from "constants/styleConstants"
+import ResourcesPieChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/ResourcesPieChart"
+import { useTranslations } from "next-intl"
 
 type RmiSectionProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
@@ -17,6 +19,8 @@ type RmiSectionProps = {
 }
 
 const RmiSection = ({ dinEnrichedBuildingComponents, nrf }: RmiSectionProps) => {
+  const rmiTranslations = useTranslations("Grp.Pdf.sections.overview.module2Resources.rmi")
+
   const aggregatedDataRmiRenewable = aggregateRmiData(
     dinEnrichedBuildingComponents,
     // TODO: extract these to a constant into domain-logic
@@ -38,25 +42,9 @@ const RmiSection = ({ dinEnrichedBuildingComponents, nrf }: RmiSectionProps) => 
     nrf
   )
 
-  const keys = ["aggregatedValue"]
-
-  const colorsMapper = (datum: any) => {
-    // TODO: extract these to a constant into domain-logic
-    const colorsMapping = {
-      Forst: "#7DC0A6",
-      Wasser: "#8ECAC4",
-      Agrar: "#B3DBB8",
-      Mineralisch: "#E1E7EF",
-      Metallisch: "#CBD5E1",
-      Fossil: "#94A3B8",
-    }
-
-    return colorsMapping[datum.id as keyof typeof colorsMapping]
-  }
-
   const legendTableData = aggregatedDataRmi.aggretatedByByResourceTypeWithPercentage.map((data) => ({
-    color: colorsMapper({ id: data.resourceTypeName }),
-    name: data.resourceTypeName,
+    color: rmiColorsMapper(data.resourceTypeName),
+    name: rmiTranslations(`names.${data.resourceTypeName}`),
     value: data.aggregatedValue,
     percentage: data.percentageValue,
   }))
@@ -69,10 +57,9 @@ const RmiSection = ({ dinEnrichedBuildingComponents, nrf }: RmiSectionProps) => 
           <Box>
             <Box height={24}>
               <ResourcesPieChart
-                colors={colorsMapper}
+                colors={rmiColorsMapper}
                 data={aggregatedDataRmi.aggretatedByByResourceTypeWithPercentage}
-                indexBy={"resourceTypeName"}
-                keys={keys}
+                isPdf={true}
               />
             </Box>
             <Box>
@@ -94,7 +81,6 @@ const RmiSection = ({ dinEnrichedBuildingComponents, nrf }: RmiSectionProps) => 
           </Box>
           <Box>
             <PieChartLegendTable data={legendTableData} unit="t" />
-            {/* <div className="overflow-x-auto text-[6pt]"> */}
           </Box>
           <Box>
             <table className="mt-[2mm] min-w-full overflow-x-auto bg-gray-50 text-[6pt]">

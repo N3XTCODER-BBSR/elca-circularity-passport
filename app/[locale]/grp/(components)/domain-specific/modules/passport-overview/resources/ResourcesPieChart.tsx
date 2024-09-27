@@ -1,132 +1,93 @@
 "use client"
 
 import { ResponsivePie } from "@nivo/pie"
+import { ResourceTypeNames } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
+import { useTranslations } from "next-intl"
 
-const CustomTooltip = ({ _id, _value, color, data }: any) => (
+const CustomTooltip = ({ value }: { value: string }) => (
   <div
     style={{
       padding: "5px 10px",
       background: "white",
       border: "1px solid #ccc",
-      color,
     }}
   >
-    <strong>{data.datum.label}</strong>
+    <strong>{value}</strong>
     <br />
   </div>
 )
 
-const PieChart = ({
-  data,
-  indexBy,
-  keys,
-  colors,
-}: {
-  data: Array<{ [key: string]: string | number }>
-  indexBy: string
-  keys: string[]
-  colors?: ((datum: any) => string) | { datum: string }
-}) => (
-  <ResponsivePie
-    // TODO: Consider to move this out into domain-level logic
-    data={data.map((d) => ({
-      id: d[indexBy],
-      label: d.label,
-      value: keys.reduce((acc, key) => acc + (d[key] as number), 0),
-    }))}
-    arcLabel={(e) => `${e.data.label}`}
-    margin={{ top: 20, right: 20, bottom: 40, left: 20 }}
-    innerRadius={0}
-    padAngle={0.7}
-    cornerRadius={3}
-    activeOuterRadiusOffset={8}
-    colors={colors || { scheme: "blues" }}
-    borderColor={{
-      from: "color",
-      modifiers: [["darker", 0.2]],
-    }}
-    arcLinkLabelsSkipAngle={10}
-    arcLinkLabelsTextColor="#333333"
-    arcLinkLabelsThickness={2}
-    arcLinkLabelsColor={{ from: "color" }}
-    arcLabelsSkipAngle={10}
-    arcLabelsTextColor={{
-      from: "color",
-      modifiers: [["darker", 2]],
-    }}
-    defs={[
-      {
-        id: "dots",
-        type: "patternDots",
-        background: "inherit",
-        color: "rgba(255, 255, 255, 0.3)",
-        size: 4,
-        padding: 1,
-        stagger: true,
-      },
-      {
-        id: "lines",
-        type: "patternLines",
-        background: "inherit",
-        color: "rgba(255, 255, 255, 0.3)",
-        rotation: -45,
-        lineWidth: 6,
-        spacing: 10,
-      },
-    ]}
-    fill={[
-      {
-        match: {
-          id: "ruby",
-        },
-        id: "dots",
-      },
-      {
-        match: {
-          id: "c",
-        },
-        id: "dots",
-      },
-      {
-        match: {
-          id: "go",
-        },
-        id: "dots",
-      },
-      {
-        match: {
-          id: "python",
-        },
-        id: "dots",
-      },
-      {
-        match: {
-          id: "scala",
-        },
-        id: "lines",
-      },
-      {
-        match: {
-          id: "lisp",
-        },
-        id: "lines",
-      },
-      {
-        match: {
-          id: "elixir",
-        },
-        id: "lines",
-      },
-      {
-        match: {
-          id: "javascript",
-        },
-        id: "lines",
-      },
-    ]}
-    tooltip={(datum) => <CustomTooltip {...datum} data={datum} />}
-    enableArcLabels={false}
-  />
-)
+type Datum = {
+  resourceTypeName: ResourceTypeNames
+  aggregatedValue: number
+  percentageValue: number
+}
+type Colors = (resourceTypeName: ResourceTypeNames) => string
 
-export default PieChart
+type ResourcesPieChartProps = {
+  data: Array<Datum>
+  colors?: Colors
+  isPdf?: boolean
+}
+
+type ComputedDatum = {
+  id: string
+  label: string
+  arcLinkLabel: string
+  value: number
+  color: string
+}
+
+const ResourcesPieChart = ({
+  data,
+  colors = (resourceTypeName: ResourceTypeNames) => "",
+  isPdf = false,
+}: ResourcesPieChartProps) => {
+  const rmiTranslations = useTranslations("Grp.Web.sections.overview.module2Resources.rmi")
+
+  const cornerRadius = isPdf ? 0 : 3
+  const padAngle = isPdf ? 0 : 0.7
+  const margins = isPdf ? { top: 0, right: 0, bottom: 0, left: 0 } : { top: 20, right: 20, bottom: 40, left: 20 }
+
+  return (
+    <ResponsivePie
+      data={data.map((d) => {
+        const label = rmiTranslations("labels.overlay", {
+          aggregatedValue: d.aggregatedValue,
+          percentageValue: d.percentageValue / 100,
+        })
+        const computedDatum: ComputedDatum = {
+          id: d.resourceTypeName,
+          label,
+          arcLinkLabel: rmiTranslations(`names.${d.resourceTypeName}`),
+          value: d.aggregatedValue,
+          color: colors(d.resourceTypeName),
+        }
+        return computedDatum
+      })}
+      margin={margins}
+      innerRadius={0}
+      padAngle={padAngle}
+      cornerRadius={cornerRadius}
+      activeOuterRadiusOffset={8}
+      colors={(datum) => datum.data.color}
+      borderColor={{
+        from: "color",
+        modifiers: [["darker", 0.2]],
+      }}
+      enableArcLabels={false}
+      arcLinkLabel={(datum) => {
+        return datum.data.arcLinkLabel
+      }}
+      arcLinkLabelsSkipAngle={10}
+      arcLinkLabelsTextColor="#333333"
+      arcLinkLabelsThickness={2}
+      tooltip={(pieTooltipProps) => <CustomTooltip value={pieTooltipProps.datum.data.label} />}
+      enableArcLinkLabels={!isPdf}
+      isInteractive={!isPdf}
+      animate={!isPdf}
+    />
+  )
+}
+
+export default ResourcesPieChart

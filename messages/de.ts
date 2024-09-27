@@ -1,31 +1,50 @@
-const grpPlattformGeneric = {
+import _ from "lodash"
+
+const translationsGrpPlattformGeneric = {
   overview: {
     module2Resources: {
-      rmiCategories: {
-        renewable: "Erneuerbar",
-        nonRenewable: "Nicht-erneuerbar",
-      },
-      rmiNames: {
-        forestry: "Forst",
-        water: "Wasser",
-        agrar: "Agrar",
-        fossil: "Fossil",
-        metallic: "Metallisch",
-        mineral: "Mineralisch",
+      rmi: {
+        categories: {
+          renewable: "Erneuerbar",
+          nonRenewable: "Nicht-erneuerbar",
+        },
+        names: {
+          rmiForestry: "Forst",
+          rmiAqua: "Wasser",
+          rmiAgrar: "Agrar",
+          rmiFossil: "Fossil",
+          rmiMetallic: "Metallisch",
+          rmiMineral: "Mineralisch",
+        },
+        labels: {
+          overlay: "{aggregatedValue, number, integer} Tonnen - {percentageValue, number, percentage}",
+        },
       },
     },
   },
 }
 
-export default {
+const translationsPlattformGeneric = {
+  Grp: {
+    Web: {
+      sections: {
+        overview: translationsGrpPlattformGeneric.overview,
+      },
+    },
+    Pdf: {
+      sections: {
+        overview: translationsGrpPlattformGeneric.overview,
+      },
+    },
+  },
+}
+
+const translationsWebSpecific = {
   Grp: {
     Web: {
       title: "Ressourcenpass für Gebäude",
       description:
         "Das BBSR (Bundesinstitut für Bau-, Stadt-und Raumforschung, Referat WB6 Bauen und Umwelt) stellt dieses Tool kostenlos zur Verfügung.",
-      sections: {
-        overview: grpPlattformGeneric.overview,
-      },
       NavBar: {
         overview: "Überblick",
         catalog: "Katalog",
@@ -33,3 +52,7 @@ export default {
     },
   },
 }
+
+const mergedTranslations = _.merge({}, translationsWebSpecific, translationsPlattformGeneric)
+
+export default mergedTranslations

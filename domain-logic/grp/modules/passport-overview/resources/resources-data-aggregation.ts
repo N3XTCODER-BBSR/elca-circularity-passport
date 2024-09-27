@@ -5,37 +5,40 @@ import {
   ResourcesRawMaterials,
 } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
 
-type ResourceConfig = {
-  propertyName: keyof ResourcesRawMaterials
-  labelName: string
+export enum ResourceTypeNames {
+  Forestry = "rmiForestry",
+  Agrar = "rmiAgrar",
+  Aqua = "rmiAqua",
+  Mineral = "rmiMineral",
+  Metallic = "rmiMetallic",
+  Fossil = "rmiFossil",
 }
 
-const resourceTypesRenewable: ResourceConfig[] = [
-  { propertyName: "rmiForestry", labelName: "Forst" },
-  { propertyName: "rmiAgrar", labelName: "Agrar" },
-  { propertyName: "rmiAqua", labelName: "Wasser" },
+const resourceTypesRenewable: ResourceTypeNames[] = [
+  ResourceTypeNames.Forestry,
+  ResourceTypeNames.Agrar,
+  ResourceTypeNames.Aqua,
 ]
 
-const resourceTypesNonRenewable: ResourceConfig[] = [
-  { propertyName: "rmiFossil", labelName: "Fossil" },
-  { propertyName: "rmiMetallic", labelName: "Metallisch" },
-  { propertyName: "rmiMineral", labelName: "Mineralisch" },
+const resourceTypesNonRenewable: ResourceTypeNames[] = [
+  ResourceTypeNames.Mineral,
+  ResourceTypeNames.Metallic,
+  ResourceTypeNames.Fossil,
 ]
 
-const resourceTypesCategoryMapping = {
+const resourceTypesCategoryToNamesMapping = {
   renewable: resourceTypesRenewable,
   nonRenewable: resourceTypesNonRenewable,
   all: [...resourceTypesRenewable, ...resourceTypesNonRenewable],
 }
 
 type AggretatedByByResourceTypeWithPercentage = {
-  resourceTypeName: string
+  resourceTypeName: ResourceTypeNames
   aggregatedValue: number
   percentageValue: number
-  label: string
 }
 
-type AggregatedRmiData = {
+export type AggregatedRmiData = {
   aggretatedByByResourceTypeWithPercentage: AggretatedByByResourceTypeWithPercentage[]
   aggregatedDataTotal: number
   aggregatedDataTotalPerNrf2m: number
@@ -47,44 +50,39 @@ export const aggregateRmiData = (
   resourceTypesCategory: "renewable" | "nonRenewable" | "all",
   nrf: number
 ): AggregatedRmiData => {
-  const resourceConfigs = resourceTypesCategoryMapping[resourceTypesCategory]
+  const resourceNames = resourceTypesCategoryToNamesMapping[resourceTypesCategory]
 
-  const initialResourceMap: Record<string, number> = {}
+  const aggregatedResourceMap = buildingComponents.reduce(
+    (acc, component) => {
+      const { layers } = component
 
-  const aggregatedResourceMap = buildingComponents.reduce((acc, component) => {
-    const { layers } = component
+      resourceNames.forEach((propertyName) => {
+        const totalForResource = layers.reduce((sum, layer) => {
+          return sum + (layer.ressources.rawMaterials[propertyName] || 0)
+        }, 0)
 
-    resourceConfigs.forEach(({ propertyName, labelName }) => {
-      const totalForResource = layers.reduce((sum, layer) => {
-        return sum + (layer.ressources.rawMaterials[propertyName] || 0)
-      }, 0)
+        if (acc[propertyName] == null) {
+          acc[propertyName] = 0
+        }
+        acc[propertyName] += totalForResource
+      })
 
-      if (acc[labelName] == null) {
-        acc[labelName] = 0
-      }
-      acc[labelName] += totalForResource
-    })
-
-    return acc
-  }, initialResourceMap)
+      return acc
+    },
+    {} as Record<keyof ResourcesRawMaterials, number>
+  )
 
   const totalResources = Object.values(aggregatedResourceMap).reduce((sum, value) => sum + value, 0)
 
-  const aggretatedByByResourceTypeWithPercentage: AggretatedByByResourceTypeWithPercentage[] = Object.entries(
-    aggregatedResourceMap
+  const aggretatedByByResourceTypeWithPercentage: AggretatedByByResourceTypeWithPercentage[] = (
+    Object.entries(aggregatedResourceMap) as [ResourceTypeNames, number][]
   ).map(([resourceTypeName, aggregatedValue]) => {
     const percentageValue = (aggregatedValue / totalResources) * 100
-
-    const label = `${aggregatedValue
-      .toFixed(0)
-      // TODO: extract this out to presentation logic
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")} Tonnen - ${percentageValue.toFixed(2)}%`
 
     return {
       resourceTypeName,
       aggregatedValue,
       percentageValue,
-      label,
     }
   })
 
@@ -221,6 +219,7 @@ export function aggregateGwpOrPenrt(
       lifecycleSubphaseId: propertyName,
       lifecycleSubphaseName: labelName,
       aggregatedValue,
+      // TODO: refactor
       label: `${labelName}: ${aggregatedValuePercentage.toFixed(2)}% / ${aggregatedValue.toFixed(2)} ${
         isGwpAggregationConfig(aggregationConfig) ? "kg CO2eq" : "kwH"
       }`,

@@ -1,12 +1,15 @@
 "use client"
 
 import { DinEnrichedPassportData } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { useTranslations } from "next-intl"
 import BuildingBaseInformation from "./modules/BuildingBaseInformation"
 import Circularity from "./modules/Circularity/Circularity"
 import Materials from "./modules/Materials/Materials"
 import Resources from "./modules/Resources/Resources"
 
 const Overview = ({ dinEnrichedPassportData }: { dinEnrichedPassportData: DinEnrichedPassportData }) => {
+  const translations = useTranslations("Grp.Web")
+
   const onPdfExportClick = async () => {
     try {
       const response = await fetch(`/api/grp/pdf-export/${dinEnrichedPassportData.uuid}`, {})
@@ -29,7 +32,7 @@ const Overview = ({ dinEnrichedPassportData }: { dinEnrichedPassportData: DinEnr
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
-          Ressourcenpass für Gebäude
+          {translations("title")}
         </h1>
         <button
           type="button"
