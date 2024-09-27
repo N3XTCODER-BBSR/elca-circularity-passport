@@ -2,10 +2,10 @@ import "styles/print.global.css"
 
 import { Inter as FontSans } from "next/font/google"
 import { Metadata } from "next/types"
-import { twMerge } from "tailwind-merge"
 import { NextIntlClientProvider } from "next-intl"
-import i18nFormattingOptions from "../(utils)/i18nFormattingOptions"
 import { getMessages } from "next-intl/server"
+import { twMerge } from "tailwind-merge"
+import i18nFormattingOptions from "../(utils)/i18nFormattingOptions"
 
 const fontSans = FontSans({
   subsets: ["latin"],

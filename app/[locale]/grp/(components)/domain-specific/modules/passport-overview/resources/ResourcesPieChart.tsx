@@ -1,8 +1,8 @@
 "use client"
 
 import { ResponsivePie } from "@nivo/pie"
-import { ResourceTypeNames } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 import { useTranslations } from "next-intl"
+import { ResourceTypeNames } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 
 const CustomTooltip = ({ value }: { value: string }) => (
   <div

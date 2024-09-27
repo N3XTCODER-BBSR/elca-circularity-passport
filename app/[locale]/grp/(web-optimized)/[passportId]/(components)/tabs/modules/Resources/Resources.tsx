@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 
 import ResourcesDonutChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/ResourcesDonutChart"
@@ -17,7 +18,6 @@ import {
 } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 import DummyAccordion from "../../../DummyAccordion"
 import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
-import { useTranslations } from "next-intl"
 
 const navigationSections = [
   {

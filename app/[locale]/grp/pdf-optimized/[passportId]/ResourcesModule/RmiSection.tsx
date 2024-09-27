@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl"
+import ResourcesPieChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/ResourcesPieChart"
 import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
 import {
   ModuleSectionContainer,
@@ -5,12 +7,10 @@ import {
   ModuleSectionTitle,
   TextXSLeading4,
 } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
+import { rmiColorsMapper } from "constants/styleConstants"
 import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import { aggregateRmiData } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 import PieChartLegendTable from "./PieChartLegendTable"
-import { rmiColorsMapper } from "constants/styleConstants"
-import ResourcesPieChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/ResourcesPieChart"
-import { useTranslations } from "next-intl"
 
 type RmiSectionProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
