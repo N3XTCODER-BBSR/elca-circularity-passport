@@ -110,7 +110,12 @@ const materialDetailsWithoutUuidAndServiceLifeList = materials.map((material) =>
   materialClassDescription: materialClasses[material.materialClassId],
 }))
 
-export function generateComponents(componentCount: number, layerCount: number): BuildingComponent[] {
+export function generateComponents(
+  componentCount: number,
+  layerCount: number,
+  fakerSeedValue: number = 123
+): BuildingComponent[] {
+  faker.seed(fakerSeedValue)
   const componentsWithLayers: BuildingComponent[] = []
   for (let i = 0; i < componentCount; i++) {
     const randomCmponent = faker.helpers.arrayElement(components)
@@ -236,7 +241,13 @@ function generateSingleLayer(): Layer {
   return layer
 }
 
-export default function generatePassport(componentCount: number, layerCount: number): PassportData {
+export default function generatePassport(
+  componentCount: number,
+  layerCount: number,
+  fakerSeedValue: number = 123
+): PassportData {
+  faker.seed(fakerSeedValue)
+
   const randomDate = faker.date.between("2020-01-01", "2024-12-31")
   // Format the date to YYYY-MM-DD
   const formattedRandomDate = randomDate.toISOString().split("T")[0]!
@@ -285,7 +296,7 @@ export default function generatePassport(componentCount: number, layerCount: num
       bri: faker.number.float({ min: 1500, max: 15000 }),
       totalBuildingMass: faker.number.int({ min: 1000000, max: 10000000 }),
     },
-    buildingComponents: generateComponents(componentCount, layerCount),
+    buildingComponents: generateComponents(componentCount, layerCount, fakerSeedValue),
   }
 
   return newPassportData
