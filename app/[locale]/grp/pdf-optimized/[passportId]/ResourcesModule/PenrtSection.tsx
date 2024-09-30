@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl"
+import ResourcesPenrtGwpDonutChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/ResourcesPenrtGwpDonutChart"
 import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
 import {
   ModuleSectionContainer,
@@ -5,64 +7,43 @@ import {
   ModuleSectionTitle,
   TextXSLeading4,
 } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
-import { PALETTE_LIFECYCLE_PHASES } from "constants/styleConstants"
+import { lifeCycleSubPhasesColorsMapper } from "constants/styleConstants"
 import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import {
-  aggregateGwpOrPenrt,
-  penrtAggregationConfig,
-} from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
-import PieChartLegendTable from "./PieChartLegendTable"
-import ResourcesDonutChart from "./ResourcesDonutChart"
+import { aggregatePenrtData } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
+import ResourcesChartLegendTable, { LegendTableDataItem } from "./ResourcesChartLegendTable"
 
 type PenrtSectionProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
   nrf: number
 }
 
-const PenrtSectionSection = ({ dinEnrichedBuildingComponents, nrf }: PenrtSectionProps) => {
-  const keys = ["aggregatedValue"]
+const PenrtSection = ({ dinEnrichedBuildingComponents, nrf }: PenrtSectionProps) => {
+  const t = useTranslations("Grp.Pdf.sections.overview.module2Resources")
+  const {
+    aggregatedData: aggregatedPenrtData,
+    aggregatedDataTotal: aggregatedPenrtTotal,
+    aggregatedDataTotalPerNrf: aggregatedPenrtTotalPerNrf,
+  } = aggregatePenrtData(dinEnrichedBuildingComponents, nrf)
 
-  // TODO: move out gwpAggregationConfig param (at least, handle it in the domain-logic code)
-  const aggregatedPenrt = aggregateGwpOrPenrt(dinEnrichedBuildingComponents, penrtAggregationConfig)
-  const aggregatedPenrtTotal = Math.round(
-    aggregatedPenrt.reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0)
-  )
-  const aggregatedPenrtTotalPerNrf = Math.round(aggregatedPenrtTotal / nrf)
-
-  const colorPalette: string[] = PALETTE_LIFECYCLE_PHASES
-
-  const aggregatedPenrtWithColors = aggregatedPenrt.map((data, idx) => ({
-    ...data,
-    color: colorPalette[idx % colorPalette.length]!,
-  }))
-
-  const colorMapper = (datum: any) => {
-    return datum.data.color
-  }
-
-  // TODO: it's nto DRY since it's replicated also in the web version
-  // (and it's even multiplicated by 2) since it's the same situation for gwp
-
-  const grayEnergyTotal = aggregatedPenrtWithColors
-    .filter((data) => data.pattern === "dots")
+  const grayEnergyTotal = aggregatedPenrtData
+    .filter((data) => data.isGray)
     .map((el) => el.aggregatedValue)
     .reduce((acc, val) => acc + val, 0)
 
-  // TODO: consider to move this into domain-logic layer
-  const legendTableData = [
-    ...aggregatedPenrtWithColors.map((data) => ({
-      color: data.color,
-      name: data.lifecycleSubphaseName,
-      value: data.aggregatedValue,
-      percentage: data.aggregatedValuePercentage,
-    })),
-    {
-      color: "white",
-      name: "Graue Energie",
-      value: grayEnergyTotal,
-      pattern: "dots",
-    },
-  ]
+  const penrtLegendTableData: LegendTableDataItem[] = aggregatedPenrtData.map((data) => ({
+    color: lifeCycleSubPhasesColorsMapper(data.lifecycleSubphaseId),
+    name: t(`gwpAndPenrt.lifeCycleSubPhases.${data.lifecycleSubphaseId}`),
+    value: data.aggregatedValue,
+    percentage: data.aggregatedValuePercentage,
+    isGray: data.isGray,
+  }))
+
+  penrtLegendTableData.push({
+    color: "white",
+    name: t("gwpAndPenrt.penrt.grayEnergyTotal"),
+    value: grayEnergyTotal,
+    pattern: "dots",
+  })
 
   return (
     <ModuleSectionContainer>
@@ -71,12 +52,10 @@ const PenrtSectionSection = ({ dinEnrichedBuildingComponents, nrf }: PenrtSectio
         <Box isCol>
           <Box>
             <Box height={24}>
-              <ResourcesDonutChart
-                colors={colorMapper}
-                data={aggregatedPenrtWithColors}
-                indexBy={"costGroupCategoryNumberAndName"}
-                keys={keys}
-                patternPropertyName="pattern"
+              <ResourcesPenrtGwpDonutChart
+                colors={lifeCycleSubPhasesColorsMapper}
+                data={aggregatedPenrtData}
+                isPdf={true}
               />
             </Box>
             <Box>
@@ -95,7 +74,7 @@ const PenrtSectionSection = ({ dinEnrichedBuildingComponents, nrf }: PenrtSectio
             </Box>
           </Box>
           <Box>
-            <PieChartLegendTable data={legendTableData} unit="KwH" />
+            <ResourcesChartLegendTable data={penrtLegendTableData} unit="KwH" />
           </Box>
         </Box>
       </ModuleSectionMain>
@@ -103,4 +82,4 @@ const PenrtSectionSection = ({ dinEnrichedBuildingComponents, nrf }: PenrtSectio
   )
 }
 
-export default PenrtSectionSection
+export default PenrtSection

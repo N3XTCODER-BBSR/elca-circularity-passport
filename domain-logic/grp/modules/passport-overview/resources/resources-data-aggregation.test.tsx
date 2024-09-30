@@ -1,369 +1,419 @@
-import { cloneDeep } from "lodash"
-import { BuildingComponent } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
-import { aggregateGwpOrPenrt } from "./resources-data-aggregation"
+import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { Layer } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
+import {
+  AggregatedRmiData,
+  aggregateRmiData,
+  AggregatedGwpOrPenrtDataResult,
+  aggregateGwpData,
+  aggregatePenrtData,
+} from "./resources-data-aggregation"
 
-// describe("Resources aggregation logic", () => {
-//   it("should aggregate data correctly", () => {
-//     const layerBaseData = {
-//       serviceLife: 45,
-//       technicalServiceLife: 64,
-//       productDescription:
-//         "The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive",
-//       manufacturerName: "Camara-Urbansky",
-//       proofDocument: "Neongelb",
-//       versionDate: "2023-12-31T01:13:30.546Z",
-//       wasteCode: "Coordinator",
-//     }
+describe("Aggregation Functions with Complex Data", () => {
+  const layer1: Layer = {
+    lnr: 1,
+    name: "Layer 1",
+    mass: 100,
+    materialGeometry: {
+      unit: "m3",
+      amount: 10,
+    },
+    material: {
+      uuid: "material-uuid-1",
+      materialDescription: "Material 1",
+      materialClassId: "class-id-1",
+      materialClassDescription: "Class Description 1",
+      oekobaudatVersion: "1.0",
+      serviceLifeInYears: 50,
+      serviceLifeTableVersion: "1.0",
+      trade: {
+        lbPerformanceRange: "",
+        trade: "",
+        lvNumber: "",
+        itemInLv: "",
+        area: 0,
+      },
+      product: {
+        uuid: "",
+        technicalServiceLifeInYears: 0,
+        description: "",
+        manufacturerName: "",
+        versionDate: "",
+        proofDocuments: [],
+      },
+      waste: { wasteCode: "waste-code-1" },
+    },
+    ressources: {
+      rawMaterials: {
+        Mineral: 100,
+        Metallic: 200,
+        Fossil: 50,
+        Forestry: 80,
+        Agrar: 120,
+        Aqua: 30,
+      },
+      embodiedEnergy: {
+        A1A2A3: 500,
+        B1: 100,
+        B4: 50,
+        B6: 200,
+        C3: 30,
+        C4: 20,
+      },
+      embodiedEmissions: {
+        A1A2A3: 300,
+        B1: 80,
+        B4: 40,
+        B6: 150,
+        C3: 20,
+        C4: 10,
+      },
+      carbonContent: 10,
+      recyclingContent: 20,
+    },
+    circularity: {
+      eolPoints: 10,
+      version: "1.0",
+      category: "A",
+      proofReuse: "Proof",
+      interferingSubstances: [],
+    },
+    pollutants: {},
+  }
 
-//     const innenwand1Layer1 = 79
-//     const innenwand1Layer2 = 153.2443
-//     const innenwand2Layer1 = 1449.1
-//     const innenwand2Layer2 = 9876.123
+  const layer2: Layer = {
+    lnr: 2,
+    name: "Layer 2",
+    mass: 50,
+    materialGeometry: {
+      unit: "m2",
+      amount: 5,
+    },
+    material: {
+      uuid: "material-uuid-2",
+      materialDescription: "Material 2",
+      materialClassId: "class-id-2",
+      materialClassDescription: "Class Description 2",
+      oekobaudatVersion: "1.0",
+      serviceLifeInYears: 40,
+      serviceLifeTableVersion: "1.0",
+      trade: {
+        lbPerformanceRange: "",
+        trade: "",
+        lvNumber: "",
+        itemInLv: "",
+        area: 0,
+      },
+      product: {
+        uuid: "",
+        technicalServiceLifeInYears: 0,
+        description: "",
+        manufacturerName: "",
+        versionDate: "",
+        proofDocuments: [],
+      },
+      waste: { wasteCode: "waste-code-2" },
+    },
+    ressources: {
+      rawMaterials: {
+        Mineral: 50,
+        Metallic: 70,
+        Fossil: 30,
+        Forestry: 40,
+        Agrar: 60,
+        Aqua: 20,
+      },
+      embodiedEnergy: {
+        A1A2A3: 250,
+        B1: 50,
+        B4: 25,
+        B6: 100,
+        C3: 15,
+        C4: 10,
+      },
+      embodiedEmissions: {
+        A1A2A3: 150,
+        B1: 40,
+        B4: 20,
+        B6: 80,
+        C3: 10,
+        C4: 5,
+      },
+      carbonContent: 5,
+      recyclingContent: 10,
+    },
+    circularity: {
+      eolPoints: 5,
+      version: "1.0",
+      category: "B",
+      proofReuse: "Proof",
+      interferingSubstances: [],
+    },
+    pollutants: {},
+  }
 
-//     const aussenwand1Layer1 = 14.3
-//     const aussenwand1Layer2 = 3288.124
+  const layer3: Layer = {
+    lnr: 3,
+    name: "Layer 3",
+    mass: 75,
+    materialGeometry: {
+      unit: "pieces",
+      amount: 15,
+    },
+    material: {
+      uuid: "material-uuid-3",
+      materialDescription: "Material 3",
+      materialClassId: "class-id-3",
+      materialClassDescription: "Class Description 3",
+      oekobaudatVersion: "1.0",
+      serviceLifeInYears: 60,
+      serviceLifeTableVersion: "1.0",
+      trade: {
+        lbPerformanceRange: "",
+        trade: "",
+        lvNumber: "",
+        itemInLv: "",
+        area: 0,
+      },
+      product: {
+        uuid: "",
+        technicalServiceLifeInYears: 0,
+        description: "",
+        manufacturerName: "",
+        versionDate: "",
+        proofDocuments: [],
+      },
+      waste: { wasteCode: "waste-code-3" },
+    },
+    ressources: {
+      rawMaterials: {
+        Mineral: 80,
+        Metallic: 100,
+        Fossil: 40,
+        Forestry: 60,
+        Agrar: 90,
+        Aqua: 25,
+      },
+      embodiedEnergy: {
+        A1A2A3: 400,
+        B1: 80,
+        B4: 40,
+        B6: 160,
+        C3: 24,
+        C4: 16,
+      },
+      embodiedEmissions: {
+        A1A2A3: 240,
+        B1: 64,
+        B4: 32,
+        B6: 128,
+        C3: 16,
+        C4: 8,
+      },
+      carbonContent: 8,
+      recyclingContent: 16,
+    },
+    circularity: {
+      eolPoints: 8,
+      version: "1.0",
+      category: "C",
+      proofReuse: "Proof",
+      interferingSubstances: [],
+    },
+    pollutants: {},
+  }
 
-//     const buildingNrf = 1000
+  const component1: DinEnrichedBuildingComponent = {
+    uuid: "component-uuid-1",
+    name: "Component 1",
+    layers: [layer1],
+    dinComponentLevelNumber: 123,
+    din276ComponetTypeName: "Component Type 1",
+    dinGroupLevelNumber: 100,
+    din276GroupName: "Group Name 1",
+    dinCategoryLevelNumber: 120,
+    din276CategoryName: "Category Name 1",
+  }
 
-//     const buildingComponents: BuildingComponent[] = [
-//       {
-//         uuid: "dfabb2e6-45f4-49c9-b7c4-5f31aa47dbe4",
-//         name: "Innenwand tragend",
-//         costGroupDIN276: 341,
-//         // costGroupCategory: 340,
-//         // costGroupCategoryName: "Innenwände",
-//         layers: [
-//           {
-//             ...layerBaseData,
-//             index: 8,
-//             floor: "Anthrazit",
-//             room: "generating",
-//             componentGeometry: "m2",
-//             mass: innenwand1Layer1,
-//             material: {
-//               materialClassDescription: "Material xy",
-//               materialClassId: "1.3.2",
-//               classification: "Holz",
-//               materialDatabase: "OBD_2020_II_A1",
-//             },
-//             uuidProduct: "f3b9803a-e942-44e0-b7c0-c253f92cd6e3",
-//           },
-//           {
-//             ...layerBaseData,
-//             index: 10,
-//             floor: "Espenweg",
-//             room: "Coupe",
-//             componentGeometry: "m2",
-//             mass: innenwand1Layer2,
-//             material: {
-//               materialClassDescription: "Beton C25/30 (Normalgewicht)",
-//               materialClassId: "1.1.01",
-//               classification: "Mineralische Bauprodukte",
-//               materialDatabase: "OBD_2020_II_A1",
-//             },
-//             uuidProduct: "2ed80ab1-2a15-41e5-8d5d-23654593e59a",
-//           },
-//         ],
-//       },
-//       {
-//         uuid: "dfabb2e6-45f4-49c9-b7c4-5f31aa47dbe4",
-//         name: "Innenwand tragend",
-//         costGroupDIN276: 341,
-//         // costGroupCategory: 340,
-//         // costGroupCategoryName: "Innenwände",
-//         layers: [
-//           {
-//             ...layerBaseData,
-//             index: 8,
-//             floor: "Anthrazit",
-//             room: "generating",
-//             componentGeometry: "m2",
-//             mass: innenwand2Layer1,
-//             material: {
-//               materialClassDescription: "Kreuzlagenholz (CLT)",
-//               materialClassId: "3.4.01",
-//               classification: "Holz",
-//               materialDatabase: "OBD_2020_II_A1",
-//             },
-//             uuidProduct: "f3b9803a-e942-44e0-b7c0-c253f92cd6e3",
-//           },
-//           {
-//             ...layerBaseData,
-//             index: 10,
-//             floor: "Espenweg",
-//             room: "Coupe",
-//             componentGeometry: "m2",
-//             mass: innenwand2Layer2,
-//             material: {
-//               materialClassDescription: "Beton C25/30 (Normalgewicht)",
-//               materialClassId: "1.1.01",
-//               classification: "Mineralische Bauprodukte",
-//               materialDatabase: "OBD_2020_II_A1",
-//             },
-//             uuidProduct: "2ed80ab1-2a15-41e5-8d5d-23654593e59a",
-//           },
-//         ],
-//       },
-//       {
-//         uuid: "78cd6fbb-c6c6-49cb-a1f5-129331005057",
-//         name: "Außenwand N",
-//         costGroupDIN276: 331,
-//         // costGroupCategory: 330,
-//         // costGroupCategoryName: "Außenwände",
-//         layers: [
-//           {
-//             ...layerBaseData,
-//             index: 6,
-//             floor: "West",
-//             room: "Rolls",
-//             componentGeometry: "m2",
-//             mass: aussenwand1Layer1,
-//             material: {
-//               materialClassDescription: "Mechanische Lüftung mit Wärmerückgewinnung (MVHR)",
-//               materialClassId: "8.1.01",
-//               classification: "Gebäudetechnik",
-//               materialDatabase: "OBD_2020_II_A1",
-//             },
-//             uuidProduct: "7a40b9c6-b4de-457e-9db2-69ff199eb68e",
-//             wasteCode: "enable",
-//           },
-//           {
-//             ...layerBaseData,
-//             index: 1,
-//             componentGeometry: "m2",
-//             mass: aussenwand1Layer2,
-//             material: {
-//               materialClassDescription: "Mineralwolle-Dämmung",
-//               materialClassId: "2.2.01",
-//               classification: "Isoliermaterialien",
-//               materialDatabase: "OBD_2020_II_A1",
-//             },
-//             uuidProduct: "c1ef0a6c-e781-4100-9037-c161d83a93bf",
-//           },
-//         ],
-//       },
-//     ]
+  const component2: DinEnrichedBuildingComponent = {
+    uuid: "component-uuid-2",
+    name: "Component 2",
+    layers: [layer2, layer3],
+    dinComponentLevelNumber: 456,
+    din276ComponetTypeName: "Component Type 2",
+    dinGroupLevelNumber: 200,
+    din276GroupName: "Group Name 2",
+    dinCategoryLevelNumber: 240,
+    din276CategoryName: "Category Name 2",
+  }
 
-//     // TODO : fix
-//     const aggregatedData = aggregateData(buildingComponents, buildingNrf)
+  const buildingComponents: DinEnrichedBuildingComponent[] = [component1, component2]
+  const nrf = 1000
 
-//     const expectedInnenwaendeMass = innenwand1Layer1 + innenwand1Layer2 + innenwand2Layer1 + innenwand2Layer2
-//     const expectedAussenwaendeMass = aussenwand1Layer1 + aussenwand1Layer2
+  describe("aggregateRmiData", () => {
+    it("should aggregate RMI data correctly with multiple components and layers", () => {
+      const result: AggregatedRmiData = aggregateRmiData(buildingComponents, "all", nrf)
 
-//     const totalMass = expectedAussenwaendeMass + expectedInnenwaendeMass
+      const totalResources = {
+        Forestry: 80 + 40 + 60, // 180
+        Agrar: 120 + 60 + 90, // 270
+        Aqua: 30 + 20 + 25, // 75
+        Mineral: 100 + 50 + 80, // 230
+        Metallic: 200 + 70 + 100, // 370
+        Fossil: 50 + 30 + 40, // 120
+      }
 
-//     const expectedInnenwaendeMassPercentage = (expectedInnenwaendeMass / totalMass) * 100
-//     const aggregatedForInnenwaende = aggregatedData.aggretatedDataWithPercentageSorted.find(
-//       (data) => data.costGroupCategory === 340
-//     )
-//     expect(aggregatedForInnenwaende?.aggregatedMass).toEqual(expectedInnenwaendeMass)
-//     expect(aggregatedForInnenwaende?.aggregatedMassPercentage).toEqual(expectedInnenwaendeMassPercentage)
+      const totalResourcesSum = Object.values(totalResources).reduce((sum, value) => sum + value, 0) // 1245
 
-//     const expectedAussenwaendeMassPercentage = (expectedAussenwaendeMass / totalMass) * 100
-//     const aggregatedForAussenwaende = aggregatedData.aggretatedDataWithPercentageSorted.find(
-//       (data) => data.costGroupCategory === 330
-//     )
-//     expect(aggregatedForAussenwaende?.aggregatedMass).toEqual(expectedAussenwaendeMass)
-//     expect(aggregatedForAussenwaende?.aggregatedMassPercentage).toEqual(expectedAussenwaendeMassPercentage)
+      const expectedAggregatedData = Object.entries(totalResources).map(([resourceTypeName, aggregatedValue]) => ({
+        resourceTypeName: resourceTypeName as any,
+        aggregatedValue,
+        percentageValue: (aggregatedValue / totalResourcesSum) * 100,
+      }))
 
-//     expect(aggregatedData.totalMass).toEqual(totalMass)
+      const aggregatedDataTotal = Math.round(totalResourcesSum) // 1245
 
-//     const expectedTotalMassPercentage = Math.round((totalMass / buildingNrf) * 100)
-//     expect(aggregatedData.totalMassPercentage).toEqual(expectedTotalMassPercentage)
-//   })
-// })
+      const aggregatedDataTotalPerNrf2m = nrf > 0 ? Math.round(aggregatedDataTotal / nrf) : 0 // 1
 
-// todo: move to factory, re-use accross tests
-const layerBaseData = {
-  serviceLife: 45,
-  technicalServiceLife: 64,
-  productDescription:
-    "The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive",
-  manufacturerName: "Camara-Urbansky",
-  proofDocument: "Neongelb",
-  versionDate: "2023-12-31T01:13:30.546Z",
-  wasteCode: "Coordinator",
-}
-const innenwand1Layer1 = 79
-const innenwand1Layer2 = 153.2443
-const innenwand2Layer1 = 1449.1
-const resources = {
-  rawMaterials: {
-    rmiMineral: 2.1,
-    rmiMetallic: 23,
-    rmiFossil: 2.028,
-    rmiForestry: 12.028,
-    rmiAgrar: 542.028,
-    rmiAqua: 0,
-  },
-  embodiedEnergy: {
-    penrtA1A2A3: 12,
-    penrtB1: 812.123,
-    penrtB4: 132.123,
-    penrtB6: 12.123,
-    penrtC3: 17.23,
-    penrtC4: 112.123,
-  },
-  embodiedEmissions: {
-    gwpA1A2A3: 531.321,
-    gwpB1: 31.321,
-    gwpB4: 51.321,
-    gwpB6: 53.021,
-    gwpC3: 531.32,
-    gwpC4: 0,
-  },
-}
+      expect(result).toEqual({
+        aggretatedByByResourceTypeWithPercentage: expectedAggregatedData,
+        aggregatedDataTotal,
+        aggregatedDataTotalPerNrf2m,
+      })
+    })
+  })
 
-const buildingComponents: BuildingComponent[] = [
-  {
-    uuid: "dfabb2e6-45f4-49c9-b7c4-5f31aa47dbe4",
-    name: "Innenwand tragend",
-    costGroupDIN276: 341,
-    layers: [
-      {
-        ...layerBaseData,
-        index: 8,
-        name: "Material xy",
-        floor: "Anthrazit",
-        room: "generating",
-        componentGeometry: "m2",
-        mass: innenwand1Layer1,
-        material: {
-          materialClassDescription: "Material xy",
-          materialClassId: "1.3.2",
-          materialClassDescription: "Holz",
-          materialDatabase: "OBD_2020_II_A1",
+  describe("aggregateGwpData", () => {
+    it("should aggregate GWP data correctly with multiple components and layers", () => {
+      const result: AggregatedGwpOrPenrtDataResult = aggregateGwpData(buildingComponents, nrf)
+
+      const totalEmissions = {
+        A1A2A3: 300 + 150 + 240, // 690
+        B1: 80 + 40 + 64, // 184
+        B4: 40 + 20 + 32, // 92
+        B6: 150 + 80 + 128, // 358
+        C3: 20 + 10 + 16, // 46
+        C4: 10 + 5 + 8, // 23
+      }
+
+      const totalEmissionsSum = Object.values(totalEmissions).reduce((sum, value) => sum + value, 0) // 1393
+
+      const expectedAggregatedData = [
+        {
+          lifecycleSubphaseId: "A1A2A3",
+          aggregatedValue: totalEmissions.A1A2A3,
+          aggregatedValuePercentage: (totalEmissions.A1A2A3 / totalEmissionsSum) * 100,
+          isGray: true,
         },
-        ressources: resources,
-        uuidProduct: "f3b9803a-e942-44e0-b7c0-c253f92cd6e3",
-      },
-      {
-        ...layerBaseData,
-        index: 10,
-        name: "Beton C25/30 (Normalgewicht)",
-        floor: "Espenweg",
-        room: "Coupe",
-        componentGeometry: "m2",
-        mass: innenwand1Layer2,
-        material: {
-          materialClassDescription: "Beton C25/30 (Normalgewicht)",
-          materialClassId: "1.1.01",
-          materialClassDescription: "Mineralische Bauprodukte",
-          materialDatabase: "OBD_2020_II_A1",
+        {
+          lifecycleSubphaseId: "B1",
+          aggregatedValue: totalEmissions.B1,
+          aggregatedValuePercentage: (totalEmissions.B1 / totalEmissionsSum) * 100,
         },
-        ressources: resources,
-        uuidProduct: "2ed80ab1-2a15-41e5-8d5d-23654593e59a",
-      },
-    ],
-  },
-  {
-    uuid: "dfabb2e6-45f4-49c9-b7c4-5f31aa47dbe4",
-    name: "Außenwand tragend",
-    costGroupDIN276: 331,
-    layers: [
-      {
-        ...layerBaseData,
-        index: 8,
-        name: "Kreuzlagenholz (CLT)",
-        floor: "Anthrazit",
-        room: "generating",
-        componentGeometry: "m2",
-        mass: innenwand2Layer1,
-        material: {
-          materialClassDescription: "Kreuzlagenholz (CLT)",
-          materialClassId: "3.4.01",
-          materialClassDescription: "Holz",
-          materialDatabase: "OBD_2020_II_A1",
+        {
+          lifecycleSubphaseId: "B4",
+          aggregatedValue: totalEmissions.B4,
+          aggregatedValuePercentage: (totalEmissions.B4 / totalEmissionsSum) * 100,
         },
-        ressources: resources,
-        uuidProduct: "f3b9803a-e942-44e0-b7c0-c253f92cd6e3",
-      },
-    ],
-  },
-]
+        {
+          lifecycleSubphaseId: "B6",
+          aggregatedValue: totalEmissions.B6,
+          aggregatedValuePercentage: (totalEmissions.B6 / totalEmissionsSum) * 100,
+        },
+        {
+          lifecycleSubphaseId: "C3",
+          aggregatedValue: totalEmissions.C3,
+          aggregatedValuePercentage: (totalEmissions.C3 / totalEmissionsSum) * 100,
+          isGray: true,
+        },
+        {
+          lifecycleSubphaseId: "C4",
+          aggregatedValue: totalEmissions.C4,
+          aggregatedValuePercentage: (totalEmissions.C4 / totalEmissionsSum) * 100,
+          isGray: true,
+        },
+      ]
 
-describe("gwp aggregation", () => {
-  it("returns an array with the correct amount of items", () => {
-    const aggregation = aggregateGwpOrPenrt(buildingComponents, "embodiedEmissions")
+      const aggregatedDataTotal = totalEmissionsSum // 1393
 
-    const numLifeCycles = Object.keys(buildingComponents[0].layers[0].ressources.embodiedEmissions).length
-    expect(aggregation.length).toEqual(numLifeCycles)
-  })
-  it("aggregates gwp correctly for data with multiple components", () => {
-    const aggregation = aggregateGwpOrPenrt(buildingComponents, "embodiedEmissions")
-    const expectedAggregation = [
-      {
-        aggregatedValue: "1593.96",
-        aggregatedValuePercentage: "44.34",
-        label: "gwpA1A2A3",
-        lifecycleSubphase: "gwpA1A2A3",
-      },
-      { aggregatedValue: "93.96", aggregatedValuePercentage: "2.61", label: "gwpB1", lifecycleSubphase: "gwpB1" },
-      { aggregatedValue: "153.96", aggregatedValuePercentage: "4.28", label: "gwpB4", lifecycleSubphase: "gwpB4" },
-      { aggregatedValue: "159.06", aggregatedValuePercentage: "4.42", label: "gwpB6", lifecycleSubphase: "gwpB6" },
-      { aggregatedValue: "1593.96", aggregatedValuePercentage: "44.34", label: "gwpC3", lifecycleSubphase: "gwpC3" },
-      { aggregatedValue: "0.00", aggregatedValuePercentage: "0.00", label: "gwpC4", lifecycleSubphase: "gwpC4" },
-    ]
-    expect(aggregation).toEqual(expectedAggregation)
-  })
-  it("throws in case of missing lifecycle phases", () => {
-    // type checking does not happen in runtime, we need to validate
-    const incompleteBuildingComponents = cloneDeep(buildingComponents)
-    delete incompleteBuildingComponents[0].layers[0].ressources.embodiedEmissions.gwpB6
-    // todo: conventions for error messages
-    const expectedError = "Missing lifecycle phases in component: Innenwand tragend, layer: Material xy"
-    expect(() => aggregateGwpOrPenrt(incompleteBuildingComponents, "embodiedEmissions")).toThrow(expectedError)
-  })
-  // todo:
-  // @Daniel how does zod deal with undefined, null, NaN?
-  // should we allow only positive numbers?
-  // should we allow only finite numbers?
-})
+      const aggregatedDataTotalPerNrf = nrf > 0 ? aggregatedDataTotal / nrf : 0 // 1.393
 
-describe("penrt aggregation", () => {
-  it("returns an array with the correct amount of items", () => {
-    const aggregation = aggregateGwpOrPenrt(buildingComponents, "embodiedEnergy")
+      const aggregatedDataGrayTotal = expectedAggregatedData
+        .filter((data) => data.isGray)
+        .reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0) // 690 + 46 + 23 = 759
 
-    const numLifeCycles = Object.keys(buildingComponents[0].layers[0].ressources.embodiedEnergy).length
-    expect(aggregation.length).toEqual(numLifeCycles)
+      expect(result).toEqual({
+        aggregatedData: expectedAggregatedData,
+        aggregatedDataTotal,
+        aggregatedDataTotalPerNrf,
+        aggregatedDataGrayTotal,
+      })
+    })
   })
-  it("aggregates penrt correctly for data with multiple components", () => {
-    const aggregation = aggregateGwpOrPenrt(buildingComponents, "embodiedEnergy")
-    const expectedAggregation = [
-      {
-        aggregatedValue: "36.00",
-        aggregatedValuePercentage: "1.09",
-        label: "penrtA1A2A3",
-        lifecycleSubphase: "penrtA1A2A3",
-      },
-      {
-        aggregatedValue: "2436.37",
-        aggregatedValuePercentage: "73.98",
-        label: "penrtB1",
-        lifecycleSubphase: "penrtB1",
-      },
-      {
-        aggregatedValue: "396.37",
-        aggregatedValuePercentage: "12.04",
-        label: "penrtB4",
-        lifecycleSubphase: "penrtB4",
-      },
-      { aggregatedValue: "36.37", aggregatedValuePercentage: "1.10", label: "penrtB6", lifecycleSubphase: "penrtB6" },
-      { aggregatedValue: "51.69", aggregatedValuePercentage: "1.57", label: "penrtC3", lifecycleSubphase: "penrtC3" },
-      { aggregatedValue: "336.37", aggregatedValuePercentage: "10.21", label: "penrtC4", lifecycleSubphase: "penrtC4" },
-    ]
-    expect(aggregation).toEqual(expectedAggregation)
+
+  describe("aggregatePenrtData", () => {
+    it("should aggregate PENRT data correctly with multiple components and layers", () => {
+      const result: AggregatedGwpOrPenrtDataResult = aggregatePenrtData(buildingComponents, nrf)
+
+      const totalEnergy = {
+        A1A2A3: 500 + 250 + 400, // 1150
+        B1: 100 + 50 + 80, // 230
+        B4: 50 + 25 + 40, // 115
+        B6: 200 + 100 + 160, // 460
+        C3: 30 + 15 + 24, // 69
+        C4: 20 + 10 + 16, // 46
+      }
+
+      const totalEnergySum = Object.values(totalEnergy).reduce((sum, value) => sum + value, 0) // 2070
+
+      const expectedAggregatedData = [
+        {
+          lifecycleSubphaseId: "A1A2A3",
+          aggregatedValue: totalEnergy.A1A2A3,
+          aggregatedValuePercentage: (totalEnergy.A1A2A3 / totalEnergySum) * 100,
+          isGray: true,
+        },
+        {
+          lifecycleSubphaseId: "B1",
+          aggregatedValue: totalEnergy.B1,
+          aggregatedValuePercentage: (totalEnergy.B1 / totalEnergySum) * 100,
+        },
+        {
+          lifecycleSubphaseId: "B4",
+          aggregatedValue: totalEnergy.B4,
+          aggregatedValuePercentage: (totalEnergy.B4 / totalEnergySum) * 100,
+        },
+        {
+          lifecycleSubphaseId: "B6",
+          aggregatedValue: totalEnergy.B6,
+          aggregatedValuePercentage: (totalEnergy.B6 / totalEnergySum) * 100,
+        },
+        {
+          lifecycleSubphaseId: "C3",
+          aggregatedValue: totalEnergy.C3,
+          aggregatedValuePercentage: (totalEnergy.C3 / totalEnergySum) * 100,
+          isGray: true,
+        },
+        {
+          lifecycleSubphaseId: "C4",
+          aggregatedValue: totalEnergy.C4,
+          aggregatedValuePercentage: (totalEnergy.C4 / totalEnergySum) * 100,
+          isGray: true,
+        },
+      ]
+
+      const aggregatedDataTotal = totalEnergySum // 2070
+
+      const aggregatedDataTotalPerNrf = nrf > 0 ? aggregatedDataTotal / nrf : 0 // 2.07
+      const aggregatedDataGrayTotal = expectedAggregatedData
+        .filter((data) => data.isGray)
+        .reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0) // 1150 + 69 + 46 = 1265
+
+      expect(result).toEqual({
+        aggregatedData: expectedAggregatedData,
+        aggregatedDataTotal,
+        aggregatedDataTotalPerNrf,
+        aggregatedDataGrayTotal,
+      })
+    })
   })
-  it("throws in case of missing lifecycle phases", () => {
-    // type checking does not happen in runtime, we need to validate
-    const incompleteBuildingComponents = cloneDeep(buildingComponents)
-    delete incompleteBuildingComponents[0].layers[0].ressources.embodiedEnergy.penrtC4
-    // todo: conventions for error messages
-    const expectedError = "Missing lifecycle phases in component: Innenwand tragend, layer: Material xy"
-    expect(() => aggregateGwpOrPenrt(incompleteBuildingComponents, "embodiedEnergy")).toThrow(expectedError)
-  })
-  // todo:
-  // @Daniel how does zod deal with undefined, null, NaN?
-  // should we allow only positive numbers?
-  // should we allow only finite numbers?
 })

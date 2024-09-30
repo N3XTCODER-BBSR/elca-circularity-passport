@@ -2,14 +2,14 @@
 import _ from "lodash"
 import ComponentsTree from "app/(components)/ComponentsTree"
 import { ElcaProjectComponent } from "app/[locale]/(circularity)/(utils)/types"
-import { ComponentWithBasicFields } from "domain-logic/grp/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents"
+import { BuildingComponentWithBasicFields } from "domain-logic/shared/basic-types"
 
 type ProjectCatalogProps = {
   projectId: string
   projectComponents: ElcaProjectComponent[]
 }
 const ProjectCatalog = ({ projectId, projectComponents }: ProjectCatalogProps) => {
-  const componentWithBasicFields: ComponentWithBasicFields[] = projectComponents.map((el) => ({
+  const componentWithBasicFields: BuildingComponentWithBasicFields[] = projectComponents.map((el) => ({
     dinComponentLevelNumber: parseInt(el.din_code),
     name: el.element_name,
     uuid: el.element_uuid,

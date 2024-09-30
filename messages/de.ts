@@ -1,24 +1,52 @@
+import {
+  LifeCycleSubPhaseId,
+  MaterialResourceTypeNamesSchema,
+} from "domain-logic/grp/data-schema/versions/v1/passportSchema"
 import _ from "lodash"
+
+const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
+  A1A2A3: "Modul A1 - A3",
+  B1: "Modul B1",
+  B4: "Modul B4",
+  B6: "Modul B6",
+  C3: "Modul C3",
+  C4: "Modul C4",
+}
 
 const translationsGrpPlattformGeneric = {
   overview: {
     module2Resources: {
+      moduleTitle: "Modul 2",
+      moduleSubTitle: "Resourcen",
       rmi: {
         categories: {
           renewable: "Erneuerbar",
           nonRenewable: "Nicht-erneuerbar",
         },
         names: {
-          rmiForestry: "Forst",
-          rmiAqua: "Wasser",
-          rmiAgrar: "Agrar",
-          rmiFossil: "Fossil",
-          rmiMetallic: "Metallisch",
-          rmiMineral: "Mineralisch",
+          [MaterialResourceTypeNamesSchema.Enum.Forestry]: "Forst",
+          [MaterialResourceTypeNamesSchema.Enum.Aqua]: "Wasser",
+          [MaterialResourceTypeNamesSchema.Enum.Agrar]: "Agrar",
+          [MaterialResourceTypeNamesSchema.Enum.Fossil]: "Fossil",
+          [MaterialResourceTypeNamesSchema.Enum.Metallic]: "Metallisch",
+          [MaterialResourceTypeNamesSchema.Enum.Mineral]: "Mineralisch",
         },
         labels: {
           overlay: "{aggregatedValue, number, integer} Tonnen - {percentageValue, number, percentage}",
         },
+      },
+      gwpAndPenrt: {
+        penrt: {
+          labels: {
+            overlay: "{percentageValue, number, percentage} / {aggregatedValue, number, integer} kwH",
+          },
+        },
+        gwp: {
+          labels: {
+            overlay: "{percentageValue, number, percentage} / {aggregatedValue, number, integer} kg Co2eq",
+          },
+        },
+        lifeCycleSubPhases,
       },
     },
   },
@@ -37,6 +65,18 @@ const translationsPlattformGeneric = {
       },
     },
   },
+  Units: {
+    Kwh: {
+      short: "kwH",
+    },
+    Tons: {
+      short: "t",
+      long: "Tonnen",
+    },
+    KgCo2Eq: {
+      short: "kg Co2eq",
+    },
+  },
 }
 
 const translationsWebSpecific = {
@@ -49,10 +89,44 @@ const translationsWebSpecific = {
         overview: "Überblick",
         catalog: "Katalog",
       },
+      sections: {
+        overview: {
+          module2Resources: {
+            gwpAndPenrt: {
+              penrt: {
+                grayEnergyTotal: "Graue Emissionen, total",
+              },
+              gwp: {
+                grayEmissionsTotal: "Graue Energie, total",
+              },
+            },
+          },
+        },
+      },
     },
   },
 }
 
-const mergedTranslations = _.merge({}, translationsWebSpecific, translationsPlattformGeneric)
+const translationsPdfSpecific = {
+  Grp: {
+    Pdf: {
+      sections: {
+        overview: {
+          module2Resources: {
+            gwpAndPenrt: {
+              penrt: {
+                grayEnergyTotal: "Graue Energie",
+              },
+              gwp: {
+                grayEmissionsTotal: "Graue Emissionen",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
 
+const mergedTranslations = _.merge({}, translationsWebSpecific, translationsPdfSpecific, translationsPlattformGeneric)
 export default mergedTranslations

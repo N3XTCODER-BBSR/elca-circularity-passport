@@ -1,6 +1,6 @@
 import React from "react"
 
-type DataItem = {
+export type LegendTableDataItem = {
   color: string
   name: string
   value: number
@@ -23,7 +23,7 @@ const DottedBackground: React.FC = () => {
   return <div style={style}></div>
 }
 
-const PieChartLegendTable = ({ data, unit }: { data: DataItem[]; unit: string }) => {
+const ResourcesChartLegendTable = ({ data, unit }: { data: LegendTableDataItem[]; unit: string }) => {
   return (
     <div className="overflow-x-auto text-[6pt]">
       <table className="min-w-full">
@@ -53,4 +53,4 @@ const PieChartLegendTable = ({ data, unit }: { data: DataItem[]; unit: string })
   )
 }
 
-export default PieChartLegendTable
+export default ResourcesChartLegendTable

@@ -6,17 +6,16 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
-import mergeDin276HierarchyWithBuildingComponents, {
-  ComponentWithBasicFields,
-} from "domain-logic/grp/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents"
+import mergeDin276HierarchyWithBuildingComponents from "domain-logic/grp/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents"
+import { BuildingComponentWithBasicFields } from "domain-logic/shared/basic-types"
 
-type ComponentsTreeProps<T extends ComponentWithBasicFields> = {
+type ComponentsTreeProps<T extends BuildingComponentWithBasicFields> = {
   buildingComponents: T[]
   categoryNumbersToInclude?: number[]
   generateLinkUrlForComponent: (component: string) => string
 }
 
-const ComponentsTree = <T extends ComponentWithBasicFields>({
+const ComponentsTree = <T extends BuildingComponentWithBasicFields>({
   buildingComponents,
   categoryNumbersToInclude,
   generateLinkUrlForComponent,

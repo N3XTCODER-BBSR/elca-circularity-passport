@@ -134,8 +134,6 @@ SELECT
       })
       .value()
 
-    console.log("FOO projectComponentsWithLayers", JSON.stringify(projectComponentsWithLayers, null, 2))
-
     return {
       projectInfo,
       projectComponents: projectComponentsWithLayers,

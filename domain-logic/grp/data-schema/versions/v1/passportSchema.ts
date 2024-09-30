@@ -99,33 +99,42 @@ const PollutantsSchema = z.object({
   // Define properties here when they are clear
 })
 
+export const MaterialResourceTypeNamesSchema = z.enum(["Forestry", "Agrar", "Aqua", "Mineral", "Metallic", "Fossil"])
+
+export type MaterialResourceTypeNames = z.infer<typeof MaterialResourceTypeNamesSchema>
+
 export const ResourcesRawMaterialsSchema = z.object({
-  rmiMineral: z.number(),
-  rmiMetallic: z.number(),
-  rmiFossil: z.number(),
-  rmiForestry: z.number(),
-  rmiAgrar: z.number(),
-  rmiAqua: z.number(),
+  [MaterialResourceTypeNamesSchema.Enum.Mineral]: z.number(),
+  [MaterialResourceTypeNamesSchema.Enum.Metallic]: z.number(),
+  [MaterialResourceTypeNamesSchema.Enum.Fossil]: z.number(),
+  [MaterialResourceTypeNamesSchema.Enum.Forestry]: z.number(),
+  [MaterialResourceTypeNamesSchema.Enum.Agrar]: z.number(),
+  [MaterialResourceTypeNamesSchema.Enum.Aqua]: z.number(),
 })
+
 export type ResourcesRawMaterials = z.infer<typeof ResourcesRawMaterialsSchema>
 
+export const LifeCycleSubPhaseIdSchema = z.enum(["A1A2A3", "B1", "B4", "B6", "C3", "C4"])
+
+export type LifeCycleSubPhaseId = z.infer<typeof LifeCycleSubPhaseIdSchema>
+
 export const ResourcesEmbodiedEnergySchema = z.object({
-  penrtA1A2A3: z.number().describe("Primary Energy (non-renewable) in kWh"),
-  penrtB1: z.number().describe("Primary Energy (non-renewable) in kWh"),
-  penrtB4: z.number().describe("Primary Energy (non-renewable) in kWh"),
-  penrtB6: z.number().describe("Primary Energy (non-renewable) in kWh"),
-  penrtC3: z.number().describe("Primary Energy (non-renewable) in kWh"),
-  penrtC4: z.number().describe("Primary Energy (non-renewable) in kWh"),
+  [LifeCycleSubPhaseIdSchema.Enum.A1A2A3]: z.number().describe("Primary Energy (non-renewable) in kWh"),
+  [LifeCycleSubPhaseIdSchema.Enum.B1]: z.number().describe("Primary Energy (non-renewable) in kWh"),
+  [LifeCycleSubPhaseIdSchema.Enum.B4]: z.number().describe("Primary Energy (non-renewable) in kWh"),
+  [LifeCycleSubPhaseIdSchema.Enum.B6]: z.number().describe("Primary Energy (non-renewable) in kWh"),
+  [LifeCycleSubPhaseIdSchema.Enum.C3]: z.number().describe("Primary Energy (non-renewable) in kWh"),
+  [LifeCycleSubPhaseIdSchema.Enum.C4]: z.number().describe("Primary Energy (non-renewable) in kWh"),
 })
 export type ResourcesEmbodiedEnergy = z.infer<typeof ResourcesEmbodiedEnergySchema>
 
 export const ResourcesEmbodiedEmissionsSchema = z.object({
-  gwpA1A2A3: z.number().describe("Global Warming Potential in kg CO2 eq"),
-  gwpB1: z.number().describe("Global Warming Potential in kg CO2 eq"),
-  gwpB4: z.number().describe("Global Warming Potential in kg CO2 eq"),
-  gwpB6: z.number().describe("Global Warming Potential in kg CO2 eq"),
-  gwpC3: z.number().describe("Global Warming Potential in kg CO2 eq"),
-  gwpC4: z.number().describe("Global Warming Potential in kg CO2 eq"),
+  [LifeCycleSubPhaseIdSchema.Values.A1A2A3]: z.number().describe("Global Warming Potential in kg CO2 eq"),
+  [LifeCycleSubPhaseIdSchema.Values.B1]: z.number().describe("Global Warming Potential in kg CO2 eq"),
+  [LifeCycleSubPhaseIdSchema.Values.B4]: z.number().describe("Global Warming Potential in kg CO2 eq"),
+  [LifeCycleSubPhaseIdSchema.Values.B6]: z.number().describe("Global Warming Potential in kg CO2 eq"),
+  [LifeCycleSubPhaseIdSchema.Values.C3]: z.number().describe("Global Warming Potential in kg CO2 eq"),
+  [LifeCycleSubPhaseIdSchema.Values.C4]: z.number().describe("Global Warming Potential in kg CO2 eq"),
 })
 export type ResourcesEmbodiedEmissions = z.infer<typeof ResourcesEmbodiedEmissionsSchema>
 

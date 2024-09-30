@@ -1,29 +1,21 @@
 import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
-  ResourcesEmbodiedEmissions,
-  ResourcesEmbodiedEnergy,
-  ResourcesRawMaterials,
+  Layer,
+  LifeCycleSubPhaseId,
+  MaterialResourceTypeNames,
+  MaterialResourceTypeNamesSchema,
 } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
 
-export enum ResourceTypeNames {
-  Forestry = "rmiForestry",
-  Agrar = "rmiAgrar",
-  Aqua = "rmiAqua",
-  Mineral = "rmiMineral",
-  Metallic = "rmiMetallic",
-  Fossil = "rmiFossil",
-}
-
-const resourceTypesRenewable: ResourceTypeNames[] = [
-  ResourceTypeNames.Forestry,
-  ResourceTypeNames.Agrar,
-  ResourceTypeNames.Aqua,
+const resourceTypesRenewable: MaterialResourceTypeNames[] = [
+  MaterialResourceTypeNamesSchema.Enum.Forestry,
+  MaterialResourceTypeNamesSchema.Enum.Agrar,
+  MaterialResourceTypeNamesSchema.Enum.Aqua,
 ]
 
-const resourceTypesNonRenewable: ResourceTypeNames[] = [
-  ResourceTypeNames.Mineral,
-  ResourceTypeNames.Metallic,
-  ResourceTypeNames.Fossil,
+const resourceTypesNonRenewable: MaterialResourceTypeNames[] = [
+  MaterialResourceTypeNamesSchema.Enum.Mineral,
+  MaterialResourceTypeNamesSchema.Enum.Metallic,
+  MaterialResourceTypeNamesSchema.Enum.Fossil,
 ]
 
 const resourceTypesCategoryToNamesMapping = {
@@ -33,7 +25,7 @@ const resourceTypesCategoryToNamesMapping = {
 }
 
 type AggretatedByByResourceTypeWithPercentage = {
-  resourceTypeName: ResourceTypeNames
+  resourceTypeName: MaterialResourceTypeNames
   aggregatedValue: number
   percentageValue: number
 }
@@ -44,40 +36,55 @@ export type AggregatedRmiData = {
   aggregatedDataTotalPerNrf2m: number
 }
 
+// Helper function to aggregate layer properties
+function aggregateLayerProperties<T extends Record<string, number>>(
+  buildingComponents: DinEnrichedBuildingComponent[],
+  getLayerValues: (layer: Layer) => T,
+  propertyNames: (keyof T)[]
+): Record<string, number> {
+  return buildingComponents.reduce(
+    (acc, component) => {
+      const { layers } = component
+
+      propertyNames.forEach((propertyName) => {
+        const totalForProperty = layers.reduce((sum, layer) => {
+          const layerValues = getLayerValues(layer)
+          return sum + (layerValues[propertyName] || 0)
+        }, 0)
+
+        const key = propertyName as string
+        if (acc[key] == null) {
+          acc[key] = 0
+        }
+        acc[key] += totalForProperty
+      })
+
+      return acc
+    },
+    {} as Record<string, number>
+  )
+}
+
+// RMI Aggregation Function
 export const aggregateRmiData = (
   buildingComponents: DinEnrichedBuildingComponent[],
-  // resourceConfigs: ResourceConfig[],
   resourceTypesCategory: "renewable" | "nonRenewable" | "all",
   nrf: number
 ): AggregatedRmiData => {
   const resourceNames = resourceTypesCategoryToNamesMapping[resourceTypesCategory]
 
-  const aggregatedResourceMap = buildingComponents.reduce(
-    (acc, component) => {
-      const { layers } = component
-
-      resourceNames.forEach((propertyName) => {
-        const totalForResource = layers.reduce((sum, layer) => {
-          return sum + (layer.ressources.rawMaterials[propertyName] || 0)
-        }, 0)
-
-        if (acc[propertyName] == null) {
-          acc[propertyName] = 0
-        }
-        acc[propertyName] += totalForResource
-      })
-
-      return acc
-    },
-    {} as Record<keyof ResourcesRawMaterials, number>
+  const aggregatedResourceMap = aggregateLayerProperties(
+    buildingComponents,
+    (layer) => layer.ressources.rawMaterials,
+    resourceNames
   )
 
   const totalResources = Object.values(aggregatedResourceMap).reduce((sum, value) => sum + value, 0)
 
   const aggretatedByByResourceTypeWithPercentage: AggretatedByByResourceTypeWithPercentage[] = (
-    Object.entries(aggregatedResourceMap) as [ResourceTypeNames, number][]
+    Object.entries(aggregatedResourceMap) as [MaterialResourceTypeNames, number][]
   ).map(([resourceTypeName, aggregatedValue]) => {
-    const percentageValue = (aggregatedValue / totalResources) * 100
+    const percentageValue = totalResources > 0 ? (aggregatedValue / totalResources) * 100 : 0
 
     return {
       resourceTypeName,
@@ -90,7 +97,7 @@ export const aggregateRmiData = (
     aggretatedByByResourceTypeWithPercentage.reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0)
   )
 
-  const aggregatedDataTotalPerNrf2m = Math.round(aggregatedDataTotal / nrf)
+  const aggregatedDataTotalPerNrf2m = nrf > 0 ? Math.round(aggregatedDataTotal / nrf) : 0
 
   return {
     aggretatedByByResourceTypeWithPercentage,
@@ -99,132 +106,117 @@ export const aggregateRmiData = (
   }
 }
 
-// TODO: TECH DEBT - the whole following code about PENRT and GWP should:
-// be extracted into its own file
-// be reviewed and refactored - even thought the goal is achieved to have one method for both PENRT and GWP, the code is not clean and not easy to read
-// also, there are two ts-ignore lines
-// overall, it needs improvement / proper use of type generics
-// also the method signature ("API") is weird at the moment - either:
-//   * use just one string to indicate whether its about GWP or PENRT
-//   * or use two proxy functions around that generic methods and export/use only the proxy functions
+type LabelsConfig = {
+  propertyName: LifeCycleSubPhaseId
+  isGray?: boolean
+}
 
-// New resources aggregation
-type AggregatedGwpOrPenrtDataNew = {
-  // lifecyclePhase: string
-  lifecycleSubphaseId: string
-  lifecycleSubphaseName: string
+const gwpConfigs: LabelsConfig[] = [
+  { propertyName: "A1A2A3", isGray: true },
+  { propertyName: "B1" },
+  { propertyName: "B4" },
+  { propertyName: "B6" },
+  { propertyName: "C3", isGray: true },
+  { propertyName: "C4", isGray: true },
+]
+
+const penrtConfigs: LabelsConfig[] = [
+  { propertyName: "A1A2A3", isGray: true },
+  { propertyName: "B1" },
+  { propertyName: "B4" },
+  { propertyName: "B6" },
+  { propertyName: "C3", isGray: true },
+  { propertyName: "C4", isGray: true },
+]
+
+export type AggregatedGwpOrPenrtDataNew = {
+  lifecycleSubphaseId: LifeCycleSubPhaseId
   aggregatedValue: number
   aggregatedValuePercentage: number
-  label: string
-  // TODO: improve this - it should not be about visual aspects (like patterns), but about semantics on this level
-  pattern?: string
+  isGray?: boolean
 }
 
-type GwpLabelsConfig = {
-  propertyName: keyof ResourcesEmbodiedEmissions
-  labelName: string
-  pattern?: string
+export type AggregatedGwpOrPenrtDataResult = {
+  aggregatedData: AggregatedGwpOrPenrtDataNew[]
+  aggregatedDataTotal: number
+  aggregatedDataTotalPerNrf: number
+  aggregatedDataGrayTotal: number
 }
 
-type PenrtLabelsConfig = {
-  propertyName: keyof ResourcesEmbodiedEnergy
-  labelName: string
-  pattern?: string
-}
-
-// TODO: extract this out to a separate file
-// TODO: use i18n in once it's introduced
-const gwpLabelsConfigs: GwpLabelsConfig[] = [
-  { propertyName: "gwpA1A2A3", labelName: "Modul A1 - A3", pattern: "dots" },
-  { propertyName: "gwpB1", labelName: "Modul B1" },
-  { propertyName: "gwpB4", labelName: "Modul B2, B4" },
-  { propertyName: "gwpB6", labelName: "Modul B6" },
-  { propertyName: "gwpC3", labelName: "Modul C3", pattern: "dots" },
-  { propertyName: "gwpC4", labelName: "Modul C4", pattern: "dots" },
-]
-
-const penrtLabelsConfig: PenrtLabelsConfig[] = [
-  { propertyName: "penrtA1A2A3", labelName: "Modul A1 - A3", pattern: "dots" },
-  { propertyName: "penrtB1", labelName: "Modul B1" },
-  { propertyName: "penrtB4", labelName: "Modul B2, B4" },
-  { propertyName: "penrtB6", labelName: "Modul B6" },
-  { propertyName: "penrtC3", labelName: "Modul C3", pattern: "dots" },
-  { propertyName: "penrtC4", labelName: "Modul C4", pattern: "dots" },
-]
-
-export type GwpAggregationConfig = {
-  propertyName: "embodiedEmissions"
-  labelsConfig: GwpLabelsConfig[]
-}
-
-export type PenrtAggregationConfig = {
-  propertyName: "embodiedEnergy"
-  labelsConfig: PenrtLabelsConfig[]
-}
-
-type AggregationConfig = GwpAggregationConfig | PenrtAggregationConfig
-
-// TODO: Don't export this - handle this better here in domain logic code
-export const penrtAggregationConfig: PenrtAggregationConfig = {
-  propertyName: "embodiedEnergy",
-  labelsConfig: penrtLabelsConfig,
-}
-
-// TODO: Don't export this - handle this better here in domain logic code
-export const gwpAggregationConfig: GwpAggregationConfig = {
-  propertyName: "embodiedEmissions",
-  labelsConfig: gwpLabelsConfigs,
-}
-
-function isGwpAggregationConfig(config: AggregationConfig): config is GwpAggregationConfig {
-  return config.propertyName === "embodiedEmissions"
-}
-
-export function aggregateGwpOrPenrt(
+// Generic function to aggregate resource data
+function aggregateResourceData(
   buildingComponents: DinEnrichedBuildingComponent[],
-  aggregationConfig: AggregationConfig
+  getLayerValues: (layer: Layer) => Record<LifeCycleSubPhaseId, number>,
+  configs: LabelsConfig[]
 ): AggregatedGwpOrPenrtDataNew[] {
-  const aggregationMap = buildingComponents.reduce(
-    (acc, component) => {
-      const { layers } = component
+  const propertyNames = configs.map((config) => config.propertyName)
 
-      aggregationConfig.labelsConfig.forEach(({ propertyName }) => {
-        const totalForResource = layers.reduce((sum, layer) => {
-          if (isGwpAggregationConfig(aggregationConfig)) {
-            const typedPropertyName = propertyName as keyof ResourcesEmbodiedEmissions
-            return sum + (layer.ressources.embodiedEmissions[typedPropertyName] || 0)
-          } else {
-            const typedPropertyName = propertyName as keyof ResourcesEmbodiedEnergy
-            return sum + (layer.ressources.embodiedEnergy[typedPropertyName] || 0)
-          }
-        }, 0)
-
-        if (acc[propertyName] == null) {
-          acc[propertyName] = 0
-        }
-        acc[propertyName] += totalForResource
-      })
-
-      return acc
-    },
-    {} as Record<string, number>
-  )
+  const aggregationMap = aggregateLayerProperties(buildingComponents, getLayerValues, propertyNames)
 
   const totalResources = Object.values(aggregationMap).reduce((sum, value) => sum + value, 0)
 
-  return aggregationConfig.labelsConfig.map(({ propertyName, labelName, pattern }) => {
-    const aggregatedValue = aggregationMap[propertyName] || 0
-    const aggregatedValuePercentage = (aggregatedValue / totalResources) * 100
+  return configs.map(({ propertyName, isGray }) => {
+    const aggregatedValue = aggregationMap[propertyName as LifeCycleSubPhaseId] || 0
+    const aggregatedValuePercentage = totalResources > 0 ? (aggregatedValue / totalResources) * 100 : 0
     return {
       lifecycleSubphaseId: propertyName,
-      lifecycleSubphaseName: labelName,
       aggregatedValue,
-      // TODO: refactor
-      label: `${labelName}: ${aggregatedValuePercentage.toFixed(2)}% / ${aggregatedValue.toFixed(2)} ${
-        isGwpAggregationConfig(aggregationConfig) ? "kg CO2eq" : "kwH"
-      }`,
       aggregatedValuePercentage,
-      pattern,
+      isGray,
     }
   })
+}
+
+export function aggregateGwpData(
+  buildingComponents: DinEnrichedBuildingComponent[],
+  nrf: number
+): AggregatedGwpOrPenrtDataResult {
+  const aggregatedData = aggregateResourceData(
+    buildingComponents,
+    (layer) => layer.ressources.embodiedEmissions,
+    gwpConfigs
+  )
+
+  const aggregatedDataTotal = aggregatedData.reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0)
+  const aggregatedDataTotalPerNrf = nrf > 0 ? aggregatedDataTotal / nrf : 0
+
+  const aggregatedDataGrayTotal = aggregatedData
+    .filter((data) => data.isGray)
+    .map((el) => el.aggregatedValue)
+    .reduce((acc, val) => acc + val, 0)
+
+  return {
+    aggregatedData,
+    aggregatedDataTotal,
+    aggregatedDataTotalPerNrf,
+    aggregatedDataGrayTotal,
+  }
+}
+
+export function aggregatePenrtData(
+  buildingComponents: DinEnrichedBuildingComponent[],
+  nrf: number
+): AggregatedGwpOrPenrtDataResult {
+  const aggregatedData = aggregateResourceData(
+    buildingComponents,
+    (layer) => layer.ressources.embodiedEnergy,
+    penrtConfigs
+  )
+
+  const aggregatedDataTotal = aggregatedData.reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0)
+
+  // Calculate Gray Energy Total
+  const aggregatedDataGrayTotal = aggregatedData
+    .filter((data) => data.isGray)
+    .map((el) => el.aggregatedValue)
+    .reduce((acc, val) => acc + val, 0)
+
+  const aggregatedDataTotalPerNrf = nrf > 0 ? aggregatedDataTotal / nrf : 0
+
+  return {
+    aggregatedData,
+    aggregatedDataTotal,
+    aggregatedDataTotalPerNrf,
+    aggregatedDataGrayTotal,
+  }
 }

@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl"
-import ResourcesPieChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/ResourcesPieChart"
+import ResourcesRmiPieChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/ResourcesRmiPieChart"
 import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
 import {
   ModuleSectionContainer,
@@ -10,7 +10,7 @@ import {
 import { rmiColorsMapper } from "constants/styleConstants"
 import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import { aggregateRmiData } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
-import PieChartLegendTable from "./PieChartLegendTable"
+import ResourcesChartLegendTable from "./ResourcesChartLegendTable"
 
 type RmiSectionProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
@@ -56,7 +56,7 @@ const RmiSection = ({ dinEnrichedBuildingComponents, nrf }: RmiSectionProps) => 
         <Box isCol>
           <Box>
             <Box height={24}>
-              <ResourcesPieChart
+              <ResourcesRmiPieChart
                 colors={rmiColorsMapper}
                 data={aggregatedDataRmi.aggretatedByByResourceTypeWithPercentage}
                 isPdf={true}
@@ -80,7 +80,7 @@ const RmiSection = ({ dinEnrichedBuildingComponents, nrf }: RmiSectionProps) => 
             </Box>
           </Box>
           <Box>
-            <PieChartLegendTable data={legendTableData} unit="t" />
+            <ResourcesChartLegendTable data={legendTableData} unit="t" />
           </Box>
           <Box>
             <table className="mt-[2mm] min-w-full overflow-x-auto bg-gray-50 text-[6pt]">

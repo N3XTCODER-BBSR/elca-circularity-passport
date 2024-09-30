@@ -17,6 +17,7 @@ type ComponentGroup = {
 
 export type Din276Hierarchy = ComponentGroup[]
 
+// TODO: Use use i18n here!
 export const din276Hierarchy: Din276Hierarchy = [
   {
     number: 300,
