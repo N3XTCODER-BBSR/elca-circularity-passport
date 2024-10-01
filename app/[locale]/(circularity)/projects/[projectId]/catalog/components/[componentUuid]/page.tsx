@@ -4,7 +4,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getServerSession } from "next-auth"
 import authOptions from "app/(utils)/authOptions"
-import UnauthorizedInfo from "app/[locale]/(circularity)/(components)/UnauthorizedInfo"
+import UnauthorizedRedirect from "app/[locale]/(circularity)/(components)/UnauthorizedRedirect"
 import ComponentLayer from "./(components)/component-layer"
 import { DataResult, fetchProjectDataCachedDuringRequest } from "../../../(utils)/data-fetcher"
 
@@ -12,7 +12,7 @@ const Page = async ({ params }: { params: { projectId: string; componentUuid: st
   const session = await getServerSession(authOptions)
 
   if (!session?.user) {
-    return <UnauthorizedInfo />
+    return <UnauthorizedRedirect />
   }
 
   const dataResult: DataResult = await fetchProjectDataCachedDuringRequest(params.projectId, session.user.id)

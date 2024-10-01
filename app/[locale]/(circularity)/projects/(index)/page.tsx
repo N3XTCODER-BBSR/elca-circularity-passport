@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next"
 import authOptions from "app/(utils)/authOptions"
 import { query } from "lib/elca-legacy-db"
 import ProjectLinksList from "./(components)/ProjectsLinkList"
-import UnauthorizedInfo from "../../(components)/UnauthorizedInfo"
+import UnauthorizedRedirect from "../../(components)/UnauthorizedRedirect"
 import { ElcaProjectInfo } from "../../(utils)/types"
 
 const getUsersProjects = async (): Promise<ElcaProjectInfo[] | null> => {
@@ -29,7 +29,7 @@ const Page = async () => {
   const session = await getServerSession(authOptions)
 
   if (session == null) {
-    return <UnauthorizedInfo />
+    return <UnauthorizedRedirect />
   }
   const usersProjects = await getUsersProjects()
 

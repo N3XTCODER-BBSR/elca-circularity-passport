@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth/next"
 import authOptions from "app/(utils)/authOptions"
 import NavBar from "./(components)/NavBar"
 import { DataResult, fetchProjectDataCachedDuringRequest } from "./(utils)/data-fetcher"
-import UnauthorizedInfo from "../../(components)/UnauthorizedInfo"
+import UnauthorizedRedirect from "../../(components)/UnauthorizedRedirect"
 
 export default async function ProjectLayout({
   children,
@@ -15,7 +15,7 @@ export default async function ProjectLayout({
   const session = await getServerSession(authOptions)
 
   if (!session?.user) {
-    return <UnauthorizedInfo />
+    return <UnauthorizedRedirect />
   }
 
   const dataResult: DataResult = await fetchProjectDataCachedDuringRequest(params.projectId, session.user.id)

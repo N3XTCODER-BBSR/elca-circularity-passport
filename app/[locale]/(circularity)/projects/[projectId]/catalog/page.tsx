@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth/next"
 import authOptions from "app/(utils)/authOptions"
-import UnauthorizedInfo from "app/[locale]/(circularity)/(components)/UnauthorizedInfo"
+import UnauthorizedRedirect from "app/[locale]/(circularity)/(components)/UnauthorizedRedirect"
 import ProjectCatalog from "./(components)/ProjectCatalog"
 import { DataResult, fetchProjectDataCachedDuringRequest } from "../(utils)/data-fetcher"
 
@@ -8,7 +8,7 @@ const Page = async ({ params }: { params: { projectId: string } }) => {
   const session = await getServerSession(authOptions)
 
   if (!session?.user) {
-    return <UnauthorizedInfo />
+    return <UnauthorizedRedirect />
   }
 
   const dataResult: DataResult = await fetchProjectDataCachedDuringRequest(params.projectId, session.user.id)
