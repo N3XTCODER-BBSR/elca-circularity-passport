@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
-import mergeDin276HierarchyWithBuildingComponents from "domain-logic/grp/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents"
-import { BuildingComponentWithBasicFields } from "domain-logic/shared/basic-types"
+import mergeDin276HierarchyWithBuildingComponents from "lib/domain-logic/grp/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents"
+import { BuildingComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
 
 type ComponentsTreeProps<T extends BuildingComponentWithBasicFields> = {
   buildingComponents: T[]

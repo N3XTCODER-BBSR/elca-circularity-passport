@@ -4,11 +4,11 @@ import { useTranslations } from "next-intl"
 import { useState } from "react"
 
 import VerticalNavigation from "app/[locale]/grp/(components)/generic/VerticalNavigation/VerticalNavigation"
-import DummyAccordion from "../../../DummyAccordion"
-import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import Gwp from "./Gwp"
 import Penrt from "./Penrt"
 import Rmi from "./Rmi"
+import DummyAccordion from "../../../DummyAccordion"
 
 const navigationSections = [
   {

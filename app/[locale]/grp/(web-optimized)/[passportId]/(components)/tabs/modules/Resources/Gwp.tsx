@@ -1,14 +1,14 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import { aggregateGwpData } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
-import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
 import ResourcesPenrtGwpDonutChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/ResourcesPenrtGwpDonutChart"
 import ResourcesChartLegendTable, {
   LegendTableDataItem,
 } from "app/[locale]/grp/pdf-optimized/[passportId]/ResourcesModule/ResourcesChartLegendTable"
 import { lifeCycleSubPhasesColorsMapper } from "constants/styleConstants"
+import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { aggregateGwpData } from "lib/domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
+import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
 
 type GWPComponentProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]

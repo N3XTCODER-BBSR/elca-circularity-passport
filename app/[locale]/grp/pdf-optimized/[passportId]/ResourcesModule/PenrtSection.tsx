@@ -8,8 +8,8 @@ import {
   TextXSLeading4,
 } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
 import { lifeCycleSubPhasesColorsMapper } from "constants/styleConstants"
-import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import { aggregatePenrtData } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
+import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { aggregatePenrtData } from "lib/domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 import ResourcesChartLegendTable, { LegendTableDataItem } from "./ResourcesChartLegendTable"
 
 type PenrtSectionProps = {

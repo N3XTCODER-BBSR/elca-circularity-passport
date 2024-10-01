@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation"
 import ProjectCatalog from "./components/[componentId]/(components)/ProjectCatalog"
-import { getDinEnrichedPassportData } from "../../../(utils)/getPassportData"
+import { getDinEnrichedPassportDataByPassportUuid } from "../../../../../../lib/domain-logic/grp/getPassportData"
 
 const Page = async ({ params }: { params: { passportId: string } }) => {
-  const dinEnrichedPassportData = await getDinEnrichedPassportData(params.passportId)
+  const dinEnrichedPassportData = await getDinEnrichedPassportDataByPassportUuid(params.passportId)
 
   if (dinEnrichedPassportData == null) {
     notFound()

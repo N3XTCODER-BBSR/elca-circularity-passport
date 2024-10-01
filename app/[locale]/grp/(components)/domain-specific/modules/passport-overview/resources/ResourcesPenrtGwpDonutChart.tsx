@@ -2,27 +2,14 @@
 
 import { ResponsivePie } from "@nivo/pie"
 import { useTranslations } from "next-intl"
-import { LifeCycleSubPhaseId } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
-import { AggregatedGwpOrPenrtDataNew } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
-
-const CustomTooltip = ({ _id, _value, color, data }: any) => (
-  <div
-    style={{
-      padding: "5px 10px",
-      background: "white",
-      border: "1px solid #ccc",
-      color,
-    }}
-  >
-    <strong>{data.datum.label}</strong>
-    <br />
-  </div>
-)
+import CustomTooltip from "app/(components)/generic/CustomToolTip"
+import { LifeCycleSubPhaseId } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
+import type { AggregatedGwpOrPenrtData } from "lib/domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 
 type Colors = (lifeCycleSubPhaseId: LifeCycleSubPhaseId) => string
 
 type ResourcesPenrtGwpDonutChartProps = {
-  data: AggregatedGwpOrPenrtDataNew[]
+  data: AggregatedGwpOrPenrtData[]
   colors?: Colors
   isPdf?: boolean
   overlayLabelTranslationKey?: string
@@ -112,7 +99,7 @@ const ResourcesPenrtGwpDonutChart = ({
           id: "dots",
         },
       ]}
-      tooltip={(datum) => <CustomTooltip {...datum} data={datum} />}
+      tooltip={(datum) => <CustomTooltip value={datum.datum.label as string} />}
       enableArcLinkLabels={!isPdf}
       isInteractive={!isPdf}
       animate={!isPdf}

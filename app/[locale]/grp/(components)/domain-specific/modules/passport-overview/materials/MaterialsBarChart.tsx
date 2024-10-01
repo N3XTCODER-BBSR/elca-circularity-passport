@@ -1,51 +1,50 @@
 "use client"
 
 import { ResponsiveBar } from "@nivo/bar"
+import { useTranslations } from "next-intl"
+
+export type MaterialsBarChartDatum = {
+  groupName: string
+  aggregatedMass: number
+  aggregatedMassPercentage: number
+}
+
+type MaterialsBarChartProps = {
+  data: MaterialsBarChartDatum[]
+  labelFormatter?: (data: MaterialsBarChartDatum) => string
+  isPdf?: boolean
+}
 
 const replaceWhiteSpaceWithLineBreak = (label: string) => label?.replace(/\s+/g, "\n")
 
-const CustomTooltip = ({ _id, _value, color, data, labelKey }: any) => (
-  <div
-    style={{
-      padding: "5px 10px",
-      background: "white",
-      border: "1px solid #ccc",
-      color,
-    }}
-  >
-    <strong>{data[labelKey]}</strong>
-    <br />
-  </div>
-)
+const MaterialsBarChart = ({ data, labelFormatter, isPdf = false }: MaterialsBarChartProps) => {
+  const t = useTranslations("Grp.Web.sections.overview.module1Materials")
 
-type MaterialsBarChartDatum = {
-  categoryName: string
-  mass: number
-  aggregatedMassPercentage: number
-  label: string
-}
+  const pdfMargins = { top: 0, right: 20, bottom: 20, left: 100 }
+  const webMargins = { top: 0, right: 150, bottom: 50, left: 300 }
 
-// make sure parent container have a defined height when using
-// responsive component, otherwise height will be 0 and
-// no chart will be rendered.
-const BarChart = ({ data }: { data: MaterialsBarChartDatum[] }) => {
   return (
     <ResponsiveBar
-      animate={false}
+      data={data}
       theme={{
         axis: {
           ticks: {
             text: {
-              fontSize: "0.8rem",
+              fontSize: isPdf ? "5pt" : "10pt",
+              fontWeight: "light",
             },
           },
         },
       }}
-      data={data}
+      totalsOffset={isPdf ? 9 : 0}
+      animate={!isPdf}
+      enableGridX={!isPdf}
+      enableGridY={!isPdf}
       keys={["aggregatedMassPercentage"]}
-      indexBy={"categoryName"}
-      margin={{ top: 0, right: 150, bottom: 50, left: 300 }}
-      padding={0.2}
+      indexBy={"groupName"}
+      isInteractive={!isPdf}
+      margin={isPdf ? pdfMargins : webMargins}
+      padding={isPdf ? 0.4 : 0.2}
       groupMode="grouped"
       layout="horizontal"
       valueScale={{ type: "linear" }}
@@ -56,17 +55,12 @@ const BarChart = ({ data }: { data: MaterialsBarChartDatum[] }) => {
         modifiers: [["darker", 1.6]],
       }}
       minValue={0}
-      maxValue={100}
+      maxValue={isPdf ? "auto" : 100}
       axisTop={null}
       axisRight={null}
       axisBottom={{
-        tickValues: [0, 20, 40, 60, 80, 100],
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legendPosition: "middle",
-        legendOffset: 32,
-        truncateTickAt: 0,
+        tickSize: isPdf ? 0 : 5,
+        tickPadding: isPdf ? -6 : 5,
         format: (value) => `${value} %`,
       }}
       axisLeft={{
@@ -78,8 +72,19 @@ const BarChart = ({ data }: { data: MaterialsBarChartDatum[] }) => {
         truncateTickAt: 0,
         format: replaceWhiteSpaceWithLineBreak,
       }}
-      totalsOffset={9}
-      tooltip={(datum) => <CustomTooltip {...datum} data={datum.data} labelKey="label" />}
+      tooltip={({ data }) => (
+        <div
+          style={{
+            padding: "5px 10px",
+            background: "white",
+            border: "1px solid #ccc",
+          }}
+        >
+          <strong>{data.groupName}</strong>
+          <br />
+          {labelFormatter != null ? labelFormatter(data) : null}
+        </div>
+      )}
       enableLabel={false}
       labelSkipWidth={12}
       labelSkipHeight={12}
@@ -89,4 +94,4 @@ const BarChart = ({ data }: { data: MaterialsBarChartDatum[] }) => {
   )
 }
 
-export default BarChart
+export default MaterialsBarChart

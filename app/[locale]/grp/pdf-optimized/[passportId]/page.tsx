@@ -6,10 +6,10 @@ import CircularityModule from "./CircularityModule"
 import Footer from "./Footer"
 import MaterialsModule from "./MaterialsModule/MaterialsModule"
 import ResourcesModule from "./ResourcesModule"
-import { getDinEnrichedPassportData } from "../../(utils)/getPassportData"
+import { getDinEnrichedPassportDataByPassportUuid } from "../../../../../lib/domain-logic/grp/getPassportData"
 
 const Page = async ({ params }: { params: { passportId: string } }) => {
-  const dinEnrichedPassportData = await getDinEnrichedPassportData(params.passportId)
+  const dinEnrichedPassportData = await getDinEnrichedPassportDataByPassportUuid(params.passportId)
 
   if (dinEnrichedPassportData == null) {
     notFound()

@@ -2,7 +2,7 @@
 import _ from "lodash"
 import ComponentsTree from "app/(components)/ComponentsTree"
 import { ElcaProjectComponent } from "app/[locale]/(circularity)/(utils)/types"
-import { BuildingComponentWithBasicFields } from "domain-logic/shared/basic-types"
+import { BuildingComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
 
 type ProjectCatalogProps = {
   projectId: string

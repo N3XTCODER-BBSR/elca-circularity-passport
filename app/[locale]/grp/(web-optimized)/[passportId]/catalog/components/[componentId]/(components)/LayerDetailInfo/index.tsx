@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Layer } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
+import { Layer } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
 import CircularityInfo from "./CircularityInfo"
 import MaterialInfo from "./MaterialInfo"
 import ResourceInfo from "./ResourceInfo"

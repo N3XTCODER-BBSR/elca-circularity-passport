@@ -1,3 +1,6 @@
+import MaterialsBarChart, {
+  MaterialsBarChartDatum,
+} from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/materials/MaterialsBarChart"
 import {
   Box,
   ModuleContainer,
@@ -8,43 +11,38 @@ import {
   ModuleTitle,
   TextXSLeading4,
 } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
-import { DinEnrichedPassportData } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { DinEnrichedPassportData } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
+  AggregatedMaterialsData,
+  AggregatedMaterialsDataByMaterial,
   aggregateMaterialsDataByBuildingComponentCategory,
   aggregateMaterialsDataByMaterialClass,
-} from "domain-logic/grp/modules/passport-overview/materials/materials-data-aggregation"
-import MaterialsBarChart from "./MaterialsBarChart"
+} from "lib/domain-logic/grp/modules/passport-overview/materials/materials-data-aggregation"
 
 const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportData: DinEnrichedPassportData }) => {
-  // TODO: consider to remove nrf as a param and calculate it inside the aggregation function directly
-  const aggregatedDataByBuildingComponentCategory = aggregateMaterialsDataByBuildingComponentCategory(
+  const aggregatedDataByBuildingComponentCategory: AggregatedMaterialsData =
+    aggregateMaterialsDataByBuildingComponentCategory(
+      dinEnrichedPassportData.dinEnrichedBuildingComponents,
+      dinEnrichedPassportData.buildingBaseData.nrf
+    )
+
+  const aggregatedDataByByMaterialClass: AggregatedMaterialsDataByMaterial = aggregateMaterialsDataByMaterialClass(
     dinEnrichedPassportData.dinEnrichedBuildingComponents,
     dinEnrichedPassportData.buildingBaseData.nrf
   )
 
-  // TODO: consider to remove nrf as a param and calculate it inside the aggregation function directly
-  const aggregatedDataByByMaterialClass = aggregateMaterialsDataByMaterialClass(
-    dinEnrichedPassportData.dinEnrichedBuildingComponents,
-    dinEnrichedPassportData.buildingBaseData.nrf
-  )
-
-  // TODO: consider to move this into domain-logic layer
-  const chartDataGroupedByBuildingMaterialClass =
-    aggregatedDataByByMaterialClass.aggregatedByClassIdWithPercentageSorted.map((data) => ({
-      categoryName: data.materialClassDescription,
-      mass: data.aggregatedMass,
+  const chartDataGroupedByBuildingMaterialClass: MaterialsBarChartDatum[] =
+    aggregatedDataByByMaterialClass.aggregatedByClassId.map((data) => ({
+      groupName: data.materialClassDescription,
+      aggregatedMass: data.aggregatedMass,
       aggregatedMassPercentage: data.aggregatedMassPercentage,
-      label: data.label,
     }))
 
-  const chartDataGroupedByBuildingComponentCategory =
-    // TODO: consider to move this into domain-logic layer
-    aggregatedDataByBuildingComponentCategory.aggretatedByCategoryWithPercentageSorted.map((data) => ({
-      categoryName: data.costGroupCategoryName,
-      mass: data.aggregatedMass,
+  const chartDataGroupedByBuildingComponentCategory: MaterialsBarChartDatum[] =
+    aggregatedDataByBuildingComponentCategory.aggregatedByCategory.map((data) => ({
+      groupName: data.costGroupCategoryName,
+      aggregatedMass: data.aggregatedMass,
       aggregatedMassPercentage: data.aggregatedMassPercentage,
-      // label is of format xx% (abc t)
-      label: data.label,
     }))
 
   return (
@@ -76,14 +74,14 @@ const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportD
             <ModuleSectionContainer>
               <TextXSLeading4 light>Nach Bauteilkategorien</TextXSLeading4>
               <ModuleSectionMain height={40}>
-                <MaterialsBarChart data={chartDataGroupedByBuildingComponentCategory} />
+                <MaterialsBarChart data={chartDataGroupedByBuildingComponentCategory} isPdf />
               </ModuleSectionMain>
             </ModuleSectionContainer>
 
             <ModuleSectionContainer>
               <TextXSLeading4 light>Nach Baustoffgruppen</TextXSLeading4>
               <ModuleSectionMain height={40}>
-                <MaterialsBarChart data={chartDataGroupedByBuildingMaterialClass} />
+                <MaterialsBarChart data={chartDataGroupedByBuildingMaterialClass} isPdf />
               </ModuleSectionMain>
             </ModuleSectionContainer>
           </ModuleMain>

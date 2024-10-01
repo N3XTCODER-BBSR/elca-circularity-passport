@@ -1,13 +1,10 @@
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
-import passportParser from "domain-logic/grp/data-schema/versions/v1/passportParser"
-import prisma from "prisma/prismaClient"
+import { getAllPassportsData } from "lib/domain-logic/grp/getPassportData"
 
 export default async function Web() {
   const t = await getTranslations("Grp.Web")
-  const passports = await prisma.passport.findMany()
-
-  const passportsData = passports.map((passport) => passportParser(passport.passportData))
+  const passportsData = await getAllPassportsData()
   return (
     <>
       <section className="bg-white dark:bg-gray-900">

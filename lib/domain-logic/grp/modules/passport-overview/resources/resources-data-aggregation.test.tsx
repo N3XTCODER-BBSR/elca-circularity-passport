@@ -1,11 +1,11 @@
-import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import { Layer } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
+import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { Layer } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
 import {
-  AggregatedRmiData,
-  aggregateRmiData,
   AggregatedGwpOrPenrtDataResult,
+  AggregatedRmiData,
   aggregateGwpData,
   aggregatePenrtData,
+  aggregateRmiData,
 } from "./resources-data-aggregation"
 
 describe("Aggregation Functions with Complex Data", () => {
@@ -275,7 +275,7 @@ describe("Aggregation Functions with Complex Data", () => {
       const aggregatedDataTotalPerNrf2m = nrf > 0 ? Math.round(aggregatedDataTotal / nrf) : 0 // 1
 
       expect(result).toEqual({
-        aggretatedByByResourceTypeWithPercentage: expectedAggregatedData,
+        aggregatedByByResourceTypeWithPercentage: expectedAggregatedData,
         aggregatedDataTotal,
         aggregatedDataTotalPerNrf2m,
       })

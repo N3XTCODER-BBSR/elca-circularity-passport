@@ -2,26 +2,15 @@
 
 import { ResponsivePie } from "@nivo/pie"
 import { useTranslations } from "next-intl"
-import { MaterialResourceTypeNames } from "domain-logic/grp/data-schema/versions/v1/passportSchema"
-
-const CustomTooltip = ({ value }: { value: string }) => (
-  <div
-    style={{
-      padding: "5px 10px",
-      background: "white",
-      border: "1px solid #ccc",
-    }}
-  >
-    <strong>{value}</strong>
-    <br />
-  </div>
-)
+import CustomTooltip from "app/(components)/generic/CustomToolTip"
+import { MaterialResourceTypeNames } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
 
 type Datum = {
   resourceTypeName: MaterialResourceTypeNames
   aggregatedValue: number
   percentageValue: number
 }
+
 type Colors = (resourceTypeName: MaterialResourceTypeNames) => string
 
 type ResourcesPieChartProps = {
@@ -38,11 +27,7 @@ type ComputedDatum = {
   color: string
 }
 
-const ResourcesRmiPieChart = ({
-  data,
-  colors = (resourceTypeName: MaterialResourceTypeNames) => "",
-  isPdf = false,
-}: ResourcesPieChartProps) => {
+const ResourcesRmiPieChart = ({ data, colors = () => "", isPdf = false }: ResourcesPieChartProps) => {
   const rmiTranslations = useTranslations("Grp.Web.sections.overview.module2Resources.rmi")
 
   const cornerRadius = isPdf ? 0 : 3

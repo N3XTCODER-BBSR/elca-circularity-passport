@@ -1,6 +1,6 @@
 import _ from "lodash"
+import { BuildingComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
 import { din276Hierarchy } from "./din276Mapping"
-import { BuildingComponentWithBasicFields } from "domain-logic/shared/basic-types"
 
 export type Din276MergedComponent = {
   groupNumber: number

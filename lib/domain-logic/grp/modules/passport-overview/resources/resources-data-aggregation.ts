@@ -1,10 +1,12 @@
-import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
   Layer,
   LifeCycleSubPhaseId,
+  LifeCycleSubPhaseIdSchema,
   MaterialResourceTypeNames,
   MaterialResourceTypeNamesSchema,
-} from "domain-logic/grp/data-schema/versions/v1/passportSchema"
+  Ressources,
+} from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
 
 const resourceTypesRenewable: MaterialResourceTypeNames[] = [
   MaterialResourceTypeNamesSchema.Enum.Forestry,
@@ -24,14 +26,14 @@ const resourceTypesCategoryToNamesMapping = {
   all: [...resourceTypesRenewable, ...resourceTypesNonRenewable],
 }
 
-type AggretatedByByResourceTypeWithPercentage = {
+type aggregatedByByResourceTypeWithPercentage = {
   resourceTypeName: MaterialResourceTypeNames
   aggregatedValue: number
   percentageValue: number
 }
 
 export type AggregatedRmiData = {
-  aggretatedByByResourceTypeWithPercentage: AggretatedByByResourceTypeWithPercentage[]
+  aggregatedByByResourceTypeWithPercentage: aggregatedByByResourceTypeWithPercentage[]
   aggregatedDataTotal: number
   aggregatedDataTotalPerNrf2m: number
 }
@@ -81,7 +83,7 @@ export const aggregateRmiData = (
 
   const totalResources = Object.values(aggregatedResourceMap).reduce((sum, value) => sum + value, 0)
 
-  const aggretatedByByResourceTypeWithPercentage: AggretatedByByResourceTypeWithPercentage[] = (
+  const aggregatedByByResourceTypeWithPercentage: aggregatedByByResourceTypeWithPercentage[] = (
     Object.entries(aggregatedResourceMap) as [MaterialResourceTypeNames, number][]
   ).map(([resourceTypeName, aggregatedValue]) => {
     const percentageValue = totalResources > 0 ? (aggregatedValue / totalResources) * 100 : 0
@@ -94,13 +96,13 @@ export const aggregateRmiData = (
   })
 
   const aggregatedDataTotal = Math.round(
-    aggretatedByByResourceTypeWithPercentage.reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0)
+    aggregatedByByResourceTypeWithPercentage.reduce((sum, { aggregatedValue }) => sum + aggregatedValue, 0)
   )
 
   const aggregatedDataTotalPerNrf2m = nrf > 0 ? Math.round(aggregatedDataTotal / nrf) : 0
 
   return {
-    aggretatedByByResourceTypeWithPercentage,
+    aggregatedByByResourceTypeWithPercentage,
     aggregatedDataTotal,
     aggregatedDataTotalPerNrf2m,
   }
@@ -129,7 +131,7 @@ const penrtConfigs: LabelsConfig[] = [
   { propertyName: "C4", isGray: true },
 ]
 
-export type AggregatedGwpOrPenrtDataNew = {
+export type AggregatedGwpOrPenrtData = {
   lifecycleSubphaseId: LifeCycleSubPhaseId
   aggregatedValue: number
   aggregatedValuePercentage: number
@@ -137,7 +139,7 @@ export type AggregatedGwpOrPenrtDataNew = {
 }
 
 export type AggregatedGwpOrPenrtDataResult = {
-  aggregatedData: AggregatedGwpOrPenrtDataNew[]
+  aggregatedData: AggregatedGwpOrPenrtData[]
   aggregatedDataTotal: number
   aggregatedDataTotalPerNrf: number
   aggregatedDataGrayTotal: number
@@ -148,7 +150,7 @@ function aggregateResourceData(
   buildingComponents: DinEnrichedBuildingComponent[],
   getLayerValues: (layer: Layer) => Record<LifeCycleSubPhaseId, number>,
   configs: LabelsConfig[]
-): AggregatedGwpOrPenrtDataNew[] {
+): AggregatedGwpOrPenrtData[] {
   const propertyNames = configs.map((config) => config.propertyName)
 
   const aggregationMap = aggregateLayerProperties(buildingComponents, getLayerValues, propertyNames)
@@ -219,4 +221,23 @@ export function aggregatePenrtData(
     aggregatedDataTotalPerNrf,
     aggregatedDataGrayTotal,
   }
+}
+export function calculateRmiTotal(resources: Ressources): number {
+  const rawMaterials = resources?.rawMaterials || {}
+  const total = Object.values(rawMaterials).reduce((sum, value) => sum + (value || 0), 0)
+  return Math.round(total)
+}
+
+export function calculateQpABC(resources: Ressources): number {
+  const phases = LifeCycleSubPhaseIdSchema.options
+  const embodiedEnergy = resources?.embodiedEnergy || {}
+  const total = phases.reduce((sum, phase) => sum + (embodiedEnergy[phase] || 0), 0)
+  return total
+}
+
+export function calculateGwpABC(resources: Ressources): number {
+  const phases = LifeCycleSubPhaseIdSchema.options
+  const embodiedEmissions = resources?.embodiedEmissions || {}
+  const total = phases.reduce((sum, phase) => sum + (embodiedEmissions[phase] || 0), 0)
+  return total
 }

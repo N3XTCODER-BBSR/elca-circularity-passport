@@ -1,32 +1,36 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useState } from "react"
-import MaterialsBarChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/materials/MaterialsBarChart"
-import { DinEnrichedPassportData } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import MaterialsBarChart, {
+  MaterialsBarChartDatum,
+} from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/materials/MaterialsBarChart"
+import { DinEnrichedPassportData } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
   aggregateMaterialsDataByBuildingComponentCategory,
   aggregateMaterialsDataByMaterialClass,
-} from "domain-logic/grp/modules/passport-overview/materials/materials-data-aggregation"
-import DummyAccordion from "../../../DummyAccordion"
+} from "lib/domain-logic/grp/modules/passport-overview/materials/materials-data-aggregation"
 import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
 
 const navigationSections = [
   {
-    name: "Nach Baustoffgruppen",
+    translationKey: "navigationSections.byMaterialClass",
     id: "1",
   },
   {
-    name: "Nach Bauteilkategorien",
+    translationKey: "navigationSections.byComponentCategory",
     id: "2",
   },
 ]
 
 type MaterialsProps = {
   dinEnrichedPassportData: DinEnrichedPassportData
-  className?: string // Add className as an optional prop
+  className?: string
 }
 
 const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, className }) => {
+  const t = useTranslations("Grp.Web.sections.overview.module1Materials")
+  const unitsTranslations = useTranslations("Units")
   const [currentNavSectionId, setCurrentNavSectionId] = useState<string>("1")
 
   const aggregatedDataByBuildingComponentCategory = aggregateMaterialsDataByBuildingComponentCategory(
@@ -34,44 +38,43 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
     dinEnrichedPassportData.buildingBaseData.nrf
   )
 
-  const aggregatedDataByByMaterialClass = aggregateMaterialsDataByMaterialClass(
+  const aggregatedDataByMaterialClass = aggregateMaterialsDataByMaterialClass(
     dinEnrichedPassportData.dinEnrichedBuildingComponents,
     dinEnrichedPassportData.buildingBaseData.nrf
   )
 
-  const chartDataGroupedByBuildingMaterialClass =
-    aggregatedDataByByMaterialClass.aggregatedByClassIdWithPercentageSorted.map((data) => ({
-      categoryName: data.materialClassDescription,
-      mass: data.aggregatedMass,
+  const chartDataGroupedByMaterialClass: MaterialsBarChartDatum[] =
+    aggregatedDataByMaterialClass.aggregatedByClassId.map((data) => ({
+      groupName: data.materialClassDescription,
       aggregatedMassPercentage: data.aggregatedMassPercentage,
-      // label is of format xx% (abc t)
-      label: data.label,
+      aggregatedMass: data.aggregatedMass,
     }))
 
-  const chartDataGroupedByBuildingComponentCategory =
-    aggregatedDataByBuildingComponentCategory.aggretatedByCategoryWithPercentageSorted.map((data) => ({
-      categoryName: data.costGroupCategoryName,
-      mass: data.aggregatedMass,
+  const chartDataGroupedByComponentCategory: MaterialsBarChartDatum[] =
+    aggregatedDataByBuildingComponentCategory.aggregatedByCategory.map((data) => ({
+      groupName: data.costGroupCategoryName,
       aggregatedMassPercentage: data.aggregatedMassPercentage,
-      // label is of format xx% (abc t)
-      label: data.label,
+      aggregatedMass: data.aggregatedMass,
     }))
+
+  const totalMass = aggregatedDataByBuildingComponentCategory.totalMass
+  const totalMassRelativeToNrf = aggregatedDataByBuildingComponentCategory.totalMassRelativeToNrf
 
   return (
     <div className={className}>
       <h2 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
-        Modul 1
+        {t("title")}
       </h2>
       <h3 className="text-l mb-4 max-w-xl leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
-        Materialien
+        {t("subtitle")}
       </h3>
       <div className="flex h-[300px] flex-col text-center">
-        <h4 className="text-l mb-4 font-extrabold lg:text-2xl xl:text-xl">Masse</h4>
+        <h4 className="text-l mb-4 font-extrabold lg:text-2xl xl:text-xl">{t("chartTitle")}</h4>
         <div className="flex flex-row items-center ">
           <TotalAndNrfRelativeValuesDisplay
-            totalValue={aggregatedDataByBuildingComponentCategory.totalMass}
-            nrfRelativeValue={aggregatedDataByBuildingComponentCategory.totalMassRelativeToNrf}
-            unit="tonnes"
+            totalValue={totalMass}
+            nrfRelativeValue={totalMassRelativeToNrf}
+            unit={unitsTranslations("Tons.short")}
           />
           <select
             className="min-w-32 rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -80,18 +83,33 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
           >
             {navigationSections.map((section) => (
               <option key={section.id} value={section.id}>
-                {section.name}
+                {t(section.translationKey)}
               </option>
             ))}
           </select>
         </div>
         <div className="h-[500px]">
-          {currentNavSectionId === "1" && <MaterialsBarChart data={chartDataGroupedByBuildingMaterialClass} />}
-          {currentNavSectionId === "2" && <MaterialsBarChart data={chartDataGroupedByBuildingComponentCategory} />}
+          {currentNavSectionId === "1" && (
+            <MaterialsBarChart
+              data={chartDataGroupedByMaterialClass}
+              labelFormatter={(data) =>
+                `${data.aggregatedMassPercentage.toFixed(2)}% (${data.aggregatedMass.toFixed(2)} ${unitsTranslations(
+                  "Tonnes.short"
+                )})`
+              }
+            />
+          )}
+          {currentNavSectionId === "2" && (
+            <MaterialsBarChart
+              data={chartDataGroupedByComponentCategory}
+              labelFormatter={(data) =>
+                `${data.aggregatedMassPercentage.toFixed(2)}% (${data.aggregatedMass.toFixed(2)} ${unitsTranslations(
+                  "Tonnes.short"
+                )})`
+              }
+            />
+          )}
         </div>
-      </div>
-      <div className="my-16 w-full">
-        <DummyAccordion />
       </div>
     </div>
   )

@@ -2,11 +2,11 @@ import { ArrowLongLeftIcon } from "@heroicons/react/20/solid"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getDinEnrichedPassportData } from "app/[locale]/grp/(utils)/getPassportData"
+import { getDinEnrichedPassportDataByPassportUuid } from "lib/domain-logic/grp/getPassportData"
 import ComponentLayer from "./component-layer"
 
 const Page = async ({ params }: { params: { passportId: string; componentId: string; locale: string } }) => {
-  const passportData = await getDinEnrichedPassportData(params.passportId)
+  const passportData = await getDinEnrichedPassportDataByPassportUuid(params.passportId)
 
   const component = passportData?.dinEnrichedBuildingComponents?.find(
     (component) => component.uuid === params.componentId

@@ -1,6 +1,6 @@
 "use client"
 import { ModuleContainer, ModuleMain, ModuleTitle } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
-import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import GwpSection from "./GwpSection"
 import PenrtSection from "./PenrtSection"
 import RmiSection from "./RmiSection"

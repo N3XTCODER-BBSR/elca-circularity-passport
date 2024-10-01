@@ -1,14 +1,14 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import { aggregateRmiData } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
-import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
 import ResourcesRmiPieChart from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/resources/ResourcesRmiPieChart"
 import ResourcesChartLegendTable, {
   LegendTableDataItem,
 } from "app/[locale]/grp/pdf-optimized/[passportId]/ResourcesModule/ResourcesChartLegendTable"
 import { rmiColorsMapper } from "constants/styleConstants"
+import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { aggregateRmiData } from "lib/domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
+import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
 
 type RMIComponentProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
@@ -22,7 +22,7 @@ const RMI: React.FC<RMIComponentProps> = ({ dinEnrichedBuildingComponents, nrf }
   const aggregatedDataRmiRenewable = aggregateRmiData(dinEnrichedBuildingComponents, "renewable", nrf)
   const aggregatedDataRmi = aggregateRmiData(dinEnrichedBuildingComponents, "all", nrf)
 
-  const rmiLegendTableData: LegendTableDataItem[] = aggregatedDataRmi.aggretatedByByResourceTypeWithPercentage.map(
+  const rmiLegendTableData: LegendTableDataItem[] = aggregatedDataRmi.aggregatedByByResourceTypeWithPercentage.map(
     (data) => ({
       color: rmiColorsMapper(data.resourceTypeName),
       name: t(`rmi.names.${data.resourceTypeName}`),
@@ -44,7 +44,7 @@ const RMI: React.FC<RMIComponentProps> = ({ dinEnrichedBuildingComponents, nrf }
         />
         <div className="h-96">
           <ResourcesRmiPieChart
-            data={aggregatedDataRmi.aggretatedByByResourceTypeWithPercentage}
+            data={aggregatedDataRmi.aggregatedByByResourceTypeWithPercentage}
             colors={rmiColorsMapper}
           />
         </div>

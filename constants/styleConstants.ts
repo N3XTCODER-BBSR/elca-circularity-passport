@@ -1,8 +1,8 @@
 import {
   LifeCycleSubPhaseId,
-  MaterialResourceTypeNamesSchema,
   MaterialResourceTypeNames,
-} from "domain-logic/grp/data-schema/versions/v1/passportSchema"
+  MaterialResourceTypeNamesSchema,
+} from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
 
 export const rmiColorsMapper = (resourceTypeName: MaterialResourceTypeNames) => {
   const colorsMapping = {
@@ -28,4 +28,21 @@ export const lifeCycleSubPhasesColorsMapper = (lifeCycleSubPhaseId: LifeCycleSub
   }
 
   return colorsMapping[lifeCycleSubPhaseId]
+}
+
+export const eolClassColorsMapper = (eolClass: string) => {
+  const colors: { [key: string]: string } = {
+    A: "#3e5529",
+    B: "#eaeee5",
+    C: "#b1cf95",
+    "C/D": "#b1cf95",
+    D: "#E2EFDA",
+    "D/E": "#E2EFDA",
+    E: "#FFD967",
+    "E/F": "#FFD967",
+    F: "#E36C0A",
+    "F/G": "#E36C0A",
+    G: "#8e4d1c",
+  }
+  return colors[eolClass] || "black"
 }

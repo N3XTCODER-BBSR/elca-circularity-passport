@@ -8,8 +8,8 @@ import {
   TextXSLeading4,
 } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
 import { rmiColorsMapper } from "constants/styleConstants"
-import { DinEnrichedBuildingComponent } from "domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import { aggregateRmiData } from "domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
+import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
+import { aggregateRmiData } from "lib/domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 import ResourcesChartLegendTable from "./ResourcesChartLegendTable"
 
 type RmiSectionProps = {
@@ -42,7 +42,7 @@ const RmiSection = ({ dinEnrichedBuildingComponents, nrf }: RmiSectionProps) => 
     nrf
   )
 
-  const legendTableData = aggregatedDataRmi.aggretatedByByResourceTypeWithPercentage.map((data) => ({
+  const legendTableData = aggregatedDataRmi.aggregatedByByResourceTypeWithPercentage.map((data) => ({
     color: rmiColorsMapper(data.resourceTypeName),
     name: rmiTranslations(`names.${data.resourceTypeName}`),
     value: data.aggregatedValue,
@@ -58,7 +58,7 @@ const RmiSection = ({ dinEnrichedBuildingComponents, nrf }: RmiSectionProps) => 
             <Box height={24}>
               <ResourcesRmiPieChart
                 colors={rmiColorsMapper}
-                data={aggregatedDataRmi.aggretatedByByResourceTypeWithPercentage}
+                data={aggregatedDataRmi.aggregatedByByResourceTypeWithPercentage}
                 isPdf={true}
               />
             </Box>
