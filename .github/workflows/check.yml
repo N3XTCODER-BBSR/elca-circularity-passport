@@ -16,6 +16,10 @@ jobs:
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       HTTP_BASIC_AUTH: ${{ secrets.HTTP_BASIC_AUTH }}
+      ELCA_LEGACY_DATABASE_URL: FOO_TESTING # ${{ secrets.ELCA_LEGACY_DATABASE_URL }}
+      DOPPIO_API_KEY: FOO_TESTING # ${{ secrets.DOPPIO_API_KEY }}
+      NEXTAUTH_SECRET: FOO_TESTING # ${{ secrets.NEXTAUTH_SECRET }}
+      NEXT_PUBLIC_PASSPORT_BASE_URL: FOO_TESTING # ${{ vars.NEXT_PUBLIC_PASSPORT_BASE_URL }}
     steps:
       - uses: actions/checkout@v4
       - run: echo "node_version=$(cat .github/nodejs.version)" >> $GITHUB_ENV
