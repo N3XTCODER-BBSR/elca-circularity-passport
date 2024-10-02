@@ -71,8 +71,8 @@ const CircularityBarChart = ({
       }}
       tooltip={(datum) => <CustomTooltip value={datum.data.overlayText} />}
       totalsOffset={9}
-      enableGridX={!isPdf}
-      enableGridY={!isPdf}
+      enableGridX={false}
+      enableGridY={false}
       enableLabel={false}
       role="application"
     />
