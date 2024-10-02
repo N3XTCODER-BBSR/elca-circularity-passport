@@ -62,13 +62,13 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
 
   return (
     <div className={className}>
-      <h2 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
+      <h2 className="text-l max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
         {t("title")}
       </h2>
       <h3 className="text-l mb-4 max-w-xl leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
         {t("subtitle")}
       </h3>
-      <div className="flex h-[300px] flex-col text-center">
+      <div className="mx-auto flex h-[300px] min-w-[834px] max-w-[834px] flex-col text-center">
         <h4 className="text-l mb-4 font-extrabold lg:text-2xl xl:text-xl">{t("chartTitle")}</h4>
         <div className="flex flex-row items-center ">
           <TotalAndNrfRelativeValuesDisplay

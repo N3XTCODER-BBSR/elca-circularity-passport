@@ -38,8 +38,8 @@ const MaterialsBarChart = ({ data, labelFormatter, isPdf = false }: MaterialsBar
       }}
       totalsOffset={isPdf ? 9 : 0}
       animate={!isPdf}
-      enableGridX={!isPdf}
-      enableGridY={!isPdf}
+      enableGridX={false}
+      enableGridY={false}
       keys={["aggregatedMassPercentage"]}
       indexBy={"groupName"}
       isInteractive={!isPdf}
@@ -59,7 +59,7 @@ const MaterialsBarChart = ({ data, labelFormatter, isPdf = false }: MaterialsBar
       axisTop={null}
       axisRight={null}
       axisBottom={{
-        tickSize: isPdf ? 0 : 5,
+        tickSize: 0,
         tickPadding: isPdf ? -6 : 5,
         format: (value) => `${value} %`,
       }}

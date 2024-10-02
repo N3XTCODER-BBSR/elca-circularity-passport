@@ -39,7 +39,7 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
 
   return (
     <div className={className}>
-      <h2 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
+      <h2 className="text-l max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
         Modul 3
       </h2>
       <h3 className="text-l mb-4 max-w-xl leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">

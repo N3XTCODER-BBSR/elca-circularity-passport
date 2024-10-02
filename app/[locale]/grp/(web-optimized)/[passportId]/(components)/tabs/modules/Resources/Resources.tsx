@@ -37,7 +37,7 @@ const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nr
 
   return (
     <div className={className}>
-      <h2 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
+      <h2 className="text-l max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
         {t("moduleTitle")}
       </h2>
       <h3 className="text-l mb-4 max-w-xl leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
