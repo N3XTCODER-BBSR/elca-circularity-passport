@@ -32,8 +32,9 @@ const SingleKeyValueTuple = ({
       className={twMerge(
         height,
         "flex w-full justify-between px-2 leading-[5mm]",
-        isLeft ? "border-r-2" : "",
-        lineClampClass
+        isLeft ? "border-r-2" : ""
+        // lineClampClass
+        // TODO: discuss with Daniel. this broke the pdf layout (causing unneeded line breaks)
       )}
     >
       <dt className="font-semibold text-gray-700">{keyValueTuple?.key}: &nbsp;</dt>
