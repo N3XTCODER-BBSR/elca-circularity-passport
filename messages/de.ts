@@ -117,6 +117,12 @@ const translationsPlattformGeneric = {
       short: "kg Co2eq",
     },
   },
+  GenericComponents: {
+    TotalAndNrfRelativeValuesDisplay: {
+      total: "gesamt",
+      areaRelated: "Flächenbezogen",
+    },
+  },
 }
 
 const translationsWebSpecific = {
@@ -125,6 +131,8 @@ const translationsWebSpecific = {
       title: "Ressourcenpass für Gebäude",
       description:
         "Das BBSR (Bundesinstitut für Bau-, Stadt-und Raumforschung, Referat WB6 Bauen und Umwelt) stellt dieses Tool kostenlos zur Verfügung.",
+      project: "Projekt",
+      exportPdf: "PDF Exportieren",
       NavBar: {
         overview: "Überblick",
         catalog: "Katalog",
@@ -143,10 +151,12 @@ const translationsWebSpecific = {
           module2Resources: {
             gwpAndPenrt: {
               penrt: {
-                grayEnergyTotal: "Graue Emissionen, total",
+                grayEnergyTotal: "Graue Energie, total",
+                grayEnergyTotalPdf: "Grau Energie",
               },
               gwp: {
-                grayEmissionsTotal: "Graue Energie, total",
+                grayEmissionsTotal: "Graue Emissionen, total",
+                grayEmissionsPdf: "Graue Emissionen",
               },
             },
           },
@@ -156,26 +166,5 @@ const translationsWebSpecific = {
   },
 }
 
-const translationsPdfSpecific = {
-  Grp: {
-    Pdf: {
-      sections: {
-        overview: {
-          module2Resources: {
-            gwpAndPenrt: {
-              penrt: {
-                grayEnergyTotal: "Graue Energie",
-              },
-              gwp: {
-                grayEmissionsTotal: "Graue Emissionen",
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-}
-
-const mergedTranslations = _.merge({}, translationsWebSpecific, translationsPdfSpecific, translationsPlattformGeneric)
+const mergedTranslations = _.merge({}, translationsWebSpecific, translationsPlattformGeneric)
 export default mergedTranslations

@@ -117,6 +117,12 @@ const translationsPlatformGeneric = {
       short: "kg CO2eq",
     },
   },
+  GenericComponents: {
+    TotalAndNrfRelativeValuesDisplay: {
+      total: "total",
+      areaRelated: "area related",
+    },
+  },
 }
 
 const translationsWebSpecific = {
@@ -125,6 +131,8 @@ const translationsWebSpecific = {
       title: "Building Resource Passport",
       description:
         "The BBSR (Federal Institute for Research on Building, Urban Affairs and Spatial Development, Department WB6 Construction and Environment) provides this tool free of charge.",
+      project: "Project",
+      exportPdf: "Export PDF",
       NavBar: {
         overview: "Overview",
         catalog: "Catalog",
@@ -144,9 +152,11 @@ const translationsWebSpecific = {
             gwpAndPenrt: {
               penrt: {
                 grayEnergyTotal: "Gray Energy, total",
+                grayEnergyTotalPdf: "Gray Energy",
               },
               gwp: {
                 grayEmissionsTotal: "Gray Emissions, total",
+                grayEmissionsTotalPdf: "Gray Emissions",
               },
             },
           },
@@ -156,26 +166,5 @@ const translationsWebSpecific = {
   },
 }
 
-const translationsPdfSpecific = {
-  Grp: {
-    Pdf: {
-      sections: {
-        overview: {
-          module2Resources: {
-            gwpAndPenrt: {
-              penrt: {
-                grayEnergyTotal: "Gray Energy",
-              },
-              gwp: {
-                grayEmissionsTotal: "Gray Emissions",
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-}
-
-const mergedTranslations = _.merge({}, translationsWebSpecific, translationsPdfSpecific, translationsPlatformGeneric)
+const mergedTranslations = _.merge({}, translationsWebSpecific, translationsPlatformGeneric)
 export default mergedTranslations
