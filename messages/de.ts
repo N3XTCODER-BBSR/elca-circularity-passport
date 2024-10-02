@@ -15,6 +15,43 @@ const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
 
 const translationsGrpPlattformGeneric = {
   overview: {
+    buildingBaseInformation: {
+      title: "Gebaude-Informationen",
+      buildingId: "Gebäude/Bauwerk-ID",
+      coordinates: "Koordinaten",
+      address: "Adresse",
+      yearOfBuildingPermit: "Jahr der Baugenehmigung",
+      yearOfCompletion: "Jahr der Baufertigstellung",
+      numberOfAboveGroundFloors: "Anzahl der Obergeschosse",
+      numberOfUndergroundFloors: "Anzahl der Untergeschosse",
+      netFloorArea: {
+        label: "Netto-Raumfläche",
+        abbreviation: "NRF",
+        description: {
+          intro:
+            "Unter Netto-Raumfläche (NRF) versteht man die Summe der nutzbaren Grundflächen eines Gebäudes. Zur Berechnung wird sie gemäß nebenstehender Tabelle nochmals in Nutzungsgruppen unterteilt in:",
+          point1: "die Nutzungsfläche (NUF) als zum sinngemäßen Gebrauch eines Gebäudes effektiv nutzbare Grundfläche",
+          point2:
+            "die Technikfläche (TF), die der zur Unterbringung von zentralen haustechnischen Anlagen dient (z. B. Heizung, Maschinenraum für den Aufzug, Raum für Betrieb von Klimaanlagen)",
+          point3:
+            "die Verkehrsfläche (VF), die dem Zugang zu den Räumen, dem Verkehr innerhalb von Gebäuden oder zum Verlassen im Notfall dient.",
+        },
+      },
+      grossFloorArea: {
+        label: "Brutto-Grundfläche",
+        abbreviation: "BGF",
+        description:
+          "Brutto-Grundfläche (BGF) bezeichnet diejenige Fläche, die sich aus der Summe aller Grundflächen aller Grundrissebenen eines Gebäudes errechnet. Sie ist geschossweise zu ermitteln.",
+      },
+      grossVolume: {
+        label: "Brutto-Rauminhalt",
+        abbreviation: "BRI",
+        description:
+          "Der Brutto-Rauminhalt (von Gebäuden) ist nach DIN 277-1 (Stand Januar 2016) der Rauminhalt eines Baukörpers, begrenzt durch die äußeren Begrenzungsflächen des Bauwerkes, gebildet von der Unterfläche der konstruktiven Bauwerkssohle (Unterseite der Unterböden und Bodenplatten, die nicht der Fundamentierung dienen), den Außenkanten der Außenwände und der Oberfläche der Dachbeläge, einschließlich Dachgauben oder Dachoberlichter.",
+      },
+      plotArea: "Grundstücksfläche",
+      totalBuildingMass: "Gesamtmasse des Gebäudes",
+    },
     module2Resources: {
       moduleTitle: "Modul 2",
       moduleSubTitle: "Resourcen",
