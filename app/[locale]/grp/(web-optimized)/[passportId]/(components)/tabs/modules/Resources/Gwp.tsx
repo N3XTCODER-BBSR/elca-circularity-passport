@@ -57,7 +57,7 @@ const Gwp: React.FC<GWPComponentProps> = ({ dinEnrichedBuildingComponents, nrf }
             overlayLabelTranslationKey="gwp.labels.overlay"
           />
         </div>
-        <ResourcesChartLegendTable data={gwpLegendTableData} unit={unitsTranslations("KgCo2Eq.short")} />
+        <ResourcesChartLegendTable data={gwpLegendTableData} unit={unitsTranslations("KgCo2Eq.short")} isPdf={false} />
       </div>
     </div>
   )

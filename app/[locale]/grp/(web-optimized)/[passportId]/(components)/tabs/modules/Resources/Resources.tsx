@@ -51,7 +51,7 @@ const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nr
             onSelect={setCurrentNavSectionId}
           />
         </div>
-        <div className="md:w-3/4">
+        <div className="px-16 pt-8 md:w-3/4">
           {currentNavSectionId === "0" && (
             <Rmi dinEnrichedBuildingComponents={dinEnrichedBuildingComponents} nrf={nrf} />
           )}

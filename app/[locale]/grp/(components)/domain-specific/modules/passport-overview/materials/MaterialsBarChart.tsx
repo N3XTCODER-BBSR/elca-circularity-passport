@@ -64,8 +64,8 @@ const MaterialsBarChart = ({ data, labelFormatter, isPdf = false }: MaterialsBar
         format: (value) => `${value} %`,
       }}
       axisLeft={{
-        tickSize: 5,
-        tickPadding: 5,
+        tickSize: 0,
+        tickPadding: 8,
         tickRotation: 0,
         legendPosition: "middle",
         legendOffset: -40,

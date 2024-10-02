@@ -48,7 +48,7 @@ const RMI: React.FC<RMIComponentProps> = ({ dinEnrichedBuildingComponents, nrf }
             colors={rmiColorsMapper}
           />
         </div>
-        <ResourcesChartLegendTable data={rmiLegendTableData} unit={unitsTranslations("Tons.short")} />
+        <ResourcesChartLegendTable data={rmiLegendTableData} unit={unitsTranslations("Tons.short")} isPdf={false} />
       </div>
     </div>
   )

@@ -56,7 +56,7 @@ const PENRT: React.FC<PENRTComponentProps> = ({ dinEnrichedBuildingComponents, n
             overlayLabelTranslationKey="penrt.labels.overlay"
           />
         </div>
-        <ResourcesChartLegendTable data={penrtLegendTableData} unit={unitsTranslations("Kwh.short")} />
+        <ResourcesChartLegendTable data={penrtLegendTableData} unit={unitsTranslations("Kwh.short")} isPdf={false} />
       </div>
     </div>
   )

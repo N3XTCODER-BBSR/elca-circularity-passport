@@ -23,16 +23,27 @@ const DottedBackground: React.FC = () => {
   return <div style={style}></div>
 }
 
-const ResourcesChartLegendTable = ({ data, unit }: { data: LegendTableDataItem[]; unit: string }) => {
+const ResourcesChartLegendTable = ({
+  data,
+  unit,
+  isPdf = true,
+}: {
+  data: LegendTableDataItem[]
+  unit: string
+  isPdf: boolean
+}) => {
   return (
-    <div className="overflow-x-auto text-[6pt]">
+    <div className={`overflow-x-auto ${isPdf ? "text-[6pt]" : "text-[1rem]"}`}>
       <table className="min-w-full">
         <tbody>
           {data.map((item, index) => (
             <tr key={index}>
               <td className="whitespace-nowrap border-b border-gray-300 py-[1mm]">
                 <div className="flex items-center">
-                  <div className="mr-2 size-[3mm]" style={{ backgroundColor: item.color }}>
+                  <div
+                    className={`mr-2 ${isPdf ? "size-[3mm]" : "size-[2rem]"}`}
+                    style={{ backgroundColor: item.color }}
+                  >
                     {" "}
                     {item.pattern === "dots" && <DottedBackground />}
                   </div>
