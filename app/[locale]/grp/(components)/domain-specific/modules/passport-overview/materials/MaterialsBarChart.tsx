@@ -55,7 +55,7 @@ const MaterialsBarChart = ({ data, labelFormatter, isPdf = false }: MaterialsBar
         modifiers: [["darker", 1.6]],
       }}
       minValue={0}
-      maxValue={isPdf ? "auto" : 100}
+      maxValue="auto"
       axisTop={null}
       axisRight={null}
       axisBottom={{
