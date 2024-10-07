@@ -79,7 +79,7 @@ const translationsGrpPlattformGeneric = {
           [MaterialResourceTypeNamesSchema.Enum.Mineral]: "Mineral",
         },
         labels: {
-          overlay: "{aggregatedValue, number, integer} toneladas - {percentageValue, number, percentage}",
+          overlay: "{aggregatedValue, number, integer} t - {percentageValue, number, percentage}",
         },
       },
       gwpAndPenrt: {

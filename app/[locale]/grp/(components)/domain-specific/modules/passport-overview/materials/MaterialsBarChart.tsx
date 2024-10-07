@@ -83,9 +83,7 @@ const MaterialsBarChart = ({ data, groupType, labelFormatter, isPdf = false }: M
             border: "1px solid #ccc",
           }}
         >
-          <strong>
-            {data.groupId} {tCostGroups(`${data.groupId}`)}
-          </strong>
+          <strong>{data.identifier}</strong>
           <br />
           {labelFormatter != null ? labelFormatter(data) : null}
         </div>

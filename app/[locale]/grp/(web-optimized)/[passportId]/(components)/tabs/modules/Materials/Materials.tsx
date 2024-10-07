@@ -105,7 +105,7 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
               groupType="materialClass"
               labelFormatter={(data) =>
                 `${data.aggregatedMassPercentage.toFixed(2)}% (${data.aggregatedMass.toFixed(2)} ${unitsTranslations(
-                  "Tonnes.short"
+                  "Tons.short"
                 )})`
               }
             />
@@ -116,7 +116,7 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
               groupType="costGroups"
               labelFormatter={(data) =>
                 `${data.aggregatedMassPercentage.toFixed(2)}% (${data.aggregatedMass.toFixed(2)} ${unitsTranslations(
-                  "Tonnes.short"
+                  "Tons.short"
                 )})`
               }
             />
