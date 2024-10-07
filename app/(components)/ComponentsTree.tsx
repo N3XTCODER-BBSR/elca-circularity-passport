@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -20,6 +21,7 @@ const ComponentsTree = <T extends BuildingComponentWithBasicFields>({
   categoryNumbersToInclude,
   generateLinkUrlForComponent,
 }: ComponentsTreeProps<T>) => {
+  const tCostGroups = useTranslations("Common.costGroups")
   const router = useRouter()
 
   const din276WithComponents = mergeDin276HierarchyWithBuildingComponents(buildingComponents, categoryNumbersToInclude)
@@ -94,7 +96,7 @@ const ComponentsTree = <T extends BuildingComponentWithBasicFields>({
           <ul className="mx-2 space-y-1">
             {din276WithComponents.map((group) => (
               <li className="mb-8" key={group.groupNumber}>
-                <h2 className="mb-4 text-sm uppercase">{group.name}</h2>
+                <h2 className="mb-4 text-sm uppercase">{tCostGroups(group.groupNumber.toString())}</h2>
                 <nav aria-label="Sidebar" className="flex flex-1 flex-col">
                   <ul className="-mx-2 space-y-1">
                     {group.categories.map((componentsByCategory) => (
@@ -111,7 +113,8 @@ const ComponentsTree = <T extends BuildingComponentWithBasicFields>({
                         >
                           <div className="flex w-full items-center gap-x-3">
                             <div className="text-left">
-                              {componentsByCategory.categoryNumber} {componentsByCategory.name}
+                              {componentsByCategory.categoryNumber}{" "}
+                              {tCostGroups(componentsByCategory.categoryNumber.toString())}
                             </div>
 
                             {componentsByCategory.numberOfComponents !== 0 && (
@@ -149,7 +152,8 @@ const ComponentsTree = <T extends BuildingComponentWithBasicFields>({
                 >
                   <div className="flex w-full items-center gap-x-3">
                     <div className="text-left">
-                      {componentsByComponentNumber.componentTypeNumber} {componentsByComponentNumber.name}
+                      {componentsByComponentNumber.componentTypeNumber}{" "}
+                      {tCostGroups(componentsByComponentNumber.componentTypeNumber.toString())}
                     </div>
                     {componentsByComponentNumber.numberOfComponents !== 0 && (
                       <span

@@ -21,7 +21,6 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
 
   const chartDataForAvgEolPointsPerComponentCostCategory: CircularityBarChartDatum[] =
     aggregatedData.avgEolPointsPerComponentCostCategory.map((data) => {
-      // TODO: use i18n here for din276CategoryName?
       const identifier = `${data.dinCategoryLevelNumber} ${tCostGroups(data.dinCategoryLevelNumber.toString())}`
       return {
         eolPoints: data.weightedAvgEolPoints,
@@ -34,7 +33,6 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
   const chartDataForAvgEolPoints: CircularityBarChartDatum[] = [
     {
       eolPoints: aggregatedData.totalAvgEolPoints,
-      // TODO: use i18n here
       identifier: tAggregationSelector("total"),
       eolClass: aggregatedData.totalEolClass,
       overlayText: `${aggregatedData.totalEolClass} (${Math.round(aggregatedData.totalAvgEolPoints)})`,
