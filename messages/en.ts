@@ -2,7 +2,6 @@ import {
   LifeCycleSubPhaseId,
   MaterialResourceTypeNamesSchema,
 } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
-import _ from "lodash"
 
 const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
   A1A2A3: "Module A1 - A3",
@@ -52,6 +51,15 @@ const translationsGrpPlatformGeneric = {
       plotArea: "Plot Area",
       totalBuildingMass: "Total Building Mass",
     },
+    module1Materials: {
+      moduleTitle: "Module 1",
+      moduleSubtitle: "Materials",
+      chartTitle: "Mass",
+      navigationSections: {
+        byMaterialClass: "By Material Class",
+        byComponentCategory: "By Component Category",
+      },
+    },
     module2Resources: {
       moduleTitle: "Module 2",
       moduleSubTitle: "Resources",
@@ -79,12 +87,16 @@ const translationsGrpPlatformGeneric = {
           labels: {
             overlay: "{percentageValue, number, percentage} / {aggregatedValue, number, integer} kWh",
           },
+          grayEnergyTotal: "Gray Energy, total",
+          grayEnergyTotalPdf: "Gray Energy",
         },
         gwp: {
           title: "Global Warming Potential (GWP)",
           labels: {
             overlay: "{percentageValue, number, percentage} / {aggregatedValue, number, integer} kg CO2eq",
           },
+          grayEmissionsTotal: "Gray Emissions, total",
+          grayEmissionsTotalPdf: "Gray Emissions",
         },
         lifeCycleSubPhases,
       },
@@ -95,6 +107,15 @@ const translationsGrpPlatformGeneric = {
 const translationsPlatformGeneric = {
   Grp: {
     Web: {
+      title: "Building Resource Passport",
+      description:
+        "The BBSR (Federal Institute for Research on Building, Urban Affairs and Spatial Development, Department WB6 Construction and Environment) provides this tool free of charge.",
+      project: "Project",
+      exportPdf: "Export PDF",
+      NavBar: {
+        overview: "Overview",
+        catalog: "Catalog",
+      },
       sections: {
         overview: translationsGrpPlatformGeneric.overview,
       },
@@ -125,46 +146,4 @@ const translationsPlatformGeneric = {
   },
 }
 
-const translationsWebSpecific = {
-  Grp: {
-    Web: {
-      title: "Building Resource Passport",
-      description:
-        "The BBSR (Federal Institute for Research on Building, Urban Affairs and Spatial Development, Department WB6 Construction and Environment) provides this tool free of charge.",
-      project: "Project",
-      exportPdf: "Export PDF",
-      NavBar: {
-        overview: "Overview",
-        catalog: "Catalog",
-      },
-      sections: {
-        overview: {
-          module1Materials: {
-            title: "Module 1",
-            subtitle: "Materials",
-            chartTitle: "Mass",
-            navigationSections: {
-              byMaterialClass: "By Material Class",
-              byComponentCategory: "By Component Category",
-            },
-          },
-          module2Resources: {
-            gwpAndPenrt: {
-              penrt: {
-                grayEnergyTotal: "Gray Energy, total",
-                grayEnergyTotalPdf: "Gray Energy",
-              },
-              gwp: {
-                grayEmissionsTotal: "Gray Emissions, total",
-                grayEmissionsTotalPdf: "Gray Emissions",
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-}
-
-const mergedTranslations = _.merge({}, translationsWebSpecific, translationsPlatformGeneric)
-export default mergedTranslations
+export default translationsPlatformGeneric

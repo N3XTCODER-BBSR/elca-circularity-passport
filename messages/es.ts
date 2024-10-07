@@ -2,7 +2,6 @@ import {
   LifeCycleSubPhaseId,
   MaterialResourceTypeNamesSchema,
 } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
-import _ from "lodash"
 
 const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
   A1A2A3: "Módulo A1 - A3",
@@ -53,6 +52,15 @@ const translationsGrpPlattformGeneric = {
       plotArea: "Área del Terreno",
       totalBuildingMass: "Masa Total del Edificio",
     },
+    module1Materials: {
+      moduleTitle: "Módulo 1",
+      moduleSubtitle: "Materiales",
+      chartTitle: "Masa",
+      navigationSections: {
+        byMaterialClass: "Por Grupos de Material",
+        byComponentCategory: "Por Categorías de Componentes",
+      },
+    },
     module2Resources: {
       moduleTitle: "Módulo 2",
       moduleSubTitle: "Recursos",
@@ -80,12 +88,16 @@ const translationsGrpPlattformGeneric = {
           labels: {
             overlay: "{percentageValue, number, percentage} / {aggregatedValue, number, integer} kwH",
           },
+          grayEnergyTotal: "Emisiones Grises, total",
+          grayEnergyTotalPdf: "Emisiones Grises",
         },
         gwp: {
           title: "Potencial de Calentamiento Global (GWP)",
           labels: {
             overlay: "{percentageValue, number, percentage} / {aggregatedValue, number, integer} kg Co2eq",
           },
+          grayEmissionsTotal: "Energía Gris, total",
+          grayEmissionsTotalPdf: "Energía Gris",
         },
         lifeCycleSubPhases,
       },
@@ -96,6 +108,15 @@ const translationsGrpPlattformGeneric = {
 const translationsPlattformGeneric = {
   Grp: {
     Web: {
+      title: "Pasaporte de Recursos para Edificios",
+      description:
+        "El BBSR (Instituto Federal de Investigación sobre la Construcción, Asuntos Urbanos y Espaciales, Sección WB6 Construcción y Medio Ambiente) proporciona esta herramienta de forma gratuita.",
+      project: "Proyecto",
+      exportPdf: "Exportar PDF",
+      NavBar: {
+        overview: "Resumen",
+        catalog: "Catálogo",
+      },
       sections: {
         overview: translationsGrpPlattformGeneric.overview,
       },
@@ -126,46 +147,4 @@ const translationsPlattformGeneric = {
   },
 }
 
-const translationsWebSpecific = {
-  Grp: {
-    Web: {
-      title: "Pasaporte de Recursos para Edificios",
-      description:
-        "El BBSR (Instituto Federal de Investigación sobre la Construcción, Asuntos Urbanos y Espaciales, Sección WB6 Construcción y Medio Ambiente) proporciona esta herramienta de forma gratuita.",
-      project: "Proyecto",
-      exportPdf: "Exportar PDF",
-      NavBar: {
-        overview: "Resumen",
-        catalog: "Catálogo",
-      },
-      sections: {
-        overview: {
-          module1Materials: {
-            title: "Módulo 1",
-            subtitle: "Materiales",
-            chartTitle: "Masa",
-            navigationSections: {
-              byMaterialClass: "Por Grupos de Material",
-              byComponentCategory: "Por Categorías de Componentes",
-            },
-          },
-          module2Resources: {
-            gwpAndPenrt: {
-              penrt: {
-                grayEnergyTotal: "Emisiones Grises, total",
-                grayEnergyTotalPdf: "Emisiones Grises",
-              },
-              gwp: {
-                grayEmissionsTotal: "Energía Gris, total",
-                grayEmissionsTotalPdf: "Energía Gris",
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-}
-
-const mergedTranslations = _.merge({}, translationsWebSpecific, translationsPlattformGeneric)
-export default mergedTranslations
+export default translationsPlattformGeneric

@@ -2,7 +2,6 @@ import {
   LifeCycleSubPhaseId,
   MaterialResourceTypeNamesSchema,
 } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
-import _ from "lodash"
 
 const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
   A1A2A3: "Modul A1 - A3",
@@ -52,6 +51,15 @@ const translationsGrpPlattformGeneric = {
       plotArea: "Grundstücksfläche",
       totalBuildingMass: "Gesamtmasse des Gebäudes",
     },
+    module1Materials: {
+      moduleTitle: "Modul 1",
+      moduleSubtitle: "Materialien",
+      chartTitle: "Masse",
+      navigationSections: {
+        byMaterialClass: "Nach Baustoffgruppen",
+        byComponentCategory: "Nach Bauteilkategorien",
+      },
+    },
     module2Resources: {
       moduleTitle: "Modul 2",
       moduleSubTitle: "Resourcen",
@@ -79,14 +87,25 @@ const translationsGrpPlattformGeneric = {
           labels: {
             overlay: "{percentageValue, number, percentage} / {aggregatedValue, number, integer} kwH",
           },
+          grayEnergyTotal: "Graue Energie, total",
+          grayEnergyTotalPdf: "Grau Energie",
         },
         gwp: {
           title: "Global Warming Potential (GWP)",
           labels: {
             overlay: "{percentageValue, number, percentage} / {aggregatedValue, number, integer} kg Co2eq",
           },
+          grayEmissionsTotal: "Graue Emissionen, total",
+          grayEmissionsPdf: "Graue Emissionen",
         },
         lifeCycleSubPhases,
+      },
+    },
+    module3Circularity: {
+      moduleTitle: "Modul 3",
+      moduleSubTitle: "Zirkularität",
+      eol: {
+        title: "End of Life (EoL)",
       },
     },
   },
@@ -95,6 +114,15 @@ const translationsGrpPlattformGeneric = {
 const translationsPlattformGeneric = {
   Grp: {
     Web: {
+      title: "Ressourcenpass für Gebäude",
+      description:
+        "Das BBSR (Bundesinstitut für Bau-, Stadt-und Raumforschung, Referat WB6 Bauen und Umwelt) stellt dieses Tool kostenlos zur Verfügung.",
+      project: "Projekt",
+      exportPdf: "PDF Exportieren",
+      NavBar: {
+        overview: "Überblick",
+        catalog: "Katalog",
+      },
       sections: {
         overview: translationsGrpPlattformGeneric.overview,
       },
@@ -125,46 +153,4 @@ const translationsPlattformGeneric = {
   },
 }
 
-const translationsWebSpecific = {
-  Grp: {
-    Web: {
-      title: "Ressourcenpass für Gebäude",
-      description:
-        "Das BBSR (Bundesinstitut für Bau-, Stadt-und Raumforschung, Referat WB6 Bauen und Umwelt) stellt dieses Tool kostenlos zur Verfügung.",
-      project: "Projekt",
-      exportPdf: "PDF Exportieren",
-      NavBar: {
-        overview: "Überblick",
-        catalog: "Katalog",
-      },
-      sections: {
-        overview: {
-          module1Materials: {
-            title: "Modul 1",
-            subtitle: "Materialien",
-            chartTitle: "Masse",
-            navigationSections: {
-              byMaterialClass: "Nach Baustoffgruppen",
-              byComponentCategory: "Nach Bauteilkategorien",
-            },
-          },
-          module2Resources: {
-            gwpAndPenrt: {
-              penrt: {
-                grayEnergyTotal: "Graue Energie, total",
-                grayEnergyTotalPdf: "Grau Energie",
-              },
-              gwp: {
-                grayEmissionsTotal: "Graue Emissionen, total",
-                grayEmissionsPdf: "Graue Emissionen",
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-}
-
-const mergedTranslations = _.merge({}, translationsWebSpecific, translationsPlattformGeneric)
-export default mergedTranslations
+export default translationsPlattformGeneric
