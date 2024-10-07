@@ -116,7 +116,7 @@ const translationsGrpPlattformGeneric = {
             overlay: "{percentageValue, number, percentage} / {aggregatedValue, number, integer} kg Co2eq",
           },
           grayEmissionsTotal: "Graue Emissionen, total",
-          grayEmissionsPdf: "Graue Emissionen",
+          grayEmissionsTotalPdf: "Graue Emissionen",
           faq: {
             "1": {
               Q: "question 1 for GWP",
@@ -149,6 +149,66 @@ const translationsGrpPlattformGeneric = {
       },
     },
   },
+  detailPage: {
+    component: {
+      back: "Zurück",
+      componentName: "Komponenten-Name",
+      uuid: "UUID",
+      costGroup: "Kostengruppe DIN276",
+    },
+    componentLayer: {
+      sequenceNumber: "Laufende Nummer",
+      mass: "Masse",
+      materialGeometry: "Geometrie der Bauteilschichten/ Komponenten",
+      material: {
+        materialDescription: "Material-Beschreibung",
+        materialClassId: "UUID Materialgruppe",
+        materialClassDescription: "Materialgruppenbezeichnung",
+        uuidMaterial: "UUID Material",
+        materialDatabase: "Baustoffdatenbank",
+        serviceLife: "Nutzungsdauer",
+        lbPerformanceRange: "Leistungsbereich (LB)",
+        lvNumber: "Leistungsverzeichnis (LV) nr.",
+        itemInLv: "Position im LV",
+        area: "Fläche",
+        technicalServiceLife: "Technische Lebensdauer",
+        uuidProduct: "UUID Produkt",
+        productDescription: "Produktbezeichnung",
+        manufacturerName: "Herstellername",
+        proofDocument: "Nachweisdokument",
+        versionNumberServiceLife: "Versionsnummer Nutzungsdauer-Tabelle",
+        oekobaudatVersion: "Ökobaudat-Version",
+      },
+      resources: {
+        rawMaterials: "Rohstoffe",
+        primaryEnergy: "Primärenergie-Aufwand (nicht erneuerbar, gesamt)",
+        carbonContent: "Anteil des gebundenen Kohlenstoffs",
+        recyclingContent: "Anteil Sekundärmaterial",
+        globalWarmingPotential: "Treibhaus-Potenzial (gesamt)",
+        [MaterialResourceTypeNamesSchema.Enum.Forestry]: "Forst",
+        [MaterialResourceTypeNamesSchema.Enum.Aqua]: "Wasser",
+        [MaterialResourceTypeNamesSchema.Enum.Agrar]: "Agrar",
+        [MaterialResourceTypeNamesSchema.Enum.Fossil]: "Fossil",
+        [MaterialResourceTypeNamesSchema.Enum.Metallic]: "Metallisch",
+        [MaterialResourceTypeNamesSchema.Enum.Mineral]: "Mineralisch",
+        total: "gesamt",
+      },
+      circularity: {
+        general: "Allgemein",
+        materialCompatibility: "Materialverträglichkeit - Störstoffe",
+        eolClass: "Klasse EOL",
+        eolPoints: "Punkte EOL",
+        proofReuse: "Nachweis Wiederverwendung",
+        version: "Version",
+        category: "Kategorie",
+      },
+    },
+    tabBar: {
+      material: "Material",
+      resources: "Ressourcen",
+      circularity: "Zirkularität",
+    },
+  },
 }
 
 const translationsPlattformGeneric = {
@@ -165,6 +225,7 @@ const translationsPlattformGeneric = {
       },
       sections: {
         overview: translationsGrpPlattformGeneric.overview,
+        detailPage: translationsGrpPlattformGeneric.detailPage,
       },
     },
     Pdf: {

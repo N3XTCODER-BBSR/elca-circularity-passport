@@ -1,16 +1,17 @@
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import getEolClassNameByPoints from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
 import { Circularity } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
+import { useTranslations } from "next-intl"
 
 const CircularityInfo = ({ circularity }: { circularity?: Circularity }) => {
   const eolClass = getEolClassNameByPoints(circularity?.eolPoints)
-
+  const t = useTranslations("Grp.Web.sections.detailPage.componentLayer.circularity")
   const resourceInfoKeyValues = [
-    { key: "Klasse EOL", value: eolClass },
-    { key: "Punkte EOL", value: circularity?.eolPoints?.toFixed(2) },
-    { key: "Version", value: circularity?.version },
-    { key: "Kategorie", value: circularity?.category },
-    { key: "Nachweis Wiederverwendung", value: circularity?.proofReuse },
+    { key: t("eolClass"), value: eolClass },
+    { key: t("eolPoints"), value: circularity?.eolPoints?.toFixed(2) },
+    { key: t("version"), value: circularity?.version },
+    { key: t("category"), value: circularity?.category },
+    { key: t("proofReuse"), value: circularity?.proofReuse },
   ]
 
   const interferingSubstancesKeyValues =
@@ -21,9 +22,9 @@ const CircularityInfo = ({ circularity }: { circularity?: Circularity }) => {
 
   return (
     <div>
-      <SideBySideDescriptionListsWithHeadline headline="General" data={resourceInfoKeyValues} />
+      <SideBySideDescriptionListsWithHeadline headline={t("general")} data={resourceInfoKeyValues} />
       <SideBySideDescriptionListsWithHeadline
-        headline="Material Compatibility - Interfering Substances"
+        headline={t("materialCompatibility")}
         data={interferingSubstancesKeyValues}
       />{" "}
     </div>

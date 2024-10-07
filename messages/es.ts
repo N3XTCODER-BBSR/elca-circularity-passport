@@ -81,6 +81,16 @@ const translationsGrpPlattformGeneric = {
         labels: {
           overlay: "{aggregatedValue, number, integer} t - {percentageValue, number, percentage}",
         },
+        faq: {
+          "1": {
+            Q: "question 1 for RMI",
+            A: "hello world",
+          },
+          "2": {
+            Q: "question 2 for RMI",
+            A: "hi there",
+          },
+        },
       },
       gwpAndPenrt: {
         penrt: {
@@ -90,6 +100,16 @@ const translationsGrpPlattformGeneric = {
           },
           grayEnergyTotal: "Emisiones Grises, total",
           grayEnergyTotalPdf: "Emisiones Grises",
+          faq: {
+            "1": {
+              Q: "question 1 for PENRT",
+              A: "answer",
+            },
+            "2": {
+              Q: "question 2 for PENRT",
+              A: "answer",
+            },
+          },
         },
         gwp: {
           title: "Potencial de Calentamiento Global (GWP)",
@@ -98,6 +118,16 @@ const translationsGrpPlattformGeneric = {
           },
           grayEmissionsTotal: "Energía Gris, total",
           grayEmissionsTotalPdf: "Energía Gris",
+          faq: {
+            "1": {
+              Q: "question 1 for GWP",
+              A: "answer",
+            },
+            "2": {
+              Q: "question 2 for GWP",
+              A: "answer",
+            },
+          },
         },
         lifeCycleSubPhases,
       },
@@ -107,7 +137,77 @@ const translationsGrpPlattformGeneric = {
       moduleSubTitle: "Circularidad",
       eol: {
         title: "Clase EoL",
+        faq: {
+          "1": {
+            Q: "question 1 for EOL",
+            A: "answer",
+          },
+          "2": {
+            Q: "question 2 for EOL",
+            A: "answer",
+          },
+        },
       },
+    },
+  },
+  detailPage: {
+    component: {
+      back: "Volver",
+      componentName: "Nombre del Componente",
+      uuid: "UUID",
+      costGroup: "Grupo de Costos DIN276",
+    },
+    componentLayer: {
+      sequenceNumber: "Número Secuencial",
+      mass: "Masa",
+      materialGeometry: "Geometría de las Capas de Componentes / Componentes",
+      material: {
+        materialDescription: "Descripción del Material",
+        materialClassId: "UUID Clase de Material",
+        materialClassDescription: "Descripción de la Clase de Material",
+        uuidMaterial: "UUID Material",
+        materialDatabase: "Base de Datos de Materiales",
+        serviceLife: "Vida Útil",
+        lbPerformanceRange: "Rango de Rendimiento (LB)",
+        lvNumber: "Número de Especificación (LV)",
+        itemInLv: "Posición en LV",
+        area: "Área",
+        technicalServiceLife: "Vida Útil Técnica",
+        uuidProduct: "UUID Producto",
+        productDescription: "Descripción del Producto",
+        manufacturerName: "Nombre del Fabricante",
+        proofDocument: "Documento de Evidencia",
+        versionNumberServiceLife: "Número de Versión de la Tabla de Vida Útil",
+        oekobaudatVersion: "Versión Ökobaudat",
+      },
+      resources: {
+        rawMaterials: "Materias Primas",
+        primaryEnergy: "Consumo de Energía Primaria (no renovable, total)",
+        carbonContent: "Contenido de Carbono",
+        recyclingContent: "Contenido Reciclado",
+        globalWarmingPotential: "Potencial de Calentamiento Global (total)",
+        Forestry: "Forestal",
+        Aqua: "Agua",
+        Agrar: "Agrícola",
+        Fossil: "Fósil",
+        Metallic: "Metálico",
+        Mineral: "Mineral",
+        total: "total",
+      },
+      circularity: {
+        general: "General",
+        materialCompatibility: "Compatibilidad del Material - Contaminantes",
+        eolClass: "Clase EOL",
+        eolPoints: "Puntos EOL",
+        proofReuse: "Prueba de Reutilización",
+        version: "Versión",
+        category: "Categoría",
+      },
+    },
+    tabBar: {
+      material: "Material",
+      resources: "Recursos",
+      circularity: "Circularidad",
     },
   },
 }
@@ -126,6 +226,7 @@ const translationsPlattformGeneric = {
       },
       sections: {
         overview: translationsGrpPlattformGeneric.overview,
+        detailPage: translationsGrpPlattformGeneric.detailPage,
       },
     },
     Pdf: {

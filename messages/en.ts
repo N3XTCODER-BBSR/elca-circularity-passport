@@ -80,6 +80,16 @@ const translationsGrpPlatformGeneric = {
         labels: {
           overlay: "{aggregatedValue, number, integer} t - {percentageValue, number, percentage}",
         },
+        faq: {
+          "1": {
+            Q: "question 1 for RMI",
+            A: "hello world",
+          },
+          "2": {
+            Q: "question 2 for RMI",
+            A: "hi there",
+          },
+        },
       },
       gwpAndPenrt: {
         penrt: {
@@ -89,6 +99,16 @@ const translationsGrpPlatformGeneric = {
           },
           grayEnergyTotal: "Gray Energy, total",
           grayEnergyTotalPdf: "Gray Energy",
+          faq: {
+            "1": {
+              Q: "question 1 for PENRT",
+              A: "answer",
+            },
+            "2": {
+              Q: "question 2 for PENRT",
+              A: "answer",
+            },
+          },
         },
         gwp: {
           title: "Global Warming Potential (GWP)",
@@ -97,6 +117,16 @@ const translationsGrpPlatformGeneric = {
           },
           grayEmissionsTotal: "Gray Emissions, total",
           grayEmissionsTotalPdf: "Gray Emissions",
+          faq: {
+            "1": {
+              Q: "question 1 for GWP",
+              A: "answer",
+            },
+            "2": {
+              Q: "question 2 for GWP",
+              A: "answer",
+            },
+          },
         },
         lifeCycleSubPhases,
       },
@@ -106,7 +136,77 @@ const translationsGrpPlatformGeneric = {
       moduleSubTitle: "Circularity",
       eol: {
         title: "EoL Class",
+        faq: {
+          "1": {
+            Q: "question 1 for EOL",
+            A: "answer",
+          },
+          "2": {
+            Q: "question 2 for EOL",
+            A: "answer",
+          },
+        },
       },
+    },
+  },
+  detailPage: {
+    component: {
+      back: "Back",
+      componentName: "Component Name",
+      uuid: "UUID",
+      costGroup: "Cost Group DIN276",
+    },
+    componentLayer: {
+      sequenceNumber: "Sequence Number",
+      mass: "Mass",
+      materialGeometry: "Geometry of Component Layers / Components",
+      material: {
+        materialDescription: "Material Description",
+        materialClassId: "UUID Material Class",
+        materialClassDescription: "Material Class Description",
+        uuidMaterial: "UUID Material",
+        materialDatabase: "Material Database",
+        serviceLife: "Service Life",
+        lbPerformanceRange: "Performance Range (LB)",
+        lvNumber: "Specification (LV) no.",
+        itemInLv: "Position in LV",
+        area: "Area",
+        technicalServiceLife: "Technical Service Life",
+        uuidProduct: "UUID Product",
+        productDescription: "Product Description",
+        manufacturerName: "Manufacturer Name",
+        proofDocument: "Proof Document",
+        versionNumberServiceLife: "Version Number of Service Life Table",
+        oekobaudatVersion: "Ökobaudat Version",
+      },
+      resources: {
+        rawMaterials: "Raw Materials",
+        primaryEnergy: "Primary Energy Consumption (non-renewable, total)",
+        carbonContent: "Carbon Content",
+        recyclingContent: "Recycling Content",
+        globalWarmingPotential: "Global Warming Potential (total)",
+        Forestry: "Forestry",
+        Aqua: "Water",
+        Agrar: "Agricultural",
+        Fossil: "Fossil",
+        Metallic: "Metallic",
+        Mineral: "Mineral",
+        total: "total",
+      },
+      circularity: {
+        general: "General",
+        materialCompatibility: "Material Compatibility - Contaminants",
+        eolClass: "EOL Class",
+        eolPoints: "EOL Points",
+        proofReuse: "Proof of Reuse",
+        version: "Version",
+        category: "Category",
+      },
+    },
+    tabBar: {
+      material: "Material",
+      resources: "Resources",
+      circularity: "Circularity",
     },
   },
 }
@@ -125,6 +225,7 @@ const translationsPlatformGeneric = {
       },
       sections: {
         overview: translationsGrpPlatformGeneric.overview,
+        detailPage: translationsGrpPlatformGeneric.detailPage,
       },
     },
     Pdf: {
