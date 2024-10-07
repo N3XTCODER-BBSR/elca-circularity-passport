@@ -8,7 +8,6 @@ import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/v
 import Gwp from "./Gwp"
 import Penrt from "./Penrt"
 import Rmi from "./Rmi"
-import DummyAccordion from "../../../DummyAccordion"
 
 type ResourcesProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
@@ -62,9 +61,6 @@ const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nr
             <Penrt dinEnrichedBuildingComponents={dinEnrichedBuildingComponents} nrf={nrf} />
           )}
         </div>
-      </div>
-      <div className="mb-16 mt-32 w-full">
-        <DummyAccordion />
       </div>
     </div>
   )

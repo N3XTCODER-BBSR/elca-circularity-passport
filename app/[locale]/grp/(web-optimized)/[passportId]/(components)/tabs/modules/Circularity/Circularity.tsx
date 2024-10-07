@@ -40,6 +40,16 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
       overlayText: `${aggregatedData.totalEolClass} (${Math.round(aggregatedData.totalAvgEolPoints)})`,
     },
   ]
+  const faqContent = [
+    {
+      Q: t("eol.faq.1.Q"),
+      A: t("eol.faq.1.A"),
+    },
+    {
+      Q: t("eol.faq.2.Q"),
+      A: t("eol.faq.2.A"),
+    },
+  ]
 
   return (
     <div className={className}>
@@ -70,7 +80,7 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
         </div>
       </div>
       <div className="mb-16 mt-24 w-full">
-        <DummyAccordion />
+        <DummyAccordion faqContent={faqContent} />
       </div>
     </div>
   )

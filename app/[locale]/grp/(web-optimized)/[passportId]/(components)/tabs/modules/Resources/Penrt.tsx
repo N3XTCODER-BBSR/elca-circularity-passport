@@ -9,6 +9,7 @@ import { lifeCycleSubPhasesColorsMapper } from "constants/styleConstants"
 import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import { aggregatePenrtData } from "lib/domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
+import DummyAccordion from "../../../DummyAccordion"
 
 type PENRTComponentProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
@@ -37,6 +38,17 @@ const PENRT: React.FC<PENRTComponentProps> = ({ dinEnrichedBuildingComponents, n
     pattern: "dots",
   })
 
+  const faqContent = [
+    {
+      Q: t("gwpAndPenrt.penrt.faq.1.Q"),
+      A: t("gwpAndPenrt.penrt.faq.1.A"),
+    },
+    {
+      Q: t("gwpAndPenrt.penrt.faq.2.Q"),
+      A: t("gwpAndPenrt.penrt.faq.2.A"),
+    },
+  ]
+
   return (
     <div className="flex flex-col items-center justify-center">
       <h4 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
@@ -57,6 +69,9 @@ const PENRT: React.FC<PENRTComponentProps> = ({ dinEnrichedBuildingComponents, n
           />
         </div>
         <ResourcesChartLegendTable data={penrtLegendTableData} unit={unitsTranslations("Kwh.short")} isPdf={false} />
+      </div>
+      <div className="mb-16 mt-32 w-full">
+        <DummyAccordion faqContent={faqContent} />
       </div>
     </div>
   )

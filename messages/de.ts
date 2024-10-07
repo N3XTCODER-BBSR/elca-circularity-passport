@@ -80,6 +80,16 @@ const translationsGrpPlattformGeneric = {
         labels: {
           overlay: "{aggregatedValue, number, integer} t - {percentageValue, number, percentage}",
         },
+        faq: {
+          "1": {
+            Q: "question 1 for RMI",
+            A: "hello world",
+          },
+          "2": {
+            Q: "question 2 for RMI",
+            A: "hi there",
+          },
+        },
       },
       gwpAndPenrt: {
         penrt: {
@@ -89,6 +99,16 @@ const translationsGrpPlattformGeneric = {
           },
           grayEnergyTotal: "Graue Energie, total",
           grayEnergyTotalPdf: "Grau Energie",
+          faq: {
+            "1": {
+              Q: "question 1 for PENRT",
+              A: "answer",
+            },
+            "2": {
+              Q: "question 2 for PENRT",
+              A: "answer",
+            },
+          },
         },
         gwp: {
           title: "Global Warming Potential (GWP)",
@@ -97,6 +117,16 @@ const translationsGrpPlattformGeneric = {
           },
           grayEmissionsTotal: "Graue Emissionen, total",
           grayEmissionsPdf: "Graue Emissionen",
+          faq: {
+            "1": {
+              Q: "question 1 for GWP",
+              A: "answer",
+            },
+            "2": {
+              Q: "question 2 for GWP",
+              A: "answer",
+            },
+          },
         },
         lifeCycleSubPhases,
       },
@@ -106,6 +136,16 @@ const translationsGrpPlattformGeneric = {
       moduleSubTitle: "Zirkularität",
       eol: {
         title: "EoL Klasse",
+        faq: {
+          "1": {
+            Q: "question 1 for EOL",
+            A: "answer",
+          },
+          "2": {
+            Q: "question 2 for EOL",
+            A: "answer",
+          },
+        },
       },
     },
   },
