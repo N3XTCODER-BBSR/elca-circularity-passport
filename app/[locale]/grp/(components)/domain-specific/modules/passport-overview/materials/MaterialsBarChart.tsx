@@ -1,25 +1,28 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { ResponsiveBar } from "@nivo/bar"
 import { useTranslations } from "next-intl"
 
 export type MaterialsBarChartDatum = {
   groupName: string
+  groupId: string
   aggregatedMass: number
   aggregatedMassPercentage: number
+  identifier: string
 }
 
 type MaterialsBarChartProps = {
   data: MaterialsBarChartDatum[]
+  groupType: string
   labelFormatter?: (data: MaterialsBarChartDatum) => string
   isPdf?: boolean
 }
 
 const replaceWhiteSpaceWithLineBreak = (label: string) => label?.replace(/\s+/g, "\n")
 
-const MaterialsBarChart = ({ data, labelFormatter, isPdf = false }: MaterialsBarChartProps) => {
+const MaterialsBarChart = ({ data, groupType, labelFormatter, isPdf = false }: MaterialsBarChartProps) => {
   const t = useTranslations("Grp.Web.sections.overview.module1Materials")
-
   const pdfMargins = { top: 0, right: 20, bottom: 20, left: 100 }
   const webMargins = { top: 0, right: 150, bottom: 50, left: 300 }
 
@@ -41,7 +44,7 @@ const MaterialsBarChart = ({ data, labelFormatter, isPdf = false }: MaterialsBar
       enableGridX={false}
       enableGridY={false}
       keys={["aggregatedMassPercentage"]}
-      indexBy={"groupName"}
+      indexBy={"identifier"}
       isInteractive={!isPdf}
       margin={isPdf ? pdfMargins : webMargins}
       padding={isPdf ? 0.4 : 0.2}
@@ -80,7 +83,9 @@ const MaterialsBarChart = ({ data, labelFormatter, isPdf = false }: MaterialsBar
             border: "1px solid #ccc",
           }}
         >
-          <strong>{data.groupName}</strong>
+          <strong>
+            {data.groupId} {tCostGroups(`${data.groupId}`)}
+          </strong>
           <br />
           {labelFormatter != null ? labelFormatter(data) : null}
         </div>

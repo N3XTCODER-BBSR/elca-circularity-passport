@@ -15,13 +15,14 @@ type CircularityProps = {
 
 const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents, className }) => {
   const t = useTranslations("Grp.Web.sections.overview.module3Circularity")
+  const tCostGroups = useTranslations("Common.costGroups")
   const tAggregationSelector = useTranslations("GenericComponents.AggregationSelector")
   const aggregatedData = aggregateCircularityData(dinEnrichedBuildingComponents)
 
   const chartDataForAvgEolPointsPerComponentCostCategory: CircularityBarChartDatum[] =
     aggregatedData.avgEolPointsPerComponentCostCategory.map((data) => {
       // TODO: use i18n here for din276CategoryName?
-      const identifier = `${data.dinCategoryLevelNumber} ${data.din276CategoryName}`
+      const identifier = `${data.dinCategoryLevelNumber} ${tCostGroups(data.dinCategoryLevelNumber.toString())}`
       return {
         eolPoints: data.weightedAvgEolPoints,
         identifier,

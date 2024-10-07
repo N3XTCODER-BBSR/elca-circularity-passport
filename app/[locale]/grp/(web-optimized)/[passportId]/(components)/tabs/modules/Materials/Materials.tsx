@@ -30,6 +30,8 @@ type MaterialsProps = {
 
 const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, className }) => {
   const t = useTranslations("Grp.Web.sections.overview.module1Materials")
+  const tCostGroups = useTranslations("Common.costGroups")
+  const tMaterialClasses = useTranslations("Common.materialClasses")
   const unitsTranslations = useTranslations("Units")
   const [currentNavSectionId, setCurrentNavSectionId] = useState<string>("1")
 
@@ -44,18 +46,26 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
   )
 
   const chartDataGroupedByMaterialClass: MaterialsBarChartDatum[] =
-    aggregatedDataByMaterialClass.aggregatedByClassId.map((data) => ({
-      groupName: data.materialClassDescription,
-      aggregatedMassPercentage: data.aggregatedMassPercentage,
-      aggregatedMass: data.aggregatedMass,
-    }))
+    aggregatedDataByMaterialClass.aggregatedByClassId.map((data) => {
+      return {
+        groupName: data.materialClassDescription,
+        groupId: data.materialClassId,
+        identifier: tMaterialClasses(`${data.materialClassId.replace(/\./g, "_")}`),
+        aggregatedMassPercentage: data.aggregatedMassPercentage,
+        aggregatedMass: data.aggregatedMass,
+      }
+    })
 
   const chartDataGroupedByComponentCategory: MaterialsBarChartDatum[] =
-    aggregatedDataByBuildingComponentCategory.aggregatedByCategory.map((data) => ({
-      groupName: data.costGroupCategoryName,
-      aggregatedMassPercentage: data.aggregatedMassPercentage,
-      aggregatedMass: data.aggregatedMass,
-    }))
+    aggregatedDataByBuildingComponentCategory.aggregatedByCategory.map((data) => {
+      return {
+        groupName: data.costGroupCategoryName,
+        groupId: data.costGroupCategoryId.toString(),
+        identifier: data.costGroupCategoryId + " " + tCostGroups(`${data.costGroupCategoryId}`),
+        aggregatedMassPercentage: data.aggregatedMassPercentage,
+        aggregatedMass: data.aggregatedMass,
+      }
+    })
 
   const totalMass = aggregatedDataByBuildingComponentCategory.totalMass
   const totalMassRelativeToNrf = aggregatedDataByBuildingComponentCategory.totalMassRelativeToNrf
@@ -92,6 +102,7 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
           {currentNavSectionId === "1" && (
             <MaterialsBarChart
               data={chartDataGroupedByMaterialClass}
+              groupType="materialClass"
               labelFormatter={(data) =>
                 `${data.aggregatedMassPercentage.toFixed(2)}% (${data.aggregatedMass.toFixed(2)} ${unitsTranslations(
                   "Tonnes.short"
@@ -102,6 +113,7 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
           {currentNavSectionId === "2" && (
             <MaterialsBarChart
               data={chartDataGroupedByComponentCategory}
+              groupType="costGroups"
               labelFormatter={(data) =>
                 `${data.aggregatedMassPercentage.toFixed(2)}% (${data.aggregatedMass.toFixed(2)} ${unitsTranslations(
                   "Tonnes.short"

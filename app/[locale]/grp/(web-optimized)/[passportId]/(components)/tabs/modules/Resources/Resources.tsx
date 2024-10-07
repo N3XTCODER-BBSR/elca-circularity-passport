@@ -10,21 +10,6 @@ import Penrt from "./Penrt"
 import Rmi from "./Rmi"
 import DummyAccordion from "../../../DummyAccordion"
 
-const navigationSections = [
-  {
-    name: "Rohstoffeinsatz (RMI)",
-    id: "0",
-  },
-  {
-    name: "Global Warming Potential (GWP)",
-    id: "1",
-  },
-  {
-    name: "Primärenergie nicht-erneuerbar (PENRT)",
-    id: "2",
-  },
-]
-
 type ResourcesProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
   nrf: number
@@ -34,6 +19,21 @@ type ResourcesProps = {
 const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nrf, className }) => {
   const t = useTranslations("Grp.Web.sections.overview.module2Resources")
   const [currentNavSectionId, setCurrentNavSectionId] = useState<string>("0")
+
+  const navigationSections = [
+    {
+      name: t("rmi.title"),
+      id: "0",
+    },
+    {
+      name: t("gwpAndPenrt.gwp.title"),
+      id: "1",
+    },
+    {
+      name: t("gwpAndPenrt.penrt.title"),
+      id: "2",
+    },
+  ]
 
   return (
     <div className={className}>
