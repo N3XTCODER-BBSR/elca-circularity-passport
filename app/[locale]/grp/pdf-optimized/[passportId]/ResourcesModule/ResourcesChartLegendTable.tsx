@@ -32,6 +32,7 @@ const ResourcesChartLegendTable = ({
   unit: string
   isPdf: boolean
 }) => {
+  const shorten = (str, length) => (str.length > length ? str.slice(0, 13) + ".." : str)
   return (
     <div className={`overflow-x-auto ${isPdf ? "text-[6pt]" : "text-[1rem]"}`}>
       <table className="min-w-full">
@@ -47,11 +48,11 @@ const ResourcesChartLegendTable = ({
                     {" "}
                     {item.pattern === "dots" && <DottedBackground />}
                   </div>
-                  <span className="text-gray-900">{item.name}</span>
+                  <span className="text-gray-900">{shorten(item.name, 18)}</span>
                 </div>
               </td>
               <td className="whitespace-nowrap border-b border-gray-300 px-[3mm] py-[1mm] text-gray-900">
-                {item.value.toFixed(2)} {unit}
+                {`${item.value.toFixed(2)} ${unit}`}
               </td>
               <td className="whitespace-nowrap border-b  border-gray-300 px-[3mm] py-[1mm] font-bold text-gray-900">
                 {item.percentage != null && `${item.percentage.toFixed(2)}%`}

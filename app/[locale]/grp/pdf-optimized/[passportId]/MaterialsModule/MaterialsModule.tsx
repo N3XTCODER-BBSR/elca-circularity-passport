@@ -18,32 +18,48 @@ import {
   aggregateMaterialsDataByBuildingComponentCategory,
   aggregateMaterialsDataByMaterialClass,
 } from "lib/domain-logic/grp/modules/passport-overview/materials/materials-data-aggregation"
+import { useTranslations } from "next-intl"
 
 const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportData: DinEnrichedPassportData }) => {
-  const aggregatedDataByBuildingComponentCategory: AggregatedMaterialsData =
-    aggregateMaterialsDataByBuildingComponentCategory(
-      dinEnrichedPassportData.dinEnrichedBuildingComponents,
-      dinEnrichedPassportData.buildingBaseData.nrf
-    )
+  const t = useTranslations("Grp.Web.sections.overview.module1Materials")
+  const tCostGroups = useTranslations("Common.costGroups")
+  const tMaterialClasses = useTranslations("Common.materialClasses")
+  const unitsTranslations = useTranslations("Units")
 
-  const aggregatedDataByByMaterialClass: AggregatedMaterialsDataByMaterial = aggregateMaterialsDataByMaterialClass(
+  const aggregatedDataByBuildingComponentCategory = aggregateMaterialsDataByBuildingComponentCategory(
     dinEnrichedPassportData.dinEnrichedBuildingComponents,
     dinEnrichedPassportData.buildingBaseData.nrf
   )
 
-  const chartDataGroupedByBuildingMaterialClass: MaterialsBarChartDatum[] =
-    aggregatedDataByByMaterialClass.aggregatedByClassId.map((data) => ({
-      groupName: data.materialClassDescription,
-      aggregatedMass: data.aggregatedMass,
-      aggregatedMassPercentage: data.aggregatedMassPercentage,
-    }))
+  const aggregatedDataByMaterialClass = aggregateMaterialsDataByMaterialClass(
+    dinEnrichedPassportData.dinEnrichedBuildingComponents,
+    dinEnrichedPassportData.buildingBaseData.nrf
+  )
 
-  const chartDataGroupedByBuildingComponentCategory: MaterialsBarChartDatum[] =
-    aggregatedDataByBuildingComponentCategory.aggregatedByCategory.map((data) => ({
-      groupName: data.costGroupCategoryName,
-      aggregatedMass: data.aggregatedMass,
-      aggregatedMassPercentage: data.aggregatedMassPercentage,
-    }))
+  const chartDataGroupedByMaterialClass: MaterialsBarChartDatum[] =
+    aggregatedDataByMaterialClass.aggregatedByClassId.map((data) => {
+      return {
+        groupName: data.materialClassDescription,
+        groupId: data.materialClassId,
+        identifier: tMaterialClasses(`${data.materialClassId.replace(/\./g, "_")}`),
+        aggregatedMassPercentage: data.aggregatedMassPercentage,
+        aggregatedMass: data.aggregatedMass,
+      }
+    })
+
+  const chartDataGroupedByComponentCategory: MaterialsBarChartDatum[] =
+    aggregatedDataByBuildingComponentCategory.aggregatedByCategory.map((data) => {
+      return {
+        groupName: data.costGroupCategoryName,
+        groupId: data.costGroupCategoryId.toString(),
+        identifier: data.costGroupCategoryId + " " + tCostGroups(`${data.costGroupCategoryId}`),
+        aggregatedMassPercentage: data.aggregatedMassPercentage,
+        aggregatedMass: data.aggregatedMass,
+      }
+    })
+
+  const totalMass = aggregatedDataByBuildingComponentCategory.totalMass
+  const totalMassRelativeToNrf = aggregatedDataByBuildingComponentCategory.totalMassRelativeToNrf
 
   return (
     <ModuleContainer>
@@ -74,14 +90,14 @@ const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportD
             <ModuleSectionContainer>
               <TextXSLeading4 light>Nach Bauteilkategorien</TextXSLeading4>
               <ModuleSectionMain height={40}>
-                <MaterialsBarChart data={chartDataGroupedByBuildingComponentCategory} isPdf />
+                <MaterialsBarChart data={chartDataGroupedByComponentCategory} isPdf />
               </ModuleSectionMain>
             </ModuleSectionContainer>
 
             <ModuleSectionContainer>
               <TextXSLeading4 light>Nach Baustoffgruppen</TextXSLeading4>
               <ModuleSectionMain height={40}>
-                <MaterialsBarChart data={chartDataGroupedByBuildingMaterialClass} isPdf />
+                <MaterialsBarChart data={chartDataGroupedByMaterialClass} isPdf />
               </ModuleSectionMain>
             </ModuleSectionContainer>
           </ModuleMain>
