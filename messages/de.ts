@@ -105,7 +105,7 @@ const translationsGrpPlattformGeneric = {
       moduleTitle: "Modul 3",
       moduleSubTitle: "Zirkularität",
       eol: {
-        title: "End of Life (EoL)",
+        title: "EoL Klasse",
       },
     },
   },
@@ -149,6 +149,11 @@ const translationsPlattformGeneric = {
     TotalAndNrfRelativeValuesDisplay: {
       total: "gesamt",
       areaRelated: "Flächenbezogen",
+    },
+    AggregationSelector: {
+      byMaterialClass: "Nach Baustoffgruppen",
+      byComponentCategory: "Nach Bauteilkategorien",
+      total: "Gesamt",
     },
   },
 }

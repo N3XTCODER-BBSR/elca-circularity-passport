@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import CircularityBarChart, {
   CircularityBarChartDatum,
 } from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/circularity/CircularityBarChart"
@@ -13,6 +14,8 @@ type CircularityProps = {
 }
 
 const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents, className }) => {
+  const t = useTranslations("Grp.Web.sections.overview.module3Circularity")
+  const tAggregationSelector = useTranslations("GenericComponents.AggregationSelector")
   const aggregatedData = aggregateCircularityData(dinEnrichedBuildingComponents)
 
   const chartDataForAvgEolPointsPerComponentCostCategory: CircularityBarChartDatum[] =
@@ -31,7 +34,7 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
     {
       eolPoints: aggregatedData.totalAvgEolPoints,
       // TODO: use i18n here
-      identifier: "Average class rating",
+      identifier: tAggregationSelector("total"),
       eolClass: aggregatedData.totalEolClass,
       overlayText: `${aggregatedData.totalEolClass} (${Math.round(aggregatedData.totalAvgEolPoints)})`,
     },
@@ -40,22 +43,23 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
   return (
     <div className={className}>
       <h2 className="text-l max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
-        Modul 3
+        {t("moduleTitle")}
       </h2>
       <h3 className="text-l mb-4 max-w-xl leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
-        Zirkularität
+        {t("moduleSubTitle")}
       </h3>
       <div className="center flex flex-col items-center text-center">
         <b className="text-md mb-4 max-w-xl text-center leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
-          EOL Class: {aggregatedData.totalEolClass}
+          {t("eol.title")}
         </b>
+        <p>{aggregatedData.totalEolClass}</p>
         <div className="h-[100px] md:w-2/4">
           <CircularityBarChart data={chartDataForAvgEolPoints} margin={{ top: 0, right: 30, bottom: 50, left: 150 }} />
         </div>
       </div>
       <div className="center mt-10 flex flex-col items-center">
         <h4 className="text-md mb-4 max-w-xl text-center leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
-          EOL Class By Component Category
+          {tAggregationSelector("byComponentCategory")}
         </h4>
         <div className="h-[300px] md:w-2/4">
           <CircularityBarChart

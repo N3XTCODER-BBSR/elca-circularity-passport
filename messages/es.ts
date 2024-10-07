@@ -102,6 +102,13 @@ const translationsGrpPlattformGeneric = {
         lifeCycleSubPhases,
       },
     },
+    module3Circularity: {
+      moduleTitle: "Módulo 3",
+      moduleSubTitle: "Circularidad",
+      eol: {
+        title: "Clase EoL",
+      },
+    },
   },
 }
 
@@ -143,6 +150,11 @@ const translationsPlattformGeneric = {
     TotalAndNrfRelativeValuesDisplay: {
       total: "total",
       areaRelated: "relacionado con el área",
+    },
+    AggregationSelector: {
+      byMaterialClass: "Por Clase de Material",
+      byComponentCategory: "Por Categoría de Componente",
+      total: "Total",
     },
   },
 }
