@@ -1,0 +1,23 @@
+name: CI
+on:
+  push:
+  pull_request:
+    types: [opened]
+jobs:
+  functional:
+    name: 'Run functional tests'
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'domain tests'
+        run: |
+          set -ex
+          COMPOSE_PROFILE=ci docker compose --project-name integration -f docker-compose.yaml up --build --exit-code-from run-tests
+      # - name: Upload Functional Test Results
+      #   if: always()
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: functional-junit-xml-results
+      #     path: server/output/*.xml

@@ -1,13 +1,56 @@
 version: '3'
 services:
+
+  run-tests:
+    build: .
+    # TODO: Consider running npx next build
+    command: bash -c "npx prisma migrate deploy && yarn run test"
+    # TODO: 
+    # - This service should only run, when the following profile is invoked, e.g. with COMPOSE_PROFILE=test docker compose ...
+    # - e.g. profiles declaration below:
+    # profiles: 
+    #   - ci
+    #   - test
+    depends_on:
+      - db
+      - legacy-db
+    volumes:
+      - ./output:/output
+    environment:
+      DATABASE_URL: postgresql://app:password@db/db
+      ELCA_LEGACY_DATABASE_URL: postgres://app:password@db/elca
+      ELCA_LEGACY_DATABASE_HAS_SSL: false
+      DOPPIO_API_KEY: ABCDEF123456
+      HTTP_BASIC_AUTH: username:password
+      NEXTAUTH_SECRET: ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
+      NEXT_PUBLIC_PASSPORT_BASE_URL: http://localhost
+
   db:
     image: 'postgres:16.3'
     restart: always
     ports:
       - '65432:5432'
     environment:
-      POSTGRES_DB: building_passport
-      POSTGRES_USER: building_passport
+      POSTGRES_DB: db
+      POSTGRES_USER: app
       POSTGRES_PASSWORD: password
-    volumes:
-      - ./dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  legacy-db:
+    image: 'postgres:16.3'
+    restart: always
+    ports:
+      - '65433:5432'
+    environment:
+      POSTGRES_DB: elca
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d elca"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
