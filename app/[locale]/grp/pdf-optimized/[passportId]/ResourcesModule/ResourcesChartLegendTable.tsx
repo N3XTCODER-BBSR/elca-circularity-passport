@@ -30,9 +30,9 @@ const ResourcesChartLegendTable = ({
 }: {
   data: LegendTableDataItem[]
   unit: string
-  isPdf: boolean
+  isPdf?: boolean
 }) => {
-  const shorten = (str, length) => (str.length > length ? str.slice(0, 13) + ".." : str)
+  const shorten = (str: string, length: number) => (str.length > length ? str.slice(0, 13) + ".." : str)
   return (
     <div className={`overflow-x-auto ${isPdf ? "text-[6pt]" : "text-[1rem]"}`}>
       <table className="min-w-full">

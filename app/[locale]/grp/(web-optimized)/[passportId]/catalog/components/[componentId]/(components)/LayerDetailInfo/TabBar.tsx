@@ -2,11 +2,11 @@
 
 import { Disclosure } from "@headlessui/react"
 import { twMerge } from "tailwind-merge"
+import { useTranslations } from "next-intl"
 type TabBarProps = {
   currentTabIdx: number
   setCurrentTabIdx: (idx: number) => void
 }
-import { useTranslations } from "next-intl"
 
 export default function Tabs({ currentTabIdx, setCurrentTabIdx }: TabBarProps) {
   const t = useTranslations("Grp.Web.sections.detailPage.tabBar")
