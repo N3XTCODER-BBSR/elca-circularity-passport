@@ -1,5 +1,4 @@
 import { enrichComponentsArrayWithDin276Labels } from "./enrichtComponentsArrayWithDin276Labels"
-import { din276Hierarchy } from "./din276Mapping"
 import { BuildingComponent } from "./passportSchema"
 
 // Mock Data

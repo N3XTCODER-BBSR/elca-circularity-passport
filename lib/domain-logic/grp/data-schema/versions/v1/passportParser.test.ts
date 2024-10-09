@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client"
 import { passportParser } from "./passportParser"
-import { PassportDataSchema } from "./passportSchema"
 
 describe("passportParser", () => {
   const validBuildingComponents = [

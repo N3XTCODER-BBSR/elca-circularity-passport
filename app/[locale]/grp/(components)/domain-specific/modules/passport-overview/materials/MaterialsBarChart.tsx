@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { ResponsiveBar } from "@nivo/bar"
 import { useTranslations } from "next-intl"
 
