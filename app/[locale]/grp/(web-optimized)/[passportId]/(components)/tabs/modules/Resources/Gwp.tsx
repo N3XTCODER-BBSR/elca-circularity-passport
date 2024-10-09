@@ -8,8 +8,8 @@ import ResourcesChartLegendTable, {
 import { lifeCycleSubPhasesColorsMapper } from "constants/styleConstants"
 import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import { aggregateGwpData } from "lib/domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
-import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
 import DummyAccordion from "../../../DummyAccordion"
+import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
 
 type GWPComponentProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]

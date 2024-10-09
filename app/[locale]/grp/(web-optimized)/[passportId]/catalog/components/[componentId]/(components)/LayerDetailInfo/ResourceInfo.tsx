@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl"
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import SingleValueDisplay from "app/(components)/generic/SingleValueDisplay"
 import { Ressources } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
@@ -6,7 +7,6 @@ import {
   calculateQpABC,
   calculateRmiTotal,
 } from "lib/domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
-import { useTranslations } from "next-intl"
 
 const ResourceInfo = ({ resources }: { resources: Ressources }) => {
   const rmiTotal = calculateRmiTotal(resources)

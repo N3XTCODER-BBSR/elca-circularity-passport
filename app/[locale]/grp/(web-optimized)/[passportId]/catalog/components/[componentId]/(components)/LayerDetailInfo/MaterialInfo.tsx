@@ -1,9 +1,9 @@
 import { PaperClipIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
+import { useTranslations } from "next-intl"
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { AccordionItemFull } from "app/[locale]/grp/(components)/generic/Accordion/AccordionItem"
 import { Material } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
-import { useTranslations } from "next-intl"
 const MaterialInfo = ({ material }: { material: Material }) => {
   const t = useTranslations("Grp.Web.sections.detailPage.componentLayer.material")
   const materialValues = [

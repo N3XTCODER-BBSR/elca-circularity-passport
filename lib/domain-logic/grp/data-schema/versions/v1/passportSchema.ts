@@ -152,7 +152,7 @@ export const LayerSchema = z.object({
   // buildingId: z.string(),
   lnr: z.number(),
   name: z.string(),
-  mass: z.number(),
+  mass: z.number().nonnegative(),
   materialGeometry: MaterialGeometrySchema,
   material: MaterialSchema,
   ressources: RessourcesSchema,

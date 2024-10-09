@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl"
 import MaterialsBarChart, {
   MaterialsBarChartDatum,
 } from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/materials/MaterialsBarChart"
@@ -13,12 +14,9 @@ import {
 } from "app/[locale]/grp/pdf-optimized/(components)/layout-elements"
 import { DinEnrichedPassportData } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import {
-  AggregatedMaterialsData,
-  AggregatedMaterialsDataByMaterial,
   aggregateMaterialsDataByBuildingComponentCategory,
   aggregateMaterialsDataByMaterialClass,
 } from "lib/domain-logic/grp/modules/passport-overview/materials/materials-data-aggregation"
-import { useTranslations } from "next-intl"
 
 const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportData: DinEnrichedPassportData }) => {
   const t = useTranslations("Grp.Web.sections.overview.module1Materials")

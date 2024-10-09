@@ -16,7 +16,7 @@ enum EolClasses {
   J = "J",
 }
 
-function getEolClassNameByPoints(points?: number): EolClasses {
+export function getEolClassNameByPoints(points?: number): EolClasses {
   if (points == null || Number.isNaN(points)) return EolClasses.NA
   if (points >= 140) return EolClasses.A
   if (points >= 100) return EolClasses.B

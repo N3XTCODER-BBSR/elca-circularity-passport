@@ -1,10 +1,10 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { DinEnrichedPassportData } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import { useTranslations } from "next-intl"
 
 type BuildingBaseInformationProps = {
   passportData: DinEnrichedPassportData
