@@ -1,4 +1,4 @@
-export enum EolClasses {
+enum EolClasses {
   NA = "N/A",
   A = "A",
   B = "B",
