@@ -87,6 +87,9 @@ const authOptions: NextAuthOptions = {
       return session
     },
   },
+  theme: {
+    logo: "/elca_circularity_index_heading.png",
+  },
 }
 
 export default authOptions
