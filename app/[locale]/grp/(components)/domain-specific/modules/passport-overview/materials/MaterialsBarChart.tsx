@@ -1,12 +1,15 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { ResponsiveBar } from "@nivo/bar"
 import { useTranslations } from "next-intl"
 
 export type MaterialsBarChartDatum = {
   groupName: string
+  groupId: string
   aggregatedMass: number
   aggregatedMassPercentage: number
+  identifier: string
 }
 
 type MaterialsBarChartProps = {
@@ -19,7 +22,6 @@ const replaceWhiteSpaceWithLineBreak = (label: string) => label?.replace(/\s+/g,
 
 const MaterialsBarChart = ({ data, labelFormatter, isPdf = false }: MaterialsBarChartProps) => {
   const t = useTranslations("Grp.Web.sections.overview.module1Materials")
-
   const pdfMargins = { top: 0, right: 20, bottom: 20, left: 100 }
   const webMargins = { top: 0, right: 150, bottom: 50, left: 300 }
 
@@ -38,10 +40,10 @@ const MaterialsBarChart = ({ data, labelFormatter, isPdf = false }: MaterialsBar
       }}
       totalsOffset={isPdf ? 9 : 0}
       animate={!isPdf}
-      enableGridX={!isPdf}
-      enableGridY={!isPdf}
+      enableGridX={false}
+      enableGridY={false}
       keys={["aggregatedMassPercentage"]}
-      indexBy={"groupName"}
+      indexBy={"identifier"}
       isInteractive={!isPdf}
       margin={isPdf ? pdfMargins : webMargins}
       padding={isPdf ? 0.4 : 0.2}
@@ -55,17 +57,17 @@ const MaterialsBarChart = ({ data, labelFormatter, isPdf = false }: MaterialsBar
         modifiers: [["darker", 1.6]],
       }}
       minValue={0}
-      maxValue={isPdf ? "auto" : 100}
+      maxValue="auto"
       axisTop={null}
       axisRight={null}
       axisBottom={{
-        tickSize: isPdf ? 0 : 5,
+        tickSize: 0,
         tickPadding: isPdf ? -6 : 5,
         format: (value) => `${value} %`,
       }}
       axisLeft={{
-        tickSize: 5,
-        tickPadding: 5,
+        tickSize: 0,
+        tickPadding: 8,
         tickRotation: 0,
         legendPosition: "middle",
         legendOffset: -40,
@@ -80,7 +82,7 @@ const MaterialsBarChart = ({ data, labelFormatter, isPdf = false }: MaterialsBar
             border: "1px solid #ccc",
           }}
         >
-          <strong>{data.groupName}</strong>
+          <strong>{data.identifier}</strong>
           <br />
           {labelFormatter != null ? labelFormatter(data) : null}
         </div>

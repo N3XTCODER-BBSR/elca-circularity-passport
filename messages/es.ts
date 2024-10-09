@@ -1,13 +1,394 @@
-export default {
-  Grp: {
-    Web: {
-      title: "Construyendo Pase de Recursos",
-      description:
-        "El BBSR (Instituto Federal de Investigación en Construcción, Ciudad y Desarrollo Espacial, Departamento WB6 Construcción y Medio Ambiente) pone esta herramienta a disposición de forma gratuita.",
-      NavBar: {
-        overview: "Visión general",
-        catalog: "Catálogo",
+import {
+  LifeCycleSubPhaseId,
+  MaterialResourceTypeNamesSchema,
+} from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
+
+const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
+  A1A2A3: "Módulo A1 - A3",
+  B1: "Módulo B1",
+  B4: "Módulo B4",
+  B6: "Módulo B6",
+  C3: "Módulo C3",
+  C4: "Módulo C4",
+}
+
+const translationsGrpPlattformGeneric = {
+  overview: {
+    buildingBaseInformation: {
+      title: "Información básica del edificio",
+      buildingId: "ID del Edificio/Estructura",
+      coordinates: "Coordenadas",
+      address: "Dirección",
+      yearOfBuildingPermit: "Año de Permiso de Construcción",
+      yearOfCompletion: "Año de Finalización",
+      numberOfAboveGroundFloors: "Número de Pisos Sobre el Suelo",
+      numberOfUndergroundFloors: "Número de Pisos Subterráneos",
+      netFloorArea: {
+        label: "Superficie Neta",
+        abbreviation: "SNF",
+        description: {
+          intro:
+            "La Superficie Neta (SNF) se refiere a la suma de las áreas útiles de un edificio. Se calcula dividiendo la superficie en grupos de uso, como se detalla en la siguiente tabla:",
+          point1:
+            "el área de uso (AU) como la superficie que puede utilizarse de manera efectiva para el propósito adecuado del edificio",
+          point2:
+            "el área técnica (AT), que se utiliza para albergar instalaciones técnicas centrales (por ejemplo, calefacción, sala de máquinas para el ascensor, sala para operar sistemas de aire acondicionado)",
+          point3:
+            "el área de circulación (AC), que sirve para acceder a las habitaciones, para el tránsito dentro de los edificios o para la salida en caso de emergencia.",
+        },
+      },
+      grossFloorArea: {
+        label: "Superficie Bruta",
+        abbreviation: "SBF",
+        description:
+          "La Superficie Bruta (SBF) es la suma de todas las superficies de todos los niveles de un edificio. Se debe calcular por piso.",
+      },
+      grossVolume: {
+        label: "Volumen Bruto",
+        abbreviation: "VB",
+        description:
+          "El Volumen Bruto (de edificios) según la norma DIN 277-1 (a partir de enero de 2016) es el volumen de un edificio delimitado por las superficies exteriores del cuerpo del edificio, desde la superficie inferior del suelo estructural (parte inferior de los suelos y losas que no están destinadas a la cimentación), los bordes exteriores de las paredes exteriores y la superficie del revestimiento del techo, incluidas las buhardillas o lucernarios.",
+      },
+      plotArea: "Área del Terreno",
+      totalBuildingMass: "Masa Total del Edificio",
+    },
+    module1Materials: {
+      moduleTitle: "Módulo 1",
+      moduleSubtitle: "Materiales",
+      chartTitle: "Masa",
+      navigationSections: {
+        byMaterialClass: "Por Grupos de Material",
+        byComponentCategory: "Por Categorías de Componentes",
+      },
+    },
+    module2Resources: {
+      moduleTitle: "Módulo 2",
+      moduleSubTitle: "Recursos",
+      rmi: {
+        title: "Recursos (RMI)",
+        categories: {
+          renewable: "Renovable",
+          nonRenewable: "No Renovable",
+        },
+        names: {
+          [MaterialResourceTypeNamesSchema.Enum.Forestry]: "Forestal",
+          [MaterialResourceTypeNamesSchema.Enum.Aqua]: "Agua",
+          [MaterialResourceTypeNamesSchema.Enum.Agrar]: "Agrícola",
+          [MaterialResourceTypeNamesSchema.Enum.Fossil]: "Fósil",
+          [MaterialResourceTypeNamesSchema.Enum.Metallic]: "Metálico",
+          [MaterialResourceTypeNamesSchema.Enum.Mineral]: "Mineral",
+        },
+        labels: {
+          overlay: "{aggregatedValue, number, integer} t - {percentageValue, number, percentage}",
+        },
+        faq: {
+          "1": {
+            Q: "question 1 for RMI",
+            A: "hello world",
+          },
+          "2": {
+            Q: "question 2 for RMI",
+            A: "hi there",
+          },
+        },
+      },
+      gwpAndPenrt: {
+        penrt: {
+          title: "Energía Primaria No Renovable (PENRT)",
+          labels: {
+            overlay: "{percentageValue, number, percentage} / {aggregatedValue, number, integer} kwH",
+          },
+          grayEnergyTotal: "Emisiones Grises, total",
+          grayEnergyTotalPdf: "Emisiones Grises",
+          faq: {
+            "1": {
+              Q: "question 1 for PENRT",
+              A: "answer",
+            },
+            "2": {
+              Q: "question 2 for PENRT",
+              A: "answer",
+            },
+          },
+        },
+        gwp: {
+          title: "Potencial de Calentamiento Global (GWP)",
+          labels: {
+            overlay: "{percentageValue, number, percentage} / {aggregatedValue, number, integer} kg Co2eq",
+          },
+          grayEmissionsTotal: "Energía Gris, total",
+          grayEmissionsTotalPdf: "Energía Gris",
+          faq: {
+            "1": {
+              Q: "question 1 for GWP",
+              A: "answer",
+            },
+            "2": {
+              Q: "question 2 for GWP",
+              A: "answer",
+            },
+          },
+        },
+        lifeCycleSubPhases,
+      },
+    },
+    module3Circularity: {
+      moduleTitle: "Módulo 3",
+      moduleSubTitle: "Circularidad",
+      eol: {
+        title: "Clase EoL",
+        faq: {
+          "1": {
+            Q: "question 1 for EOL",
+            A: "answer",
+          },
+          "2": {
+            Q: "question 2 for EOL",
+            A: "answer",
+          },
+        },
       },
     },
   },
+  detailPage: {
+    component: {
+      back: "Volver",
+      componentName: "Nombre del Componente",
+      uuid: "UUID",
+      costGroup: "Grupo de Costos DIN276",
+    },
+    componentLayer: {
+      sequenceNumber: "Número Secuencial",
+      mass: "Masa",
+      materialGeometry: "Geometría de las Capas de Componentes / Componentes",
+      material: {
+        materialDescription: "Descripción del Material",
+        materialClassId: "UUID Clase de Material",
+        materialClassDescription: "Descripción de la Clase de Material",
+        uuidMaterial: "UUID Material",
+        materialDatabase: "Base de Datos de Materiales",
+        serviceLife: "Vida Útil",
+        lbPerformanceRange: "Rango de Rendimiento (LB)",
+        lvNumber: "Número de Especificación (LV)",
+        itemInLv: "Posición en LV",
+        area: "Área",
+        technicalServiceLife: "Vida Útil Técnica",
+        uuidProduct: "UUID Producto",
+        productDescription: "Descripción del Producto",
+        manufacturerName: "Nombre del Fabricante",
+        proofDocument: "Documento de Evidencia",
+        versionNumberServiceLife: "Número de Versión de la Tabla de Vida Útil",
+        oekobaudatVersion: "Versión Ökobaudat",
+      },
+      resources: {
+        rawMaterials: "Materias Primas",
+        primaryEnergy: "Consumo de Energía Primaria (no renovable, total)",
+        carbonContent: "Contenido de Carbono",
+        recyclingContent: "Contenido Reciclado",
+        globalWarmingPotential: "Potencial de Calentamiento Global (total)",
+        Forestry: "Forestal",
+        Aqua: "Agua",
+        Agrar: "Agrícola",
+        Fossil: "Fósil",
+        Metallic: "Metálico",
+        Mineral: "Mineral",
+        total: "total",
+      },
+      circularity: {
+        general: "General",
+        materialCompatibility: "Compatibilidad del Material - Contaminantes",
+        eolClass: "Clase EOL",
+        eolPoints: "Puntos EOL",
+        proofReuse: "Prueba de Reutilización",
+        version: "Versión",
+        category: "Categoría",
+      },
+    },
+    tabBar: {
+      material: "Material",
+      resources: "Recursos",
+      circularity: "Circularidad",
+    },
+  },
 }
+
+const translationsPlattformGeneric = {
+  Grp: {
+    Web: {
+      title: "Pasaporte de Recursos para Edificios",
+      description:
+        "El BBSR (Instituto Federal de Investigación sobre la Construcción, Asuntos Urbanos y Espaciales, Sección WB6 Construcción y Medio Ambiente) proporciona esta herramienta de forma gratuita.",
+      project: "Proyecto",
+      exportPdf: "Exportar PDF",
+      NavBar: {
+        overview: "Resumen",
+        catalog: "Catálogo",
+      },
+      sections: {
+        overview: translationsGrpPlattformGeneric.overview,
+        detailPage: translationsGrpPlattformGeneric.detailPage,
+      },
+    },
+    Pdf: {
+      sections: {
+        overview: translationsGrpPlattformGeneric.overview,
+      },
+    },
+  },
+  Units: {
+    Kwh: {
+      short: "kwH",
+    },
+    Tons: {
+      short: "t",
+      long: "toneladas",
+    },
+    KgCo2Eq: {
+      short: "kg Co2eq",
+    },
+  },
+  GenericComponents: {
+    TotalAndNrfRelativeValuesDisplay: {
+      total: "total",
+      areaRelated: "relacionado con el área",
+    },
+    AggregationSelector: {
+      byMaterialClass: "Por Clase de Material",
+      byComponentCategory: "Por Categoría de Componente",
+      total: "Total",
+    },
+  },
+  Common: {
+    materialClasses: {
+      "1_1_01": "Productos de Construcción Minerales",
+      "4_3_01": "Metales",
+      "2_4_01": "Materiales Aislantes",
+      "3_2_01": "Madera",
+      "5_1_01": "Cubiertas",
+      "7_2_01": "Componentes para Ventanas y Fachadas Cortina",
+      "8_1_01": "Tecnología de Edificios",
+    },
+    costGroups: {
+      "300": "Edificio - Obras Estructurales",
+      "310": "Excavación",
+      "311": "Preparación de Excavación",
+      "312": "Cierres de Excavación",
+      "313": "Retención de Agua",
+      "319": "Excavación, Misceláneo",
+      "320": "Fundación",
+      "321": "Mejoramiento del Suelo",
+      "322": "Cimientos Superficiales",
+      "323": "Cimientos Profundos",
+      "324": "Subsuelo y Losas del Suelo",
+      "325": "Revestimientos de Piso",
+      "326": "Impermeabilización Estructural",
+      "327": "Drenajes",
+      "329": "Fundaciones, Misceláneo",
+      "330": "Muros Exteriores",
+      "331": "Muros Exteriores Portantes",
+      "332": "Muros Exteriores No Portantes",
+      "333": "Columnas Exteriores",
+      "334": "Puertas y Ventanas Exteriores",
+      "335": "Revestimientos de Muros Exteriores, Exteriores",
+      "336": "Revestimientos de Muros Exteriores, Interiores",
+      "337": "Muros Exteriores Prefabricados",
+      "338": "Protección Solar",
+      "339": "Muros Exteriores, Misceláneo",
+      "340": "Muros Interiores",
+      "341": "Muros Interiores Portantes",
+      "342": "Muros Interiores No Portantes",
+      "343": "Columnas Interiores",
+      "344": "Puertas y Ventanas Interiores",
+      "345": "Revestimientos de Muros Interiores",
+      "346": "Muros Interiores Prefabricados",
+      "349": "Muros Interiores, Misceláneo",
+      "350": "Techos",
+      "351": "Estructura del Techo",
+      "352": "Revestimientos del Techo",
+      "353": "Forros del Techo",
+      "359": "Techos, Misceláneo",
+      "360": "Cubiertas",
+      "361": "Estructuras del Techo",
+      "362": "Ventanas del Techo, Aberturas en el Techo",
+      "363": "Revestimientos del Techo",
+      "364": "Revestimientos del Techo - Yeso y Forros",
+      "369": "Cubiertas, Misceláneo",
+      "370": "Instalaciones Estructurales",
+      "371": "Instalaciones Generales",
+      "372": "Instalaciones Especiales",
+      "379": "Instalaciones Estructurales, Misceláneo",
+      "390": "Otras Medidas para Obras Estructurales",
+      "391": "Montaje del Sitio de Construcción",
+      "392": "Andamios",
+      "393": "Medidas de Seguridad",
+      "394": "Medidas de Demolición",
+      "395": "Reparaciones",
+      "396": "Eliminación de Materiales",
+      "397": "Medidas Adicionales",
+      "398": "Estructuras Temporales",
+      "399": "Otras Medidas para Obras Estructurales, Misceláneo",
+      "500": "Instalaciones Exteriores",
+      "510": "Áreas de Terreno",
+      "511": "Trabajos de Suelo Superior",
+      "512": "Movimiento de Tierras",
+      "519": "Áreas de Terreno, Misceláneo",
+      "520": "Áreas Pavimentadas",
+      "521": "Caminos",
+      "522": "Carreteras",
+      "523": "Plazas, Patios",
+      "524": "Áreas de Estacionamiento",
+      "525": "Superficies de Canchas Deportivas",
+      "526": "Superficies de Áreas de Juegos",
+      "527": "Vías Férreas",
+      "529": "Áreas Pavimentadas, Misceláneo",
+      "530": "Estructuras en Instalaciones Exteriores",
+      "531": "Cierres",
+      "532": "Estructuras de Protección",
+      "533": "Muros",
+      "534": "Rampas, Escaleras, Tribunas",
+      "535": "Cubiertas",
+      "536": "Puentes, Pasarelas",
+      "537": "Instalaciones de Canales y Pozos",
+      "538": "Instalaciones de Ingeniería Hidráulica",
+      "539": "Estructuras en Instalaciones Exteriores, Misceláneo",
+      "540": "Instalaciones Técnicas en Instalaciones Exteriores",
+      "541": "Instalaciones de Aguas Residuales",
+      "542": "Instalaciones de Agua",
+      "543": "Instalaciones de Gas",
+      "544": "Instalaciones de Suministro de Calor",
+      "545": "Sistemas de Aire Acondicionado",
+      "546": "Instalaciones de Alta Tensión",
+      "547": "Sistemas de Telecomunicaciones e Información",
+      "548": "Instalaciones de Uso Específico",
+      "549": "Instalaciones Técnicas en Instalaciones Exteriores, Misceláneo",
+      "550": "Instalaciones en Instalaciones Exteriores",
+      "551": "Instalaciones Generales",
+      "552": "Instalaciones Especiales",
+      "559": "Instalaciones en Instalaciones Exteriores, Misceláneo",
+      "560": "Superficies de Agua",
+      "561": "Impermeabilización",
+      "562": "Plantas",
+      "569": "Superficies de Agua, Misceláneo",
+      "570": "Áreas de Plantación y Siembra",
+      "571": "Trabajos de Suelo Superior",
+      "572": "Cultivo del Suelo Vegetativo",
+      "573": "Métodos de Construcción Protectora",
+      "574": "Plantas",
+      "575": "Césped y Siembra",
+      "576": "Verdeado de Áreas Subterráneas",
+      "579": "Áreas de Plantación y Siembra, Misceláneo",
+      "590": "Otras Instalaciones Exteriores",
+      "591": "Montaje del Sitio de Construcción",
+      "592": "Andamios",
+      "593": "Medidas de Seguridad",
+      "594": "Medidas de Demolición",
+      "595": "Reparaciones",
+      "596": "Eliminación de Materiales",
+      "597": "Medidas Adicionales",
+      "598": "Instalaciones Exteriores Temporales",
+      "599": "Otras Medidas para Instalaciones Exteriores, Misceláneo",
+    },
+  },
+}
+
+export default translationsPlattformGeneric

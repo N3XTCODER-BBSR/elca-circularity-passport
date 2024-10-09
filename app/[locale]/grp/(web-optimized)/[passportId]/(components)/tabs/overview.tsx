@@ -39,18 +39,18 @@ const Overview = ({ dinEnrichedPassportData }: { dinEnrichedPassportData: DinEnr
           className="h-8 rounded-md bg-indigo-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
           onClick={onPdfExportClick}
         >
-          PDF exportieren
+          {translations("exportPdf")}
         </button>
       </div>
 
       <h2 className="max-w-[50%]">
-        <span className="text-sm font-bold uppercase text-indigo-600">Projekt:</span>
+        <span className="text-sm font-bold uppercase text-indigo-600">{translations("project")}</span>
         <br />
         <span className="text-2xl">{dinEnrichedPassportData.projectName}</span>
       </h2>
       <div className="mt-6 border-gray-100">
         <BuildingBaseInformation passportData={dinEnrichedPassportData} className="mt-16" />
-        <Materials dinEnrichedPassportData={dinEnrichedPassportData} className="my-24" />
+        <Materials dinEnrichedPassportData={dinEnrichedPassportData} className="my-24 flex flex-col" />
         <Resources
           dinEnrichedBuildingComponents={dinEnrichedPassportData.dinEnrichedBuildingComponents}
           nrf={dinEnrichedPassportData.buildingBaseData.nrf}

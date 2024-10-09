@@ -4,10 +4,11 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getDinEnrichedPassportDataByPassportUuid } from "lib/domain-logic/grp/getPassportData"
 import ComponentLayer from "./component-layer"
+import { getTranslations } from "next-intl/server"
 
 const Page = async ({ params }: { params: { passportId: string; componentId: string; locale: string } }) => {
   const passportData = await getDinEnrichedPassportDataByPassportUuid(params.passportId)
-
+  const t = await getTranslations("Grp.Web.sections.detailPage.component")
   const component = passportData?.dinEnrichedBuildingComponents?.find(
     (component) => component.uuid === params.componentId
   )
@@ -23,7 +24,7 @@ const Page = async ({ params }: { params: { passportId: string; componentId: str
         href={`/${params.locale}/grp/${params.passportId}/catalog#${component.dinComponentLevelNumber}`}
       >
         <ArrowLongLeftIcon aria-hidden="true" className="-ml-0.5 size-5" />
-        Zurück
+        {t("back")}
       </Link>
 
       <h1 className="mt-12 text-2xl font-semibold leading-6">{component.name}</h1>
@@ -37,15 +38,15 @@ const Page = async ({ params }: { params: { passportId: string; componentId: str
             <div className="border border-gray-200">
               <dl className="">
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-900">Komponenten-Name</dt>
+                  <dt className="text-sm font-medium text-gray-900">{t("componentName")}</dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{component.name}</dd>
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-900">UUID</dt>
+                  <dt className="text-sm font-medium text-gray-900">{t("uuid")}</dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{component.uuid}</dd>
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-900">Kostengruppe DIN276</dt>
+                  <dt className="text-sm font-medium text-gray-900">{t("costGroup")}</dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                     {component.dinGroupLevelNumber}
                   </dd>

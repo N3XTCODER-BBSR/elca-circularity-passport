@@ -9,6 +9,7 @@ import { lifeCycleSubPhasesColorsMapper } from "constants/styleConstants"
 import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import { aggregateGwpData } from "lib/domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation"
 import TotalAndNrfRelativeValuesDisplay from "../components/TotalAndNrfRelativeValuesDisplay"
+import DummyAccordion from "../../../DummyAccordion"
 
 type GWPComponentProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
@@ -39,6 +40,16 @@ const Gwp: React.FC<GWPComponentProps> = ({ dinEnrichedBuildingComponents, nrf }
     pattern: "dots",
   })
 
+  const faqContent = [
+    {
+      Q: t("gwpAndPenrt.gwp.faq.1.Q"),
+      A: t("gwpAndPenrt.gwp.faq.1.A"),
+    },
+    {
+      Q: t("gwpAndPenrt.gwp.faq.2.Q"),
+      A: t("gwpAndPenrt.gwp.faq.2.A"),
+    },
+  ]
   return (
     <div className="flex flex-col items-center justify-center">
       <h4 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
@@ -57,7 +68,10 @@ const Gwp: React.FC<GWPComponentProps> = ({ dinEnrichedBuildingComponents, nrf }
             overlayLabelTranslationKey="gwp.labels.overlay"
           />
         </div>
-        <ResourcesChartLegendTable data={gwpLegendTableData} unit={unitsTranslations("KgCo2Eq.short")} />
+        <ResourcesChartLegendTable data={gwpLegendTableData} unit={unitsTranslations("KgCo2Eq.short")} isPdf={false} />
+      </div>
+      <div className="mb-16 mt-32 w-full">
+        <DummyAccordion faqContent={faqContent} />
       </div>
     </div>
   )

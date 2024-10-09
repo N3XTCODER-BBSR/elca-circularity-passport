@@ -8,22 +8,6 @@ import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/v
 import Gwp from "./Gwp"
 import Penrt from "./Penrt"
 import Rmi from "./Rmi"
-import DummyAccordion from "../../../DummyAccordion"
-
-const navigationSections = [
-  {
-    name: "Rohstoffeinsatz (RMI)",
-    id: "0",
-  },
-  {
-    name: "Global Warming Potential (GWP)",
-    id: "1",
-  },
-  {
-    name: "Primärenergie nicht-erneuerbar (PENRT)",
-    id: "2",
-  },
-]
 
 type ResourcesProps = {
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[]
@@ -35,9 +19,24 @@ const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nr
   const t = useTranslations("Grp.Web.sections.overview.module2Resources")
   const [currentNavSectionId, setCurrentNavSectionId] = useState<string>("0")
 
+  const navigationSections = [
+    {
+      name: t("rmi.title"),
+      id: "0",
+    },
+    {
+      name: t("gwpAndPenrt.gwp.title"),
+      id: "1",
+    },
+    {
+      name: t("gwpAndPenrt.penrt.title"),
+      id: "2",
+    },
+  ]
+
   return (
     <div className={className}>
-      <h2 className="text-l mb-4 max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
+      <h2 className="text-l max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
         {t("moduleTitle")}
       </h2>
       <h3 className="text-l mb-4 max-w-xl leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
@@ -51,7 +50,7 @@ const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nr
             onSelect={setCurrentNavSectionId}
           />
         </div>
-        <div className="md:w-3/4">
+        <div className="px-16 pt-8 md:w-3/4">
           {currentNavSectionId === "0" && (
             <Rmi dinEnrichedBuildingComponents={dinEnrichedBuildingComponents} nrf={nrf} />
           )}
@@ -62,9 +61,6 @@ const Resources: React.FC<ResourcesProps> = ({ dinEnrichedBuildingComponents, nr
             <Penrt dinEnrichedBuildingComponents={dinEnrichedBuildingComponents} nrf={nrf} />
           )}
         </div>
-      </div>
-      <div className="mb-16 mt-32 w-full">
-        <DummyAccordion />
       </div>
     </div>
   )

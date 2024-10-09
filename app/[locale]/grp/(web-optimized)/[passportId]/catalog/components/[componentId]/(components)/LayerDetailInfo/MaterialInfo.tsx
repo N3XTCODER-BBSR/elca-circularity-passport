@@ -3,32 +3,33 @@ import { Accordion } from "@szhsin/react-accordion"
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { AccordionItemFull } from "app/[locale]/grp/(components)/generic/Accordion/AccordionItem"
 import { Material } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
-
+import { useTranslations } from "next-intl"
 const MaterialInfo = ({ material }: { material: Material }) => {
+  const t = useTranslations("Grp.Web.sections.detailPage.componentLayer.material")
   const materialValues = [
-    { key: "Material-Beschreibung", value: material.materialDescription },
-    { key: "Materialgruppen-ID", value: material.materialClassId },
-    { key: "Materialgruppen-Beschreibung", value: material.materialClassDescription },
-    { key: "Material-UUID", value: material.uuid },
-    { key: "Nutzungsdauer", value: `${material.serviceLifeInYears} Jahre` },
-    { key: "Versionsnummer Nutzungsdauer-Tabelle", value: material.serviceLifeTableVersion },
-    { key: "Ökobaudat-Version", value: material.oekobaudatVersion },
+    { key: t("materialDescription"), value: material.materialDescription },
+    { key: t("materialClassId"), value: material.materialClassId },
+    { key: t("materialClassDescription"), value: material.materialClassDescription },
+    { key: t("uuidMaterial"), value: material.uuid },
+    { key: t("serviceLife"), value: `${material.serviceLifeInYears} Jahre` },
+    { key: t("versionNumberServiceLife"), value: material.serviceLifeTableVersion },
+    { key: t("oekobaudatVersion"), value: material.oekobaudatVersion },
   ]
 
   const tradeValues = [
-    { key: "Leistungs-bereich (LB)", value: material.trade.lbPerformanceRange },
-    { key: "Gewerk", value: material.trade.trade },
-    { key: "Leistungsverzeichnis (LV) nr.", value: material.trade.lvNumber },
-    { key: "Position im LV", value: material.trade.itemInLv },
-    { key: "Fläche [m2]", value: material.trade.area },
+    { key: t("lbPerformanceRange"), value: material.trade.lbPerformanceRange },
+    { key: t("materialDescription"), value: material.trade.trade },
+    { key: t("lvNumber"), value: material.trade.lvNumber },
+    { key: t("itemInLv"), value: material.trade.itemInLv },
+    { key: `${t("area")} [m2]`, value: material.trade.area },
   ]
 
   const productValues = [
-    { key: "Technische Lebensdauer", value: material.product.technicalServiceLifeInYears },
-    { key: "UUID Produkt", value: material.product.uuid },
-    { key: "Produktbezeichnung", value: material.product.description },
-    { key: "Herstellername", value: material.product.manufacturerName },
-    { key: "Nachweisdokument", value: material.product.versionDate },
+    { key: t("technicalServiceLife"), value: material.product.technicalServiceLifeInYears },
+    { key: t("uuidProduct"), value: material.product.uuid },
+    { key: t("productDescription"), value: material.product.description },
+    { key: t("manufacturerName"), value: material.product.manufacturerName },
+    { key: t("proofDocument"), value: material.product.versionDate },
   ]
 
   return (
