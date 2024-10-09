@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client"
 import { PassportData, PassportDataSchema } from "./passportSchema"
 
-const passportParser = (passportDataJson: Prisma.JsonValue) => {
+export const passportParser = (passportDataJson: Prisma.JsonValue) => {
   let jsonObj
   if (typeof passportDataJson === "string") {
     try {

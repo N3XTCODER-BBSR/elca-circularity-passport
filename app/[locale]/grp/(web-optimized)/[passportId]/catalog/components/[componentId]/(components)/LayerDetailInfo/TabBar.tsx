@@ -1,8 +1,8 @@
 "use client"
 
 import { Disclosure } from "@headlessui/react"
-import { twMerge } from "tailwind-merge"
 import { useTranslations } from "next-intl"
+import { twMerge } from "tailwind-merge"
 type TabBarProps = {
   currentTabIdx: number
   setCurrentTabIdx: (idx: number) => void

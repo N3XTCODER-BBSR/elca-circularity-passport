@@ -67,7 +67,7 @@ const materialTradeDetails: MaterialTradeDetails[] = [
 ]
 //TODO: update materialClasses according to data structure excel:
 //docs.google.com/spreadsheets/d/1jumm46MoBhc9N_fzn3alHKczoUH2FrWCL880lmoE-js/edit?gid=1863730613#gid=1863730613
-https: const materialClasses = {
+const materialClasses = {
   "1.1.01": "Mineralische Bauprodukte",
   "4.3.01": "Metalle",
   "2.4.01": "Isoliermaterialien",
