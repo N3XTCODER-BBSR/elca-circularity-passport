@@ -64,6 +64,12 @@ const MaterialGeometrySchema = z.object({
 export type MaterialGeometry = z.infer<typeof MaterialGeometrySchema>
 
 export const MaterialSchema = z.object({
+  // TODO: let's introduce a Oekobaudat-Wrapper here for the following fields:
+  // uuid
+  // materialDescription
+  // materialClassId
+  // materialClassDescription
+  // oekobaudatVersion
   uuid: z.string(),
   materialDescription: z.string(),
   materialClassId: z.string(),
