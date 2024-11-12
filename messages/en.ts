@@ -234,6 +234,26 @@ const translationsPlatformGeneric = {
       },
     },
   },
+  CircularityTool: {
+    sections: {
+      signin: {
+        title: "eLCA Circularity Index",
+        subTitle: {
+          a: "Sign in with your ",
+          b: "eLCA",
+          c: " credentials",
+        },
+        form: {
+          usernameLabel: "Email",
+          usernamePlaceholder: "you@example.com",
+          passwordLabel: "Password",
+          passwordPlaceholder: "Password",
+          loginButton: "Log in",
+          errorMessage: "Login failed.",
+        },
+      },
+    },
+  },
   Units: {
     Kwh: {
       short: "kWh",

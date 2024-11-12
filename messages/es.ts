@@ -235,6 +235,26 @@ const translationsPlattformGeneric = {
       },
     },
   },
+  CircularityTool: {
+    sections: {
+      signin: {
+        title: "Índice de Circularidad eLCA",
+        subTitle: {
+          a: "Inicie sesión con sus ",
+          b: "credenciales eLCA",
+          c: "",
+        },
+        form: {
+          usernameLabel: "Correo electrónico",
+          usernamePlaceholder: "tu@ejemplo.com",
+          passwordLabel: "Contraseña",
+          passwordPlaceholder: "Contraseña",
+          loginButton: "Iniciar sesión",
+          errorMessage: "Error en el inicio de sesión.",
+        },
+      },
+    },
+  },
   Units: {
     Kwh: {
       short: "kwH",

@@ -10,7 +10,7 @@ const languages = [
   { code: "es", name: "Español" },
 ]
 
-const Dropdown = () => {
+const LanguageDropdown = () => {
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -63,4 +63,4 @@ const Dropdown = () => {
   )
 }
 
-export default Dropdown
+export default LanguageDropdown

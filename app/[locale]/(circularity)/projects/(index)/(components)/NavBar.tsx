@@ -5,6 +5,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import { FC } from "react"
 import { twMerge } from "tailwind-merge"
 import NavBarProfileDropdown from "app/[locale]/(circularity)/(components)/NavBarProfileDropdown"
+import LanguageDropdown from "app/(components)/LanguageDropdown"
 
 const NavBar: FC = () => {
   return (
@@ -29,6 +30,7 @@ const NavBar: FC = () => {
 
               {/* Right Side: Notifications and Profile */}
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                <LanguageDropdown />
                 {/* Profile Dropdown */}
                 <NavBarProfileDropdown />
               </div>

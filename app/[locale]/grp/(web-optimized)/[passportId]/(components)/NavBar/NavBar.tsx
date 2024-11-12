@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { twMerge } from "tailwind-merge"
-import Dropdown from "./Dropdown"
+import LanguageDropdown from "app/(components)/LanguageDropdown"
 
 interface NavbarProps {
   passportId: string
@@ -57,7 +57,7 @@ export default function Navbar({ passportId }: NavbarProps) {
                   })}
                 </div>
               </div>
-              <Dropdown />
+              <LanguageDropdown />
             </div>
           </div>
         </>

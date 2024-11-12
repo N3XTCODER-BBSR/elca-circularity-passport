@@ -1,29 +1,24 @@
 import { expect, test } from "@playwright/test"
 
-test("should display central building information when opening passport page with existing passportId", async ({
-  page,
-}) => {
-  const username = "username"
-  const password = "password"
-  await page.goto(`http://${username}:${password}@localhost:3000/42d42e5b-5340-4657`)
-
-  // enter username and password for basic htaccess authentication here
+test("should display not found message when opening passport page with non-existing passportId", async ({ page }) => {
+  await page.goto(`http://localhost:3000/grp/000`)
 
   const header = await page.$("h1")
   const headerText = await header?.innerText()
 
-  expect(headerText).toBe("Ressourcenpass für Gebäude")
+  expect(headerText).toBe("Passport not found")
 })
 
-test("should display central building information when opening passport page with existing passportId", async ({
-  page,
-}) => {
-  const username = "username"
-  const password = "password"
-  await page.goto(`http://${username}:${password}@localhost:3000/42d42e5b-5340-4657`)
+// TODO: fix test. should use existing uuid, which is randomly set with each db seed
+// test("should display central building information when opening passport page with existing passportId", async ({
+//   page,
+// }) => {
+//   const username = "username"
+//   const password = "password"
+//   await page.goto(`http://${username}:${password}@localhost:3000/grp`)
 
-  const header = await page.$("h1")
-  const headerText = await header?.innerText()
+//   const header = await page.$("h1")
+//   const headerText = await header?.innerText()
 
-  expect(headerText).toBe("Ressourcenpass für Gebäude")
-})
+//   expect(headerText).toBe("Ressourcenpass für Gebäude")
+// })
