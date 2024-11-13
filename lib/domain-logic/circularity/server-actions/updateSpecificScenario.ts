@@ -1,11 +1,11 @@
 "use server"
 
-import { TBs_ProductDefinitionEOLCategoryScenario } from "@prisma/client"
 import { getServerSession } from "next-auth"
 import authOptions from "app/(utils)/authOptions"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
-import prisma from "prisma/prismaClient"
+import { prisma } from "prisma/prismaClient"
 import { getElcaComponentDataByLayerIdAndUserId } from "./utils/getElcaComponentDataByLayerIdAndUserId"
+import { TBs_ProductDefinitionEOLCategoryScenario } from "../../../../prisma/generated/client"
 
 export async function updateSpecificEolScenario(
   layerId: number,
