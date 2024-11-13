@@ -54,3 +54,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  legacy-db2:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=elca
+      - POSTGRES_USER=elca
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./legacy_db2_data:/var/lib/postgresql/data
