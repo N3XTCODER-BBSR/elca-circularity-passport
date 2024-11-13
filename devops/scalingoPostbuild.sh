@@ -8,7 +8,7 @@ export NEXTAUTH_URL="https://${APP}.${REGION_NAME}.scalingo.io"
 echo "NEXTAUTH_URL=${NEXTAUTH_URL}" >> .env
 echo "NEXTAUTH_URL=${NEXTAUTH_URL}"
 
-npx prisma migrate deploy
+npx prisma migrate reset --force
 npx next build
 
 if [ "${RUN_SEEDERS_ON_DEPLOY}" == "1" ] || [ "${RUN_SEEDERS_ON_DEPLOY}" == "true" ]; then
