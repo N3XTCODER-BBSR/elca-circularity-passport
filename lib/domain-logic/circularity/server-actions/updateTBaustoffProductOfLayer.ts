@@ -3,7 +3,7 @@
 import { getServerSession } from "next-auth"
 import authOptions from "app/(utils)/authOptions"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
-import prisma from "prisma/prismaClient"
+import { prisma } from "prisma/prismaClient"
 import { getElcaComponentDataByLayerIdAndUserId } from "./utils/getElcaComponentDataByLayerIdAndUserId"
 
 export async function updateTBaustoffProduct(
