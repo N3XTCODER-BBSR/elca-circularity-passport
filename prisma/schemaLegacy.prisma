@@ -1,0 +1,1705 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "./generated/client-legacy"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["bnb", "elca", "elca_cache", "import_assistant", "lcc", "nawoh", "public", "soda4lca", "stlb"]
+}
+
+model bnb_water {
+  project_id                         Int      @id
+  niederschlagsmenge                 Decimal? @db.Decimal
+  anzahl_personen                    Int?
+  sanitaer_waschtisch                Decimal? @db.Decimal
+  sanitaer_wc_spar                   Decimal? @db.Decimal
+  sanitaer_wc                        Decimal? @db.Decimal
+  sanitaer_urinal                    Decimal? @db.Decimal
+  sanitaer_dusche                    Decimal? @db.Decimal
+  sanitaer_teekueche                 Decimal? @db.Decimal
+  reinigung_sanitaer                 Decimal? @db.Decimal
+  reinigung_lobby                    Decimal? @db.Decimal
+  reinigung_verkehrsflaeche          Decimal? @db.Decimal
+  reinigung_buero                    Decimal? @db.Decimal
+  reinigung_keller                   Decimal? @db.Decimal
+  dach1_flaeche                      Decimal? @db.Decimal
+  dach1_ertragsbeiwert               Decimal? @db.Decimal
+  dach2_flaeche                      Decimal? @db.Decimal
+  dach2_ertragsbeiwert               Decimal? @db.Decimal
+  dach3_flaeche                      Decimal? @db.Decimal
+  dach3_ertragsbeiwert               Decimal? @db.Decimal
+  dach4_flaeche                      Decimal? @db.Decimal
+  dach4_ertragsbeiwert               Decimal? @db.Decimal
+  niederschlag_versickert            Decimal? @db.Decimal
+  niederschlag_genutzt               Decimal? @db.Decimal
+  brauchwasser                       Decimal? @db.Decimal
+  brauchwasser_gereinigt             Decimal? @db.Decimal
+  niederschlag_genutzt_ohne_wandlung Decimal? @db.Decimal
+  niederschlag_kanalisation          Decimal? @db.Decimal
+  projects                           projects @relation(fields: [project_id], references: [id], onDelete: Cascade)
+
+  @@map("water")
+  @@schema("bnb")
+}
+
+model assistant_elements {
+  id                     Int                      @id @default(autoincrement())
+  main_element_id        Int
+  project_variant_id     Int?
+  assistant_ident        String                   @db.VarChar(200)
+  config                 String?
+  is_reference           Boolean                  @default(false)
+  is_public              Boolean                  @default(false)
+  uuid                   String                   @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  owner_id               Int?
+  access_group_id        Int?
+  created                DateTime                 @default(now()) @db.Timestamptz(0)
+  modified               DateTime?                @default(now()) @db.Timestamptz(0)
+  groups                 groups?                  @relation(fields: [access_group_id], references: [id])
+  elements               elca_elements            @relation(fields: [main_element_id], references: [id], onDelete: Cascade)
+  users                  users?                   @relation(fields: [owner_id], references: [id])
+  project_variants       elca_project_variants?   @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+  assistant_sub_elements assistant_sub_elements[]
+
+  @@index([main_element_id], map: "ix_elca_assistant_elements_main_element_id")
+  @@index([project_variant_id], map: "ix_elca_assistant_elements_project_variant_id")
+  @@schema("elca")
+}
+
+model assistant_sub_elements {
+  element_id           Int
+  assistant_element_id Int
+  ident                String             @db.VarChar(200)
+  assistant_elements   assistant_elements @relation(fields: [assistant_element_id], references: [id], onDelete: Cascade)
+  elements             elca_elements      @relation(fields: [element_id], references: [id], onDelete: Cascade)
+
+  @@id([element_id, assistant_element_id])
+  @@schema("elca")
+}
+
+model benchmark_group_indicators {
+  group_id         Int
+  indicator_id     Int
+  benchmark_groups elca_benchmark_groups @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  indicators       elca_indicators       @relation(fields: [indicator_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([group_id, indicator_id])
+  @@schema("elca")
+}
+
+model elca_benchmark_group_thresholds {
+  id               Int                   @id @default(autoincrement())
+  group_id         Int
+  score            Int
+  caption          String
+  benchmark_groups elca_benchmark_groups @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("benchmark_group_thresholds")
+  @@schema("elca")
+}
+
+model elca_benchmark_groups {
+  id                         Int                               @id @default(autoincrement())
+  benchmark_version_id       Int
+  name                       String                            @db.VarChar(200)
+  benchmark_group_indicators benchmark_group_indicators[]
+  benchmark_group_thresholds elca_benchmark_group_thresholds[]
+  benchmark_versions         benchmark_versions                @relation(fields: [benchmark_version_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([benchmark_version_id, name])
+  @@map("benchmark_groups")
+  @@schema("elca")
+}
+
+model benchmark_life_cycle_usage_specifications {
+  id                   Int                @id @default(autoincrement())
+  benchmark_version_id Int
+  life_cycle_ident     String             @db.VarChar(20)
+  use_in_construction  Boolean
+  use_in_maintenance   Boolean
+  use_in_energy_demand Boolean
+  benchmark_versions   benchmark_versions @relation(fields: [benchmark_version_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "benchmark_life_cycle_usage_specificat_benchmark_version_id_fkey")
+
+  @@unique([benchmark_version_id, life_cycle_ident], map: "benchmark_life_cycle_usage_sp_benchmark_version_id_life_cyc_key")
+  @@schema("elca")
+}
+
+model benchmark_ref_construction_values {
+  benchmark_version_id Int
+  indicator_id         Int
+  value                Decimal?           @db.Decimal
+  benchmark_versions   benchmark_versions @relation(fields: [benchmark_version_id], references: [id], onDelete: Cascade)
+  indicators           elca_indicators    @relation(fields: [indicator_id], references: [id], onDelete: Cascade)
+
+  @@id([benchmark_version_id, indicator_id])
+  @@schema("elca")
+}
+
+model benchmark_ref_process_configs {
+  benchmark_version_id Int
+  ident                String             @db.VarChar(30)
+  process_config_id    Int
+  benchmark_versions   benchmark_versions @relation(fields: [benchmark_version_id], references: [id], onDelete: Cascade)
+  process_configs      process_configs    @relation(fields: [process_config_id], references: [id], onDelete: Cascade)
+
+  @@id([benchmark_version_id, ident])
+  @@schema("elca")
+}
+
+model benchmark_systems {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(150)
+  is_active          Boolean              @default(false)
+  description        String?
+  model_class        String               @db.VarChar(250)
+  benchmark_versions benchmark_versions[]
+
+  @@schema("elca")
+}
+
+model elca_benchmark_thresholds {
+  id                   Int                @id @default(autoincrement())
+  benchmark_version_id Int
+  indicator_id         Int
+  score                Int
+  value                Decimal            @db.Decimal
+  benchmark_versions   benchmark_versions @relation(fields: [benchmark_version_id], references: [id], onDelete: Cascade)
+  indicators           elca_indicators    @relation(fields: [indicator_id], references: [id], onDelete: Cascade)
+
+  @@unique([benchmark_version_id, indicator_id, score])
+  @@map("benchmark_thresholds")
+  @@schema("elca")
+}
+
+model benchmark_version_constr_classes {
+  id                   Int                @id @default(autoincrement())
+  benchmark_version_id Int
+  constr_class_id      Int
+  benchmark_versions   benchmark_versions @relation(fields: [benchmark_version_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  constr_classes       constr_classes     @relation(fields: [constr_class_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([benchmark_version_id, constr_class_id], map: "benchmark_version_constr_clas_benchmark_version_id_constr_c_key")
+  @@schema("elca")
+}
+
+model benchmark_versions {
+  id                                        Int                                         @id @default(autoincrement())
+  benchmark_system_id                       Int
+  name                                      String                                      @db.VarChar(150)
+  process_db_id                             Int?
+  is_active                                 Boolean                                     @default(false)
+  use_reference_model                       Boolean                                     @default(false)
+  project_life_time                         Int?
+  benchmark_groups                          elca_benchmark_groups[]
+  benchmark_life_cycle_usage_specifications benchmark_life_cycle_usage_specifications[]
+  benchmark_ref_construction_values         benchmark_ref_construction_values[]
+  benchmark_ref_process_configs             benchmark_ref_process_configs[]
+  benchmark_thresholds                      elca_benchmark_thresholds[]
+  benchmark_version_constr_classes          benchmark_version_constr_classes[]
+  benchmark_systems                         benchmark_systems                           @relation(fields: [benchmark_system_id], references: [id], onDelete: Cascade)
+  process_dbs                               process_dbs?                                @relation(fields: [process_db_id], references: [id], onDelete: Cascade)
+  projects                                  projects[]
+  llc_benchmark_groups                      lcc_benchmark_groups[]
+  llc_benchmark_thresholds                  lcc_benchmark_thresholds[]
+
+  @@index([process_db_id], map: "ix_elca_benchmark_versions_process_db_id")
+  @@schema("elca")
+}
+
+model composite_elements {
+  composite_element_id                                       Int
+  element_id                                                 Int
+  position                                                   Int
+  elements_composite_elements_composite_element_idToelements elca_elements @relation("composite_elements_composite_element_idToelements", fields: [composite_element_id], references: [id], onDelete: Cascade)
+  elements_composite_elements_element_idToelements           elca_elements @relation("composite_elements_element_idToelements", fields: [element_id], references: [id], onDelete: Cascade)
+
+  @@id([composite_element_id, position])
+  @@index([composite_element_id, element_id], map: "ix_elca_composite_elements_composite_element_id_element_id")
+  @@schema("elca")
+}
+
+model constr_catalogs {
+  id                      Int                       @id @default(autoincrement())
+  name                    String                    @db.VarChar(250)
+  ident                   String?                   @db.VarChar(100)
+  element_constr_catalogs element_constr_catalogs[]
+  project_constructions   project_constructions[]
+
+  @@schema("elca")
+}
+
+model constr_classes {
+  id                               Int                                @id @default(autoincrement())
+  name                             String
+  ref_num                          Int                                @unique
+  benchmark_version_constr_classes benchmark_version_constr_classes[]
+  projects                         projects[]
+
+  @@schema("elca")
+}
+
+model constr_designs {
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @db.VarChar(250)
+  ident                  String?                  @db.VarChar(100)
+  element_constr_designs element_constr_designs[]
+  project_constructions  project_constructions[]
+
+  @@schema("elca")
+}
+
+model element_attributes {
+  id            Int           @id(map: "element_attributes_new_pkey") @default(autoincrement())
+  element_id    Int
+  ident         String        @db.VarChar(150)
+  caption       String        @db.VarChar(150)
+  numeric_value Decimal?      @db.Decimal
+  text_value    String?
+  elements      elca_elements @relation(fields: [element_id], references: [id], onDelete: Cascade, map: "element_attributes_new_element_id_fkey")
+
+  @@unique([element_id, ident], map: "element_attributes_new_element_id_ident_key")
+  @@schema("elca")
+}
+
+model element_component_attributes {
+  id                   Int                     @id @default(autoincrement())
+  element_component_id Int
+  ident                String                  @db.VarChar(150)
+  numeric_value        Decimal?                @db.Decimal
+  text_value           String?
+  element_components   elca_element_components @relation(fields: [element_component_id], references: [id], onDelete: Cascade)
+
+  @@unique([element_component_id, ident])
+  @@schema("elca")
+}
+
+model elca_element_components {
+  id                                  Int                                   @id @default(autoincrement())
+  element_id                          Int
+  process_config_id                   Int
+  quantity                            Decimal                               @default(1) @db.Decimal
+  process_conversion_id               Int
+  life_time                           Int
+  calc_lca                            Boolean                               @default(true)
+  is_layer                            Boolean
+  layer_position                      Int?
+  layer_size                          Decimal?                              @db.Decimal
+  layer_sibling_id                    Int?
+  layer_area_ratio                    Decimal?                              @default(1) @db.Decimal
+  created                             DateTime                              @default(now()) @db.Timestamptz(0)
+  modified                            DateTime?                             @default(now()) @db.Timestamptz(0)
+  layer_length                        Decimal?                              @default(1) @db.Decimal
+  layer_width                         Decimal?                              @default(1) @db.Decimal
+  is_extant                           Boolean                               @default(false)
+  life_time_delay                     Int                                   @default(0)
+  life_time_info                      String?                               @db.VarChar(200)
+  selfusedelectricitypercent          Decimal?                              @db.Decimal
+  element_component_attributes        element_component_attributes[]
+  elements                            elca_elements                         @relation(fields: [element_id], references: [id], onDelete: Cascade)
+  element_components                  elca_element_components?              @relation("element_componentsToelement_components", fields: [layer_sibling_id], references: [id])
+  other_element_components            elca_element_components[]             @relation("element_componentsToelement_components")
+  process_configs                     process_configs                       @relation(fields: [process_config_id], references: [id], onDelete: Cascade)
+  process_conversions                 process_conversions                   @relation(fields: [process_conversion_id], references: [id])
+  elca_cache_element_components       elca_cache_element_components?
+  element_component_cost_progressions element_component_cost_progressions[]
+  element_component_costs             element_component_costs?
+
+  @@index([element_id, is_layer], map: "ix_elca_element_components_element_id_is_layer")
+  @@map("element_components")
+  @@schema("elca")
+}
+
+model element_constr_catalogs {
+  element_id        Int
+  constr_catalog_id Int
+  constr_catalogs   constr_catalogs @relation(fields: [constr_catalog_id], references: [id], onDelete: Cascade)
+  elements          elca_elements   @relation(fields: [element_id], references: [id], onDelete: Cascade)
+
+  @@id([element_id, constr_catalog_id])
+  @@schema("elca")
+}
+
+model element_constr_designs {
+  element_id       Int
+  constr_design_id Int
+  constr_designs   constr_designs @relation(fields: [constr_design_id], references: [id], onDelete: Cascade)
+  elements         elca_elements  @relation(fields: [element_id], references: [id], onDelete: Cascade)
+
+  @@id([element_id, constr_design_id])
+  @@schema("elca")
+}
+
+model elca_element_types {
+  node_id                Int                        @id
+  name                   String                     @db.VarChar(200)
+  description            String?
+  din_code               Int?
+  is_constructional      Boolean?
+  pref_inclination       Int?
+  pref_has_element_image Boolean                    @default(false)
+  is_opaque              Boolean?
+  pref_ref_unit          String?                    @db.VarChar(10)
+  nested_nodes           nested_nodes               @relation(fields: [node_id], references: [id], onDelete: Cascade)
+  elements               elca_elements[]
+  element_types          elca_cache_element_types[]
+
+  @@map("element_types")
+  @@schema("elca")
+}
+
+model elca_elements {
+  id                                                                   Int                         @id @default(autoincrement())
+  element_type_node_id                                                 Int
+  name                                                                 String                      @db.VarChar(250)
+  description                                                          String?
+  is_reference                                                         Boolean                     @default(false)
+  access_group_id                                                      Int?
+  project_variant_id                                                   Int?
+  quantity                                                             Decimal?                    @db.Decimal
+  ref_unit                                                             String?                     @db.VarChar(10)
+  copy_of_element_id                                                   Int?
+  owner_id                                                             Int?
+  created                                                              DateTime                    @default(now()) @db.Timestamptz(0)
+  modified                                                             DateTime?                   @default(now()) @db.Timestamptz(0)
+  is_composite                                                         Boolean                     @default(false)
+  uuid                                                                 String                      @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  is_public                                                            Boolean                     @default(false)
+  assistant_elements                                                   assistant_elements[]
+  assistant_sub_elements                                               assistant_sub_elements[]
+  composite_elements_composite_elements_composite_element_idToelements composite_elements[]        @relation("composite_elements_composite_element_idToelements")
+  composite_elements_composite_elements_element_idToelements           composite_elements[]        @relation("composite_elements_element_idToelements")
+  element_attributes                                                   element_attributes[]
+  element_components                                                   elca_element_components[]
+  element_constr_catalogs                                              element_constr_catalogs[]
+  element_constr_designs                                               element_constr_designs[]
+  groups                                                               groups?                     @relation(fields: [access_group_id], references: [id])
+  elements                                                             elca_elements?              @relation("elementsToelements", fields: [copy_of_element_id], references: [id])
+  other_elements                                                       elca_elements[]             @relation("elementsToelements")
+  element_types                                                        elca_element_types          @relation(fields: [element_type_node_id], references: [node_id], onDelete: Cascade)
+  users                                                                users?                      @relation(fields: [owner_id], references: [id])
+  project_variants                                                     elca_project_variants?      @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+  elca_cache_elements                                                  elca_cache_elements?
+  element_cost_progressions                                            element_cost_progressions[]
+  element_costs                                                        element_costs?
+
+  @@index([element_type_node_id, project_variant_id], map: "ix_elca_elements_element_type_node_id_project_variant_id")
+  @@map("elements")
+  @@schema("elca")
+}
+
+model ifc_project {
+  ifc_project_id Int      @id @default(autoincrement())
+  projects_id    Int
+  created        DateTime @default(now()) @db.Timestamptz(0)
+
+  @@schema("elca")
+}
+
+model elca_indicators {
+  id                                Int                                 @id @db.SmallInt
+  name                              String                              @db.VarChar(150)
+  ident                             String                              @db.VarChar(20)
+  unit                              String                              @db.VarChar(50)
+  is_excluded                       Boolean                             @default(false)
+  p_order                           Int?                                @db.SmallInt
+  description                       String?
+  uuid                              String?                             @unique @db.Uuid
+  is_en15804_compliant              Boolean                             @default(false)
+  is_hidden                         Boolean                             @default(false)
+  is_a2_compliant                   Boolean                             @default(false)
+  is_hidden_a2                      Boolean                             @default(true)
+  p_ordera2                         Int?                                @db.SmallInt
+  benchmark_group_indicators        benchmark_group_indicators[]
+  benchmark_ref_construction_values benchmark_ref_construction_values[]
+  benchmark_thresholds              elca_benchmark_thresholds[]
+  process_indicators                process_indicators[]
+  project_indicator_benchmarks      project_indicator_benchmarks[]
+  indicators                        elca_cache_indicators[]             @ignore
+
+  @@map("indicators")
+  @@schema("elca")
+}
+
+model life_cycles {
+  ident       String                  @id @db.VarChar(20)
+  name        String                  @db.VarChar(150)
+  phase       String                  @db.VarChar(50)
+  p_order     Int?                    @db.SmallInt
+  description String?
+  processes   elca_processes[]
+  indicators  elca_cache_indicators[] @ignore
+
+  @@schema("elca")
+}
+
+model process_categories {
+  node_id         Int               @id
+  name            String            @db.VarChar(150)
+  ref_num         String?           @db.VarChar(50)
+  svg_pattern_id  Int?
+  nested_nodes    nested_nodes      @relation(fields: [node_id], references: [id], onDelete: Cascade)
+  svg_patterns    svg_patterns?     @relation(fields: [svg_pattern_id], references: [id])
+  process_configs process_configs[]
+  processes       elca_processes[]
+
+  @@schema("elca")
+}
+
+model process_config_attributes {
+  id                Int             @id @default(autoincrement())
+  process_config_id Int
+  ident             String          @db.VarChar(150)
+  numeric_value     Decimal?        @db.Decimal
+  text_value        String?
+  process_configs   process_configs @relation(fields: [process_config_id], references: [id], onDelete: Cascade)
+
+  @@unique([process_config_id, ident])
+  @@schema("elca")
+}
+
+model process_config_names {
+  process_config_id Int
+  lang              String          @db.VarChar(3)
+  name              String          @db.VarChar(250)
+  created           DateTime        @default(now()) @db.Timestamptz(0)
+  modified          DateTime?       @default(now()) @db.Timestamptz(0)
+  process_configs   process_configs @relation(fields: [process_config_id], references: [id], onDelete: Cascade)
+
+  @@id([process_config_id, lang])
+  @@schema("elca")
+}
+
+model process_config_sanities {
+  id                Int             @id @default(autoincrement())
+  process_config_id Int
+  status            String          @db.VarChar(50)
+  process_db_id     Int?
+  details           String?
+  is_false_positive Boolean         @default(false)
+  created           DateTime        @default(now()) @db.Timestamptz(0)
+  modified          DateTime?       @db.Timestamptz(0)
+  process_configs   process_configs @relation(fields: [process_config_id], references: [id], onDelete: Cascade)
+  process_dbs       process_dbs?    @relation(fields: [process_db_id], references: [id], onDelete: Cascade)
+
+  @@unique([process_config_id, status, process_db_id])
+  @@index([process_db_id], map: "ix_elca_process_config_sanities_process_db_id")
+  @@schema("elca")
+}
+
+model process_config_variants {
+  process_config_id                                                                   Int
+  uuid                                                                                String           @db.Uuid
+  name                                                                                String           @db.VarChar(250)
+  ref_value                                                                           Decimal          @default(1) @db.Decimal
+  ref_unit                                                                            String           @db.VarChar(10)
+  is_vendor_specific                                                                  Boolean          @default(false)
+  specific_process_config_id                                                          Int?
+  process_configs_process_config_variants_process_config_idToprocess_configs          process_configs  @relation("process_config_variants_process_config_idToprocess_configs", fields: [process_config_id], references: [id], onDelete: Cascade)
+  process_configs_process_config_variants_specific_process_config_idToprocess_configs process_configs? @relation("process_config_variants_specific_process_config_idToprocess_configs", fields: [specific_process_config_id], references: [id])
+
+  @@id([process_config_id, uuid])
+  @@schema("elca")
+}
+
+model process_configs {
+  id                                                                                          Int                              @id @default(autoincrement())
+  name                                                                                        String                           @db.VarChar(250)
+  process_category_node_id                                                                    Int
+  avg_life_time                                                                               Int?
+  density                                                                                     Decimal?                         @db.Decimal
+  thermal_conductivity                                                                        Decimal?                         @db.Decimal
+  thermal_resistance                                                                          Decimal?                         @db.Decimal
+  created                                                                                     DateTime                         @default(now()) @db.Timestamptz(0)
+  modified                                                                                    DateTime?                        @default(now()) @db.Timestamptz(0)
+  is_reference                                                                                Boolean                          @default(true)
+  f_hs_hi                                                                                     Decimal?                         @db.Decimal
+  min_life_time                                                                               Int?
+  max_life_time                                                                               Int?
+  life_time_info                                                                              String?
+  avg_life_time_info                                                                          String?
+  min_life_time_info                                                                          String?
+  max_life_time_info                                                                          String?
+  uuid                                                                                        String                           @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  svg_pattern_id                                                                              Int?
+  is_stale                                                                                    Boolean                          @default(false)
+  description                                                                                 String?
+  default_size                                                                                Decimal?                         @db.Decimal
+  waste_code                                                                                  Int?
+  waste_code_suffix                                                                           Int?
+  lambda_value                                                                                Decimal?                         @db.Decimal
+  element_group_a                                                                             Boolean?
+  element_group_b                                                                             Boolean?
+  element_district_heating                                                                    Boolean?
+  element_refrigerant                                                                         Boolean?
+  element_flammable                                                                           Boolean?
+  benchmark_ref_process_configs                                                               benchmark_ref_process_configs[]
+  element_components                                                                          elca_element_components[]
+  process_config_attributes                                                                   process_config_attributes[]
+  process_config_names                                                                        process_config_names[]
+  process_config_sanities                                                                     process_config_sanities[]
+  process_config_variants_process_config_variants_process_config_idToprocess_configs          process_config_variants[]        @relation("process_config_variants_process_config_idToprocess_configs")
+  process_config_variants_process_config_variants_specific_process_config_idToprocess_configs process_config_variants[]        @relation("process_config_variants_specific_process_config_idToprocess_configs")
+  process_categories                                                                          process_categories               @relation(fields: [process_category_node_id], references: [node_id], onDelete: Cascade)
+  svg_patterns                                                                                svg_patterns?                    @relation(fields: [svg_pattern_id], references: [id])
+  process_conversions                                                                         process_conversions[]
+  process_life_cycle_assignments                                                              process_life_cycle_assignments[]
+  process_scenarios                                                                           process_scenarios[]
+  project_final_energy_demands                                                                project_final_energy_demands[]
+  project_final_energy_supplies                                                               project_final_energy_supplies[]
+  project_transport_means                                                                     project_transport_means[]
+  project_transports                                                                          project_transports[]
+  process_config_mapping                                                                      process_config_mapping[]
+
+  @@schema("elca")
+}
+
+model process_conversion_audit {
+  id                Int       @id @default(autoincrement())
+  process_config_id Int
+  process_db_id     Int
+  conversion_id     Int
+  in_unit           String?   @db.VarChar(10)
+  out_unit          String?   @db.VarChar(10)
+  factor            Decimal?  @db.Decimal
+  ident             String?   @db.VarChar(20)
+  old_in_unit       String?   @db.VarChar(10)
+  old_out_unit      String?   @db.VarChar(10)
+  old_factor        Decimal?  @db.Decimal
+  old_ident         String?   @db.VarChar(20)
+  modified          DateTime? @default(now()) @db.Timestamptz(0)
+  modified_by       String?   @db.VarChar(200)
+  flow_uuid         String?   @db.Uuid
+  flow_version      String?   @db.VarChar(50)
+  old_flow_uuid     String?   @db.Uuid
+  old_flow_version  String?   @db.VarChar(50)
+
+  @@schema("elca")
+}
+
+model process_conversion_versions {
+  conversion_id       Int
+  process_db_id       Int
+  factor              Decimal             @db.Decimal
+  ident               String?             @db.VarChar(20)
+  created             DateTime            @default(now()) @db.Timestamptz(0)
+  modified            DateTime?           @default(now()) @db.Timestamptz(0)
+  flow_uuid           String?             @db.Uuid
+  flow_version        String?             @db.VarChar(50)
+  process_conversions process_conversions @relation(fields: [conversion_id], references: [id], onDelete: Cascade)
+  process_dbs         process_dbs         @relation(fields: [process_db_id], references: [id], onDelete: Cascade)
+
+  @@id([conversion_id, process_db_id])
+  @@schema("elca")
+}
+
+model process_conversions {
+  id                          Int                           @id @default(autoincrement())
+  process_config_id           Int
+  in_unit                     String                        @db.VarChar(10)
+  out_unit                    String                        @db.VarChar(10)
+  created                     DateTime                      @default(now()) @db.Timestamptz(0)
+  modified                    DateTime?                     @default(now()) @db.Timestamptz(0)
+  element_components          elca_element_components[]
+  process_conversion_versions process_conversion_versions[]
+  process_configs             process_configs               @relation(fields: [process_config_id], references: [id], onDelete: Cascade)
+
+  @@unique([process_config_id, in_unit, out_unit], map: "ix_elca_process_conversions_in_out")
+  @@schema("elca")
+}
+
+model process_dbs {
+  id                          Int                           @id @default(autoincrement())
+  name                        String                        @db.VarChar(150)
+  version                     String?                       @db.VarChar(50)
+  created                     DateTime                      @default(now()) @db.Timestamptz(0)
+  modified                    DateTime?                     @default(now()) @db.Timestamptz(0)
+  uuid                        String                        @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  source_uri                  String?                       @db.VarChar(250)
+  is_active                   Boolean                       @default(false)
+  is_en15804_compliant        Boolean                       @default(true)
+  is_a2_compliant             Boolean                       @default(false)
+  benchmark_versions          benchmark_versions[]
+  process_config_sanities     process_config_sanities[]
+  process_conversion_versions process_conversion_versions[]
+  processes                   elca_processes[]
+  projects                    projects[]
+  process_config_mapping      process_config_mapping[]
+  imports                     imports[]
+
+  @@unique([uuid, is_a2_compliant], map: "process_dbs_uuid_is_a2_compliant")
+  @@schema("elca")
+}
+
+model process_indicators {
+  id               Int             @id @default(autoincrement())
+  process_id       Int
+  indicator_id     Int             @db.SmallInt
+  value            Decimal         @db.Decimal
+  old_indicator_id Int?
+  indicators       elca_indicators @relation(fields: [indicator_id], references: [id], onDelete: Cascade)
+  processes        elca_processes  @relation(fields: [process_id], references: [id], onDelete: Cascade)
+
+  @@unique([process_id, indicator_id])
+  @@schema("elca")
+}
+
+model process_life_cycle_assignments {
+  id                Int             @id @default(autoincrement())
+  process_config_id Int
+  process_id        Int
+  ratio             Decimal         @db.Decimal
+  created           DateTime        @default(now()) @db.Timestamptz(0)
+  modified          DateTime?       @default(now()) @db.Timestamptz(0)
+  process_configs   process_configs @relation(fields: [process_config_id], references: [id], onDelete: Cascade)
+  processes         elca_processes  @relation(fields: [process_id], references: [id], onDelete: Cascade)
+
+  @@schema("elca")
+}
+
+model process_names {
+  process_id Int
+  lang       String         @db.VarChar(3)
+  name       String         @db.VarChar(250)
+  created    DateTime       @default(now()) @db.Timestamptz(0)
+  modified   DateTime?      @default(now()) @db.Timestamptz(0)
+  processes  elca_processes @relation(fields: [process_id], references: [id], onDelete: Cascade)
+
+  @@id([process_id, lang])
+  @@schema("elca")
+}
+
+model process_scenarios {
+  id                Int              @id @default(autoincrement())
+  process_config_id Int
+  ident             String           @db.VarChar(250)
+  group_ident       String?          @db.VarChar(250)
+  is_default        Boolean          @default(false)
+  description       String?
+  process_configs   process_configs  @relation(fields: [process_config_id], references: [id], onDelete: Cascade)
+  processes         elca_processes[]
+
+  @@unique([process_config_id, ident])
+  @@schema("elca")
+}
+
+model elca_processes {
+  id                              Int                              @id @default(autoincrement())
+  process_db_id                   Int
+  process_category_node_id        Int
+  name                            String                           @db.VarChar(250)
+  uuid                            String                           @db.Uuid
+  version                         String?                          @db.VarChar(50)
+  life_cycle_ident                String                           @db.VarChar(20)
+  ref_value                       Decimal                          @default(1) @db.Decimal
+  ref_unit                        String                           @db.VarChar(10)
+  created                         DateTime                         @default(now()) @db.Timestamptz(0)
+  modified                        DateTime?                        @default(now()) @db.Timestamptz(0)
+  name_orig                       String                           @db.VarChar(250)
+  description                     String?
+  date_of_last_revision           DateTime?                        @db.Timestamptz(0)
+  scenario_id                     Int?
+  epd_type                        String?                          @db.VarChar(30)
+  geographical_representativeness String?                          @db.VarChar(10)
+  process_indicators              process_indicators[]
+  process_life_cycle_assignments  process_life_cycle_assignments[]
+  process_names                   process_names[]
+  life_cycles                     life_cycles                      @relation(fields: [life_cycle_ident], references: [ident], onDelete: Cascade)
+  process_categories              process_categories               @relation(fields: [process_category_node_id], references: [node_id], onDelete: Cascade)
+  process_dbs                     process_dbs                      @relation(fields: [process_db_id], references: [id], onDelete: Cascade)
+  process_scenarios               process_scenarios?               @relation(fields: [scenario_id], references: [id])
+  indicators                      elca_cache_indicators[]          @ignore
+
+  @@unique([process_db_id, uuid, life_cycle_ident, scenario_id])
+  @@index([process_db_id], map: "ix_elca_processes_process_db_id")
+  @@map("processes")
+  @@schema("elca")
+}
+
+model project_access_tokens {
+  token        String    @id @db.Uuid
+  project_id   Int
+  user_id      Int?
+  user_email   String    @db.VarChar(200)
+  can_edit     Boolean   @default(false)
+  is_confirmed Boolean   @default(false)
+  created      DateTime  @default(now()) @db.Timestamptz(0)
+  modified     DateTime? @default(now()) @db.Timestamptz(0)
+  projects     projects  @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users        users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([project_id, user_id])
+  @@schema("elca")
+}
+
+model project_attributes {
+  id            Int      @id @default(autoincrement())
+  project_id    Int
+  ident         String   @db.VarChar(150)
+  caption       String   @db.VarChar(150)
+  numeric_value Decimal? @db.Decimal
+  text_value    String?
+  projects      projects @relation(fields: [project_id], references: [id], onDelete: Cascade)
+
+  @@unique([project_id, ident])
+  @@schema("elca")
+}
+
+model project_constructions {
+  project_variant_id    Int                   @id
+  constr_catalog_id     Int?
+  constr_design_id      Int?
+  gross_floor_space     Decimal?              @db.Decimal
+  net_floor_space       Decimal?              @db.Decimal
+  floor_space           Decimal?              @db.Decimal
+  property_size         Decimal?              @db.Decimal
+  is_extant_building    Boolean               @default(false)
+  living_space          Decimal?              @db.Decimal
+  net_room_space_heated Int?
+  constr_catalogs       constr_catalogs?      @relation(fields: [constr_catalog_id], references: [id])
+  constr_designs        constr_designs?       @relation(fields: [constr_design_id], references: [id])
+  project_variants      elca_project_variants @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+
+  @@schema("elca")
+}
+
+model project_en_ev {
+  project_variant_id Int                   @id
+  ngf                Decimal               @db.Decimal
+  version            Int?
+  unit_demand        Int                   @default(0) @db.SmallInt
+  unit_supply        Int                   @default(0) @db.SmallInt
+  refspacenrf        Decimal?              @db.Decimal
+  pvselfused         Decimal?              @db.Decimal
+  project_variants   elca_project_variants @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+
+  @@schema("elca")
+}
+
+model project_final_energy_demands {
+  id                   Int                   @id @default(autoincrement())
+  project_variant_id   Int
+  process_config_id    Int
+  heating              Decimal?              @db.Decimal
+  water                Decimal?              @db.Decimal
+  lighting             Decimal?              @db.Decimal
+  ventilation          Decimal?              @db.Decimal
+  cooling              Decimal?              @db.Decimal
+  ident                String?               @db.VarChar(30)
+  ratio                Decimal               @default(1) @db.Decimal
+  kwk_id               Int?
+  project_kwks         project_kwks?         @relation(fields: [kwk_id], references: [id], onDelete: Cascade)
+  process_configs      process_configs       @relation(fields: [process_config_id], references: [id], onDelete: Cascade)
+  project_variants     elca_project_variants @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+  final_energy_demands final_energy_demands?
+
+  @@schema("elca")
+}
+
+model project_final_energy_ref_models {
+  id                      Int                      @id @default(autoincrement())
+  project_variant_id      Int
+  ident                   String                   @db.VarChar(30)
+  heating                 Decimal?                 @db.Decimal
+  water                   Decimal?                 @db.Decimal
+  lighting                Decimal?                 @db.Decimal
+  ventilation             Decimal?                 @db.Decimal
+  cooling                 Decimal?                 @db.Decimal
+  project_variants        elca_project_variants    @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+  final_energy_ref_models final_energy_ref_models?
+
+  @@unique([project_variant_id, ident])
+  @@schema("elca")
+}
+
+model project_final_energy_supplies {
+  id                    Int                    @id @default(autoincrement())
+  project_variant_id    Int
+  process_config_id     Int
+  en_ev_ratio           Decimal                @default(1) @db.Decimal
+  quantity              Decimal                @db.Decimal
+  description           String
+  process_configs       process_configs        @relation(fields: [process_config_id], references: [id], onDelete: Cascade)
+  project_variants      elca_project_variants  @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+  final_energy_supplies final_energy_supplies?
+
+  @@schema("elca")
+}
+
+model project_indicator_benchmarks {
+  project_variant_id Int
+  indicator_id       Int
+  benchmark          Int
+  indicators         elca_indicators       @relation(fields: [indicator_id], references: [id], onDelete: Cascade)
+  project_variants   elca_project_variants @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+
+  @@id([project_variant_id, indicator_id])
+  @@schema("elca")
+}
+
+model project_kwks {
+  id                           Int                            @id @default(autoincrement())
+  project_variant_id           Int
+  name                         String                         @db.VarChar(250)
+  heating                      Decimal?                       @db.Decimal
+  water                        Decimal?                       @db.Decimal
+  project_final_energy_demands project_final_energy_demands[]
+  project_variants             elca_project_variants          @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+
+  @@schema("elca")
+}
+
+model project_life_cycle_usages {
+  id                   Int      @id @default(autoincrement())
+  project_id           Int
+  life_cycle_ident     String   @db.VarChar(20)
+  use_in_construction  Boolean
+  use_in_maintenance   Boolean
+  use_in_energy_demand Boolean
+  projects             projects @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([project_id, life_cycle_ident])
+  @@schema("elca")
+}
+
+model project_locations {
+  project_variant_id Int                   @id
+  street             String?               @db.VarChar(250)
+  postcode           String?               @db.VarChar(10)
+  city               String?               @db.VarChar(250)
+  country            String?               @db.VarChar(250)
+  geo_location       Unsupported("point")?
+  project_variants   elca_project_variants @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+
+  @@schema("elca")
+}
+
+model project_phases {
+  id               Int                     @id @default(autoincrement())
+  name             String                  @db.VarChar(200)
+  ident            String?                 @db.VarChar(100)
+  constr_measure   Int                     @db.SmallInt
+  step             Int                     @default(1)
+  project_variants elca_project_variants[]
+
+  @@schema("elca")
+}
+
+model project_qng_base {
+  project_variant_id    Int                   @id
+  projektdataqngactive  Boolean               @default(false)
+  projektdataqngpercent Int                   @default(0) @db.SmallInt
+  project_variants      elca_project_variants @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+
+  @@schema("elca")
+}
+
+model project_transport_means {
+  id                   Int                @id @default(autoincrement())
+  project_transport_id Int
+  process_config_id    Int
+  distance             Decimal            @db.Decimal
+  efficiency           Decimal            @default(1) @db.Decimal
+  process_configs      process_configs    @relation(fields: [process_config_id], references: [id], onDelete: Cascade)
+  project_transports   project_transports @relation(fields: [project_transport_id], references: [id], onDelete: Cascade)
+  transport_means      transport_means?
+
+  @@schema("elca")
+}
+
+model project_transports {
+  id                      Int                       @id @default(autoincrement())
+  project_variant_id      Int
+  name                    String                    @db.VarChar(200)
+  quantity                Decimal                   @db.Decimal
+  process_config_id       Int?
+  calc_lca                Boolean                   @default(false)
+  project_transport_means project_transport_means[]
+  process_configs         process_configs?          @relation(fields: [process_config_id], references: [id])
+  project_variants        elca_project_variants     @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+
+  @@schema("elca")
+}
+
+model project_variant_attributes {
+  id                 Int                   @id @default(autoincrement())
+  project_variant_id Int
+  ident              String                @db.VarChar(150)
+  caption            String                @db.VarChar(150)
+  numeric_value      Decimal?              @db.Decimal
+  text_value         String?
+  project_variants   elca_project_variants @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+
+  @@unique([project_variant_id, ident])
+  @@schema("elca")
+}
+
+model elca_project_variants {
+  id                                                     Int                               @id @default(autoincrement())
+  project_id                                             Int
+  phase_id                                               Int
+  name                                                   String                            @db.VarChar(250)
+  description                                            String?
+  created                                                DateTime                          @default(now()) @db.Timestamptz(0)
+  modified                                               DateTime?                         @default(now()) @db.Timestamptz(0)
+  assistant_elements                                     assistant_elements[]
+  elements                                               elca_elements[]
+  project_constructions                                  project_constructions?
+  project_en_ev                                          project_en_ev?
+  project_final_energy_demands                           project_final_energy_demands[]
+  project_final_energy_ref_models                        project_final_energy_ref_models[]
+  project_final_energy_supplies                          project_final_energy_supplies[]
+  project_indicator_benchmarks                           project_indicator_benchmarks[]
+  project_kwks                                           project_kwks[]
+  project_locations                                      project_locations?
+  project_qng_base                                       project_qng_base?
+  project_transports                                     project_transports[]
+  project_variant_attributes                             project_variant_attributes[]
+  project_phases                                         project_phases                    @relation(fields: [phase_id], references: [id], onDelete: Cascade)
+  projects_project_variants_project_idToprojects         projects                          @relation("project_variants_project_idToprojects", fields: [project_id], references: [id], onDelete: Cascade)
+  projects_projects_current_variant_idToproject_variants projects[]                        @relation("projects_current_variant_idToproject_variants")
+  element_types                                          elca_cache_element_types[]
+  project_variants                                       elca_cache_project_variants?
+  project_cost_progressions                              project_cost_progressions[]
+  project_costs                                          project_costs[]
+  project_totals                                         project_totals[]
+  project_versions                                       project_versions[]
+
+  @@map("project_variants")
+  @@schema("elca")
+}
+
+model projects {
+  id                                                             Int                         @id @default(autoincrement())
+  process_db_id                                                  Int
+  current_variant_id                                             Int?
+  access_group_id                                                Int
+  name                                                           String                      @db.VarChar(250)
+  description                                                    String?
+  project_nr                                                     String?                     @db.VarChar(200)
+  constr_measure                                                 Int                         @default(0) @db.SmallInt
+  life_time                                                      Int
+  created                                                        DateTime                    @default(now()) @db.Timestamptz(0)
+  modified                                                       DateTime?                   @default(now()) @db.Timestamptz(0)
+  constr_class_id                                                Int?
+  editor                                                         String?                     @db.VarChar(250)
+  is_reference                                                   Boolean                     @default(false)
+  benchmark_version_id                                           Int?
+  password                                                       String?                     @db.VarChar(60)
+  owner_id                                                       Int
+  assessment_system_id                                           Int?
+  din277_version                                                 Int?
+  water                                                          bnb_water?
+  project_access_tokens                                          project_access_tokens[]
+  project_attributes                                             project_attributes[]
+  project_life_cycle_usages                                      project_life_cycle_usages[]
+  project_variants_project_variants_project_idToprojects         elca_project_variants[]     @relation("project_variants_project_idToprojects")
+  groups                                                         groups                      @relation(fields: [access_group_id], references: [id])
+  benchmark_versions                                             benchmark_versions?         @relation(fields: [benchmark_version_id], references: [id])
+  constr_classes                                                 constr_classes?             @relation(fields: [constr_class_id], references: [id])
+  project_variants_projects_current_variant_idToproject_variants elca_project_variants?      @relation("projects_current_variant_idToproject_variants", fields: [current_variant_id], references: [id])
+  users                                                          users                       @relation(fields: [owner_id], references: [id], onUpdate: NoAction)
+  process_dbs                                                    process_dbs                 @relation(fields: [process_db_id], references: [id], onDelete: Cascade)
+  items                                                          items[]
+  costs                                                          costs[]
+  nawoh_water                                                    nawoh_water?
+  elements                                                       stlb_elements[]
+
+  @@schema("elca")
+}
+
+model reports_pdf_queue {
+  pdf_queue_id       Int       @id @default(autoincrement())
+  user_id            Int
+  projects_id        Int
+  report_name        String    @db.VarChar(250)
+  projects_filename  String    @db.VarChar(250)
+  current_variant_id Int?
+  pdf_cmd            String?
+  created            DateTime  @default(now()) @db.Timestamptz(0)
+  ready              DateTime? @db.Timestamptz(0)
+  key                String    @unique @db.VarChar(50)
+
+  @@schema("elca")
+}
+
+model settings {
+  id            Int      @id @default(autoincrement())
+  section       String   @db.VarChar(250)
+  ident         String   @db.VarChar(250)
+  caption       String?  @db.VarChar(250)
+  numeric_value Decimal? @db.Decimal
+  text_value    String?
+  p_order       Int?
+
+  @@unique([section, ident])
+  @@schema("elca")
+}
+
+model svg_patterns {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(150)
+  width              Decimal              @db.Decimal
+  height             Decimal              @db.Decimal
+  description        String?
+  created            DateTime             @default(now()) @db.Timestamptz(0)
+  modified           DateTime?            @default(now()) @db.Timestamptz(0)
+  image_id           Int?
+  process_categories process_categories[]
+  process_configs    process_configs[]
+  media              media?               @relation(fields: [image_id], references: [id])
+
+  @@schema("elca")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model uuid_mappings {
+  id        Int    @default(autoincrement())
+  new_uuid  String @db.Uuid
+  orig_uuid String @db.Uuid
+
+  @@ignore
+  @@schema("elca")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model window_assistant_problem_project_ids {
+  project_id Int?
+
+  @@ignore
+  @@schema("elca")
+}
+
+model elca_cache_element_components {
+  item_id              Int                     @id
+  element_component_id Int                     @unique
+  mass                 Decimal?                @db.Decimal
+  quantity             Decimal?                @db.Decimal
+  ref_unit             String?                 @db.VarChar(10)
+  num_replacements     Int?
+  element_components   elca_element_components @relation(fields: [element_component_id], references: [id], onDelete: Cascade)
+  items                items                   @relation(fields: [item_id], references: [id], onDelete: Cascade)
+
+  @@map("element_components")
+  @@schema("elca_cache")
+}
+
+model elca_cache_element_types {
+  item_id              Int                   @id
+  project_variant_id   Int
+  element_type_node_id Int
+  mass                 Decimal?              @db.Decimal
+  element_types        elca_element_types    @relation(fields: [element_type_node_id], references: [node_id], onDelete: Cascade)
+  items                items                 @relation(fields: [item_id], references: [id], onDelete: Cascade)
+  project_variants     elca_project_variants @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+
+  @@unique([project_variant_id, element_type_node_id])
+  @@map("element_types")
+  @@schema("elca_cache")
+}
+
+model elca_cache_elements {
+  item_id                                 Int           @id
+  element_id                              Int           @unique
+  mass                                    Decimal?      @db.Decimal
+  quantity                                Decimal?      @db.Decimal
+  ref_unit                                String?       @db.VarChar(10)
+  composite_item_id                       Int?
+  items_elements_composite_item_idToitems items?        @relation("elements_composite_item_idToitems", fields: [composite_item_id], references: [id])
+  elements                                elca_elements @relation(fields: [element_id], references: [id], onDelete: Cascade)
+  items_elements_item_idToitems           items         @relation("elements_item_idToitems", fields: [item_id], references: [id], onDelete: Cascade)
+
+  @@index([composite_item_id], map: "ix_elca_cache_elements_composite_item_id")
+  @@map("elements")
+  @@schema("elca_cache")
+}
+
+model final_energy_demands {
+  item_id                      Int                          @id
+  final_energy_demand_id       Int                          @unique
+  quantity                     Decimal?                     @db.Decimal
+  ref_unit                     String?                      @db.VarChar(10)
+  project_final_energy_demands project_final_energy_demands @relation(fields: [final_energy_demand_id], references: [id], onDelete: Cascade)
+  items                        items                        @relation(fields: [item_id], references: [id], onDelete: Cascade)
+
+  @@schema("elca_cache")
+}
+
+model final_energy_ref_models {
+  item_id                         Int                             @id
+  final_energy_ref_model_id       Int                             @unique
+  quantity                        Decimal?                        @db.Decimal
+  ref_unit                        String?                         @db.VarChar(10)
+  project_final_energy_ref_models project_final_energy_ref_models @relation(fields: [final_energy_ref_model_id], references: [id], onDelete: Cascade)
+  items                           items                           @relation(fields: [item_id], references: [id], onDelete: Cascade)
+
+  @@schema("elca_cache")
+}
+
+model final_energy_supplies {
+  item_id                       Int                           @id
+  final_energy_supply_id        Int                           @unique
+  quantity                      Decimal?                      @db.Decimal
+  ref_unit                      String?                       @db.VarChar(10)
+  project_final_energy_supplies project_final_energy_supplies @relation(fields: [final_energy_supply_id], references: [id], onDelete: Cascade)
+  items                         items                         @relation(fields: [item_id], references: [id], onDelete: Cascade)
+
+  @@schema("elca_cache")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model elca_cache_indicators {
+  item_id          Int
+  life_cycle_ident String          @db.VarChar(20)
+  indicator_id     Int
+  process_id       Int?
+  value            Decimal         @db.Decimal
+  ratio            Decimal         @default(1) @db.Decimal
+  is_partial       Boolean         @default(false)
+  indicators       elca_indicators @relation(fields: [indicator_id], references: [id], onDelete: Cascade)
+  items            items           @relation(fields: [item_id], references: [id], onDelete: Cascade)
+  life_cycles      life_cycles     @relation(fields: [life_cycle_ident], references: [ident], onDelete: Cascade)
+  processes        elca_processes? @relation(fields: [process_id], references: [id], onDelete: Cascade)
+
+  @@unique([item_id, life_cycle_ident, indicator_id, process_id])
+  @@index([process_id], map: "ix_elca_cache_indicators_process_id")
+  @@map("indicators")
+  @@ignore
+  @@schema("elca_cache")
+}
+
+model items {
+  id                                         Int                            @id @default(autoincrement())
+  parent_id                                  Int?
+  type                                       String                         @db.VarChar(100)
+  is_outdated                                Boolean                        @default(false)
+  created                                    DateTime                       @default(now()) @db.Timestamptz(0)
+  modified                                   DateTime?                      @default(now()) @db.Timestamptz(0)
+  project_id                                 Int?
+  is_virtual                                 Boolean                        @default(false)
+  element_components                         elca_cache_element_components?
+  element_types                              elca_cache_element_types?
+  elements_elements_composite_item_idToitems elca_cache_elements[]          @relation("elements_composite_item_idToitems")
+  elements_elements_item_idToitems           elca_cache_elements?           @relation("elements_item_idToitems")
+  final_energy_demands                       final_energy_demands?
+  final_energy_ref_models                    final_energy_ref_models?
+  final_energy_supplies                      final_energy_supplies?
+  indicators                                 elca_cache_indicators[]        @ignore
+  items                                      items?                         @relation("itemsToitems", fields: [parent_id], references: [id], onDelete: Cascade)
+  other_items                                items[]                        @relation("itemsToitems")
+  projects                                   projects?                      @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  project_variants                           elca_cache_project_variants?
+  transport_means                            transport_means?
+
+  @@index([is_outdated], map: "ix_elca_cache_items_is_outdated")
+  @@index([parent_id], map: "ix_elca_cache_items_parent_id")
+  @@index([type], map: "ix_elca_cache_items_type")
+  @@schema("elca_cache")
+}
+
+model elca_cache_project_variants {
+  item_id            Int                   @id
+  project_variant_id Int                   @unique
+  items              items                 @relation(fields: [item_id], references: [id], onDelete: Cascade)
+  project_variants   elca_project_variants @relation(fields: [project_variant_id], references: [id], onDelete: Cascade)
+
+  @@map("project_variants")
+  @@schema("elca_cache")
+}
+
+model transport_means {
+  item_id                 Int                     @id
+  transport_mean_id       Int                     @unique
+  quantity                Decimal?                @db.Decimal
+  ref_unit                String?                 @db.VarChar(10)
+  items                   items                   @relation(fields: [item_id], references: [id], onDelete: Cascade)
+  project_transport_means project_transport_means @relation(fields: [transport_mean_id], references: [id], onDelete: Cascade)
+
+  @@schema("elca_cache")
+}
+
+model process_config_mapping {
+  id                        Int             @id @default(autoincrement())
+  material_name             String          @db.VarChar(200)
+  process_config_id         Int
+  is_sibling                Boolean         @default(false)
+  sibling_ratio             Decimal?        @db.Decimal
+  required_additional_layer Boolean         @default(false)
+  process_db_id             Int
+  created                   DateTime        @default(now()) @db.Timestamptz(0)
+  process_configs           process_configs @relation(fields: [process_config_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  process_dbs               process_dbs     @relation(fields: [process_db_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([process_db_id], map: "ix_import_assistant_process_config_mapping_process_db_id")
+  @@schema("import_assistant")
+}
+
+model lcc_benchmark_group_thresholds {
+  id               Int                  @id @default(autoincrement())
+  group_id         Int
+  score            Int
+  caption          String
+  benchmark_groups lcc_benchmark_groups @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([group_id, score])
+  @@map("benchmark_group_thresholds")
+  @@schema("lcc")
+}
+
+model lcc_benchmark_groups {
+  id                         Int                              @id @default(autoincrement())
+  benchmark_version_id       Int
+  category                   Int                              @db.SmallInt
+  name                       String                           @db.VarChar(200)
+  benchmark_group_thresholds lcc_benchmark_group_thresholds[]
+  benchmark_versions         benchmark_versions               @relation(fields: [benchmark_version_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([benchmark_version_id, category, name])
+  @@map("benchmark_groups")
+  @@schema("lcc")
+}
+
+model lcc_benchmark_thresholds {
+  id                   Int                @id @default(autoincrement())
+  benchmark_version_id Int
+  category             Int                @db.SmallInt
+  score                Int
+  value                Decimal            @db.Decimal
+  benchmark_versions   benchmark_versions @relation(fields: [benchmark_version_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("benchmark_thresholds")
+  @@schema("lcc")
+}
+
+model costs {
+  id                    Int                    @id @default(autoincrement())
+  version_id            Int?
+  grouping              String                 @db.VarChar(100)
+  din276_code           Int
+  label                 String
+  headline              String?
+  project_id            Int?
+  ident                 String?                @db.VarChar(100)
+  projects              projects?              @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  versions              versions?              @relation(fields: [version_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  irregular_costs       irregular_costs?
+  project_costs         project_costs[]
+  regular_costs         regular_costs?
+  regular_service_costs regular_service_costs?
+
+  @@unique([version_id, grouping, din276_code, label])
+  @@unique([version_id, ident])
+  @@schema("lcc")
+}
+
+model element_component_cost_progressions {
+  element_component_id Int
+  life_time            Int
+  quantity             Decimal                 @db.Decimal
+  element_components   elca_element_components @relation(fields: [element_component_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([element_component_id, life_time])
+  @@schema("lcc")
+}
+
+model element_component_costs {
+  element_component_id Int                     @id
+  quantity             Decimal                 @db.Decimal
+  element_components   elca_element_components @relation(fields: [element_component_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("lcc")
+}
+
+model element_cost_progressions {
+  element_id Int
+  life_time  Int
+  quantity   Decimal       @db.Decimal
+  elements   elca_elements @relation(fields: [element_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([element_id, life_time])
+  @@schema("lcc")
+}
+
+model element_costs {
+  element_id          Int           @id
+  quantity            Decimal?      @db.Decimal
+  life_time           Int?
+  calculated_quantity Decimal?      @db.Decimal
+  elements            elca_elements @relation(fields: [element_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("lcc")
+}
+
+model energy_source_costs {
+  id            Int             @id @default(autoincrement())
+  version_id    Int
+  name          String          @db.VarChar(200)
+  costs         Decimal         @db.Decimal
+  versions      versions        @relation(fields: [version_id], references: [id], onDelete: Cascade)
+  project_costs project_costs[]
+
+  @@schema("lcc")
+}
+
+model irregular_costs {
+  cost_id   Int   @id
+  life_time Int
+  costs     costs @relation(fields: [cost_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("lcc")
+}
+
+model project_cost_progressions {
+  project_variant_id Int
+  grouping           String                @db.VarChar(100)
+  life_time          Int
+  quantity           Decimal               @db.Decimal
+  calc_method        Int                   @db.SmallInt
+  project_variants   elca_project_variants @relation(fields: [project_variant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([project_variant_id, calc_method, grouping, life_time])
+  @@schema("lcc")
+}
+
+model project_costs {
+  project_variant_id    Int
+  cost_id               Int
+  quantity              Decimal?              @db.Decimal
+  ref_value             Decimal?              @db.Decimal
+  calc_method           Int                   @db.SmallInt
+  energy_source_cost_id Int?
+  costs                 costs                 @relation(fields: [cost_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  energy_source_costs   energy_source_costs?  @relation(fields: [energy_source_cost_id], references: [id])
+  project_variants      elca_project_variants @relation(fields: [project_variant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([project_variant_id, calc_method, cost_id])
+  @@schema("lcc")
+}
+
+model project_totals {
+  project_variant_id Int
+  grouping           String                @db.VarChar(100)
+  costs              Decimal?              @db.Decimal
+  calc_method        Int                   @db.SmallInt
+  project_variants   elca_project_variants @relation(fields: [project_variant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([project_variant_id, calc_method, grouping])
+  @@schema("lcc")
+}
+
+model project_versions {
+  project_variant_id Int
+  version_id         Int
+  category           Int                   @default(1) @db.SmallInt
+  costs_300          Decimal?              @db.Decimal
+  costs_400          Decimal?              @db.Decimal
+  costs_500          Decimal?              @db.Decimal
+  kgu300_alt         Decimal?              @db.Decimal
+  kgu400_alt         Decimal?              @db.Decimal
+  kgu500_alt         Decimal?              @db.Decimal
+  calc_method        Int                   @db.SmallInt
+  project_variants   elca_project_variants @relation(fields: [project_variant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  versions           versions              @relation(fields: [version_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([project_variant_id, calc_method])
+  @@schema("lcc")
+}
+
+model regular_costs {
+  cost_id   Int      @id
+  ref_value Decimal? @db.Decimal
+  ref_unit  String?  @db.VarChar(30)
+  costs     costs    @relation(fields: [cost_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("lcc")
+}
+
+model regular_service_costs {
+  cost_id          Int     @id
+  maintenance_perc Decimal @db.Decimal
+  service_perc     Decimal @db.Decimal
+  costs            costs   @relation(fields: [cost_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("lcc")
+}
+
+model versions {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @db.VarChar(200)
+  version             String?               @db.VarChar(100)
+  rate                Decimal               @db.Decimal
+  common_price_inc    Decimal               @db.Decimal
+  energy_price_inc    Decimal               @db.Decimal
+  water_price_inc     Decimal               @db.Decimal
+  cleaning_price_inc  Decimal               @db.Decimal
+  created             DateTime              @default(now()) @db.Timestamptz(0)
+  modified            DateTime?             @default(now()) @db.Timestamptz(0)
+  calc_method         Int                   @db.SmallInt
+  costs               costs[]
+  energy_source_costs energy_source_costs[]
+  project_versions    project_versions[]
+
+  @@schema("lcc")
+}
+
+model nawoh_water {
+  project_id          Int      @id
+  mit_badewanne       Boolean
+  toilette_voll       Decimal? @db.Decimal
+  toilette_spartaste  Decimal? @db.Decimal
+  dusche              Decimal? @db.Decimal
+  badewanne_gesamt    Decimal? @db.Decimal
+  wasserhaehne_bad    Decimal? @db.Decimal
+  wasserhaehne_kueche Decimal? @db.Decimal
+  waschmaschine       Decimal? @default(40) @db.Decimal
+  geschirrspueler     Decimal? @default(15) @db.Decimal
+  projects            projects @relation(fields: [project_id], references: [id], onDelete: Cascade)
+
+  @@map("water")
+  @@schema("nawoh")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model water_versions {
+  id                  Int      @id @default(autoincrement())
+  name                String   @db.VarChar(255)
+  mit_badewanne       Boolean
+  toilette_voll       Decimal  @db.Decimal
+  toilette_spartaste  Decimal  @db.Decimal
+  dusche              Decimal  @db.Decimal
+  badewanne_gesamt    Decimal? @db.Decimal
+  wasserhaehne_bad    Decimal  @db.Decimal
+  wasserhaehne_kueche Decimal  @db.Decimal
+  waschmaschine       Decimal  @db.Decimal
+  geschirrspueler     Decimal  @db.Decimal
+
+  @@schema("nawoh")
+}
+
+model group_members {
+  user_id  Int
+  group_id Int
+  groups   groups @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  users    users  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([group_id, user_id])
+  @@schema("public")
+}
+
+model groups {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(200)
+  is_usergroup       Boolean              @default(false)
+  created            DateTime             @default(now()) @db.Timestamptz(0)
+  modified           DateTime?            @default(now()) @db.Timestamptz(0)
+  assistant_elements assistant_elements[]
+  elements           elca_elements[]
+  projects           projects[]
+  group_members      group_members[]
+  role_members       role_members[]
+  users              users[]
+
+  @@schema("public")
+}
+
+model media {
+  id              Int            @id @default(autoincrement())
+  name            String         @db.VarChar(100)
+  rel_path        String         @db.VarChar(150)
+  mime_type       String         @db.VarChar(100)
+  width           Int?
+  height          Int?
+  file_name       String?        @db.VarChar(150)
+  created         DateTime       @default(now()) @db.Timestamptz(0)
+  extension       String?        @db.VarChar(20)
+  source_media_id Int?
+  ident           String?        @db.VarChar(100)
+  svg_patterns    svg_patterns[]
+  media           media?         @relation("mediaTomedia", fields: [source_media_id], references: [id], onDelete: Restrict)
+  other_media     media[]        @relation("mediaTomedia")
+
+  @@unique([source_media_id, ident])
+  @@schema("public")
+}
+
+model nested_nodes {
+  id                 Int                 @id @default(autoincrement())
+  root_id            Int
+  lft                Int
+  rgt                Int
+  level              Int                 @default(0)
+  ident              String?             @db.VarChar(100)
+  element_types      elca_element_types?
+  process_categories process_categories?
+  nested_nodes       nested_nodes        @relation("nested_nodesTonested_nodes", fields: [root_id], references: [id], onDelete: Cascade)
+  other_nested_nodes nested_nodes[]      @relation("nested_nodesTonested_nodes")
+  pages              pages?
+  roles              roles?
+
+  @@unique([root_id, ident])
+  @@index([ident], map: "ix_public_nested_nodes_ident")
+  @@index([lft], map: "ix_public_nested_nodes_lft")
+  @@index([rgt], map: "ix_public_nested_nodes_rgt")
+  @@index([root_id], map: "ix_public_nested_nodes_root_id")
+  @@schema("public")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model pages {
+  node_id      Int          @id
+  caption      String       @db.VarChar(200)
+  rubric       String?      @db.VarChar(220)
+  module       String?      @db.VarChar(220)
+  ctrl_name    String       @db.VarChar(120)
+  ctrl_action  String?      @db.VarChar(120)
+  is_visible   Boolean      @default(true)
+  is_secure    Boolean      @default(false)
+  role_id      Int?
+  deny_page_id Int?
+  created      DateTime     @default(now()) @db.Timestamptz(0)
+  modified     DateTime?    @default(now()) @db.Timestamptz(0)
+  pages        pages?       @relation("pagesTopages", fields: [deny_page_id], references: [node_id])
+  other_pages  pages[]      @relation("pagesTopages")
+  nested_nodes nested_nodes @relation(fields: [node_id], references: [id], onDelete: Cascade)
+  roles        roles?       @relation(fields: [role_id], references: [node_id])
+
+  @@schema("public")
+}
+
+model patches {
+  name       String   @db.VarChar(200)
+  module     String   @db.VarChar(50)
+  owner      String   @default(dbgenerated("\"current_user\"()")) @db.VarChar(200)
+  registered DateTime @default(now()) @db.Timestamptz(0)
+
+  @@unique([name, module])
+  @@schema("public")
+}
+
+model role_members {
+  role_id   Int
+  group_id  Int
+  is_ceased Boolean @default(false)
+  groups    groups  @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  roles     roles   @relation(fields: [role_id], references: [node_id], onDelete: Cascade)
+
+  @@id([role_id, group_id])
+  @@schema("public")
+}
+
+model roles {
+  node_id      Int            @id
+  role_name    String         @db.VarChar(100)
+  description  String
+  pages        pages[]
+  role_members role_members[]
+  nested_nodes nested_nodes   @relation(fields: [node_id], references: [id], onDelete: Cascade)
+
+  @@index([role_name], map: "ix_roles_role_name")
+  @@schema("public")
+}
+
+model sessions {
+  id       String    @id @db.VarChar(32)
+  created  DateTime  @default(now()) @db.Timestamptz(0)
+  modified DateTime? @default(now()) @db.Timestamptz(0)
+  expires  Int?
+  data     String?
+
+  @@schema("public")
+}
+
+model user_profiles {
+  user_id         Int       @id
+  company         String    @default("") @db.VarChar(100)
+  firstname       String    @default("") @db.VarChar(100)
+  lastname        String    @default("") @db.VarChar(100)
+  email           String?   @default("") @db.VarChar(100)
+  birthday        DateTime? @db.Date
+  gender          String?   @db.VarChar(1)
+  notice          String?   @db.VarChar(255)
+  candidate_email String?   @db.VarChar(255)
+  users           users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@schema("public")
+}
+
+model users {
+  id                    Int                     @id @default(autoincrement())
+  auth_name             String                  @db.VarChar(100)
+  auth_key              String?                 @default("") @db.VarChar(50)
+  auth_method           Int                     @default(0) @db.SmallInt
+  group_id              Int
+  created               DateTime                @default(now()) @db.Timestamptz(0)
+  modified              DateTime?               @default(now()) @db.Timestamptz(0)
+  login_time            DateTime?               @db.Timestamptz(0)
+  is_locked             Boolean                 @default(false)
+  status                Int                     @default(0)
+  deactivated           DateTime?               @db.Timestamptz(0)
+  deactivatedmail       Int?
+  assistant_elements    assistant_elements[]
+  elements              elca_elements[]
+  project_access_tokens project_access_tokens[]
+  projects              projects[]
+  group_members         group_members[]
+  user_profiles         user_profiles?
+  groups                groups                  @relation(fields: [group_id], references: [id], onDelete: Cascade)
+
+  @@schema("public")
+}
+
+model imports {
+  id             Int                  @id @default(autoincrement())
+  process_db_id  Int
+  data_stock     String?              @db.VarChar(250)
+  status         String               @db.VarChar(20)
+  date_of_import DateTime?            @db.Timestamptz(0)
+  process_dbs    process_dbs          @relation(fields: [process_db_id], references: [id], onDelete: Cascade)
+  processes      soda4lca_processes[]
+
+  @@index([status], map: "ix_soda4lca_import_status")
+  @@index([process_db_id], map: "ix_soda4lca_imports_process_db_id")
+  @@schema("soda4lca")
+}
+
+model soda4lca_processes {
+  import_id      Int
+  uuid           String   @db.Uuid
+  version        String?  @db.VarChar(50)
+  name           String   @db.VarChar(250)
+  class_id       String   @db.VarChar(50)
+  epd_modules    String?
+  status         String   @db.VarChar(20)
+  error_code     Int?
+  details        String?
+  created        DateTime @default(now()) @db.Timestamptz(0)
+  latest_version String?  @db.VarChar(50)
+  imports        imports  @relation(fields: [import_id], references: [id], onDelete: Cascade)
+
+  @@id([import_id, uuid])
+  @@index([status], map: "ix_soda4lca_processes_status")
+  @@map("processes")
+  @@schema("soda4lca")
+}
+
+model stlb_elements {
+  id             Int      @id @default(autoincrement())
+  project_id     Int
+  din_code       Int
+  name           String
+  description    String
+  quantity       Decimal  @db.Decimal
+  ref_unit       String   @db.VarChar(20)
+  oz             String   @db.VarChar(150)
+  lb_nr          String   @db.VarChar
+  price_per_unit Decimal? @db.Decimal
+  price          Decimal? @db.Decimal
+  is_visible     Boolean  @default(true)
+  created        DateTime @default(now()) @db.Timestamptz(0)
+  projects       projects @relation(fields: [project_id], references: [id], onDelete: Cascade)
+
+  @@map("elements")
+  @@schema("stlb")
+}
