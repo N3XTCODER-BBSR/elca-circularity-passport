@@ -4,8 +4,8 @@ import { Disclosure, DisclosureButton } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import { FC } from "react"
 import { twMerge } from "tailwind-merge"
-import NavBarProfileDropdown from "app/[locale]/(circularity)/(components)/NavBarProfileDropdown"
 import LanguageDropdown from "app/(components)/LanguageDropdown"
+import NavBarProfileDropdown from "app/[locale]/(circularity)/(components)/NavBarProfileDropdown"
 
 const NavBar: FC = () => {
   return (

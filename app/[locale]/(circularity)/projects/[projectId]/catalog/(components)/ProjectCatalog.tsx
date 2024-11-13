@@ -1,15 +1,15 @@
 "use client"
 import _ from "lodash"
 import ComponentsTree from "app/(components)/ComponentsTree"
-import { ElcaProjectComponent } from "app/[locale]/(circularity)/(utils)/types"
-import { BuildingComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
+import { ElcaProjectElementRow } from "lib/domain-logic/circularity/server-actions/getElcaElementsForProjectId"
+import { ComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
 
 type ProjectCatalogProps = {
   projectId: string
-  projectComponents: ElcaProjectComponent[]
+  projectComponents: ElcaProjectElementRow[]
 }
 const ProjectCatalog = ({ projectId, projectComponents }: ProjectCatalogProps) => {
-  const componentWithBasicFields: BuildingComponentWithBasicFields[] = projectComponents.map((el) => ({
+  const componentWithBasicFields: ComponentWithBasicFields[] = projectComponents.map((el) => ({
     dinComponentLevelNumber: parseInt(el.din_code),
     name: el.element_name,
     uuid: el.element_uuid,
@@ -18,15 +18,15 @@ const ProjectCatalog = ({ projectId, projectComponents }: ProjectCatalogProps) =
   const componentWithBasicFieldsUnique = _.uniqBy(componentWithBasicFields, "uuid")
 
   // TODO: extract this out (e.g. into or close to data schema?)
-  const categoryNumbersToInclude = [320, 330, 340, 350, 360]
+  const costGroupCategoryNumbersToInclude = [320, 330, 340, 350, 360]
 
   const generateLinkUrlForComponent = (uuid: string): string => `/projects/${projectId}/catalog/components/${uuid}`
 
   return (
     <div>
       <ComponentsTree
-        buildingComponents={componentWithBasicFieldsUnique}
-        categoryNumbersToInclude={categoryNumbersToInclude}
+        components={componentWithBasicFieldsUnique}
+        costGroupCategoryNumbersToInclude={costGroupCategoryNumbersToInclude}
         generateLinkUrlForComponent={generateLinkUrlForComponent}
       />
     </div>

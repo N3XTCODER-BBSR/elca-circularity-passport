@@ -37,7 +37,7 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
     {
       eolPoints: aggregatedData.totalAvgEolPoints,
       // TODO: use i18n here
-      identifier: "Average class rating",
+      identifier: "Gesamt",
       eolClass: aggregatedData.totalEolClass,
       overlayText: `${aggregatedData.totalEolClass} (${Math.round(aggregatedData.totalAvgEolPoints)})`,
     },
@@ -56,7 +56,7 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
                 data={chartDataForAvgEolPoints}
                 isPdf={true}
                 margin={{
-                  top: 30,
+                  top: 15,
                   right: 70,
                   bottom: 90,
                   left: 70,

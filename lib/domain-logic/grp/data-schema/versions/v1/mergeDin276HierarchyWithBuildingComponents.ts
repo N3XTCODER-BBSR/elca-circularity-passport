@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { BuildingComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
+import { ComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
 import { din276Hierarchy } from "./din276Mapping"
 
 export type Din276MergedComponent = {
@@ -11,7 +11,7 @@ export type Din276MergedComponent = {
     componentTypes: {
       componentTypeNumber: number
       name: string
-      components: BuildingComponentWithBasicFields[]
+      components: ComponentWithBasicFields[]
       numberOfComponents: number
     }[]
     numberOfComponents: number
@@ -36,7 +36,7 @@ const filterDinHierachysForCategoryNumbersToInclude = (categoryNumbersToInclude?
 }
 
 const mergeDin276HierarchyWithBuildingComponents = (
-  buildingComponents: BuildingComponentWithBasicFields[],
+  buildingComponents: ComponentWithBasicFields[],
   categoryNumbersToInclude?: number[]
 ): Din276MergedComponent[] => {
   const filteredDin276Hierarchy = filterDinHierachysForCategoryNumbersToInclude(categoryNumbersToInclude)

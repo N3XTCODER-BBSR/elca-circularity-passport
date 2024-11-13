@@ -39,7 +39,7 @@ const SingleKeyValueTuple = ({
     >
       <dt className="font-semibold text-gray-700">{keyValueTuple?.key}: &nbsp;</dt>
       <dd className={twMerge("text-right text-gray-600", lineClampClass)}>
-        {keyValueTuple?.value || (!!keyValueTuple?.key && "N/A")}
+        {keyValueTuple?.value != null ? keyValueTuple?.value : !!keyValueTuple?.key && "N/A"}
       </dd>
     </div>
   )

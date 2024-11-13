@@ -265,10 +265,7 @@ export default function generatePassport(
     dataSchemaVersion: "v1",
     versionTag: "1.0.0",
     elcaProjectId: "",
-    projectName: faker.helpers.arrayElement([
-      "Bundesministerium für ökologische Innovation, Biodiversitätsschutz und nachhaltigen Konsum – Dienstsitz Berlin",
-      faker.company.name(),
-    ]),
+    projectName: faker.helpers.arrayElement(["Bundesinstitut für Bau-, Stadt- und Raumforschung Berlin"]),
     generatorSoftware: {
       name: "ELCA Passport Generator",
       version: "1.0.0",
@@ -289,7 +286,6 @@ export default function generatePassport(
       address: faker.address.streetAddress() + ", " + faker.address.zipCode() + " " + faker.address.city(),
       buildingPermitYear,
       buildingCompletionYear,
-      // TODO: add more building types
       buildingType: faker.helpers.arrayElement(["1310 - Ministerien / Staatskanzleien / Landesvertretungen"]),
       numberOfUpperFloors: faker.number.int({ min: 1, max: 10 }),
       numberOfBasementFloors: faker.number.int({ min: 1, max: 2 }),

@@ -12,10 +12,7 @@ const ProjectCatalog = ({ passportId, projectComponents }: ProjectCatalogProps) 
 
   return (
     <div>
-      <ComponentsTree
-        buildingComponents={projectComponents}
-        generateLinkUrlForComponent={generateLinkUrlForComponent}
-      />
+      <ComponentsTree components={projectComponents} generateLinkUrlForComponent={generateLinkUrlForComponent} />
     </div>
   )
 }

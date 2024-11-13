@@ -14,14 +14,18 @@ export type KeyValueTuple = {
 export type SideBySideDescriptionListsWithHeadlineProps = {
   headline?: string
   data: KeyValueTuple[]
+  className?: string
+  justifyEnd?: boolean
 }
 
 const SingleKeyValueTuple = ({
   keyValueTuple,
   isLeft = false,
+  justifyEnd = false,
 }: {
   keyValueTuple?: KeyValueTuple
   isLeft?: boolean
+  justifyEnd?: boolean
 }) => {
   return (
     <div
@@ -34,18 +38,25 @@ const SingleKeyValueTuple = ({
         {keyValueTuple?.tooltip && <Tooltip id={keyValueTuple?.tooltip.id}>{keyValueTuple?.tooltip.content}</Tooltip>}
         <span>{keyValueTuple?.key}</span>
       </dt>
-      <dd className="mt-1 text-gray-600">{keyValueTuple?.value || (!!keyValueTuple?.key && "N/A")}</dd>
+      <dd className={`mt-1 text-gray-600 ${justifyEnd ? "text-right" : ""}`}>
+        {keyValueTuple?.value != null ? keyValueTuple?.value : !!keyValueTuple?.key && "N/A"}
+      </dd>
     </div>
   )
 }
 
-const SideBySideDescriptionListsWithHeadline = ({ headline, data }: SideBySideDescriptionListsWithHeadlineProps) => {
+const SideBySideDescriptionListsWithHeadline = ({
+  headline,
+  data,
+  justifyEnd,
+  className,
+}: SideBySideDescriptionListsWithHeadlineProps) => {
   const filledWithEmptyLastRow = data.length % 2 === 1 ? [...data, { key: "", value: "" }] : data
 
   const chunkedArray = _.chunk(filledWithEmptyLastRow, 2)
 
   return (
-    <div className="mb-8">
+    <div className={twMerge("m-4 bg-white", className)}>
       {headline != null && <h3 className="mb-8 text-lg font-semibold leading-6 text-gray-900">{headline}</h3>}
 
       <dl className="grid grid-cols-1 md:grid-cols-2 md:divide-y md:divide-gray-100">
@@ -57,8 +68,8 @@ const SideBySideDescriptionListsWithHeadline = ({ headline, data }: SideBySideDe
               idx % 2 === 1 ? "md:bg-white" : "md:bg-gray-50"
             )}
           >
-            <SingleKeyValueTuple keyValueTuple={chunk[0]} isLeft />
-            <SingleKeyValueTuple keyValueTuple={chunk[1]} />
+            <SingleKeyValueTuple keyValueTuple={chunk[0]} justifyEnd={justifyEnd} isLeft />
+            <SingleKeyValueTuple keyValueTuple={chunk[1]} justifyEnd={justifyEnd} />
           </div>
         ))}
       </dl>

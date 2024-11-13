@@ -41,10 +41,7 @@ const ResourcesChartLegendTable = ({
             <tr key={index}>
               <td className="whitespace-nowrap border-b border-gray-300 py-[1mm]">
                 <div className="flex items-center">
-                  <div
-                    className={`mr-2 ${isPdf ? "size-[3mm]" : "size-[2rem]"}`}
-                    style={{ backgroundColor: item.color }}
-                  >
+                  <div className={`mr-2 ${isPdf ? "size-[3mm]" : "size-8"}`} style={{ backgroundColor: item.color }}>
                     {" "}
                     {item.pattern === "dots" && <DottedBackground />}
                   </div>

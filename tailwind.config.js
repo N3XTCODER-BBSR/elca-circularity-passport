@@ -18,6 +18,10 @@ module.exports = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        error: "#991B1B",
+        info: "#991B1B",
+        warning: "#991B1B",
+        red: "#E11D48",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

@@ -2,6 +2,7 @@ import {
   LifeCycleSubPhaseId,
   MaterialResourceTypeNamesSchema,
 } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
+import { TranslationsPlattformGeneric } from "./de"
 
 const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
   A1A2A3: "Module A1 - A3",
@@ -211,7 +212,27 @@ const translationsGrpPlatformGeneric = {
   },
 }
 
-const translationsPlatformGeneric = {
+const translationsPlatformGeneric: TranslationsPlattformGeneric = {
+  Circularity: {
+    Components: {
+      Layers: {
+        CircularityInfo: {
+          title: "Circularity",
+          CircularityPotential: {
+            title: "Circularity Potential",
+            EolUnbuilt: {
+              Class: {
+                title: "EoL Class (unbuilt)",
+              },
+              Points: {
+                title: "EoL Points (unbuilt)",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   Grp: {
     Web: {
       title: "Building Resource Passport",

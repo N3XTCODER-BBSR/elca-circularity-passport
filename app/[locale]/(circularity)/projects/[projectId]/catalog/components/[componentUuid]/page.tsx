@@ -5,8 +5,9 @@ import { notFound } from "next/navigation"
 import { getServerSession } from "next-auth"
 import authOptions from "app/(utils)/authOptions"
 import UnauthorizedRedirect from "app/[locale]/(circularity)/(components)/UnauthorizedRedirect"
+import { getAvailableTBaustoffProducts } from "lib/domain-logic/circularity/server-actions/getAvailableTBaustoffProducts"
+import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import ComponentLayer from "./(components)/component-layer"
-import { DataResult, fetchProjectDataCachedDuringRequest } from "../../../(utils)/data-fetcher"
 
 const Page = async ({ params }: { params: { projectId: string; componentUuid: string; locale: string } }) => {
   const session = await getServerSession(authOptions)
@@ -15,21 +16,35 @@ const Page = async ({ params }: { params: { projectId: string; componentUuid: st
     return <UnauthorizedRedirect />
   }
 
-  const dataResult: DataResult = await fetchProjectDataCachedDuringRequest(params.projectId, session.user.id)
+  const projectComponents = await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(
+    params.componentUuid,
+    session.user.id
+  )
 
-  if (!dataResult) {
+  // TODO: check this - probably better to check for array length?
+  if (!projectComponents) {
     notFound()
-    //   return <div>Projects with this ID not found for the current user.</div>
   }
 
-  const componentData = dataResult.projectComponents.find((el) => el.element_uuid === params.componentUuid)
+  // TODO:
+  // 1. check why we do the find. Should be enough to just use projectComponents[0]?
+  // 2. consider to (even if we then discard our db performance optimziation) really fetch data that are on
+  //   a) component level and
+  //   b) product level
+  // in different queries (or at least hide it more upstream; the frontend layer should not have to know that it needs to get
+  // the data from the first element of the array)
+  const componentData = projectComponents.find((el) => el.element_uuid === params.componentUuid)
 
   if (componentData == null) {
     notFound()
   }
 
-  // TODO: consider to make din_code a number from the beginning (e.g. when introducing zod also for the Circularity tool)
   const dinGroupLevelNumber = Math.floor(parseInt(componentData.din_code) / 100) * 100
+
+  const availableTBaustoffProducts = (await getAvailableTBaustoffProducts()).map((el) => ({
+    id: `${el.id}`,
+    value: el.name,
+  }))
 
   return (
     <div>
@@ -40,7 +55,6 @@ const Page = async ({ params }: { params: { projectId: string; componentUuid: st
         <ArrowLongLeftIcon aria-hidden="true" className="-ml-0.5 size-5" />
         Zurück
       </Link>
-
       <h1 className="mt-12 text-2xl font-semibold leading-6">{componentData?.element_name}</h1>
       <div className="flex flex-col md:flex-row">
         <div className="w-full py-4 md:w-1/3">
@@ -73,10 +87,14 @@ const Page = async ({ params }: { params: { projectId: string; componentUuid: st
         </div>
       </div>
       <ul>
-        {/* layers: {JSON.stringify(componentData.layers, null, 2)} */}
         {componentData.layers.map((layer, i) => (
           <li key={i}>
-            <ComponentLayer layerData={layer} layerNumber={i + 1} unitName={componentData.unit} />
+            <ComponentLayer
+              layerData={layer}
+              layerNumber={i + 1}
+              unitName={componentData.unit}
+              tBaustoffProducts={availableTBaustoffProducts}
+            />
           </li>
         ))}
       </ul>

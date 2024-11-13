@@ -1,5 +1,5 @@
 import { Accordion } from "@szhsin/react-accordion"
-import { AccordionItem } from "app/[locale]/grp/(components)/generic/Accordion/AccordionItem"
+import { AccordionItem } from "app/(components)/generic/AccordionItem"
 
 type FaqProps = {
   faqContent: {

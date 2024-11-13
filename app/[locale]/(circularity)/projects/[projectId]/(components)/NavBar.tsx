@@ -6,7 +6,7 @@ import Link from "next/link"
 import { FC, useEffect, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import NavBarProfileDropdown from "app/[locale]/(circularity)/(components)/NavBarProfileDropdown"
-import { ElcaProjectInfo } from "app/[locale]/(circularity)/(utils)/types"
+import { ElcaProjectInfo } from "lib/domain-logic/types/domain-types"
 
 type NavBarProps = {
   projectInfo: ElcaProjectInfo

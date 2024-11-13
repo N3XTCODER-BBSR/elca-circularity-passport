@@ -1,5 +1,5 @@
 import { ChevronRightIcon } from "@heroicons/react/20/solid"
-import { ElcaProjectInfo } from "../../../(utils)/types"
+import { ElcaProjectInfo } from "../../../../../../lib/domain-logic/types/domain-types"
 
 type ProjectsLinkListProps = {
   projects: ElcaProjectInfo[]

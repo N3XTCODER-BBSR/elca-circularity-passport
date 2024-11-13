@@ -4,15 +4,18 @@ import Image from "next/image"
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
-import { ElcaProjectComponentLayer } from "app/[locale]/(circularity)/(utils)/types"
+import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
+import { SelectOption } from "lib/domain-logic/types/helper-types"
+import CircularityInfo from "./circularity-info"
 
 type ComponentLayerProps = {
-  layerData: ElcaProjectComponentLayer
+  layerData: EnrichedElcaElementComponent
   layerNumber: number
   unitName: string
+  tBaustoffProducts: SelectOption[]
 }
 
-const ComponentLayer = ({ layerData, layerNumber, unitName }: ComponentLayerProps) => {
+const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }: ComponentLayerProps) => {
   const volume = layerData.layer_length * layerData.layer_width * layerData.layer_size
   const mass = layerData.process_config_density * volume
 
@@ -27,7 +30,7 @@ const ComponentLayer = ({ layerData, layerNumber, unitName }: ComponentLayerProp
     },
     {
       key: "Oekobaudat UUID",
-      value: layerData.process_config_uuid,
+      value: layerData.oekobaudat_process_uuid,
     },
     {
       key: "Rohdichte [kg/m3]",
@@ -74,26 +77,9 @@ const ComponentLayer = ({ layerData, layerNumber, unitName }: ComponentLayerProp
       <div className="mt-8 overflow-hidden">
         <div className="">
           <SideBySideDescriptionListsWithHeadline data={layerKeyValues} />
-
-          {/* <dl className="">
-            <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-900">Laufende Nummer</dt>
-              <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">layerData.lnr</dd>
-            </div>
-            <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-900">Masse [kg]</dt>
-              <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">layerData.mass.toFixed(2)</dd>
-            </div>
-            <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-900">Geometrie der Bauteilschichten/ Komponenten</dt>
-              <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                layerData.materialGeometry.amount.toFixed(2) layerData.materialGeometry.unit
-              </dd>
-            </div>
-          </dl> */}
+          <CircularityInfo layerData={layerData} tBaustoffProducts={tBaustoffProducts} />
         </div>
       </div>
-      {/* <LayerDetailInfo layerData={layerData} /> */}
     </div>
   )
 }

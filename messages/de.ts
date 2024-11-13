@@ -212,6 +212,26 @@ const translationsGrpPlattformGeneric = {
 }
 
 const translationsPlattformGeneric = {
+  Circularity: {
+    Components: {
+      Layers: {
+        CircularityInfo: {
+          title: "Zirkularität",
+          CircularityPotential: {
+            title: "Zirkularitätspotenzial",
+            EolUnbuilt: {
+              Class: {
+                title: "EoL (unverbaut) Klasse",
+              },
+              Points: {
+                title: "EoL (unverbaut) Punkte",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   Grp: {
     Web: {
       title: "Ressourcenpass für Gebäude",
@@ -411,3 +431,5 @@ const translationsPlattformGeneric = {
 }
 
 export default translationsPlattformGeneric
+
+export type TranslationsPlattformGeneric = typeof translationsPlattformGeneric

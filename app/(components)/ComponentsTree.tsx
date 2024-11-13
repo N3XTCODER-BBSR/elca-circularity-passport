@@ -8,23 +8,23 @@ import { useEffect, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
 import mergeDin276HierarchyWithBuildingComponents from "lib/domain-logic/grp/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents"
-import { BuildingComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
+import { ComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
 
-type ComponentsTreeProps<T extends BuildingComponentWithBasicFields> = {
-  buildingComponents: T[]
-  categoryNumbersToInclude?: number[]
+type ComponentsTreeProps<T extends ComponentWithBasicFields> = {
+  components: T[]
+  costGroupCategoryNumbersToInclude?: number[]
   generateLinkUrlForComponent: (component: string) => string
 }
 
-const ComponentsTree = <T extends BuildingComponentWithBasicFields>({
-  buildingComponents,
-  categoryNumbersToInclude,
+const ComponentsTree = <T extends ComponentWithBasicFields>({
+  components,
+  costGroupCategoryNumbersToInclude: categoryNumbersToInclude,
   generateLinkUrlForComponent,
 }: ComponentsTreeProps<T>) => {
   const tCostGroups = useTranslations("Common.costGroups")
   const router = useRouter()
 
-  const din276WithComponents = mergeDin276HierarchyWithBuildingComponents(buildingComponents, categoryNumbersToInclude)
+  const din276WithComponents = mergeDin276HierarchyWithBuildingComponents(components, categoryNumbersToInclude)
 
   const [selectedCategoryNumber, setSelectedCategoryNumber] = useState<number | null>(null)
   const groupNumberOfSelectedCategory = Math.floor((selectedCategoryNumber || 0) / 100) * 100

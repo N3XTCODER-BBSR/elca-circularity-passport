@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,9 +9,86 @@ datasource db {
 
 model Passport {
   id           String   @id @default(cuid())
-  uuid String   @unique
+  uuid         String   @unique
   versionTag   String
   passportData Json
   issueDate    DateTime
   expiryDate   DateTime
 }
+
+// TODO: consider to define logic-constraints in this file on prisma schema as well
+model TBs_OekobaudatMapping {
+  oebd_processUuid String @map("oekobaudatProcessUuid")
+  oebd_versionUuid       String @map("oekobaudatVersionUuid")
+  tBs_productId          Int? @map("tBaustoffProductId")
+  tBs_product            TBs_ProductDefinition? @relation(name: "ProductToMapping", fields: [tBs_productId], references: [id])
+
+  @@id([oebd_processUuid, oebd_versionUuid])
+}
+
+model TBs_ProductDefinition {
+  id                                          Int                              @id @default(autoincrement())
+  tBs_version                            String @map("tBaustoffVersion")
+  name                                        String
+  tBs_ProductDefinitionEOLCategoryId              Int? @map("tBaustoff_ProductEOLCategoryId")
+  tBs_ProductDefinitionEOLCategory                TBs_ProductDefinitionEOLCategory?     @relation(fields: [tBs_ProductDefinitionEOLCategoryId], references: [id])
+  userEnrichedProductData     UserEnrichedProductData[]
+  oekobaudatTBaustoffMappings                 TBs_OekobaudatMapping[]     @relation(name: "ProductToMapping")
+}
+
+enum DismantlingPotentialClassId {
+  I
+  II
+  III
+  IV
+}
+
+enum TBs_ProductDefinitionEOLCategoryScenario {
+  WV
+  CL_PLUS   @map("CL+")
+  CL_MINUS  @map("CL-")
+  RC_PLUS   @map("RC+")
+  RC_MINUS  @map("RC-")
+  SV
+  EV_PLUS   @map("EV+")
+  EV_MINUS  @map("EV-")
+  EB
+  DEP_PLUS  @map("Dep+")
+  DEP_MINUS @map("Dep-")
+}
+
+model TBs_ProductDefinitionEOLCategory {
+  id                          Int                                         @id @default(autoincrement())
+  name                        String
+  eolScenarioUnbuiltReal      TBs_ProductDefinitionEOLCategoryScenario
+  eolScenarioUnbuiltPotential TBs_ProductDefinitionEOLCategoryScenario
+  technologyFactor            Float
+
+  // Back-relation
+  tBaustoffProducts TBs_ProductDefinition[]
+}
+
+// THE "YELLOW TABLE"
+// TODO: improve naming
+model UserEnrichedProductData {
+  // HINT: this is the central cross-database linkin field
+  // it is called elcaElementComponentId instead of productId because 
+  // it comes from the ELCA-DB where things that we call Products are called element_components in the DB
+  elcaElementComponentId Int @id 
+
+  // For filling mismatching gaps for the tBaustoffProduc (when there is no match for the oekobaudat-id/version of the the product in our mapping table)
+  tBaustoffProductDefinitionId             Int? @map("tBaustoffProductId")
+  tBaustoffProductDefinition               TBs_ProductDefinition? @relation(fields: [tBaustoffProductDefinitionId], references: [id])
+  tBaustoffProductSelectedByUser Boolean
+
+  // The user can override ONLY the total-scenario (not the real, not the potential)
+  // IF the user overrrides the total-scenario, both real and potential are not used/relevant anymore anyway though (they are ignored)
+  // real and potential can only be looked up from the mapping table and the total is then calculated from the real and potential
+  // via our formula
+
+  specificEolUnbuiltTotalScenario TBs_ProductDefinitionEOLCategoryScenario?
+  specificEolUnbuiltTotalScenarioProofText String?
+
+  dismantlingPotentialClassId DismantlingPotentialClassId?
+}
+

@@ -1,7 +1,7 @@
 "use client"
 import { signIn } from "next-auth/react"
-import { ChangeEvent, FormEvent, useState } from "react"
 import { useTranslations } from "next-intl"
+import { ChangeEvent, FormEvent, useState } from "react"
 
 type LoginInput = {
   username: string
@@ -38,7 +38,7 @@ export default function LoginPage({ searchParams }: PageProps) {
           <h2 className="text-xl font-semibold text-gray-800">{t("title")}</h2>
           <p className="mt-2 ">
             <span className="text-gray-600">{t("subTitle.a")}</span>
-            <a href="https://www.bauteileditor.de" target="_blank" className="text-blue-600 underline">
+            <a href="https://www.bauteileditor.de" target="_blank" className="text-blue-600 underline" rel="noreferrer">
               {t("subTitle.b")}
             </a>{" "}
             <span className="text-gray-600">{t("subTitle.c")}</span>
@@ -93,7 +93,7 @@ export default function LoginPage({ searchParams }: PageProps) {
               {t("form.loginButton")}
             </button>
           </div>
-          {searchParams.error && <p className="text-center capitalize text-red-600">{t("form.errorMessage")}</p>}
+          {searchParams.error && <p className="text-red-600 text-center capitalize">{t("form.errorMessage")}</p>}
         </form>
       </div>
     </div>
