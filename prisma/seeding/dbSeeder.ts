@@ -1,6 +1,6 @@
 import { PrismaClient, TBs_ProductDefinitionEOLCategoryScenario } from "@prisma/client"
-import generatePassport from "../../lib/domain-logic/grp/data-schema/versions/v1/passportJsonSeeder"
 import { z } from "zod"
+import generatePassport from "../../lib/domain-logic/grp/data-schema/versions/v1/passportJsonSeeder"
 
 const prisma = new PrismaClient()
 
