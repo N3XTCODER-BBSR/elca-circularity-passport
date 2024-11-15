@@ -4,8 +4,8 @@ import { EolClasses } from "lib/domain-logic/grp/data-schema/versions/v1/circula
 export type ElcaProjectInfo = {
   id: number
   project_name: string
-  created_at: Date
-  created_by_user_name: string
+  created_at?: Date
+  created_by_user_name?: string
 }
 
 export type ElcaProjectComponentLayerEolData = {

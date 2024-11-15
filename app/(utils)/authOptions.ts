@@ -1,7 +1,7 @@
 import md5 from "apache-md5"
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { query } from "lib/elca-legacy-db"
+import { prismaLegacy } from "prisma/prismaClient"
 
 const validatePassword = (plainPassword: string, hashedPassword: string) =>
   md5(plainPassword, hashedPassword) === hashedPassword
@@ -20,26 +20,32 @@ const authOptions: NextAuthOptions = {
           return null
         }
 
-        // Fetch the user from the legacy PostgreSQL database
-        const result = await query(
-          `SELECT id, auth_name, auth_key AS hashed_password 
-            FROM public.users 
-            WHERE auth_name = $1 
-            LIMIT 1`,
-          [credentials.username]
-        )
+        const usersFromDb = await prismaLegacy.users.findMany({
+          where: {
+            auth_name: credentials.username,
+          },
+          select: {
+            id: true,
+            auth_name: true,
+            auth_key: true,
+          },
+        })
 
-        if (result.rows.length === 0) {
+        if (usersFromDb.length === 0) {
           console.error("No user found.")
           return null // No user found
         }
 
-        if (result.rows.length > 1) {
+        if (usersFromDb.length > 1) {
           console.error(`Multiple users found with username ${credentials.username}`)
           return null
         }
 
-        const userFromDb = result.rows[0]
+        const userFromDb = {
+          id: String(usersFromDb[0]!.id),
+          auth_name: usersFromDb[0]!.auth_name,
+          hashed_password: usersFromDb[0]!.auth_key,
+        }
 
         if (userFromDb?.hashed_password === null) {
           // TODO: improve logging details
