@@ -1,12 +1,15 @@
-import { PrismaClient } from "./generated/client"
+import { Prisma, PrismaClient } from "./generated/client"
 import { PrismaClient as PrismaLegacyClient } from "./generated/client-legacy"
 
+const options: Prisma.PrismaClientOptions | undefined =
+  process.env.NODE_ENV === "development" ? { log: ["query"] } : undefined
+
 const prismaClientSingleton = () => {
-  return new PrismaClient()
+  return new PrismaClient(options)
 }
 
 const prismaLegacyClientSingleton = () => {
-  return new PrismaLegacyClient()
+  return new PrismaLegacyClient(options)
 }
 
 declare const globalThis: {
