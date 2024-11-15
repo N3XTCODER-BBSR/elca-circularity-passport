@@ -3,7 +3,7 @@ import enrichComponentsArrayWithDin276Labels, {
 } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import passportParser from "lib/domain-logic/grp/data-schema/versions/v1/passportParser"
 import { PassportData } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
-import prisma from "prisma/prismaClient"
+import { prisma } from "prisma/prismaClient"
 
 const getPassportDataByPassportUuid = async (passportUuid: string): Promise<PassportData | null> => {
   const passportDbRow = await prisma.passport.findUnique({
