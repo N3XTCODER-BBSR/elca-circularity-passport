@@ -22,6 +22,7 @@ async function fetchElcaProjectElementsByProjectIdAndUserId(
   projectId: string,
   userId: string
 ): Promise<ElcaProjectElementRow[]> {
+  // TODO: ideally also add project-variant id/uuid here to ensure correctness
   const result = await prismaLegacy.elca_elements.findMany({
     where: {
       project_variants: {
@@ -43,31 +44,15 @@ async function fetchElcaProjectElementsByProjectIdAndUserId(
     },
   })
 
-  // TODO: ideally also add project-variant id/uuid here to ensure correctness
-  // const result = await query(
-  //   `
-  //   select
-  //   element.uuid AS element_uuid,
-  //   element.name as element_name,
-  //   element.project_variant_id,
-  //   element_type.din_code AS din_code
-  //   FROM elca.elements element
-  //   JOIN elca.project_variants project_variant ON project_variant.id = element.project_variant_id
-  //   JOIN elca.projects project ON project.current_variant_id = project_variant.id
-  //   JOIN elca.element_types element_type ON element_type.node_id = element.element_type_node_id
-  //   -- join public."groups" groups on groups.id = element.access_group_id
-  //   --join public.group_members group_member on group_member.group_id = groups.id
-  //   WHERE project.id = $1 and project.owner_id = $2 --and group_member.user_id = $2
-  // `,
-  //   [projectId, userId]
-  // )
+  return result.map<ElcaProjectElementRow>((element) => {
+    const projectVariantId = element.project_variant_id === null ? "" : String(element.project_variant_id)
+    const dinCode = element.element_types?.din_code === null ? "" : String(element.element_types?.din_code)
 
-  const mappedResult: ElcaProjectElementRow[] = result.map((element) => ({
-    element_uuid: element.uuid,
-    element_name: element.name,
-    project_variant_id: String(element.project_variant_id),
-    din_code: String(element.element_types || ""),
-  }))
-
-  return mappedResult as ElcaProjectElementRow[]
+    return {
+      element_uuid: element.uuid,
+      element_name: element.name,
+      project_variant_id: projectVariantId,
+      din_code: dinCode,
+    }
+  })
 }
