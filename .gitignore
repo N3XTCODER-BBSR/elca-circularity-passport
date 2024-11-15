@@ -35,5 +35,5 @@ yarn-error.log*
 
 /.npm-only-allow
 dbdata
-legacy_db2_data
+legacy_db_data
 generated
