@@ -96,6 +96,12 @@ async function seedCircularityTool() {
         continue
       }
 
+      // Skip ProductDefinitions with " S4" in their name
+      if (row.tBaustoffName.includes(" S4")) {
+        console.warn(`Skipping row with " S4" in ProductDefinition name: ${JSON.stringify(row)}`)
+        continue
+      }
+
       // Map to enums
       const eolScenarioReal = mapToEOLCategoryScenario(row.eolScenarioReal)
       const eolScenarioPotential = mapToEOLCategoryScenario(row.eolScenarioPotential)
@@ -144,7 +150,7 @@ async function seedCircularityTool() {
         eolCategoryCache.set(eolCategoryKey, eolCategoryId)
       }
 
-      // Create the TBs_ProductDefinition
+      // Create the TBs_ProductDefinition only if the name doesn't contain " S4"
       const tBaustoff = await prisma.tBs_ProductDefinition.create({
         data: {
           name: row.tBaustoffName,
