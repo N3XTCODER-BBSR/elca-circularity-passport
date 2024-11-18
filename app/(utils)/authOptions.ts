@@ -72,21 +72,21 @@ const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/auth/signin",
   },
+  jwt: {
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+  },
+  session: {
+    strategy: "jwt", // jwt is default value
+  },
   callbacks: {
     async jwt({ token, user }) {
-      // console.log("jwt token :>> ", token)
-      // console.log("jwt user :>> ", user)
       if (user) {
-        // Initial sign-in, add custom properties to the token
         token.id = user.id
         token.auth_name = user.auth_name
       }
       return token
     },
     async session({ session, token }) {
-      // console.log("session token :>> ", token)
-      // console.log("session session :>> ", session)
-      // Add custom properties to the session from the token
       if (token) {
         session.user.id = token.id as string
         session.user.auth_name = token.auth_name as string
