@@ -21,8 +21,8 @@ const ProjectsLinkList = ({ projects }: ProjectsLinkListProps) => {
               <div className="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
                 <p className="whitespace-nowrap">
                   Created at{" "}
-                  <time dateTime={project.created_at.toLocaleDateString()}>
-                    {project.created_at.toLocaleDateString()}
+                  <time dateTime={project.created_at?.toLocaleDateString()}>
+                    {project.created_at?.toLocaleDateString()}
                   </time>
                 </p>
                 <svg viewBox="0 0 2 2" className="size-0.5 fill-current">
