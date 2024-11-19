@@ -1,3 +1,4 @@
+import { ensureUserHasProjectAccess } from "lib/is-authorized"
 import { prismaLegacy } from "prisma/prismaClient"
 
 export type ElcaProjectElementRow = {
@@ -12,6 +13,8 @@ export const getElcaElementsForProjectId = async (
   projectId: string,
   userId: string
 ): Promise<ElcaProjectElementRow[]> => {
+  await ensureUserHasProjectAccess(Number(userId), Number(projectId))
+
   const projectElements = await fetchElcaProjectElementsByProjectIdAndUserId(projectId, userId)
 
   return projectElements

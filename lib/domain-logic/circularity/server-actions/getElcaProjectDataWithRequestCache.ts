@@ -1,7 +1,10 @@
 import { ElcaProjectInfo } from "lib/domain-logic/types/domain-types"
+import { ensureUserHasProjectAccess } from "lib/is-authorized"
 import { prismaLegacy } from "prisma/prismaClient"
 
 export const getElcaProjectDataWithRequest = async (projectId: string, userId: string): Promise<ElcaProjectInfo> => {
+  await ensureUserHasProjectAccess(Number(userId), Number(projectId))
+
   const projects = await prismaLegacy.projects.findMany({
     where: {
       id: Number(projectId),

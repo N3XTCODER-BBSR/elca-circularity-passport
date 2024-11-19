@@ -17,6 +17,7 @@ const Page = async ({ params }: { params: { projectId: string; componentUuid: st
   }
 
   const projectComponents = await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(
+    params.projectId,
     params.componentUuid,
     session.user.id
   )
