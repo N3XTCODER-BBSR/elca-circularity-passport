@@ -6,7 +6,7 @@ import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-type
 import { prisma } from "prisma/prismaClient"
 import { getElcaComponentDataByLayerIdAndUserId } from "./utils/getElcaComponentDataByLayerIdAndUserId"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "../../../../prisma/generated/client"
-import { ensureUserAuthToElementComponent } from "lib/ensureAuthorized"
+import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
 
 export async function updateSpecificEolScenario(
   layerId: number,
@@ -22,7 +22,7 @@ export async function updateSpecificEolScenario(
     throw new Error("Unauthorized")
   }
 
-  await ensureUserAuthToElementComponent(Number(session.user.id), layerId)
+  await ensureUserAuthorizationToElementComponent(Number(session.user.id), layerId)
 
   // const updatedTbaustoffProductLayerData = await prisma.userEnrichedProductData.upsert(
   await prisma.userEnrichedProductData.upsert({

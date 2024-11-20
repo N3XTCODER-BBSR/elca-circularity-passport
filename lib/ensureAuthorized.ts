@@ -3,7 +3,12 @@ import "server-only"
 import { prismaLegacy } from "prisma/prismaClient"
 import { UnauthorizedError } from "./errors"
 
-export const ensureUserAuthToProject = async (userId: number, projectId: number) => {
+/**
+ * ensure that the user is authorized to access the project with the given id or throw an error
+ * @param userId
+ * @param projectId
+ */
+export const ensureUserAuthorizationToProject = async (userId: number, projectId: number) => {
   const isAuthorized = await prismaLegacy.projects.findFirst({
     where: {
       id: projectId,
@@ -36,7 +41,12 @@ export const ensureUserAuthToProject = async (userId: number, projectId: number)
   }
 }
 
-export const ensureUserAuthToElementComponent = async (userId: number, elementComponentId: number) => {
+/**
+ * ensure that the user is authorized to access the element with the given id or throw an error
+ * @param userId
+ * @param elementId
+ */
+export const ensureUserAuthorizationToElementComponent = async (userId: number, elementComponentId: number) => {
   const isAuthorized = await prismaLegacy.elca_element_components.findFirst({
     where: {
       id: elementComponentId,

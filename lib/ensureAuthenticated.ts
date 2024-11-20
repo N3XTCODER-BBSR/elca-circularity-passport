@@ -2,7 +2,11 @@ import authOptions from "app/(utils)/authOptions"
 import { getServerSession } from "next-auth"
 import { UnauthenticatedError } from "./errors"
 
-const ensureAuthenticated = async () => {
+/**
+ * verify that the user is authenticated and if not throw an error
+ * @returns user session
+ */
+const ensureUserIsAuthenticated = async () => {
   const session = await getServerSession(authOptions)
 
   if (!session?.user.id) {
@@ -12,4 +16,4 @@ const ensureAuthenticated = async () => {
   return session
 }
 
-export default ensureAuthenticated
+export default ensureUserIsAuthenticated

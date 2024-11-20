@@ -6,7 +6,7 @@ import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-type
 import { prisma } from "prisma/prismaClient"
 import { getElcaComponentDataByLayerIdAndUserId } from "./utils/getElcaComponentDataByLayerIdAndUserId"
 import { DismantlingPotentialClassId } from "../../../../prisma/generated/client"
-import { ensureUserAuthToElementComponent } from "lib/ensureAuthorized"
+import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
 
 export async function updateDismantlingPotentialClassId(
   layerId: number,
@@ -21,7 +21,7 @@ export async function updateDismantlingPotentialClassId(
     throw new Error("Unauthorized")
   }
 
-  await ensureUserAuthToElementComponent(Number(session.user.id), layerId)
+  await ensureUserAuthorizationToElementComponent(Number(session.user.id), layerId)
 
   await prisma.userEnrichedProductData.upsert({
     // TODO: IMPORTANT: add checks here for:

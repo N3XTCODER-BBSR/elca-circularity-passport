@@ -5,15 +5,15 @@ import { notFound } from "next/navigation"
 import { getAvailableTBaustoffProducts } from "lib/domain-logic/circularity/server-actions/getAvailableTBaustoffProducts"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import ComponentLayer from "./(components)/component-layer"
-import { ensureUserAuthToProject } from "lib/ensureAuthorized"
+import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import errorHandler from "app/(utils)/errorHandler"
-import ensureAuthenticated from "lib/ensureAuthenticated"
+import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 
 const Page = async ({ params }: { params: { projectId: string; componentUuid: string; locale: string } }) => {
   return errorHandler(async () => {
-    const session = await ensureAuthenticated()
+    const session = await ensureUserIsAuthenticated()
 
-    await ensureUserAuthToProject(Number(session.user.id), Number(params.projectId))
+    await ensureUserAuthorizationToProject(Number(session.user.id), Number(params.projectId))
 
     const projectComponents = await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(
       params.componentUuid,

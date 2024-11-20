@@ -1,9 +1,9 @@
 import "styles/global.css"
 import { getElcaProjectDataWithRequest } from "lib/domain-logic/circularity/server-actions/getElcaProjectDataWithRequestCache"
 import NavBar from "./(components)/NavBar"
-import { ensureUserAuthToProject } from "lib/ensureAuthorized"
+import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import errorHandler from "app/(utils)/errorHandler"
-import ensureAuthenticated from "lib/ensureAuthenticated"
+import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 
 export default async function ProjectLayout({
   children,
@@ -13,9 +13,9 @@ export default async function ProjectLayout({
   params: { projectId: string }
 }) {
   return errorHandler(async () => {
-    const session = await ensureAuthenticated()
+    const session = await ensureUserIsAuthenticated()
 
-    await ensureUserAuthToProject(Number(session.user.id), Number(params.projectId))
+    await ensureUserAuthorizationToProject(Number(session.user.id), Number(params.projectId))
 
     const projectInfo = await getElcaProjectDataWithRequest(params.projectId, session.user.id)
 
