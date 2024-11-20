@@ -9,15 +9,11 @@ import { query } from "lib/elca-legacy-db"
 import { prisma } from "prisma/prismaClient"
 import { calculateEolDataByEolCateogryData } from "./utils/calculateEolDataByEolCateogryData"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
-import { ensureUserHasProjectAccess } from "lib/is-authorized"
 
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
-  projectId: string,
   componentInstanceId: string,
   userId: string
 ): Promise<ElcaElementWithComponents[]> => {
-  await ensureUserHasProjectAccess(Number(userId), Number(projectId))
-
   const projectComponents = await fetchElcaProjectComponentsByInstanceIdAndUserId(componentInstanceId, userId)
 
   const componentIds = Array.from(new Set(projectComponents.map((c) => c.component_id)))

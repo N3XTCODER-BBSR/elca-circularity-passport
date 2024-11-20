@@ -1,6 +1,9 @@
-import { prismaLegacy } from "prisma/prismaClient"
+import "server-only"
 
-export const ensureUserHasProjectAccess = async (userId: number, projectId: number) => {
+import { prismaLegacy } from "prisma/prismaClient"
+import { UnauthorizedError } from "./errors"
+
+export const ensureUserAuthToProject = async (userId: number, projectId: number) => {
   const isAuthorized = await prismaLegacy.projects.findFirst({
     where: {
       id: projectId,
@@ -29,11 +32,11 @@ export const ensureUserHasProjectAccess = async (userId: number, projectId: numb
   })
 
   if (!isAuthorized) {
-    throw new Error("Unauthorized")
+    throw new UnauthorizedError()
   }
 }
 
-export const ensureUserHasAccessToElementComponent = async (userId: number, elementComponentId: number) => {
+export const ensureUserAuthToElementComponent = async (userId: number, elementComponentId: number) => {
   const isAuthorized = await prismaLegacy.elca_element_components.findFirst({
     where: {
       id: elementComponentId,
@@ -80,6 +83,6 @@ export const ensureUserHasAccessToElementComponent = async (userId: number, elem
   })
 
   if (!isAuthorized) {
-    throw new Error("Unauthorized")
+    throw new UnauthorizedError()
   }
 }

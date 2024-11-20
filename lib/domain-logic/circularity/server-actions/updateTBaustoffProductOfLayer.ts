@@ -5,7 +5,7 @@ import authOptions from "app/(utils)/authOptions"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { prisma } from "prisma/prismaClient"
 import { getElcaComponentDataByLayerIdAndUserId } from "./utils/getElcaComponentDataByLayerIdAndUserId"
-import { ensureUserHasAccessToElementComponent } from "lib/is-authorized"
+import { ensureUserAuthToElementComponent } from "lib/ensureAuthorized"
 
 export async function updateTBaustoffProduct(
   layerId: number,
@@ -20,7 +20,7 @@ export async function updateTBaustoffProduct(
     throw new Error("Unauthorized")
   }
 
-  await ensureUserHasAccessToElementComponent(Number(session.user.id), layerId)
+  await ensureUserAuthToElementComponent(Number(session.user.id), layerId)
 
   await prisma.userEnrichedProductData.upsert({
     // TODO: add checks here for:

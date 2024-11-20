@@ -3,7 +3,9 @@ import { getServerSession } from "next-auth/next"
 import authOptions from "app/(utils)/authOptions"
 import { getElcaProjectDataWithRequest } from "lib/domain-logic/circularity/server-actions/getElcaProjectDataWithRequestCache"
 import NavBar from "./(components)/NavBar"
-import UnauthorizedRedirect from "../../(components)/UnauthorizedRedirect"
+import UnauthenticatedRedirect from "../../(components)/UnauthenticatedRedirect"
+import { ensureUserAuthToProject } from "lib/ensureAuthorized"
+import errorHandler from "app/(utils)/errorHandler"
 
 export default async function ProjectLayout({
   children,
@@ -12,24 +14,28 @@ export default async function ProjectLayout({
   children: React.ReactNode
   params: { projectId: string }
 }) {
-  const session = await getServerSession(authOptions)
+  return errorHandler(async () => {
+    const session = await getServerSession(authOptions)
 
-  if (!session?.user) {
-    return <UnauthorizedRedirect />
-  }
+    if (!session?.user) {
+      return <UnauthenticatedRedirect />
+    }
 
-  const projectInfo = await getElcaProjectDataWithRequest(params.projectId, session.user.id)
+    await ensureUserAuthToProject(Number(session.user.id), Number(params.projectId))
 
-  if (!projectInfo) {
-    return <div>Projects with this ID not found for the current user.</div>
-  }
+    const projectInfo = await getElcaProjectDataWithRequest(params.projectId, session.user.id)
 
-  return (
-    <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
-      <NavBar projectInfo={projectInfo} />
-      <section className="bg-white dark:bg-gray-900">
-        <div className="py-8">{children}</div>
-      </section>
-    </div>
-  )
+    if (!projectInfo) {
+      return <div>Projects with this ID not found for the current user.</div>
+    }
+
+    return (
+      <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
+        <NavBar projectInfo={projectInfo} />
+        <section className="bg-white dark:bg-gray-900">
+          <div className="py-8">{children}</div>
+        </section>
+      </div>
+    )
+  })
 }

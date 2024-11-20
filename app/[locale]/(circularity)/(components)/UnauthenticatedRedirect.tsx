@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation"
 
-export default async function UnauthorizedRedirect() {
+export default function UnauthenticatedRedirect() {
   return redirect("/api/auth/signin")
 }
