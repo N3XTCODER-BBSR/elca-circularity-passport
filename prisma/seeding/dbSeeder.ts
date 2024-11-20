@@ -127,9 +127,9 @@ async function seedCircularityTool() {
         const existingCategory = await prisma.tBs_ProductDefinitionEOLCategory.findFirst({
           where: {
             name: row.eolCategoryName,
-            eolScenarioUnbuiltReal: eolScenarioReal,
-            eolScenarioUnbuiltPotential: eolScenarioPotential,
-            technologyFactor: parseFloat(row.technologyFactor),
+            // eolScenarioUnbuiltReal: eolScenarioReal,
+            // eolScenarioUnbuiltPotential: eolScenarioPotential,
+            // technologyFactor: parseFloat(row.technologyFactor),
           },
         })
 
@@ -161,12 +161,22 @@ async function seedCircularityTool() {
 
       // Create Oekobaudat Mapping
       for (const [key, value] of Object.entries(row)) {
+        // TODO: adhere to composite primary key restraint [oebd_processUuid, oebd_versionUuid]
         if (key.startsWith("oekobaudatUuid____") && value !== "nicht vorhanden") {
           const splitKey = key.split("____")
           if (splitKey.length > 1 && splitKey[1]) {
             const versionUuid = splitKey[1].replace(/_/g, "-")
-            await prisma.tBs_OekobaudatMapping.create({
-              data: {
+            await prisma.tBs_OekobaudatMapping.upsert({
+              where: {
+                oebd_processUuid_oebd_versionUuid: {
+                  oebd_processUuid: value,
+                  oebd_versionUuid: versionUuid,
+                },
+              },
+              update: {
+                tBs_productId: tBaustoff.id, // If record exists, update the product ID
+              },
+              create: {
                 oebd_processUuid: value,
                 oebd_versionUuid: versionUuid,
                 tBs_productId: tBaustoff.id,
