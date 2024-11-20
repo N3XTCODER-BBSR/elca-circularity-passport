@@ -1,11 +1,9 @@
 import "styles/global.css"
-import { getServerSession } from "next-auth/next"
-import authOptions from "app/(utils)/authOptions"
 import { getElcaProjectDataWithRequest } from "lib/domain-logic/circularity/server-actions/getElcaProjectDataWithRequestCache"
 import NavBar from "./(components)/NavBar"
-import UnauthenticatedRedirect from "../../(components)/UnauthenticatedRedirect"
 import { ensureUserAuthToProject } from "lib/ensureAuthorized"
 import errorHandler from "app/(utils)/errorHandler"
+import ensureAuthenticated from "lib/ensureAuthenticated"
 
 export default async function ProjectLayout({
   children,
@@ -15,11 +13,7 @@ export default async function ProjectLayout({
   params: { projectId: string }
 }) {
   return errorHandler(async () => {
-    const session = await getServerSession(authOptions)
-
-    if (!session?.user) {
-      return <UnauthenticatedRedirect />
-    }
+    const session = await ensureAuthenticated()
 
     await ensureUserAuthToProject(Number(session.user.id), Number(params.projectId))
 

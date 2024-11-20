@@ -2,22 +2,16 @@ import { ArrowLongLeftIcon } from "@heroicons/react/20/solid"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getServerSession } from "next-auth"
-import authOptions from "app/(utils)/authOptions"
-import UnauthenticatedRedirect from "app/[locale]/(circularity)/(components)/UnauthenticatedRedirect"
 import { getAvailableTBaustoffProducts } from "lib/domain-logic/circularity/server-actions/getAvailableTBaustoffProducts"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import ComponentLayer from "./(components)/component-layer"
 import { ensureUserAuthToProject } from "lib/ensureAuthorized"
 import errorHandler from "app/(utils)/errorHandler"
+import ensureAuthenticated from "lib/ensureAuthenticated"
 
 const Page = async ({ params }: { params: { projectId: string; componentUuid: string; locale: string } }) => {
   return errorHandler(async () => {
-    const session = await getServerSession(authOptions)
-
-    if (!session?.user) {
-      return <UnauthenticatedRedirect />
-    }
+    const session = await ensureAuthenticated()
 
     await ensureUserAuthToProject(Number(session.user.id), Number(params.projectId))
 
