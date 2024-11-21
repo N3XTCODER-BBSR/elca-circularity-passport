@@ -59,7 +59,7 @@ enum TBs_ProductDefinitionEOLCategoryScenario {
 
 model TBs_ProductDefinitionEOLCategory {
   id                          Int                                         @id @default(autoincrement())
-  name                        String
+  name                        String @unique
   eolScenarioUnbuiltReal      TBs_ProductDefinitionEOLCategoryScenario
   eolScenarioUnbuiltPotential TBs_ProductDefinitionEOLCategoryScenario
   technologyFactor            Float
