@@ -19,22 +19,22 @@ model Passport {
 
 // TODO: consider to define logic-constraints in this file on prisma schema as well
 model TBs_OekobaudatMapping {
-  oebd_processUuid String @map("oekobaudatProcessUuid")
-  oebd_versionUuid       String @map("oekobaudatVersionUuid")
-  tBs_productId          Int? @map("tBaustoffProductId")
-  tBs_product            TBs_ProductDefinition? @relation(name: "ProductToMapping", fields: [tBs_productId], references: [id])
+  oebd_processUuid String                 @map("oekobaudatProcessUuid")
+  oebd_versionUuid String                 @map("oekobaudatVersionUuid")
+  tBs_productId    Int?                   @map("tBaustoffProductId")
+  tBs_product      TBs_ProductDefinition? @relation(name: "ProductToMapping", fields: [tBs_productId], references: [id])
 
   @@id([oebd_processUuid, oebd_versionUuid])
 }
 
 model TBs_ProductDefinition {
-  id                                          Int                              @id @default(autoincrement())
-  tBs_version                            String @map("tBaustoffVersion")
-  name                                        String
-  tBs_ProductDefinitionEOLCategoryId              Int? @map("tBaustoff_ProductEOLCategoryId")
-  tBs_ProductDefinitionEOLCategory                TBs_ProductDefinitionEOLCategory?     @relation(fields: [tBs_ProductDefinitionEOLCategoryId], references: [id])
-  userEnrichedProductData     UserEnrichedProductData[]
-  oekobaudatTBaustoffMappings                 TBs_OekobaudatMapping[]     @relation(name: "ProductToMapping")
+  id                                 Int                               @id @default(autoincrement())
+  tBs_version                        String                            @map("tBaustoffVersion")
+  name                               String
+  tBs_ProductDefinitionEOLCategoryId Int?                              @map("tBaustoff_ProductEOLCategoryId")
+  tBs_ProductDefinitionEOLCategory   TBs_ProductDefinitionEOLCategory? @relation(fields: [tBs_ProductDefinitionEOLCategoryId], references: [id])
+  userEnrichedProductData            UserEnrichedProductData[]
+  oekobaudatTBaustoffMappings        TBs_OekobaudatMapping[]           @relation(name: "ProductToMapping")
 }
 
 enum DismantlingPotentialClassId {
@@ -59,7 +59,7 @@ enum TBs_ProductDefinitionEOLCategoryScenario {
 }
 
 model TBs_ProductDefinitionEOLCategory {
-  id                          Int                                         @id @default(autoincrement())
+  id                          Int                                      @id @default(autoincrement())
   name                        String @unique
   eolScenarioUnbuiltReal      TBs_ProductDefinitionEOLCategoryScenario
   eolScenarioUnbuiltPotential TBs_ProductDefinitionEOLCategoryScenario
@@ -69,17 +69,37 @@ model TBs_ProductDefinitionEOLCategory {
   tBaustoffProducts TBs_ProductDefinition[]
 }
 
+enum DisturbingSubstanceClassId {
+  S0
+  S1
+  S2
+  S3
+  S4
+}
+
+model DisturbingSubstanceSelection {
+  id Int @id @default(autoincrement())
+
+  userEnrichedProductDataElcaElementComponentId Int
+  userEnrichedProductData                       UserEnrichedProductData @relation(fields: [userEnrichedProductDataElcaElementComponentId], references: [elcaElementComponentId])
+
+  disturbingSubstanceClassId DisturbingSubstanceClassId?
+  disturbingSubstanceName    String?
+
+  @@index([userEnrichedProductDataElcaElementComponentId])
+}
+
 // THE "YELLOW TABLE"
 // TODO: improve naming
 model UserEnrichedProductData {
   // HINT: this is the central cross-database linkin field
   // it is called elcaElementComponentId instead of productId because 
   // it comes from the ELCA-DB where things that we call Products are called element_components in the DB
-  elcaElementComponentId Int @id 
+  elcaElementComponentId Int @id
 
   // For filling mismatching gaps for the tBaustoffProduc (when there is no match for the oekobaudat-id/version of the the product in our mapping table)
-  tBaustoffProductDefinitionId             Int? @map("tBaustoffProductId")
-  tBaustoffProductDefinition               TBs_ProductDefinition? @relation(fields: [tBaustoffProductDefinitionId], references: [id])
+  tBaustoffProductDefinitionId   Int?                   @map("tBaustoffProductId")
+  tBaustoffProductDefinition     TBs_ProductDefinition? @relation(fields: [tBaustoffProductDefinitionId], references: [id])
   tBaustoffProductSelectedByUser Boolean
 
   // The user can override ONLY the total-scenario (not the real, not the potential)
@@ -87,9 +107,13 @@ model UserEnrichedProductData {
   // real and potential can only be looked up from the mapping table and the total is then calculated from the real and potential
   // via our formula
 
-  specificEolUnbuiltTotalScenario TBs_ProductDefinitionEOLCategoryScenario?
+  specificEolUnbuiltTotalScenario          TBs_ProductDefinitionEOLCategoryScenario?
   specificEolUnbuiltTotalScenarioProofText String?
 
   dismantlingPotentialClassId DismantlingPotentialClassId?
-}
 
+  selectedDisturbingSubstances           DisturbingSubstanceSelection[]
+  disturbingEolScenarioForS4             TBs_ProductDefinitionEOLCategoryScenario?
+  specificEolBuiltTotalScenario          TBs_ProductDefinitionEOLCategoryScenario?
+  specificEolBuiltTotalScenarioProofText String?
+}

@@ -1,8 +1,5 @@
 "use client"
-import {
-  DismantlingPotentialClassId,
-  TBs_ProductDefinitionEOLCategoryScenario,
-} from "../../../../../../../../../prisma/generated/client"
+
 import { Accordion } from "@szhsin/react-accordion"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
@@ -28,9 +25,10 @@ import getEolClassNameByPoints, {
 } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
-import EOLScenarioEditButton from "./EOLScenarioEditButton"
-import EolScenarioInfoBox from "./EolScenarioInfoBox"
-import TBaustoffProductNameOrSelectorButton from "./TBaustoffProductNameOrSelectorButton"
+import EOLScenarioEditButton from "./layer-details/circularity-info/circularity-details/EOLScenarioEditButton"
+import EolScenarioInfoBox from "./layer-details/circularity-info/circularity-details/EolScenarioInfoBox"
+import TBaustoffProductNameOrSelectorButton from "./layer-details/circularity-info/TBaustoffProductNameOrSelectorButton"
+import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 
 type EolDataSectionProps = {
   layerData: EnrichedElcaElementComponent
@@ -111,7 +109,8 @@ const EolDataSection = ({ layerData, isUpdating, onSaveSpecificEolScenario }: Eo
           <div className="flex flex-row">
             <EolScenarioInfoBox layerData={layerData} />
           </div>
-          <EOLScenarioEditButton layerData={layerData} isUpdating={isUpdating} onSave={onSaveSpecificEolScenario} />
+          {/* TODO: consider to remove the isUpdating prop - instead use isPending from react-query inside of the component */}
+          <EOLScenarioEditButton layerData={layerData} />
         </div>
       </div>
       <SideBySideDescriptionListsWithHeadline justifyEnd data={eolUnbuiltData} className="md:border" />
@@ -132,37 +131,13 @@ const CircularityInfo = (props: CircularityInfoProps) => {
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
   const [isUpdating, setIsUpdating] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [currentLayerData, setCurrentLayerData] = useState<EnrichedElcaElementComponent>(props.layerData)
-
-  const handleTbaustoffProductSave = async (selectedIdStr: string) => {
-    const selectedId = parseInt(selectedIdStr)
-
-    const selectedIdIsSameAsCurrent = currentLayerData.tBaustoffProductData?.tBaustoffProductId === selectedId
-
-    if (selectedIdIsSameAsCurrent) {
-      return
-    }
-
-    setIsUpdating(true)
-    setError(null)
-    try {
-      const updatedLayer = await updateTBaustoffProduct(currentLayerData.component_id, selectedId)
-      setCurrentLayerData(updatedLayer)
-    } catch (err: any) {
-      console.error("Error saving selection:", err)
-      setError(err.message || "An unexpected error occurred")
-    } finally {
-      setIsUpdating(false)
-    }
-  }
 
   const setDismantlingPotentialClassId = async (id: DismantlingPotentialClassId) => {
     setIsUpdating(true)
     setError(null)
     try {
-      const newIdOrNull = currentLayerData.dismantlingPotentialClassId === id ? null : id
-      const updatedLayer = await updateDismantlingPotentialClassId(currentLayerData.component_id, newIdOrNull)
-      setCurrentLayerData(updatedLayer)
+      const newIdOrNull = props.layerData.dismantlingPotentialClassId === id ? null : id
+      const updatedLayer = await updateDismantlingPotentialClassId(props.layerData.component_id, newIdOrNull)
     } catch (err: any) {
       console.error("Error saving selection:", err)
       setError(err.message || "An unexpected error occurred")
@@ -178,12 +153,7 @@ const CircularityInfo = (props: CircularityInfoProps) => {
     setIsUpdating(true)
     setError(null)
     try {
-      const updatedLayer = await updateSpecificEolScenario(
-        currentLayerData.component_id,
-        selectedEolScenario,
-        proofText
-      )
-      setCurrentLayerData(updatedLayer)
+      const updatedLayer = await updateSpecificEolScenario(props.layerData.component_id, selectedEolScenario, proofText)
     } catch (err: any) {
       console.error("Error saving selection:", err)
       setError(err.message || "An unexpected error occurred")
@@ -212,18 +182,18 @@ const CircularityInfo = (props: CircularityInfoProps) => {
     },
   }
 
-  const showCircularityDetails = currentLayerData.tBaustoffProductData
+  const showCircularityDetails = props.layerData.tBaustoffProductData
 
   const eolUnbuiltDataSecondary = [
     // POTENTIAL
     {
       key: "Klasse Rückbau", //t("..."),
-      value: currentLayerData.dismantlingPotentialClassId ?? "-",
+      value: props.layerData.dismantlingPotentialClassId ?? "-",
     },
     {
       key: "Punkte Rückbau", //t("..."),
-      value: currentLayerData.dismantlingPotentialClassId
-        ? dismantlingPotentialClassIdMapping[currentLayerData.dismantlingPotentialClassId].points
+      value: props.layerData.dismantlingPotentialClassId
+        ? dismantlingPotentialClassIdMapping[props.layerData.dismantlingPotentialClassId].points
         : "-",
     },
   ]
@@ -255,12 +225,7 @@ const CircularityInfo = (props: CircularityInfoProps) => {
             tBaustoff Baustoff <Required />
           </StyledDt>
           <StyledDd justifyEnd>
-            <TBaustoffProductNameOrSelectorButton
-              layerData={currentLayerData}
-              onSave={handleTbaustoffProductSave}
-              options={tBaustoffProducts}
-              isUpdating={isUpdating}
-            />
+            <TBaustoffProductNameOrSelectorButton layerData={props.layerData} options={tBaustoffProducts} />
           </StyledDd>
         </TwoColGrid>
       </Area>
@@ -271,7 +236,7 @@ const CircularityInfo = (props: CircularityInfoProps) => {
             <Heading4>
               Rückbaupotential <Required />
             </Heading4>
-            {currentLayerData.dismantlingPotentialClassId === null && (
+            {props.layerData.dismantlingPotentialClassId === null && (
               <ErrorText className="mr-4">Please select the rebuild potential</ErrorText>
             )}
           </div>
@@ -281,8 +246,8 @@ const CircularityInfo = (props: CircularityInfoProps) => {
               {Object.entries(dismantlingPotentialClassIdMapping).map(([key, value]) => {
                 const isDisabled =
                   isUpdating ||
-                  (currentLayerData.dismantlingPotentialClassId != null &&
-                    currentLayerData.dismantlingPotentialClassId !== key)
+                  (props.layerData.dismantlingPotentialClassId != null &&
+                    props.layerData.dismantlingPotentialClassId !== key)
 
                 return (
                   <button
@@ -291,7 +256,7 @@ const CircularityInfo = (props: CircularityInfoProps) => {
                     disabled={isDisabled}
                     className={twMerge(
                       `relative flex min-w-[400px] items-center justify-center rounded-md px-4 py-4 text-sm font-semibold ring-1 ring-inset ring-gray-300 focus:z-10`,
-                      key === currentLayerData.dismantlingPotentialClassId
+                      key === props.layerData.dismantlingPotentialClassId
                         ? "bg-indigo-500 text-white ring-indigo-500 hover:bg-indigo-600 "
                         : "bg-white hover:bg-gray-50",
                       isDisabled ? "cursor-not-allowed bg-gray-200 hover:bg-gray-200" : "cursor-pointer"
@@ -311,7 +276,7 @@ const CircularityInfo = (props: CircularityInfoProps) => {
 
       <EolDataSection
         isUpdating={isUpdating}
-        layerData={currentLayerData}
+        layerData={props.layerData}
         onSaveSpecificEolScenario={onSaveSpecificEolScenario}
       />
     </div>

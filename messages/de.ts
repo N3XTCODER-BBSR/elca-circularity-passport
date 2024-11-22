@@ -216,6 +216,33 @@ const translationsPlattformGeneric = {
     Components: {
       Layers: {
         CircularityInfo: {
+          sections: {
+            disturbingSubstances: {
+              classNamesForSelectorButtons: {
+                S0: "S0 - Keine Störstoffe",
+                S1: "S1",
+                S2: "S2",
+                S3: "S3",
+                S4: "S4",
+              },
+              substanceNameInputPlaceholder: "Name des Störstoffes",
+              specificScenarioForS4: {
+                modal: {
+                  title: "EoL-Szenario im Falle von S4",
+                  warningBox: `Es wurde ein S4 Störstoff ausgewählt. EOL-Punkte können nicht automatisch abgezogen werden. Bitte wählen Sie manuell ein neues EOL-Szenario unter Berücksichtigung des Störstoffes aus.`,
+                  ctaHint:
+                    "Bitte wählen Sie eine Option aus dem Dropdown-Menü aus und verwenden Sie dazu die unten stehende Referenzanleitung.",
+                  referenceInstructionTable: {
+                    tableTitle: "Referenzanleitung",
+                    columnHeaders: {
+                      tBaustoffProduct: "tBaustoff Produkt",
+                      eolScenarioSpecific: "EoL-Szenario - Verbaut (spezifisch)",
+                    },
+                  },
+                },
+              },
+            },
+          },
           title: "Zirkularität",
           CircularityPotential: {
             title: "Zirkularitätspotenzial",

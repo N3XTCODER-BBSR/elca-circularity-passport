@@ -6,10 +6,7 @@ import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-type
 import { prisma } from "prisma/prismaClient"
 import { getElcaComponentDataByLayerIdAndUserId } from "./utils/getElcaComponentDataByLayerIdAndUserId"
 
-export async function updateTBaustoffProduct(
-  layerId: number,
-  selectedId: number
-): Promise<EnrichedElcaElementComponent> {
+export async function updateTBaustoffProduct(layerId: number, selectedId: number) {
   if (!layerId || !selectedId) {
     throw new Error("Invalid layerId or selectedId")
   }
@@ -30,6 +27,7 @@ export async function updateTBaustoffProduct(
       specificEolUnbuiltTotalScenario: null,
       specificEolUnbuiltTotalScenarioProofText: null,
       dismantlingPotentialClassId: null,
+      disturbingEolScenarioForS4: null,
     },
     create: {
       elcaElementComponentId: layerId,
@@ -38,6 +36,9 @@ export async function updateTBaustoffProduct(
     },
   })
 
-  const newElcaElementComponentData = await getElcaComponentDataByLayerIdAndUserId(layerId, session.user.id)
-  return newElcaElementComponentData
+  await prisma.disturbingSubstanceSelection.deleteMany({
+    where: {
+      userEnrichedProductDataElcaElementComponentId: layerId,
+    },
+  })
 }

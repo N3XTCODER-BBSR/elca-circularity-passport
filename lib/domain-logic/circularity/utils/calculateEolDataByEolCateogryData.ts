@@ -1,7 +1,7 @@
-import { TBs_ProductDefinitionEOLCategory } from "../../../../../prisma/generated/client"
 import getEolClassNameByPoints, {
   getEolPointsByScenario,
 } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import { TBs_ProductDefinitionEOLCategory } from "prisma/generated/client"
 
 export function calculateEolDataByEolCateogryData(eolCategory: TBs_ProductDefinitionEOLCategory | null | undefined) {
   if (eolCategory == null) {

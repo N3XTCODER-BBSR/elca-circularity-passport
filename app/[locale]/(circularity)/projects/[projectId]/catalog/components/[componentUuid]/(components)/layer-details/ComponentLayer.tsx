@@ -1,12 +1,14 @@
 "use client"
 
+import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
+import getElcaComponentDataByLayerId from "lib/domain-logic/circularity/server-actions/getElcaComponentDataByLayerId"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
-import CircularityInfo from "./circularity-info"
+import CircularityInfo from "./circularity-info/CircularityInfo"
 
 type ComponentLayerProps = {
   layerData: EnrichedElcaElementComponent
@@ -16,13 +18,22 @@ type ComponentLayerProps = {
 }
 
 const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }: ComponentLayerProps) => {
-  const volume = layerData.layer_length * layerData.layer_width * layerData.layer_size
-  const mass = layerData.process_config_density * volume
+  const { data: currentLayerData } = useQuery<EnrichedElcaElementComponent, Error>({
+    queryKey: ["layerData", layerData.component_id],
+    queryFn: () => {
+      return getElcaComponentDataByLayerId(layerData.component_id)
+    },
+    initialData: layerData,
+    staleTime: Infinity,
+  })
+
+  const volume = currentLayerData.layer_length * currentLayerData.layer_width * currentLayerData.layer_size
+  const mass = currentLayerData.process_config_density * volume
 
   const layerKeyValues: KeyValueTuple[] = [
     {
       key: "Schichtposition",
-      value: layerData.layer_position,
+      value: currentLayerData.layer_position,
     },
     {
       key: "Volumen [m3]",
@@ -30,15 +41,15 @@ const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }:
     },
     {
       key: "Oekobaudat UUID",
-      value: layerData.oekobaudat_process_uuid,
+      value: currentLayerData.oekobaudat_process_uuid,
     },
     {
       key: "Rohdichte [kg/m3]",
-      value: layerData.process_config_density,
+      value: currentLayerData.process_config_density,
     },
     {
       key: "Oekobaudat Baustoff",
-      value: layerData.process_config_name,
+      value: currentLayerData.process_config_name,
     },
     {
       key: "Bezugsmenge ÖkoBau.dat",
@@ -46,7 +57,7 @@ const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }:
     },
     {
       key: "Verbaute Menge",
-      value: layerData.quantity,
+      value: currentLayerData.quantity,
     },
     {
       key: "Einheit Bezugsmenge",
@@ -54,7 +65,7 @@ const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }:
     },
     {
       key: "Verbaute Menge Einheit",
-      value: layerData.quantity,
+      value: currentLayerData.quantity,
     },
     {
       key: "Masse [kg]",
@@ -62,7 +73,7 @@ const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }:
     },
     {
       key: "Schichtdicke [m]",
-      value: layerData.layer_size,
+      value: currentLayerData.layer_size,
     },
   ]
 
@@ -71,13 +82,13 @@ const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }:
       <div className="flex items-start">
         <Image src="/component-layer.svg" alt="layer-icon" width={20} height={20} />
         <h2 className="ml-2 text-2xl font-semibold leading-6 text-gray-900">
-          {layerNumber} - {layerData.process_name}
+          {layerNumber} - {currentLayerData.process_name}
         </h2>
       </div>
       <div className="mt-8 overflow-hidden">
         <div className="">
           <SideBySideDescriptionListsWithHeadline data={layerKeyValues} />
-          <CircularityInfo layerData={layerData} tBaustoffProducts={tBaustoffProducts} />
+          <CircularityInfo layerData={currentLayerData} tBaustoffProducts={tBaustoffProducts} />
         </div>
       </div>
     </div>

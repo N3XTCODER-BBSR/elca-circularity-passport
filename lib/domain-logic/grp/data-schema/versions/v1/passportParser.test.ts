@@ -1,5 +1,5 @@
-import { Prisma } from "../../../../../../prisma/generated/client"
 import { passportParser } from "./passportParser"
+import { Prisma } from "../../../../../../prisma/generated/client"
 
 describe("passportParser", () => {
   const validBuildingComponents = [

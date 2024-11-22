@@ -217,6 +217,32 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
     Components: {
       Layers: {
         CircularityInfo: {
+          sections: {
+            disturbingSubstances: {
+              classNamesForSelectorButtons: {
+                S0: "S0 - No disturbing substances",
+                S1: "S1",
+                S2: "S2",
+                S3: "S3",
+                S4: "S4",
+              },
+              substanceNameInputPlaceholder: "Name of disturbing substance",
+              specificScenarioForS4: {
+                modal: {
+                  title: "EoL Scenario in Case of S4",
+                  warningBox: `An S4 disruptive substance has been selected. EOL points cannot be automatically deducted. Please manually select a new EOL scenario, taking the disruptive substance into account.`,
+                  ctaHint: "Please select an option from the dropdown menu and use the reference guide below.",
+                  referenceInstructionTable: {
+                    tableTitle: "Reference Guide",
+                    columnHeaders: {
+                      tBaustoffProduct: "tBaustoff Product",
+                      eolScenarioSpecific: "EoL Scenario - Built (Specific)",
+                    },
+                  },
+                },
+              },
+            },
+          },
           title: "Circularity",
           CircularityPotential: {
             title: "Circularity Potential",

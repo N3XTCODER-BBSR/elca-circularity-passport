@@ -12,6 +12,7 @@ type ComponentLayerProps = {
 
 const ComponentLayer = ({ layerData, layerNumber }: ComponentLayerProps) => {
   const t = useTranslations("Grp.Web.sections.detailPage.componentLayer")
+
   return (
     <div className="mb-6 overflow-hidden border border-gray-200 bg-white p-6">
       <div className="flex items-start">

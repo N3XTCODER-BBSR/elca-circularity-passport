@@ -1,5 +1,10 @@
-import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "../../../prisma/generated/client"
 import { EolClasses } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import {
+  DismantlingPotentialClassId,
+  DisturbingSubstanceSelection,
+  TBs_ProductDefinitionEOLCategoryScenario,
+  UserEnrichedProductData,
+} from "prisma/generated/client"
 
 export type ElcaProjectInfo = {
   id: number
@@ -25,6 +30,10 @@ export type TBaustoffProductData = {
   name: string
   // TODO: can this actually be optional/nullabel at this point?
   eolData?: ElcaProjectComponentLayerEolData
+}
+
+export type UserEnrichedProductDataWithDisturbingSubstanceSelection = UserEnrichedProductData & {
+  selectedDisturbingSubstances: DisturbingSubstanceSelection[]
 }
 
 // TODO: rename this to product
@@ -60,6 +69,8 @@ export type EnrichedElcaElementComponent = ElcaProjectComponentRow & {
   dismantlingPotentialClassId?: DismantlingPotentialClassId | null
   eolUnbuiltSpecificScenario?: TBs_ProductDefinitionEOLCategoryScenario | null
   eolUnbuiltSpecificScenarioProofText: string | null | undefined
+  disturbingSubstanceSelections: DisturbingSubstanceSelection[]
+  disturbingEolScenarioForS4: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
 }
 
 export type ElcaElementWithComponents = {
@@ -69,4 +80,8 @@ export type ElcaElementWithComponents = {
   din_code: string
   layers: EnrichedElcaElementComponent[]
   unit: string
+}
+
+export type DisturbingSubstanceSelectionWithNullabelId = Omit<DisturbingSubstanceSelection, "id"> & {
+  id: number | null
 }

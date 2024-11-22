@@ -1,13 +1,15 @@
 "use client"
 
-import { TBs_ProductDefinitionEOLCategoryScenario } from "../../../../../../../../../prisma/generated/client"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { EditButton } from "app/(components)/generic/layout-elements"
 import { Required, Text } from "app/(components)/generic/layout-elements"
+import { updateSpecificEolScenario } from "lib/domain-logic/circularity/server-actions/updateSpecificScenario"
 import { EOLScenarioMap } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
+import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import EolScenarioInfoBox from "./EolScenarioInfoBox"
-import Modal from "./TBaustoffSelectorModal"
+import Modal from "../../../Modal"
 
 type Option = {
   id: string
@@ -15,8 +17,6 @@ type Option = {
 }
 
 interface EOLScenarioEditButtonProps {
-  onSave: (selectedEolScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined, proofText: string) => void
-  isUpdating: boolean
   layerData: EnrichedElcaElementComponent
 }
 
@@ -30,7 +30,6 @@ type ModalPage1Props = {
 type ModalPage2Props = {
   handleCancel: () => void
   handleSave: (scenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined, proofText: string) => void
-  isUpdating: boolean
   options: Option[]
   layerData: EnrichedElcaElementComponent
 }
@@ -61,7 +60,7 @@ const ModalPage1 = ({ layerData, isUpdating, handleCancel, handleNextModalPage }
   )
 }
 
-const ModalPage2 = ({ layerData, isUpdating, handleCancel, handleSave, options }: ModalPage2Props) => {
+const ModalPage2 = ({ layerData, handleCancel, handleSave, options }: ModalPage2Props) => {
   const [proof, setProof] = useState<string>(layerData.eolUnbuiltSpecificScenarioProofText || "")
   const [selectedScenario, setSelectedScenario] = useState<TBs_ProductDefinitionEOLCategoryScenario | null | undefined>(
     layerData.eolUnbuiltSpecificScenario
@@ -79,7 +78,6 @@ const ModalPage2 = ({ layerData, isUpdating, handleCancel, handleSave, options }
         className="mt-1 block w-full rounded-md border-2 border-gray-200 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
         value={selectedScenario?.toString()}
         onChange={(e) => setSelectedScenario(e.target.value as TBs_ProductDefinitionEOLCategoryScenario)}
-        disabled={isUpdating}
       >
         <option value="">[EMPTY]</option>
         {options.map((option) => (
@@ -101,20 +99,19 @@ const ModalPage2 = ({ layerData, isUpdating, handleCancel, handleSave, options }
         placeholder="Provide your proof here..."
         value={proof}
         onChange={(e) => setProof(e.target.value)}
-        disabled={isUpdating}
       ></textarea>
 
       <div className="mt-6 flex justify-end space-x-4">
-        <button type="button" className="rounded bg-gray-200 px-4 py-2" onClick={handleCancel} disabled={isUpdating}>
+        <button type="button" className="rounded bg-gray-200 px-4 py-2" onClick={handleCancel}>
           Cancel
         </button>
         <button
           type="button"
           className={`rounded bg-indigo-600 px-4 py-2 text-white ${
-            !selectedScenario || !proof || isUpdating ? "cursor-not-allowed opacity-50" : ""
+            !selectedScenario || !proof ? "cursor-not-allowed opacity-50" : ""
           }`}
           onClick={() => handleSave(selectedScenario, proof)}
-          disabled={!selectedScenario || !proof || isUpdating}
+          disabled={!selectedScenario || !proof}
         >
           Save
         </button>
@@ -123,7 +120,29 @@ const ModalPage2 = ({ layerData, isUpdating, handleCancel, handleSave, options }
   )
 }
 
-const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ onSave, isUpdating, layerData }) => {
+const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ layerData }) => {
+  const queryClient = useQueryClient()
+
+  const updateSpecificEolScenarioMutation = useMutation<
+    void,
+    Error,
+    {
+      selectedEolScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
+      proofText: string
+    }
+  >({
+    mutationFn: async ({
+      selectedEolScenario,
+      proofText,
+    }: {
+      selectedEolScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
+      proofText: string
+    }) => {
+      await updateSpecificEolScenario(layerData.component_id, selectedEolScenario, proofText)
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
+  })
+
   const eolScenarioOptions = Object.values(TBs_ProductDefinitionEOLCategoryScenario).map((value) => ({
     id: value,
     value: EOLScenarioMap[value],
@@ -140,7 +159,8 @@ const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ onSave, i
     selectedScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined,
     proofText: string
   ) => {
-    onSave(selectedScenario, proofText)
+    updateSpecificEolScenarioMutation.mutate({ selectedEolScenario: selectedScenario, proofText })
+
     setIsModalOpen(false)
     setModalPage(1)
   }
@@ -153,9 +173,7 @@ const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ onSave, i
   return (
     <>
       <div>
-        <EditButton onClick={() => setIsModalOpen(true)} disabled={isUpdating}>
-          Edit
-        </EditButton>
+        <EditButton onClick={() => setIsModalOpen(true)}>Edit</EditButton>
       </div>
 
       <Modal isOpen={isModalOpen} onClose={handleCancel} title="EOL Scenario - Unbuilt">
@@ -172,7 +190,6 @@ const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ onSave, i
             options={eolScenarioOptions}
             handleCancel={handleCancel}
             handleSave={handleSave}
-            isUpdating={isUpdating}
           />
         )}
       </Modal>

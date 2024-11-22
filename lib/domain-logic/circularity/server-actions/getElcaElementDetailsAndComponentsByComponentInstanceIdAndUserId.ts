@@ -4,11 +4,12 @@ import {
   ElcaProjectComponentRow,
   EnrichedElcaElementComponent,
   TBaustoffProductData,
+  UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
 import { query } from "lib/elca-legacy-db"
 import { prisma } from "prisma/prismaClient"
-import { calculateEolDataByEolCateogryData } from "./utils/calculateEolDataByEolCateogryData"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
+import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
 
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
   componentInstanceId: string,
@@ -110,12 +111,17 @@ async function fetchElcaProjectComponentsByInstanceIdAndUserId(
   return result.rows as ElcaProjectComponentRow[]
 }
 
-async function getUserDefinedTBaustoffData(componentIds: number[]): Promise<UserEnrichedProductData[]> {
+async function getUserDefinedTBaustoffData(
+  componentIds: number[]
+): Promise<UserEnrichedProductDataWithDisturbingSubstanceSelection[]> {
   return prisma.userEnrichedProductData.findMany({
     where: {
       elcaElementComponentId: {
         in: componentIds,
       },
+    },
+    include: {
+      selectedDisturbingSubstances: true,
     },
   })
 }
@@ -192,7 +198,7 @@ function getTBaustoffProductData(
 // it's more specifically about mapping/grouping/filtering
 function processProjectComponents(
   projectComponents: ElcaProjectComponentRow[],
-  userDefinedMap: Map<number, UserEnrichedProductData>,
+  userDefinedMap: Map<number, UserEnrichedProductDataWithDisturbingSubstanceSelection>,
   mappingEntriesMap: Map<string, TBs_OekobaudatMapping>,
   productMap: Map<
     number,
@@ -227,7 +233,7 @@ function processProjectComponents(
 // it's more specifically about mapping/filtering
 function processLayers(
   components: ElcaProjectComponentRow[],
-  userDefinedMap: Map<number, UserEnrichedProductData>,
+  userDefinedMap: Map<number, UserEnrichedProductDataWithDisturbingSubstanceSelection>,
   mappingEntriesMap: Map<string, TBs_OekobaudatMapping>,
   productMap: Map<
     number,
@@ -256,6 +262,8 @@ function processLayers(
         tBaustoffProductSelectedByUser: userDefinedComponentData?.tBaustoffProductSelectedByUser,
         eolUnbuiltSpecificScenario: userDefinedComponentData?.specificEolUnbuiltTotalScenario,
         eolUnbuiltSpecificScenarioProofText: userDefinedComponentData?.specificEolUnbuiltTotalScenarioProofText,
+        disturbingSubstanceSelections: userDefinedComponentData?.selectedDisturbingSubstances || [],
+        disturbingEolScenarioForS4: userDefinedComponentData?.disturbingEolScenarioForS4,
       }
 
       return enrichedElcaElementComponent

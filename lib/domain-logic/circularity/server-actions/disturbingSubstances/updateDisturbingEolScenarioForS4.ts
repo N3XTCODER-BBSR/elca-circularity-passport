@@ -3,13 +3,13 @@
 import { getServerSession } from "next-auth"
 import authOptions from "app/(utils)/authOptions"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
+import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import { prisma } from "prisma/prismaClient"
-import { getElcaComponentDataByLayerIdAndUserId } from "./utils/getElcaComponentDataByLayerIdAndUserId"
-import { DismantlingPotentialClassId } from "../../../../prisma/generated/client"
+import { getElcaComponentDataByLayerIdAndUserId } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 
-export async function updateDismantlingPotentialClassId(
+export async function updateDisturbingEolScenarioForS4(
   layerId: number,
-  selectedDismantlingPotentialClassId: DismantlingPotentialClassId | null
+  specificScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
 ) {
   if (!layerId) {
     throw new Error("Invalid layerId")
@@ -21,17 +21,17 @@ export async function updateDismantlingPotentialClassId(
   }
 
   await prisma.userEnrichedProductData.upsert({
-    // TODO: IMPORTANT: add checks here for:
+    // TODO: add checks here for:
     // 1. user has access to the project and layer
     // 2. that there is not already a match found by out OBD-tBaustoff mapping
     // 3. if the layerId exists in the database
     where: { elcaElementComponentId: layerId },
     update: {
-      dismantlingPotentialClassId: selectedDismantlingPotentialClassId,
+      disturbingEolScenarioForS4: specificScenario,
     },
     create: {
       elcaElementComponentId: layerId,
-      dismantlingPotentialClassId: selectedDismantlingPotentialClassId,
+      disturbingEolScenarioForS4: specificScenario,
       tBaustoffProductSelectedByUser: false,
     },
   })
