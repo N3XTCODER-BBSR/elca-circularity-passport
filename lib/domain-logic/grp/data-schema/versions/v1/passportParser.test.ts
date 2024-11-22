@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client"
+import { Prisma } from "../../../../../../prisma/generated/client"
 import { passportParser } from "./passportParser"
 
 describe("passportParser", () => {

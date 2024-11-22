@@ -1,5 +1,8 @@
 "use client"
-import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "@prisma/client"
+import {
+  DismantlingPotentialClassId,
+  TBs_ProductDefinitionEOLCategoryScenario,
+} from "../../../../../../../../../prisma/generated/client"
 import { Accordion } from "@szhsin/react-accordion"
 import { useTranslations } from "next-intl"
 import { useState } from "react"

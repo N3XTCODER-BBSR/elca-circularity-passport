@@ -1,4 +1,4 @@
-import { TBs_ProductDefinitionEOLCategory } from "@prisma/client"
+import { TBs_ProductDefinitionEOLCategory } from "../../../../../prisma/generated/client"
 import getEolClassNameByPoints, {
   getEolPointsByScenario,
 } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
