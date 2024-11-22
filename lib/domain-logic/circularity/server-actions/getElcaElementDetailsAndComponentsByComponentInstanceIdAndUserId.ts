@@ -5,7 +5,7 @@ import {
   EnrichedElcaElementComponent,
   TBaustoffProductData,
 } from "lib/domain-logic/types/domain-types"
-import { query } from "lib/elca-legacy-db"
+import { query } from "lib/db/elca-legacy-db"
 import { prisma } from "prisma/prismaClient"
 import { calculateEolDataByEolCateogryData } from "./utils/calculateEolDataByEolCateogryData"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
