@@ -102,6 +102,7 @@ The following scripts are available in the `package.json`:
 - `format`: Formats the code with Prettier
 - `postinstall`: Applies patches to external dependencies
 - `preinstall`: Ensures the project is installed with Yarn
+- `prisma:generate`: Generates the Prisma clients
 - `coupling-graph`: Generates a coupling and cohesion graph for the components
 
 ## 🔗 Coupling Graph
