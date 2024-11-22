@@ -12,26 +12,7 @@ export const ensureUserAuthorizationToProject = async (userId: number, projectId
   const isAuthorized = await prismaLegacy.projects.findFirst({
     where: {
       id: projectId,
-      OR: [
-        { owner_id: userId },
-        {
-          groups: {
-            group_members: {
-              some: {
-                user_id: userId,
-              },
-            },
-          },
-        },
-        {
-          project_access_tokens: {
-            some: {
-              user_id: userId,
-              is_confirmed: true,
-            },
-          },
-        },
-      ],
+      OR: getProjectAuthorizationConditions(userId),
     },
     select: { id: true },
   })
@@ -62,27 +43,7 @@ export const ensureUserAuthorizationToElementComponent = async (userId: number, 
           elements: {
             project_variants: {
               projects_project_variants_project_idToprojects: {
-                OR: [
-                  // User is the owner of the project
-                  { owner_id: userId },
-                  // User is a member of the project's access group
-                  {
-                    groups: {
-                      group_members: {
-                        some: { user_id: userId },
-                      },
-                    },
-                  },
-                  // User has a confirmed access token for the project
-                  {
-                    project_access_tokens: {
-                      some: {
-                        user_id: userId,
-                        is_confirmed: true,
-                      },
-                    },
-                  },
-                ],
+                OR: getProjectAuthorizationConditions(userId),
               },
             },
           },
@@ -96,3 +57,28 @@ export const ensureUserAuthorizationToElementComponent = async (userId: number, 
     throw new UnauthorizedError()
   }
 }
+
+const getProjectAuthorizationConditions = (userId: number) => [
+  // User is the owner of the project
+  { owner_id: userId },
+  // User is a member of the project's access group
+  {
+    groups: {
+      group_members: {
+        some: {
+          user_id: userId,
+        },
+      },
+    },
+  },
+  // User has a confirmed access token for the project
+  {
+    project_access_tokens: {
+      some: {
+        user_id: userId,
+        is_confirmed: true,
+        can_edit: true,
+      },
+    },
+  },
+]
