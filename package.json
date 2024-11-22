@@ -23,6 +23,7 @@
     "coupling-graph": "npx madge --extensions js,jsx,ts,tsx,css,md,mdx ./ --exclude '.next|tailwind.config.js|reset.d.ts|prettier.config.js|postcss.config.js|playwright.config.ts|next.config.js|next-env.d.ts|instrumentation.ts|e2e/|README.md|.storybook/|.eslintrc.js' --image graph.svg",
     "scalingo-postbuild": "./devops/scalingoPostbuild.sh",
     "prepare": "husky",
+    "prisma:generate": "prisma generate --schema prisma/schema.prisma && prisma generate --schema prisma/schemaLegacy.prisma",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "prisma db seed",
     "tbaustoff-mapping-csv-to-json-transformer": "npx ts-node prisma/seeding/tBaustoffMappingCsvToJsonTransformer.mts"
