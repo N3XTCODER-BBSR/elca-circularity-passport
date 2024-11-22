@@ -1,6 +1,6 @@
 "use client"
 
-import { TBs_ProductDefinitionEOLCategoryScenario } from "@prisma/client"
+import { TBs_ProductDefinitionEOLCategoryScenario } from "../../../../../../../../../prisma/generated/client"
 import { useState } from "react"
 import { EditButton } from "app/(components)/generic/layout-elements"
 import { Required, Text } from "app/(components)/generic/layout-elements"

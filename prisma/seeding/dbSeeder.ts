@@ -1,4 +1,4 @@
-import { PrismaClient, TBs_ProductDefinitionEOLCategoryScenario } from "@prisma/client"
+import { PrismaClient, TBs_ProductDefinitionEOLCategoryScenario } from "../../prisma/generated/client"
 import { z } from "zod"
 import fs from "fs"
 import path from "path"

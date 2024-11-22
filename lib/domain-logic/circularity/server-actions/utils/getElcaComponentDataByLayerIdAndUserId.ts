@@ -1,4 +1,4 @@
-import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "@prisma/client"
+import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../../prisma/generated/client"
 import {
   ElcaProjectComponentRow,
   EnrichedElcaElementComponent,

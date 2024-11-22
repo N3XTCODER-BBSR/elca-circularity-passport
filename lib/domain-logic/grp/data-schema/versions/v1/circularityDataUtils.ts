@@ -1,4 +1,4 @@
-import { TBs_ProductDefinitionEOLCategoryScenario } from "@prisma/client"
+import { TBs_ProductDefinitionEOLCategoryScenario } from "../../../../../../prisma/generated/client"
 
 export enum EolClasses {
   NA = "N/A",

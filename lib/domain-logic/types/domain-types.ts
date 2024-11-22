@@ -1,4 +1,4 @@
-import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "@prisma/client"
+import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "../../../prisma/generated/client"
 import { EolClasses } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
 
 export type ElcaProjectInfo = {
