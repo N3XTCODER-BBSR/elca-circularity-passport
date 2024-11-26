@@ -9,6 +9,8 @@ const elcaDbName = "elca"
 const elcaDbUsername = "elca"
 const elcaDbPassword = "password"
 
+const elcaDbDumpFile = "elca_db_dump.sql"
+
 const main = async () => {
   try {
     const passportDbContainer = await new PostgreSqlContainer("postgres:16.3-alpine")
@@ -23,12 +25,12 @@ const main = async () => {
       .withUsername(elcaDbUsername)
       .withPassword(elcaDbPassword)
       .withExposedPorts(5432)
-      // .withBindMounts([
-      //   {
-      //     source: `${process.cwd()}/legacy_db_test_data`,
-      //     target: "/var/lib/postgresql/data",
-      //   },
-      // ])
+      .withBindMounts([
+        {
+          source: `${process.cwd()}/${elcaDbDumpFile}`,
+          target: `/tmp/${elcaDbDumpFile}`,
+        },
+      ])
       .start()
 
     const passportDbPort = passportDbContainer.getMappedPort(5432).toString()
@@ -41,6 +43,8 @@ const main = async () => {
     process.env.ELCA_LEGACY_DATABASE_URL = elcaDbUrl
     ;(globalThis as unknown as { [key: string]: StartedTestContainer }).__PASSPORT_DB_CONTAINER__ = passportDbContainer
     ;(globalThis as unknown as { [key: string]: StartedTestContainer }).__ELCA_DB_CONTAINER__ = elcaDbContainer
+
+    await elcaDbContainer.exec(["psql", "-U", elcaDbUsername, "-f", `/tmp/${elcaDbDumpFile}`])
   } catch (error) {
     console.error(error)
     process.exit(1)
