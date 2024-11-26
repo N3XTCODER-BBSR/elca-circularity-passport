@@ -1,4 +1,3 @@
-import { query } from "lib/db/elca-legacy-db"
 import {
   ElcaProjectComponentRow,
   EnrichedElcaElementComponent,
@@ -6,7 +5,7 @@ import {
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
 import { Prisma, TBs_OekobaudatMapping } from "prisma/generated/client"
-import { prisma } from "prisma/prismaClient"
+import { prisma, prismaLegacy } from "prisma/prismaClient"
 
 import { calculateEolDataByEolCateogryData } from "../../utils/calculateEolDataByEolCateogryData"
 
@@ -37,8 +36,9 @@ async function fetchElcaComponentDataByLayerIdAndUserId(
   // TODO: ideally also add project-variant id/uuid here to ensure correctness
 
   // TODO: IMPORTANT: add user permission check here
-  const result = await query(
-    `select
+
+  const result = await prismaLegacy.$queryRaw<ElcaProjectComponentRow[]>`
+  select
       process.life_cycle_ident,
       element_component.id AS component_id,
       element_component.layer_position AS layer_position,
@@ -67,17 +67,15 @@ async function fetchElcaComponentDataByLayerIdAndUserId(
     JOIN elca.process_dbs process_db ON process_db.id = process.process_db_id AND process_db.id = project.process_db_id
     -- join public."groups" groups on groups.id = element.access_group_id 
     --join public.group_members group_member on group_member.group_id = groups.id 
-    WHERE element_component.id = $1 and process.life_cycle_ident = 'A1-3'
+    WHERE element_component.id = ${layerId} and process.life_cycle_ident = 'A1-3'
     -- TODO: IMPORTANT ADD USER PERMISSION CHECK HERE
-    `,
-    [layerId] // , userId]
-  )
+    `
 
-  if (result.rows.length !== 1) {
-    throw new Error(`Expected exactly one element, but found ${result.rows.length}`)
+  if (length !== 1) {
+    throw new Error(`Expected exactly one element, but found ${length}`)
   }
 
-  return result.rows[0] as ElcaProjectComponentRow
+  return result[0]!
 }
 
 async function getUserDefinedTBaustoffDataForComponentId(

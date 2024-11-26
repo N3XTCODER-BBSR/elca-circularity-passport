@@ -1,5 +1,4 @@
 import _ from "lodash"
-import { query } from "lib/db/elca-legacy-db"
 import {
   ElcaElementWithComponents,
   ElcaProjectComponentRow,
@@ -7,7 +6,7 @@ import {
   TBaustoffProductData,
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
-import { prisma } from "prisma/prismaClient"
+import { prisma, prismaLegacy } from "prisma/prismaClient"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
 
@@ -65,9 +64,8 @@ async function fetchElcaProjectComponentsByInstanceIdAndUserId(
   userId: string
 ): Promise<ElcaProjectComponentRow[]> {
   // TODO: ideally also add project-variant id/uuid here to ensure correctness
-  const result = await query(
-    `
-    select
+  return await prismaLegacy.$queryRaw<ElcaProjectComponentRow[]>`
+  select
       element.access_group_id as access_group_id,
       element.uuid AS element_uuid,
       element_component.id AS component_id,
@@ -102,13 +100,9 @@ async function fetchElcaProjectComponentsByInstanceIdAndUserId(
     JOIN elca.process_dbs process_db ON process_db.id = process.process_db_id AND process_db.id = project.process_db_id
     -- join public."groups" groups on groups.id = element.access_group_id 
     --join public.group_members group_member on group_member.group_id = groups.id 
-    WHERE element.uuid = $1 AND life_cycle.phase = 'prod' and project.owner_id = $2 --and group_member.user_id = $2
+    WHERE element.uuid = ${componentInstanceId} AND life_cycle.phase = 'prod' and project.owner_id = ${userId} --and group_member.user_id = ${userId}
     ORDER BY element_uuid, layer_position, component_id, oekobaudat_process_uuid
-  `,
-    [componentInstanceId, userId]
-  )
-
-  return result.rows as ElcaProjectComponentRow[]
+  `
 }
 
 async function getUserDefinedTBaustoffData(
