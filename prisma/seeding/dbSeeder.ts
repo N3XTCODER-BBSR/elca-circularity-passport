@@ -1,12 +1,12 @@
-import { PrismaClient, TBs_ProductDefinitionEOLCategoryScenario } from "../../prisma/generated/client"
-import { z } from "zod"
+import csv from "csv-parser"
 import fs from "fs"
 import path from "path"
-import csv from "csv-parser"
 
+import { prisma } from "prisma/prismaClient"
 import generatePassport from "../../lib/domain-logic/grp/data-schema/versions/v1/passportJsonSeeder"
+import { TBs_ProductDefinitionEOLCategoryScenario } from "../../prisma/generated/client"
+
 const csvFilePath = path.resolve(__dirname, "./obd_tbaustoff_mapping.csv")
-const prisma = new PrismaClient()
 
 const seedPassport = async () => {
   const passport1PassDataV1 = generatePassport(20, 7)
