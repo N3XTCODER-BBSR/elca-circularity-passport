@@ -1,5 +1,4 @@
 import { ArrowPathIcon, ExclamationTriangleIcon } from "@heroicons/react/20/solid"
-import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import { Accordion } from "@szhsin/react-accordion"
 import { useIsMutating, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
@@ -31,11 +30,12 @@ import {
   DisturbingSubstanceSelectionWithNullabelId,
   EnrichedElcaElementComponent,
 } from "lib/domain-logic/types/domain-types"
+import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import BuiltS4SpecificScenarioModal from "./disturbing-substances/BuiltS4SpecificScenarioModal"
-import Modal from "../../../Modal"
 import DisturbingSubstances from "./DisturbingSubstances"
 import EOLScenarioEditButton from "./EOLScenarioEditButton"
 import EolScenarioInfoBox from "./EolScenarioInfoBox"
+import Modal from "../../../Modal"
 
 type EolDataSectionProps = {
   layerDatacirculartyEnrichedLayerData: CalculateCircularityDataForLayerReturnType
