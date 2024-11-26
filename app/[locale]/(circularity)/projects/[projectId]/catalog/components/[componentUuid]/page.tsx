@@ -7,7 +7,7 @@ import authOptions from "app/(utils)/authOptions"
 import UnauthorizedRedirect from "app/[locale]/(circularity)/(components)/UnauthorizedRedirect"
 import { getAvailableTBaustoffProducts } from "lib/domain-logic/circularity/server-actions/getAvailableTBaustoffProducts"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
-import ComponentLayer from "./(components)/component-layer"
+import ComponentLayer from "./(components)/layer-details/ComponentLayer"
 
 const Page = async ({ params }: { params: { projectId: string; componentUuid: string; locale: string } }) => {
   const session = await getServerSession(authOptions)

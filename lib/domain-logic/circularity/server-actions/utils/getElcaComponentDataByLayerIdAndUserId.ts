@@ -1,12 +1,14 @@
-import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../../prisma/generated/client"
+import { query } from "lib/db/elca-legacy-db"
 import {
   ElcaProjectComponentRow,
   EnrichedElcaElementComponent,
   TBaustoffProductData,
+  UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
-import { query } from "lib/db/elca-legacy-db"
+import { Prisma, TBs_OekobaudatMapping } from "prisma/generated/client"
 import { prisma } from "prisma/prismaClient"
-import { calculateEolDataByEolCateogryData } from "./calculateEolDataByEolCateogryData"
+
+import { calculateEolDataByEolCateogryData } from "../../utils/calculateEolDataByEolCateogryData"
 
 export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number, userId: string) => {
   const projectComponent = await fetchElcaComponentDataByLayerIdAndUserId(layerId, userId)
@@ -78,10 +80,15 @@ async function fetchElcaComponentDataByLayerIdAndUserId(
   return result.rows[0] as ElcaProjectComponentRow
 }
 
-async function getUserDefinedTBaustoffDataForComponentId(componentId: number): Promise<UserEnrichedProductData | null> {
+async function getUserDefinedTBaustoffDataForComponentId(
+  componentId: number
+): Promise<UserEnrichedProductDataWithDisturbingSubstanceSelection | null> {
   return prisma.userEnrichedProductData.findUnique({
     where: {
       elcaElementComponentId: componentId,
+    },
+    include: {
+      selectedDisturbingSubstances: true,
     },
   })
 }
@@ -124,7 +131,7 @@ async function getTBaustoffProduct(tBaustoffProductId: number): Promise<Prisma.T
 
 function processProjectComponent(
   projectComponent: ElcaProjectComponentRow,
-  userDefinedData: UserEnrichedProductData | null,
+  userDefinedData: UserEnrichedProductDataWithDisturbingSubstanceSelection | null,
   mappingEntry: TBs_OekobaudatMapping | null,
   product: Prisma.TBs_ProductDefinitionGetPayload<{
     include: { tBs_ProductDefinitionEOLCategory: true }
@@ -147,6 +154,8 @@ function processProjectComponent(
     dismantlingPotentialClassId: userDefinedData?.dismantlingPotentialClassId,
     eolUnbuiltSpecificScenario: userDefinedData?.specificEolUnbuiltTotalScenario,
     eolUnbuiltSpecificScenarioProofText: userDefinedData?.specificEolUnbuiltTotalScenarioProofText,
+    disturbingSubstanceSelections: userDefinedData?.selectedDisturbingSubstances ?? [],
+    disturbingEolScenarioForS4: userDefinedData?.disturbingEolScenarioForS4,
   }
 
   return enrichedComponent
@@ -156,7 +165,7 @@ function getTBaustoffProductData(
   // TODO: check: do we need the underscored params still?
   _componentId: number,
   _oekobaudatProcessUuid: string,
-  userDefinedData: UserEnrichedProductData | null,
+  userDefinedData: UserEnrichedProductDataWithDisturbingSubstanceSelection | null,
   mappingEntry: TBs_OekobaudatMapping | null,
   product: Prisma.TBs_ProductDefinitionGetPayload<{
     include: { tBs_ProductDefinitionEOLCategory: true }

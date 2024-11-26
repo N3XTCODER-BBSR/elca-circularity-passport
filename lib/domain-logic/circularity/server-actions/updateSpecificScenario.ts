@@ -11,7 +11,7 @@ export async function updateSpecificEolScenario(
   layerId: number,
   specificScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined,
   specificEolUnbuiltTotalScenarioProofText: string
-): Promise<EnrichedElcaElementComponent> {
+) {
   if (!layerId) {
     throw new Error("Invalid layerId")
   }
@@ -21,7 +21,6 @@ export async function updateSpecificEolScenario(
     throw new Error("Unauthorized")
   }
 
-  // const updatedTbaustoffProductLayerData = await prisma.userEnrichedProductData.upsert(
   await prisma.userEnrichedProductData.upsert({
     // TODO: add checks here for:
     // 1. user has access to the project and layer
@@ -38,7 +37,4 @@ export async function updateSpecificEolScenario(
       tBaustoffProductSelectedByUser: false,
     },
   })
-
-  const elcaElementComponentData = await getElcaComponentDataByLayerIdAndUserId(layerId, session.user.id)
-  return elcaElementComponentData
 }

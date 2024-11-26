@@ -1,9 +1,13 @@
 "use client"
 
+import { useIsMutating, useMutation } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { EditButton, ErrorText } from "app/(components)/generic/layout-elements"
+import { updateTBaustoffProduct } from "lib/domain-logic/circularity/server-actions/updateTBaustoffProductOfLayer"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
-import Modal from "./TBaustoffSelectorModal"
+import Modal from "../../Modal"
+
 type Option = {
   id: string
   value: string
@@ -12,33 +16,42 @@ type Option = {
 interface TBaustoffProductNameOrSelectorButtonProps {
   layerData: EnrichedElcaElementComponent
   options: Option[]
-  onSave: (selectedId: string) => void
-  isUpdating: boolean
 }
 
 interface SelectMaterialButtonProps {
-  onSave: (selectedId: string) => void
   options: Option[]
-  isUpdating: boolean
+  circulartyEnrichedLayerData: EnrichedElcaElementComponent
 }
 
-const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ onSave, isUpdating, options }) => {
+const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyEnrichedLayerData, options }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedId, setSelectedId] = useState<string>("")
+  const [selectedIdStr, setSelectedIdStr] = useState<string>("")
+  const isPending = useIsMutating() > 0
+
+  const queryClient = useQueryClient()
+
+  const updateTBaustoffProductMutation = useMutation<void, Error, number>({
+    mutationFn: async (selectedId: number) =>
+      await updateTBaustoffProduct(circulartyEnrichedLayerData.component_id, selectedId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["layerData", circulartyEnrichedLayerData.component_id] })
+    },
+  })
 
   const handleSave = () => {
-    onSave(selectedId)
+    const selectedId = parseInt(selectedIdStr)
+    updateTBaustoffProductMutation.mutate(selectedId)
     setIsModalOpen(false)
   }
 
   const handleCancel = () => {
     setIsModalOpen(false)
-    setSelectedId("")
+    setSelectedIdStr("")
   }
   return (
     <>
       <div>
-        <EditButton onClick={() => setIsModalOpen(true)} disabled={isUpdating}>
+        <EditButton onClick={() => setIsModalOpen(true)} disabled={isPending}>
           Select
         </EditButton>
       </div>
@@ -54,9 +67,9 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ onSave, isU
             id="tbaustoff"
             name="tbaustoff"
             className="mt-1 block w-full rounded-md border-2 border-gray-200 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            value={selectedId}
-            onChange={(e) => setSelectedId(e.target.value)}
-            disabled={isUpdating}
+            value={selectedIdStr}
+            onChange={(e) => setSelectedIdStr(e.target.value)}
+            disabled={isPending}
           >
             <option value="" disabled>
               -
@@ -69,16 +82,16 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ onSave, isU
           </select>
         </div>
         <div className="mt-6 flex justify-end space-x-4">
-          <button type="button" className="rounded bg-gray-200 px-4 py-2" onClick={handleCancel} disabled={isUpdating}>
+          <button type="button" className="rounded bg-gray-200 px-4 py-2" onClick={handleCancel} disabled={isPending}>
             Cancel
           </button>
           <button
             type="button"
             className={`rounded bg-indigo-600 px-4 py-2 text-white ${
-              !selectedId || isUpdating ? "cursor-not-allowed opacity-50" : ""
+              !selectedIdStr || isPending ? "cursor-not-allowed opacity-50" : ""
             }`}
             onClick={handleSave}
-            disabled={!selectedId || isUpdating}
+            disabled={!selectedIdStr || isPending}
           >
             Save
           </button>
@@ -90,15 +103,13 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ onSave, isU
 
 const TBaustoffProductNameOrSelectorButton: React.FC<TBaustoffProductNameOrSelectorButtonProps> = ({
   layerData,
-  onSave,
   options,
-  isUpdating,
 }) => {
   if (layerData.tBaustoffProductData == null) {
     return (
       <>
         <ErrorText className="mr-4">Kein Treffer gefunden</ErrorText>
-        <SelectMaterialButton onSave={onSave} isUpdating={isUpdating} options={options} />
+        <SelectMaterialButton options={options} circulartyEnrichedLayerData={layerData} />
       </>
     )
   }
@@ -108,7 +119,7 @@ const TBaustoffProductNameOrSelectorButton: React.FC<TBaustoffProductNameOrSelec
       <span className="mr-4 mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
         {layerData.tBaustoffProductData.name}
       </span>
-      <SelectMaterialButton onSave={onSave} isUpdating={isUpdating} options={options} />
+      <SelectMaterialButton options={options} circulartyEnrichedLayerData={layerData} />
     </>
   )
 }

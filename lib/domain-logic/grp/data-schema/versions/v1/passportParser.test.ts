@@ -1,5 +1,5 @@
-import { Prisma } from "../../../../../../prisma/generated/client"
 import { passportParser } from "./passportParser"
+import { Prisma } from "../../../../../../prisma/generated/client"
 
 describe("passportParser", () => {
   const validBuildingComponents = [
@@ -131,7 +131,7 @@ describe("passportParser", () => {
           ...validBuildingComponents[0],
           layers: [
             {
-              ...validBuildingComponents[0].layers[0],
+              ...validBuildingComponents[0]!.layers[0],
               materialGeometry: {
                 unit: "invalid-unit", // Invalid unit
                 amount: 50,
@@ -154,9 +154,9 @@ describe("passportParser", () => {
           ...validBuildingComponents[0],
           layers: [
             {
-              ...validBuildingComponents[0].layers[0],
+              ...validBuildingComponents[0]!.layers[0],
               material: {
-                ...validBuildingComponents[0].layers[0].material,
+                ...validBuildingComponents[0]!.layers[0]!.material,
                 serviceLifeInYears: -10, // Negative value
               },
             },
@@ -177,11 +177,11 @@ describe("passportParser", () => {
           ...validBuildingComponents[0],
           layers: [
             {
-              ...validBuildingComponents[0].layers[0],
+              ...validBuildingComponents[0]!.layers[0],
               material: {
-                ...validBuildingComponents[0].layers[0].material,
+                ...validBuildingComponents[0]!.layers[0]!.material,
                 product: {
-                  ...validBuildingComponents[0].layers[0].material.product,
+                  ...validBuildingComponents[0]!.layers[0]!.material.product,
                   proofDocuments: [
                     {
                       url: "invalid-url", // Invalid URL
@@ -208,7 +208,7 @@ describe("passportParser", () => {
           ...validBuildingComponents[0],
           layers: [
             {
-              ...validBuildingComponents[0].layers[0],
+              ...validBuildingComponents[0]!.layers[0],
               mass: -100, // Negative mass
             },
           ],
@@ -242,7 +242,7 @@ describe("passportParser", () => {
           ...validBuildingComponents[0],
           layers: [
             {
-              ...validBuildingComponents[0].layers[0],
+              ...validBuildingComponents[0]!.layers[0],
               mass: -100, // Negative mass
             },
           ],
