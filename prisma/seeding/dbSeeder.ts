@@ -2,10 +2,10 @@ import csv from "csv-parser"
 import fs from "fs"
 import path from "path"
 
-import { prisma } from "prisma/prismaClient"
 import generatePassport from "../../lib/domain-logic/grp/data-schema/versions/v1/passportJsonSeeder"
-import { TBs_ProductDefinitionEOLCategoryScenario } from "../../prisma/generated/client"
+import { PrismaClient, TBs_ProductDefinitionEOLCategoryScenario } from "../../prisma/generated/client"
 
+const prisma = new PrismaClient()
 const csvFilePath = path.resolve(__dirname, "./obd_tbaustoff_mapping.csv")
 
 const seedPassport = async () => {
