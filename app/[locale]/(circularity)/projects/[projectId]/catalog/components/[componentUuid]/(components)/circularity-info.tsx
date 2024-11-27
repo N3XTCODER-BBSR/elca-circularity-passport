@@ -19,16 +19,15 @@ import {
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { updateDismantlingPotentialClassId } from "lib/domain-logic/circularity/server-actions/updateDismantlingPotentialClassId"
 import { updateSpecificEolScenario } from "lib/domain-logic/circularity/server-actions/updateSpecificScenario"
-import { updateTBaustoffProduct } from "lib/domain-logic/circularity/server-actions/updateTBaustoffProductOfLayer"
 import getEolClassNameByPoints, {
   getEolPointsByScenario,
 } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
+import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import EOLScenarioEditButton from "./layer-details/circularity-info/circularity-details/EOLScenarioEditButton"
 import EolScenarioInfoBox from "./layer-details/circularity-info/circularity-details/EolScenarioInfoBox"
 import TBaustoffProductNameOrSelectorButton from "./layer-details/circularity-info/TBaustoffProductNameOrSelectorButton"
-import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 
 type EolDataSectionProps = {
   layerData: EnrichedElcaElementComponent

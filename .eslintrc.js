@@ -2,22 +2,28 @@
 const fs = require("fs")
 
 module.exports = {
+  parser: "@typescript-eslint/parser", // Specify the ESLint parser
   extends: [
     "next",
     "prettier",
-    "react-app",
-    "react-app/jest",
+    "plugin:@typescript-eslint/recommended", // Add TypeScript ESLint recommended rules
     "plugin:storybook/recommended",
     "plugin:tailwindcss/recommended",
   ],
   parserOptions: {
+    ecmaVersion: 2020, // Allows for modern ECMAScript features
+    sourceType: "module", // Allows for the use of imports
+    ecmaFeatures: {
+      jsx: true, // Allows for the parsing of JSX
+    },
     babelOptions: {
       presets: [require.resolve("next/babel")],
     },
   },
-  plugins: ["unused-imports"],
+  plugins: ["@typescript-eslint", "unused-imports"],
   rules: {
-    "no-unused-vars": "warn",
+    "no-unused-vars": "off", // Turn off ESLint's no-unused-vars as we are using @typescript-eslint's version
+    "@typescript-eslint/no-explicit-any": "warn",
     "unused-imports/no-unused-imports": "warn",
     "unused-imports/no-unused-vars": [
       "warn",
