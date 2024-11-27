@@ -15,7 +15,7 @@ import { CalculateCircularityDataForLayerReturnType } from "../utils/calculate-c
 type ProjectCircularityIndexData = {
   projectId: string
   projectName: string
-  totalCircularityIndex: number
+  // totalCircularityIndex: number
   components: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
 }
 
