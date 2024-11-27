@@ -1,5 +1,4 @@
-const CircularityIndexTotal = () => {
-  const circularityIndexPoints = 32
+const CircularityIndexTotal = ({ circularityIndexPoints }: { circularityIndexPoints: number }) => {
   const circularityIndexPointsStr = `${circularityIndexPoints.toFixed(2)} points`
   return (
     <div className="flex flex-col items-center">

@@ -39,11 +39,14 @@ const calculateTotalCircularityIndex = (
     return (
       total +
       component.layers.reduce((totalLayer, layer) => {
+        console.log("layer", layer)
         const { mass } = calculateVolumeAndMass(layer)
         return totalLayer + (mass || 0)
       }, 0)
     )
   }, 0)
+
+  console.log("totalMass", totalMass)
 
   const totalCircularityIndexForProject = totalCircularityIndex / totalMass
   return totalCircularityIndexForProject
@@ -58,14 +61,14 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
 
   return (
     <>
-      circularityData: {JSON.stringify(circularityData)}
+      {/* circularityData: {JSON.stringify(circularityData)} */}
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
           Zirkularitätsindex
         </h1>
       </div>
       <div>
-        <CircularityIndexTotal />
+        <CircularityIndexTotal circularityIndexPoints={totalCircularityIndexForProject} />
       </div>
       <h2 className="max-w-[50%]">
         {/* <span className="text-sm font-bold uppercase text-indigo-600">{translations("project")}</span>
