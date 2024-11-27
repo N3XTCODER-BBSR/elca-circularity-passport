@@ -36,14 +36,35 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   const tBaustoffProductsList = await getTBaustoffProducts(tBaustoffProductIds)
   const tBaustoffProductMap = createMap(tBaustoffProductsList, (product) => product.id)
 
-  const projectComponentsWithLayers: ElcaElementWithComponents<EnrichedElcaElementComponent> = processProjectComponents(
-    projectComponents,
-    userDefinedTBaustoffDataMap,
-    tBaustoffMappingEntriesMap,
-    tBaustoffProductMap
-  )
+  //         const { element_name, element_type_name, din_code, unit } = components[0]!
 
-  return projectComponentsWithLayers
+  //         const layers = processLayers(components, userDefinedMap, mappingEntriesMap, productMap)
+
+  // const projectComponentsWithLayers: ElcaElementWithComponents<EnrichedElcaElementComponent> = processProjectComponents(
+  //   projectComponents,
+  //   userDefinedTBaustoffDataMap,
+  //   tBaustoffMappingEntriesMap,
+  //   tBaustoffProductMap
+  // )
+
+  // return projectComponentsWithLayers
+
+  const componentData = projectComponents[0]
+
+  return {
+    element_uuid: componentData?.element_uuid,
+    element_name: componentData?.element_name,
+    element_type_name: componentData?.element_type_name,
+    din_code: componentData?.din_code,
+    unit: componentData?.unit,
+    layers: processLayers(
+      projectComponents,
+      userDefinedTBaustoffDataMap,
+      tBaustoffMappingEntriesMap,
+      tBaustoffProductMap
+    ),
+  } as ElcaElementWithComponents<EnrichedElcaElementComponent>
+  // })
 }
 
 function createMap<T, K>(list: T[], keyGetter: (item: T) => K): Map<K, T> {
@@ -106,38 +127,38 @@ function getTBaustoffProductData(
 
 // TODO: 'process' doesn't seem to be the best name for this function
 // it's more specifically about mapping/grouping/filtering
-function processProjectComponents(
-  projectComponents: ElcaProjectComponentRow[],
-  userDefinedMap: Map<number, UserEnrichedProductDataWithDisturbingSubstanceSelection>,
-  mappingEntriesMap: Map<string, TBs_OekobaudatMapping>,
-  productMap: Map<
-    number,
-    Prisma.TBs_ProductDefinitionGetPayload<{
-      include: { tBs_ProductDefinitionEOLCategory: true }
-    }>
-  >
-): ElcaElementWithComponents<EnrichedElcaElementComponent>[] {
-  return (
-    _(projectComponents)
-      // TODO: check why this is needed
-      .groupBy("element_uuid")
-      .map((components, elementUuid) => {
-        const { element_name, element_type_name, din_code, unit } = components[0]!
+// function processProjectComponents(
+//   projectComponents: ElcaProjectComponentRow[],
+//   userDefinedMap: Map<number, UserEnrichedProductDataWithDisturbingSubstanceSelection>,
+//   mappingEntriesMap: Map<string, TBs_OekobaudatMapping>,
+//   productMap: Map<
+//     number,
+//     Prisma.TBs_ProductDefinitionGetPayload<{
+//       include: { tBs_ProductDefinitionEOLCategory: true }
+//     }>
+//   >
+// ): ElcaElementWithComponents<EnrichedElcaElementComponent>[] {
+//   return (
+//     _(projectComponents)
+//       // TODO: check why this is needed
+//       .groupBy("element_uuid")
+//       .map((components, elementUuid) => {
+//         const { element_name, element_type_name, din_code, unit } = components[0]!
 
-        const layers = processLayers(components, userDefinedMap, mappingEntriesMap, productMap)
+//         const layers = processLayers(components, userDefinedMap, mappingEntriesMap, productMap)
 
-        return {
-          element_uuid: elementUuid,
-          element_name,
-          element_type_name,
-          din_code,
-          unit,
-          layers,
-        } as ElcaElementWithComponents<EnrichedElcaElementComponent>
-      })
-      .value()
-  )
-}
+//         return {
+//           element_uuid: elementUuid,
+//           element_name,
+//           element_type_name,
+//           din_code,
+//           unit,
+//           layers,
+//         } as ElcaElementWithComponents<EnrichedElcaElementComponent>
+//       })
+//       .value()
+//   )
+// }
 
 // TODO: 'process' doesn't seem to be the best name for this function
 // it's more specifically about mapping/filtering

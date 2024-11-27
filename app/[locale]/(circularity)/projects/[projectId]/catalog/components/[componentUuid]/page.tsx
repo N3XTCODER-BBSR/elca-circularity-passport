@@ -16,13 +16,13 @@ const Page = async ({ params }: { params: { projectId: string; componentUuid: st
 
     await ensureUserAuthorizationToProject(Number(session.user.id), Number(params.projectId))
 
-    const projectComponents: ElcaElementWithComponents<EnrichedElcaElementComponent>[] =
+    const componentData: ElcaElementWithComponents<EnrichedElcaElementComponent> =
       await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(params.componentUuid, session.user.id)
 
-    // TODO: check this - probably better to check for array length?
-    if (!projectComponents) {
-      notFound()
-    }
+    // // TODO: check this - probably better to check for array length?
+    // if (!projectComponents) {
+    //   notFound()
+    // }
 
     // TODO:
     // 1. check why we do the find. Should be enough to just use projectComponents[0]?
@@ -31,7 +31,7 @@ const Page = async ({ params }: { params: { projectId: string; componentUuid: st
     //   b) product level
     // in different queries (or at least hide it more upstream; the frontend layer should not have to know that it needs to get
     // the data from the first element of the array)
-    const componentData = projectComponents.find((el) => el.element_uuid === params.componentUuid)
+    // const componentData = projectComponents.find((el) => el.element_uuid === params.componentUuid)
 
     if (componentData == null) {
       notFound()
