@@ -1,7 +1,7 @@
 "use server"
 
-import { getServerSession } from "next-auth"
-import authOptions from "app/(utils)/authOptions"
+import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
+import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
 import { upsertUserEnrichedProductDataWithEolScenario } from "prisma/queries/db"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "../../../../prisma/generated/client"
 
@@ -14,11 +14,9 @@ export async function updateSpecificEolScenario(
     throw new Error("Invalid layerId")
   }
 
-  const session = await getServerSession(authOptions)
-  if (!session?.user) {
-    throw new Error("Unauthorized")
-  }
+  const session = await ensureUserIsAuthenticated()
 
+  await ensureUserAuthorizationToElementComponent(Number(session.user.id), layerId)
   await upsertUserEnrichedProductDataWithEolScenario(
     layerId,
     specificScenario,

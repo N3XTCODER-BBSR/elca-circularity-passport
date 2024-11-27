@@ -1,14 +1,14 @@
 import { getServerSession } from "next-auth/next"
 import authOptions from "app/(utils)/authOptions"
-import UnauthorizedRedirect from "../../../(components)/UnauthorizedRedirect"
 import { getElcaProjectData } from "lib/domain-logic/circularity/server-actions/getElcaProjectData"
 import BuildingOverview from "./(components)/BuildingOverview"
+import UnauthenticatedRedirect from "../../../(components)/UnauthenticatedRedirect"
 
 const Page = async ({ params }: { params: { projectId: string } }) => {
   const session = await getServerSession(authOptions)
 
   if (!session?.user) {
-    return <UnauthorizedRedirect />
+    return <UnauthenticatedRedirect />
   }
 
   const projectInfo = await getElcaProjectData(params.projectId, session.user.id)

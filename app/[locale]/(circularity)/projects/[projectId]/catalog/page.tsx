@@ -1,26 +1,23 @@
-import { getServerSession } from "next-auth/next"
-import authOptions from "app/(utils)/authOptions"
-import UnauthorizedRedirect from "app/[locale]/(circularity)/(components)/UnauthorizedRedirect"
-import {
-  ElcaProjectElementRow,
-  getElcaElementsForProjectId,
-} from "lib/domain-logic/circularity/server-actions/getElcaElementsForProjectId"
+import errorHandler from "app/(utils)/errorHandler"
+import { getElcaElementsForProjectId } from "lib/domain-logic/circularity/server-actions/getElcaElementsForProjectId"
+import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
+import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import ProjectCatalog from "./(components)/ProjectCatalog"
 
 const Page = async ({ params }: { params: { projectId: string } }) => {
-  const session = await getServerSession(authOptions)
+  return errorHandler(async () => {
+    const session = await ensureUserIsAuthenticated()
 
-  if (!session?.user) {
-    return <UnauthorizedRedirect />
-  }
+    await ensureUserAuthorizationToProject(Number(session.user.id), Number(params.projectId))
 
-  const dataResult: ElcaProjectElementRow[] = await getElcaElementsForProjectId(params.projectId, session.user.id)
+    const dataResult = await getElcaElementsForProjectId(params.projectId, session.user.id)
 
-  if (!dataResult) {
-    return <div>Projects with this ID not found for the current user.</div>
-  }
+    if (!dataResult) {
+      return <div>Projects with this ID not found for the current user.</div>
+    }
 
-  return <ProjectCatalog projectId={params.projectId} projectComponents={dataResult} />
+    return <ProjectCatalog projectId={params.projectId} projectComponents={dataResult} />
+  })
 }
 
 export default Page

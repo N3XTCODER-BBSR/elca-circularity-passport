@@ -16,6 +16,7 @@ const NavBarProfileDropdown = ({ additionalMenuItems }: { additionalMenuItems?: 
           className="relative flex rounded-full bg-white text-sm 
                        focus:outline-none focus:ring-2 focus:ring-indigo-500 
                        focus:ring-offset-2"
+          data-testid="profile-dropdown-button"
         >
           <span className="absolute -inset-1.5" aria-hidden="true" />
           <span className="sr-only">Open user menu</span>
@@ -30,7 +31,11 @@ const NavBarProfileDropdown = ({ additionalMenuItems }: { additionalMenuItems?: 
       >
         {additionalMenuItems}
         <MenuItem>
-          <button onClick={() => signOut()} className={twMerge("block px-4 py-2 text-sm text-gray-700")}>
+          <button
+            onClick={() => signOut()}
+            className={twMerge("block px-4 py-2 text-sm text-gray-700")}
+            data-testid="logout-button"
+          >
             Sign out
           </button>
         </MenuItem>

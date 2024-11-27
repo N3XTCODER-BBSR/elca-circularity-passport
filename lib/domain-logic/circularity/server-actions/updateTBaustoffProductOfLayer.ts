@@ -1,7 +1,7 @@
 "use server"
 
-import { getServerSession } from "next-auth"
-import authOptions from "app/(utils)/authOptions"
+import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
+import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
 import {
   deleteDisturbingSubstanceSelectionsByLayerId,
   upsertUserEnrichedProductDataWithTBaustoffProduct,
@@ -12,10 +12,9 @@ export async function updateTBaustoffProduct(layerId: number, selectedId: number
     throw new Error("Invalid layerId or selectedId")
   }
 
-  const session = await getServerSession(authOptions)
-  if (!session?.user) {
-    throw new Error("Unauthorized")
-  }
+  const session = await ensureUserIsAuthenticated()
+
+  await ensureUserAuthorizationToElementComponent(Number(session.user.id), layerId)
 
   await upsertUserEnrichedProductDataWithTBaustoffProduct(layerId, selectedId)
   await deleteDisturbingSubstanceSelectionsByLayerId(layerId)

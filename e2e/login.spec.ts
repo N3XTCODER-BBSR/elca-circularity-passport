@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 
 //TODO: run tests in CI, replace urls with environment variables
 
