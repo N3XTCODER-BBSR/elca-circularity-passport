@@ -1,12 +1,19 @@
+import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import CircularityIndexTotal from "./CircularityIndexTotal"
+import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/server-actions/getProjectCircularityIndex"
 
 type BuildingOverviewProps = {
   projectId: number
   projectName: string
 }
-const BuildingOverview = ({ projectId, projectName }: BuildingOverviewProps) => {
+const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProps) => {
+  const session = await ensureUserIsAuthenticated()
+
+  const circularityData = await getProjectCircularityIndexData(projectId, session.user.id)
+
   return (
     <>
+      circularityData: {JSON.stringify(circularityData)}
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
           Zirkularitätsindex
@@ -15,7 +22,6 @@ const BuildingOverview = ({ projectId, projectName }: BuildingOverviewProps) => 
       <div>
         <CircularityIndexTotal />
       </div>
-
       <h2 className="max-w-[50%]">
         {/* <span className="text-sm font-bold uppercase text-indigo-600">{translations("project")}</span>
         <br /> */}
