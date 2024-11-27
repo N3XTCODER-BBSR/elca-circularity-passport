@@ -1,5 +1,5 @@
+import { Prisma } from "prisma/generated/client"
 import { PassportData, PassportDataSchema } from "./passportSchema"
-import { Prisma } from "../../../../../../prisma/generated/client"
 
 export const passportParser = (passportDataJson: Prisma.JsonValue) => {
   let jsonObj

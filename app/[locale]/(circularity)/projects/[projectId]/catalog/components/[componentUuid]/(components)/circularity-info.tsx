@@ -1,5 +1,4 @@
 "use client"
-
 import { Accordion } from "@szhsin/react-accordion"
 import { useTranslations } from "next-intl"
 import { useState } from "react"

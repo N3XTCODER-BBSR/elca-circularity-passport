@@ -1,4 +1,5 @@
 import _ from "lodash"
+import { query } from "lib/db/elca-legacy-db"
 import {
   ElcaElementWithComponents,
   ElcaProjectComponentRow,
@@ -6,7 +7,6 @@ import {
   TBaustoffProductData,
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
-import { query } from "lib/elca-legacy-db"
 import { prisma } from "prisma/prismaClient"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
