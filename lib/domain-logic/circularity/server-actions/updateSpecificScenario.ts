@@ -2,7 +2,7 @@
 
 import { getServerSession } from "next-auth"
 import authOptions from "app/(utils)/authOptions"
-import { prisma } from "prisma/prismaClient"
+import { upsertUserEnrichedProductDataWithEolScenario } from "prisma/queries/db"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "../../../../prisma/generated/client"
 
 export async function updateSpecificEolScenario(
@@ -19,20 +19,9 @@ export async function updateSpecificEolScenario(
     throw new Error("Unauthorized")
   }
 
-  await prisma.userEnrichedProductData.upsert({
-    // TODO: add checks here for:
-    // 1. user has access to the project and layer
-    // 2. that there is not already a match found by out OBD-tBaustoff mapping
-    // 3. if the layerId exists in the database
-    where: { elcaElementComponentId: layerId },
-    update: {
-      specificEolUnbuiltTotalScenario: specificScenario,
-      specificEolUnbuiltTotalScenarioProofText,
-    },
-    create: {
-      elcaElementComponentId: layerId,
-      specificEolUnbuiltTotalScenario: specificScenario,
-      tBaustoffProductSelectedByUser: false,
-    },
-  })
+  await upsertUserEnrichedProductDataWithEolScenario(
+    layerId,
+    specificScenario,
+    specificEolUnbuiltTotalScenarioProofText
+  )
 }
