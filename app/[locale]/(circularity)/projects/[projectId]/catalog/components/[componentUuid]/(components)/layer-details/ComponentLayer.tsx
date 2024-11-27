@@ -6,19 +6,19 @@ import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import getElcaComponentDataByLayerId from "lib/domain-logic/circularity/server-actions/getElcaComponentDataByLayerId"
-import { EnrichedProduct } from "lib/domain-logic/types/domain-types"
+import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
 import CircularityInfo from "./circularity-info/CircularityInfo"
 
 type ComponentLayerProps = {
-  layerData: EnrichedProduct
+  layerData: EnrichedElcaElementComponent
   layerNumber: number
   unitName: string
   tBaustoffProducts: SelectOption[]
 }
 
 const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }: ComponentLayerProps) => {
-  const { data: currentLayerData } = useQuery<EnrichedProduct, Error>({
+  const { data: currentLayerData } = useQuery<EnrichedElcaElementComponent, Error>({
     queryKey: ["layerData", layerData.component_id],
     queryFn: () => {
       return getElcaComponentDataByLayerId(layerData.component_id)

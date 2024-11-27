@@ -3,7 +3,7 @@ import dismantlingPotentialClassIdMapping from "lib/domain-logic/circularity/uti
 import getEolClassNameByPoints, {
   getEolPointsByScenario,
 } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
-import { EnrichedProduct } from "lib/domain-logic/types/domain-types"
+import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { DisturbingSubstanceClassId } from "prisma/generated/client"
 
 export enum SpecificOrTotal {
@@ -17,7 +17,7 @@ export interface EolUnbuiltData {
   className: string
 }
 
-const getEolUnbuiltData = (layerData: EnrichedProduct): EolUnbuiltData | null => {
+const getEolUnbuiltData = (layerData: EnrichedElcaElementComponent): EolUnbuiltData | null => {
   if (layerData.eolUnbuiltSpecificScenario) {
     const points = getEolPointsByScenario(layerData.eolUnbuiltSpecificScenario)
     const className = getEolClassNameByPoints(points)
@@ -38,7 +38,7 @@ const getEolUnbuiltData = (layerData: EnrichedProduct): EolUnbuiltData | null =>
   }
 }
 
-export type CalculateCircularityDataForLayerReturnType = EnrichedProduct & {
+export type CalculateCircularityDataForLayerReturnType = EnrichedElcaElementComponent & {
   circularityIndex: number | null | undefined
   dismantlingPoints: number | null | undefined
   disturbingSubstances: {
@@ -51,7 +51,9 @@ export type CalculateCircularityDataForLayerReturnType = EnrichedProduct & {
     className: string
   } | null
 }
-const calculateCircularityDataForLayer = (layerData: EnrichedProduct): CalculateCircularityDataForLayerReturnType => {
+const calculateCircularityDataForLayer = (
+  layerData: EnrichedElcaElementComponent
+): CalculateCircularityDataForLayerReturnType => {
   const dismantlingPoints =
     layerData.dismantlingPotentialClassId &&
     dismantlingPotentialClassIdMapping[layerData.dismantlingPotentialClassId].points

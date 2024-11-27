@@ -40,9 +40,9 @@ export type UserEnrichedProductDataWithDisturbingSubstanceSelection = UserEnrich
 // and use our namings also for the properites.
 // Old ecla legacy names should only be used within the SQL queries and they should already
 // on query level be mapped/renamed to our namings.
-export type Product = {
+export type ElcaProjectComponentRow = {
   component_id: number
-  component_uuid: string
+  element_uuid: string
   layer_position: number
   process_name: string
   process_ref_value: number
@@ -63,7 +63,7 @@ export type Product = {
   process_config_name: string
 }
 
-export type EnrichedProduct = Product & {
+export type EnrichedElcaElementComponent = ElcaProjectComponentRow & {
   tBaustoffProductSelectedByUser?: boolean
   tBaustoffProductData?: TBaustoffProductData | null
   dismantlingPotentialClassId?: DismantlingPotentialClassId | null
@@ -73,7 +73,7 @@ export type EnrichedProduct = Product & {
   disturbingEolScenarioForS4: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
 }
 
-export type ComponentWithProducts<T extends EnrichedProduct> = {
+export type ElcaElementWithComponents<T extends EnrichedElcaElementComponent> = {
   element_uuid: string
   element_type_name: string
   element_name: string

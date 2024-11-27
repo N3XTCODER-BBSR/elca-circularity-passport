@@ -11,13 +11,13 @@ import {
   TwoColGrid,
 } from "app/(components)/generic/layout-elements"
 import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { EnrichedProduct } from "lib/domain-logic/types/domain-types"
+import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
 import CircularityDetails from "./circularity-details/CircularityDetails"
 import TBaustoffProductNameOrSelectorButton from "./TBaustoffProductNameOrSelectorButton"
 
 type CircularityInfoProps = {
-  layerData: EnrichedProduct
+  layerData: EnrichedElcaElementComponent
   tBaustoffProducts: SelectOption[]
 }
 

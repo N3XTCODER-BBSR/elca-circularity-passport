@@ -1,4 +1,4 @@
-import { Product } from "lib/domain-logic/types/domain-types"
+import { ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
 import { prismaLegacy } from "prisma/prismaClient"
 
 export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number, userId: string) => {
@@ -6,10 +6,10 @@ export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number, us
 
   // TODO: IMPORTANT: add user permission check here
 
-  const result = await prismaLegacy.$queryRaw<Product[]>`
+  const result = await prismaLegacy.$queryRaw<ElcaProjectComponentRow[]>`
   select
       process.life_cycle_ident,
-      element_component.id AS product_id,
+      element_component.id AS component_id,
       element_component.layer_position AS layer_position,
       process.name AS process_name,
       process.ref_value::FLOAT AS process_ref_value,
@@ -18,6 +18,7 @@ export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number, us
 --      process_db.name AS pdb_name,
 --      process_db.version AS pdb_version,
       process_db.uuid AS oekobaudat_process_db_uuid,
+      element_component.id as element_component_id,
       element_component.quantity::FLOAT AS quantity,
       element_component.layer_size::FLOAT AS layer_size,
       element_component.layer_length::FLOAT AS layer_length,
@@ -61,11 +62,11 @@ export const findUsersByAuthName = async (authName: string) => {
 
 export const getElcaProjectComponentsByInstanceIdAndUserId = async (componentInstanceId: string, userId: string) => {
   // TODO: ideally also add project-variant id/uuid here to ensure correctness
-  return await prismaLegacy.$queryRaw<Product[]>`
+  return await prismaLegacy.$queryRaw<ElcaProjectComponentRow[]>`
   select
       element.access_group_id as access_group_id,
-      element.uuid AS component_uuid,
-      element_component.id AS product_id,
+      element.uuid AS element_uuid,
+      element_component.id AS component_id,
       element_component.layer_position AS layer_position,
       process.name AS process_name,
       process.ref_value::FLOAT AS process_ref_value,
@@ -78,6 +79,7 @@ export const getElcaProjectComponentsByInstanceIdAndUserId = async (componentIns
       element_type.name AS element_type_name,
       element_type.din_code AS din_code,
       element.ref_unit AS unit,
+      element_component.id as element_component_id,
       element_component.quantity::FLOAT AS quantity,
       element_component.layer_size::FLOAT AS layer_size,
       element_component.layer_length::FLOAT AS layer_length,
@@ -97,7 +99,7 @@ export const getElcaProjectComponentsByInstanceIdAndUserId = async (componentIns
     -- join public."groups" groups on groups.id = element.access_group_id 
     --join public.group_members group_member on group_member.group_id = groups.id 
     WHERE element.uuid = ${componentInstanceId}::uuid AND life_cycle.phase = 'prod' and project.owner_id = ${userId}::integer --and group_member.user_id = ${userId}
-    ORDER BY component_uuid, layer_position, product_id, oekobaudat_process_uuid
+    ORDER BY element_uuid, layer_position, component_id, oekobaudat_process_uuid
   `
 }
 

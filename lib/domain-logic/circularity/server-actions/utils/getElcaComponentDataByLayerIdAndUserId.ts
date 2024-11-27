@@ -1,6 +1,6 @@
 import {
-  Product,
-  EnrichedProduct,
+  ElcaProjectComponentRow,
+  EnrichedElcaElementComponent,
   TBaustoffProductData,
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
@@ -35,14 +35,14 @@ export const fetchElcaComponentByIdAndUserId = async (layerId: number, userId: s
 }
 
 function processProjectComponent(
-  projectComponent: Product,
+  projectComponent: ElcaProjectComponentRow,
   userDefinedData: UserEnrichedProductDataWithDisturbingSubstanceSelection | null,
   mappingEntry: TBs_OekobaudatMapping | null,
   product: Prisma.TBs_ProductDefinitionGetPayload<{
     include: { tBs_ProductDefinitionEOLCategory: true }
   }> | null
-): EnrichedProduct {
-  const componentRow: Product = projectComponent
+): EnrichedElcaElementComponent {
+  const componentRow: ElcaProjectComponentRow = projectComponent
 
   const productData = getTBaustoffProductData(
     componentRow.component_id,
@@ -52,7 +52,7 @@ function processProjectComponent(
     product
   )
 
-  const enrichedComponent: EnrichedProduct = {
+  const enrichedComponent: EnrichedElcaElementComponent = {
     ...componentRow,
     tBaustoffProductData: productData,
     tBaustoffProductSelectedByUser: userDefinedData?.tBaustoffProductSelectedByUser,

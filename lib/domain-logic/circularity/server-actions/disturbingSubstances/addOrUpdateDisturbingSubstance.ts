@@ -2,7 +2,10 @@
 
 import { getServerSession } from "next-auth"
 import authOptions from "app/(utils)/authOptions"
-import { DisturbingSubstanceSelectionWithNullabelId, EnrichedProduct } from "lib/domain-logic/types/domain-types"
+import {
+  DisturbingSubstanceSelectionWithNullabelId,
+  EnrichedElcaElementComponent,
+} from "lib/domain-logic/types/domain-types"
 import { DisturbingSubstanceClassId, Prisma } from "prisma/generated/client"
 import {
   createDisturbingSubstanceSelection,
@@ -16,7 +19,7 @@ import { fetchElcaComponentByIdAndUserId } from "../utils/getElcaComponentDataBy
 export async function addOrUpdateDisturbingSubstanceSelection(
   layerId: number,
   disturbingSubstanceSelectionWithNullableId: DisturbingSubstanceSelectionWithNullabelId
-): Promise<EnrichedProduct> {
+): Promise<EnrichedElcaElementComponent> {
   if (!layerId || !disturbingSubstanceSelectionWithNullableId) {
     throw new Error("Invalid layerId or disturbingSubstanceId")
   }

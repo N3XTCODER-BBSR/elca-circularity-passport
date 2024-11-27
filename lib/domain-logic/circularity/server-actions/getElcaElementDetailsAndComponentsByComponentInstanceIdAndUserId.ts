@@ -1,8 +1,8 @@
 import _ from "lodash"
 import {
-  ComponentWithProducts,
-  Product,
-  EnrichedProduct,
+  ElcaElementWithComponents,
+  ElcaProjectComponentRow,
+  EnrichedElcaElementComponent,
   TBaustoffProductData,
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
@@ -14,8 +14,11 @@ import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEo
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
   componentInstanceId: string,
   userId: string
-): Promise<ComponentWithProducts<EnrichedProduct>> => {
-  const projectComponents: Product[] = await getElcaProjectComponentsByInstanceIdAndUserId(componentInstanceId, userId)
+): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
+  const projectComponents: ElcaProjectComponentRow[] = await getElcaProjectComponentsByInstanceIdAndUserId(
+    componentInstanceId,
+    userId
+  )
 
   const componentIds = Array.from(new Set(projectComponents.map((c) => c.component_id)))
   const oekobaudatProcessUuids = Array.from(new Set(projectComponents.map((c) => c.oekobaudat_process_uuid)))
@@ -33,7 +36,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   const tBaustoffProductsList = await getTBaustoffProducts(tBaustoffProductIds)
   const tBaustoffProductMap = createMap(tBaustoffProductsList, (product) => product.id)
 
-  const projectComponentsWithLayers: ComponentWithProducts<EnrichedProduct> = processProjectComponents(
+  const projectComponentsWithLayers: ElcaElementWithComponents<EnrichedElcaElementComponent> = processProjectComponents(
     projectComponents,
     userDefinedTBaustoffDataMap,
     tBaustoffMappingEntriesMap,
@@ -104,7 +107,7 @@ function getTBaustoffProductData(
 // TODO: 'process' doesn't seem to be the best name for this function
 // it's more specifically about mapping/grouping/filtering
 function processProjectComponents(
-  projectComponents: Product[],
+  projectComponents: ElcaProjectComponentRow[],
   userDefinedMap: Map<number, UserEnrichedProductDataWithDisturbingSubstanceSelection>,
   mappingEntriesMap: Map<string, TBs_OekobaudatMapping>,
   productMap: Map<
@@ -113,7 +116,7 @@ function processProjectComponents(
       include: { tBs_ProductDefinitionEOLCategory: true }
     }>
   >
-): ComponentWithProducts<EnrichedProduct>[] {
+): ElcaElementWithComponents<EnrichedElcaElementComponent>[] {
   return (
     _(projectComponents)
       // TODO: check why this is needed
@@ -130,7 +133,7 @@ function processProjectComponents(
           din_code,
           unit,
           layers,
-        } as ComponentWithProducts<EnrichedProduct>
+        } as ElcaElementWithComponents<EnrichedElcaElementComponent>
       })
       .value()
   )
@@ -139,7 +142,7 @@ function processProjectComponents(
 // TODO: 'process' doesn't seem to be the best name for this function
 // it's more specifically about mapping/filtering
 function processLayers(
-  components: Product[],
+  components: ElcaProjectComponentRow[],
   userDefinedMap: Map<number, UserEnrichedProductDataWithDisturbingSubstanceSelection>,
   mappingEntriesMap: Map<string, TBs_OekobaudatMapping>,
   productMap: Map<
@@ -148,7 +151,7 @@ function processLayers(
       include: { tBs_ProductDefinitionEOLCategory: true }
     }>
   >
-): EnrichedProduct[] {
+): EnrichedElcaElementComponent[] {
   return components
     .filter(({ component_id }) => component_id != null)
     .map((component) => {
@@ -162,7 +165,7 @@ function processLayers(
 
       const userDefinedComponentData = userDefinedMap.get(component.component_id)
 
-      const enrichedElcaElementComponent: EnrichedProduct = {
+      const enrichedElcaElementComponent: EnrichedElcaElementComponent = {
         ...component,
         tBaustoffProductData: productData,
         dismantlingPotentialClassId: userDefinedComponentData?.dismantlingPotentialClassId,

@@ -4,7 +4,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import errorHandler from "app/(utils)/errorHandler"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
-import { ComponentWithProducts, EnrichedProduct } from "lib/domain-logic/types/domain-types"
+import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { getAvailableTBaustoffProducts } from "prisma/queries/db"
@@ -16,7 +16,7 @@ const Page = async ({ params }: { params: { projectId: string; componentUuid: st
 
     await ensureUserAuthorizationToProject(Number(session.user.id), Number(params.projectId))
 
-    const projectComponents: ComponentWithProducts<EnrichedProduct>[] =
+    const projectComponents: ElcaElementWithComponents<EnrichedElcaElementComponent>[] =
       await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(params.componentUuid, session.user.id)
 
     // TODO: check this - probably better to check for array length?
