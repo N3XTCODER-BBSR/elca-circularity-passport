@@ -1,6 +1,7 @@
+import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/server-actions/getProjectCircularityIndex"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import CircularityIndexTotal from "./CircularityIndexTotal"
-import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/server-actions/getProjectCircularityIndex"
+import calculateVolumeAndMass from "lib/domain-logic/circularity/utils/calculateVolumeAndMass"
 
 type BuildingOverviewProps = {
   projectId: number
@@ -10,6 +11,35 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
   const session = await ensureUserIsAuthenticated()
 
   const circularityData = await getProjectCircularityIndexData(projectId, session.user.id)
+
+  // Calculate the total circularity index for the project by iterating over
+  // all entries in circulartiyData
+  //   and within each entry, summing the
+  //     circularity index of each component
+  //     calculate the mass of each component
+  // At the end, divide the total circularity index by the total mass of the project
+  // to get the total circularity index of the project
+
+  const totalCircularityIndex = circularityData.reduce((total, component) => {
+    return (
+      total +
+      component.layers.reduce((totalLayer, layer) => {
+        return totalLayer + (layer.circularityIndex || 0)
+      }, 0)
+    )
+  }, 0)
+
+  const totalMass = circularityData.reduce((total, component) => {
+    return (
+      total +
+      component.layers.reduce((totalLayer, layer) => {
+        const { mass } = calculateVolumeAndMass(layer)
+        return totalLayer + (mass || 0)
+      }, 0)
+    )
+  }, 0)
+
+  const totalCircularityIndexForProject = totalCircularityIndex / totalMass
 
   return (
     <>

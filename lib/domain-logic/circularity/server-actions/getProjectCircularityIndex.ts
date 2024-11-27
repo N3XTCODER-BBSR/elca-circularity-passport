@@ -27,7 +27,7 @@ export const getProjectCircularityIndexData = async (
   // add authorization / authentication check here
 
   // 1. Get all components for the project
-  const elements = await getElcaElementsForProjectId(projectId, userId)
+  const elements = await getElcaElementsForProjectId(String(projectId), userId)
 
   // 2. Call existing function to get all the data for the components
   const componentsWithProducts: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
