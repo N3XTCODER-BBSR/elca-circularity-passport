@@ -53,7 +53,7 @@ export type ElcaProjectComponentRow = {
   oekobaudat_process_db_uuid: string
   element_name: string
   element_type_name: string
-  din_code: string
+  din_code: number
   unit: string
   quantity: number
   layer_size: number
@@ -77,7 +77,7 @@ export type ElcaElementWithComponents<T extends EnrichedElcaElementComponent> = 
   element_uuid: string
   element_type_name: string
   element_name: string
-  din_code: string
+  din_code: number
   layers: T[]
   unit: string
 }

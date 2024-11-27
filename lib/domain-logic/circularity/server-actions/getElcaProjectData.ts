@@ -1,17 +1,8 @@
 import { ElcaProjectInfo } from "lib/domain-logic/types/domain-types"
-import { prismaLegacy } from "prisma/prismaClient"
+import { getProjectsByIdAndOwnerId } from "prisma/queries/legacyDb"
 
 export const getElcaProjectData = async (projectId: string, userId: string): Promise<ElcaProjectInfo> => {
-  const projects = await prismaLegacy.projects.findMany({
-    where: {
-      id: Number(projectId),
-      owner_id: Number(userId),
-    },
-    select: {
-      id: true,
-      name: true,
-    },
-  })
+  const projects = await getProjectsByIdAndOwnerId(Number(projectId), Number(userId))
 
   if (projects.length < 1) {
     throw new Error(`Project with ID ${projectId} not found for user ${userId}`)
