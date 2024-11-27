@@ -1,11 +1,10 @@
 "use server"
 
-import { getServerSession } from "next-auth"
-import authOptions from "app/(utils)/authOptions"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { prisma } from "prisma/prismaClient"
 import { getElcaComponentDataByLayerIdAndUserId } from "./utils/getElcaComponentDataByLayerIdAndUserId"
 import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
+import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 
 export async function updateTBaustoffProduct(
   layerId: number,
@@ -15,10 +14,7 @@ export async function updateTBaustoffProduct(
     throw new Error("Invalid layerId or selectedId")
   }
 
-  const session = await getServerSession(authOptions)
-  if (!session?.user) {
-    throw new Error("Unauthorized")
-  }
+  const session = await ensureUserIsAuthenticated()
 
   await ensureUserAuthorizationToElementComponent(Number(session.user.id), layerId)
 
