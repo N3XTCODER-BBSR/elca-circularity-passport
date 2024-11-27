@@ -2,15 +2,21 @@ import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/ser
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import CircularityIndexTotal from "./CircularityIndexTotal"
 import calculateVolumeAndMass from "lib/domain-logic/circularity/utils/calculateVolumeAndMass"
+import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 
 type BuildingOverviewProps = {
   projectId: number
   projectName: string
 }
-const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProps) => {
-  const session = await ensureUserIsAuthenticated()
 
-  const circularityData = await getProjectCircularityIndexData(projectId, session.user.id)
+// TODO: rename and move into domain logic
+const calculateTotalCircularityIndex = (
+  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
+) => {
+  // TODO: ensure to exlude
+  // 1. components which don't fall into our selection of DIN categories
+  // 2. explicitly excluded components
 
   // Calculate the total circularity index for the project by iterating over
   // all entries in circulartiyData
@@ -40,6 +46,15 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
   }, 0)
 
   const totalCircularityIndexForProject = totalCircularityIndex / totalMass
+  return totalCircularityIndexForProject
+}
+
+const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProps) => {
+  const session = await ensureUserIsAuthenticated()
+
+  const circularityData = await getProjectCircularityIndexData(projectId, session.user.id)
+
+  const totalCircularityIndexForProject = calculateTotalCircularityIndex(circularityData)
 
   return (
     <>
