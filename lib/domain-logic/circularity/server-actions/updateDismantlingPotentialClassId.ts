@@ -18,9 +18,5 @@ export async function updateDismantlingPotentialClassId(
     throw new Error("Unauthorized")
   }
 
-  // TODO: IMPORTANT: add checks here for:
-  // 1. user has access to the project and layer
-  // 2. that there is not already a match found by out OBD-tBaustoff mapping
-  // 3. if the layerId exists in the database
   await upsertUserEnrichedProductDataByLayerId(layerId, selectedDismantlingPotentialClassId)
 }
