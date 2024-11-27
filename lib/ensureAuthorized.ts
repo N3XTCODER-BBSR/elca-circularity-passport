@@ -1,5 +1,3 @@
-import "server-only"
-
 import { prismaLegacy } from "prisma/prismaClient"
 import { UnauthorizedError } from "./errors"
 
