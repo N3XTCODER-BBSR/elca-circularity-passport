@@ -1,7 +1,7 @@
-import getElcaProjectsForUserId from "lib/domain-logic/circularity/server-actions/getElcaProjectsForUserId"
-import ProjectLinksList from "./(components)/ProjectsLinkList"
 import errorHandler from "app/(utils)/errorHandler"
+import getElcaProjectsForUserId from "lib/domain-logic/circularity/server-actions/getElcaProjectsForUserId"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
+import ProjectLinksList from "./(components)/ProjectsLinkList"
 
 const Page = async () => {
   return errorHandler(async () => {

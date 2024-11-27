@@ -1,15 +1,19 @@
+import type { Config } from "jest"
+
 const nextJest = require("next/jest")
 
 const createJestConfig = nextJest({
   dir: "./",
 })
 
-const customJestConfig = {
+const customJestConfig: Config = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   testEnvironment: "jest-environment-jsdom",
   modulePathIgnorePatterns: ["<rootDir>/dist/"],
   testPathIgnorePatterns: ["<rootDir>/e2e"],
   collectCoverage: true,
+  globalSetup: "<rootDir>/lib/db/db-test-setup.ts",
+  globalTeardown: "<rootDir>/lib/db/db-test-teardown.ts",
   collectCoverageFrom: [
     "lib/domain-logic/**/*.{js,jsx,ts,tsx}", // Adjust the pattern based on your directory structure and file types
   ],

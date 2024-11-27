@@ -1,8 +1,8 @@
-import { getElcaElementsForProjectId } from "lib/domain-logic/circularity/server-actions/getElcaElementsForProjectId"
-import ProjectCatalog from "./(components)/ProjectCatalog"
-import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import errorHandler from "app/(utils)/errorHandler"
+import { getElcaElementsForProjectId } from "lib/domain-logic/circularity/server-actions/getElcaElementsForProjectId"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
+import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
+import ProjectCatalog from "./(components)/ProjectCatalog"
 
 const Page = async ({ params }: { params: { projectId: string } }) => {
   return errorHandler(async () => {

@@ -1,5 +1,10 @@
-import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "../../../prisma/generated/client"
 import { EolClasses } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import {
+  DismantlingPotentialClassId,
+  DisturbingSubstanceSelection,
+  TBs_ProductDefinitionEOLCategoryScenario,
+  UserEnrichedProductData,
+} from "prisma/generated/client"
 
 export type ElcaProjectInfo = {
   id: number
@@ -27,6 +32,10 @@ export type TBaustoffProductData = {
   eolData?: ElcaProjectComponentLayerEolData
 }
 
+export type UserEnrichedProductDataWithDisturbingSubstanceSelection = UserEnrichedProductData & {
+  selectedDisturbingSubstances: DisturbingSubstanceSelection[]
+}
+
 // TODO: rename this to product
 // and use our namings also for the properites.
 // Old ecla legacy names should only be used within the SQL queries and they should already
@@ -44,7 +53,7 @@ export type ElcaProjectComponentRow = {
   oekobaudat_process_db_uuid: string
   element_name: string
   element_type_name: string
-  din_code: string
+  din_code: number
   unit: string
   quantity: number
   layer_size: number
@@ -60,13 +69,19 @@ export type EnrichedElcaElementComponent = ElcaProjectComponentRow & {
   dismantlingPotentialClassId?: DismantlingPotentialClassId | null
   eolUnbuiltSpecificScenario?: TBs_ProductDefinitionEOLCategoryScenario | null
   eolUnbuiltSpecificScenarioProofText: string | null | undefined
+  disturbingSubstanceSelections: DisturbingSubstanceSelection[]
+  disturbingEolScenarioForS4: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
 }
 
 export type ElcaElementWithComponents = {
   element_uuid: string
   element_type_name: string
   element_name: string
-  din_code: string
+  din_code: number
   layers: EnrichedElcaElementComponent[]
   unit: string
+}
+
+export type DisturbingSubstanceSelectionWithNullabelId = Omit<DisturbingSubstanceSelection, "id"> & {
+  id: number | null
 }

@@ -1,15 +1,13 @@
 "use server"
 
-import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
-import { prisma } from "prisma/prismaClient"
-import { getElcaComponentDataByLayerIdAndUserId } from "./utils/getElcaComponentDataByLayerIdAndUserId"
-import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
+import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
+import {
+  deleteDisturbingSubstanceSelectionsByLayerId,
+  upsertUserEnrichedProductDataWithTBaustoffProduct,
+} from "prisma/queries/db"
 
-export async function updateTBaustoffProduct(
-  layerId: number,
-  selectedId: number
-): Promise<EnrichedElcaElementComponent> {
+export async function updateTBaustoffProduct(layerId: number, selectedId: number) {
   if (!layerId || !selectedId) {
     throw new Error("Invalid layerId or selectedId")
   }
@@ -18,25 +16,6 @@ export async function updateTBaustoffProduct(
 
   await ensureUserAuthorizationToElementComponent(Number(session.user.id), layerId)
 
-  await prisma.userEnrichedProductData.upsert({
-    // TODO: add checks here for:
-    // 1. user has access to the project and layer
-    // 2. that there is not already a match found by out OBD-tBaustoff mapping
-    // 3. if the layerId exists in the database
-    where: { elcaElementComponentId: layerId },
-    update: {
-      tBaustoffProductDefinitionId: selectedId,
-      specificEolUnbuiltTotalScenario: null,
-      specificEolUnbuiltTotalScenarioProofText: null,
-      dismantlingPotentialClassId: null,
-    },
-    create: {
-      elcaElementComponentId: layerId,
-      tBaustoffProductDefinitionId: selectedId,
-      tBaustoffProductSelectedByUser: true,
-    },
-  })
-
-  const newElcaElementComponentData = await getElcaComponentDataByLayerIdAndUserId(layerId, session.user.id)
-  return newElcaElementComponentData
+  await upsertUserEnrichedProductDataWithTBaustoffProduct(layerId, selectedId)
+  await deleteDisturbingSubstanceSelectionsByLayerId(layerId)
 }

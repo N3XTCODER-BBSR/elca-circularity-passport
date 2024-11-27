@@ -1,9 +1,9 @@
 import "styles/global.css"
-import { getElcaProjectDataWithRequest } from "lib/domain-logic/circularity/server-actions/getElcaProjectDataWithRequestCache"
-import NavBar from "./(components)/NavBar"
-import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import errorHandler from "app/(utils)/errorHandler"
+import { getElcaProjectDataWithRequest } from "lib/domain-logic/circularity/server-actions/getElcaProjectDataWithRequestCache"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
+import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
+import NavBar from "./(components)/NavBar"
 
 export default async function ProjectLayout({
   children,

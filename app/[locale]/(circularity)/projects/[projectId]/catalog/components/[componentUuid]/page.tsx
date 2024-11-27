@@ -2,12 +2,12 @@ import { ArrowLongLeftIcon } from "@heroicons/react/20/solid"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getAvailableTBaustoffProducts } from "lib/domain-logic/circularity/server-actions/getAvailableTBaustoffProducts"
-import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
-import ComponentLayer from "./(components)/component-layer"
-import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import errorHandler from "app/(utils)/errorHandler"
+import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
+import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
+import { getAvailableTBaustoffProducts } from "prisma/queries/db"
+import ComponentLayer from "./(components)/layer-details/ComponentLayer"
 
 const Page = async ({ params }: { params: { projectId: string; componentUuid: string; locale: string } }) => {
   return errorHandler(async () => {
@@ -38,7 +38,7 @@ const Page = async ({ params }: { params: { projectId: string; componentUuid: st
       notFound()
     }
 
-    const dinGroupLevelNumber = Math.floor(parseInt(componentData.din_code) / 100) * 100
+    const dinGroupLevelNumber = Math.floor(componentData.din_code / 100) * 100
 
     const availableTBaustoffProducts = (await getAvailableTBaustoffProducts()).map((el) => ({
       id: `${el.id}`,

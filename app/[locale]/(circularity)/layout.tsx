@@ -36,7 +36,6 @@ export default async function RootLayout({
   params: { locale: string }
 }) {
   const messages = await getMessages()
-
   return (
     <html lang={locale}>
       <body className={twMerge("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
