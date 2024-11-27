@@ -3,14 +3,10 @@ import enrichComponentsArrayWithDin276Labels, {
 } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import passportParser from "lib/domain-logic/grp/data-schema/versions/v1/passportParser"
 import { PassportData } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
-import { prisma } from "prisma/prismaClient"
+import { getAllPassports, getPassportByUuid } from "prisma/queries/db"
 
 const getPassportDataByPassportUuid = async (passportUuid: string): Promise<PassportData | null> => {
-  const passportDbRow = await prisma.passport.findUnique({
-    where: {
-      uuid: passportUuid,
-    },
-  })
+  const passportDbRow = await getPassportByUuid(passportUuid)
 
   if (!passportDbRow) {
     return null
@@ -37,7 +33,7 @@ export const getDinEnrichedPassportDataByPassportUuid = async (
 }
 
 export const getAllPassportsData = async (): Promise<PassportData[]> => {
-  const passports = await prisma.passport.findMany()
+  const passports = await getAllPassports()
 
   const passportsData = passports.map((passport) => passportParser(passport.passportData))
   return passportsData

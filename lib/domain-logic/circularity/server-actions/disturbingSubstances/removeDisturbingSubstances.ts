@@ -3,8 +3,8 @@
 import { getServerSession } from "next-auth"
 import authOptions from "app/(utils)/authOptions"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
-import { prisma } from "prisma/prismaClient"
-import { getElcaComponentDataByLayerIdAndUserId } from "../utils/getElcaComponentDataByLayerIdAndUserId"
+import { deleteDisturbingSubstanceSelectionById } from "prisma/queries/db"
+import { fetchElcaComponentByIdAndUserId } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 
 export async function removeDisturbingSubstanceSelection(
   layerId: number,
@@ -19,12 +19,8 @@ export async function removeDisturbingSubstanceSelection(
     throw new Error("Unauthorized")
   }
 
-  await prisma.disturbingSubstanceSelection.delete({
-    where: {
-      id: disturbingSubstanceSelectionId,
-    },
-  })
+  await deleteDisturbingSubstanceSelectionById(disturbingSubstanceSelectionId)
 
-  const elcaElementComponentData = await getElcaComponentDataByLayerIdAndUserId(layerId, session.user.id)
+  const elcaElementComponentData = await fetchElcaComponentByIdAndUserId(layerId, session.user.id)
   return elcaElementComponentData
 }

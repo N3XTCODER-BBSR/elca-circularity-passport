@@ -24,7 +24,8 @@
     "scalingo-postbuild": "./devops/scalingoPostbuild.sh",
     "prepare": "husky",
     "prisma:generate": "prisma generate --schema prisma/schema.prisma && prisma generate --schema prisma/schemaLegacy.prisma",
-    "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate": "prisma migrate dev --schema prisma/schema.prisma",
+    "prisma:migrate-legacy": "prisma migrate dev --schema prisma/schemaLegacy.prisma",
     "prisma:seed": "prisma db seed",
     "tbaustoff-mapping-csv-to-json-transformer": "npx ts-node prisma/seeding/tBaustoffMappingCsvToJsonTransformer.mts"
   },

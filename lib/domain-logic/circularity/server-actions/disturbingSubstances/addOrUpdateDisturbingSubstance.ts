@@ -7,8 +7,14 @@ import {
   EnrichedElcaElementComponent,
 } from "lib/domain-logic/types/domain-types"
 import { DisturbingSubstanceClassId, Prisma } from "prisma/generated/client"
-import { prisma } from "prisma/prismaClient"
-import { getElcaComponentDataByLayerIdAndUserId } from "../utils/getElcaComponentDataByLayerIdAndUserId"
+import {
+  createDisturbingSubstanceSelection,
+  findDisturbingSubstancesByLayerIdAndClassId,
+  updateDisturbingSubstanceSelection,
+  updateUserEnrichedProductDataDisturbingEolScenario,
+  upsertUserEnrichedProductData,
+} from "prisma/queries/db"
+import { fetchElcaComponentByIdAndUserId } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 
 export async function addOrUpdateDisturbingSubstanceSelection(
   layerId: number,
@@ -23,14 +29,7 @@ export async function addOrUpdateDisturbingSubstanceSelection(
     throw new Error("Unauthorized")
   }
 
-  await prisma.userEnrichedProductData.upsert({
-    where: { elcaElementComponentId: layerId },
-    update: {},
-    create: {
-      elcaElementComponentId: layerId,
-      tBaustoffProductSelectedByUser: false,
-    },
-  })
+  await upsertUserEnrichedProductData(layerId)
 
   try {
     if (disturbingSubstanceSelectionWithNullableId.id != null) {
@@ -45,12 +44,7 @@ export async function addOrUpdateDisturbingSubstanceSelection(
         updateData.disturbingSubstanceName = null
       }
 
-      await prisma.disturbingSubstanceSelection.update({
-        where: {
-          id: disturbingSubstanceSelectionWithNullableId.id,
-        },
-        data: updateData,
-      })
+      await updateDisturbingSubstanceSelection(disturbingSubstanceSelectionWithNullableId.id, updateData)
     } else {
       const createData: Prisma.DisturbingSubstanceSelectionCreateInput = {
         disturbingSubstanceClassId: disturbingSubstanceSelectionWithNullableId.disturbingSubstanceClassId || null,
@@ -66,32 +60,18 @@ export async function addOrUpdateDisturbingSubstanceSelection(
         createData.disturbingSubstanceName = null
       }
 
-      await prisma.disturbingSubstanceSelection.create({
-        data: createData,
-      })
+      await createDisturbingSubstanceSelection(createData)
     }
   } catch (error: any) {
     throw error
   }
 
   // If there are no S4 disturbing substances, remove the disturbingEolScenarioForS4
-  const disturbingSubstances = await prisma.disturbingSubstanceSelection.findMany({
-    where: {
-      userEnrichedProductDataElcaElementComponentId: layerId,
-      disturbingSubstanceClassId: DisturbingSubstanceClassId.S4,
-    },
-  })
+  const disturbingSubstances = await findDisturbingSubstancesByLayerIdAndClassId(layerId, DisturbingSubstanceClassId.S4)
   if (disturbingSubstances.length === 0) {
-    await prisma.userEnrichedProductData.update({
-      where: {
-        elcaElementComponentId: layerId,
-      },
-      data: {
-        disturbingEolScenarioForS4: null,
-      },
-    })
+    await updateUserEnrichedProductDataDisturbingEolScenario(layerId)
   }
 
-  const elcaElementComponentData = await getElcaComponentDataByLayerIdAndUserId(layerId, session.user.id)
+  const elcaElementComponentData = await fetchElcaComponentByIdAndUserId(layerId, session.user.id)
   return elcaElementComponentData
 }

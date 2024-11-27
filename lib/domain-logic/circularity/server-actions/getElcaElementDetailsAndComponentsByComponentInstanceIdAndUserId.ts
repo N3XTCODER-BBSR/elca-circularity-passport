@@ -1,5 +1,4 @@
 import _ from "lodash"
-import { query } from "lib/db/elca-legacy-db"
 import {
   ElcaElementWithComponents,
   ElcaProjectComponentRow,
@@ -7,7 +6,8 @@ import {
   TBaustoffProductData,
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
-import { prisma } from "prisma/prismaClient"
+import { getTBaustoffMappingEntries, getTBaustoffProducts, getUserDefinedTBaustoffData } from "prisma/queries/db"
+import { getElcaProjectComponentsByInstanceIdAndUserId } from "prisma/queries/legacyDb"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
 
@@ -15,7 +15,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   componentInstanceId: string,
   userId: string
 ): Promise<ElcaElementWithComponents[]> => {
-  const projectComponents = await fetchElcaProjectComponentsByInstanceIdAndUserId(componentInstanceId, userId)
+  const projectComponents = await getElcaProjectComponentsByInstanceIdAndUserId(componentInstanceId, userId)
 
   const componentIds = Array.from(new Set(projectComponents.map((c) => c.component_id)))
   const oekobaudatProcessUuids = Array.from(new Set(projectComponents.map((c) => c.oekobaudat_process_uuid)))
@@ -41,99 +41,6 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   )
 
   return projectComponentsWithLayers
-}
-
-async function getTBaustoffProducts(tBaustoffProductIds: number[]): Promise<
-  Prisma.TBs_ProductDefinitionGetPayload<{
-    include: { tBs_ProductDefinitionEOLCategory: true }
-  }>[]
-> {
-  return prisma.tBs_ProductDefinition.findMany({
-    where: {
-      id: {
-        in: tBaustoffProductIds,
-      },
-    },
-    include: {
-      tBs_ProductDefinitionEOLCategory: true,
-    },
-  })
-}
-
-async function fetchElcaProjectComponentsByInstanceIdAndUserId(
-  componentInstanceId: string,
-  userId: string
-): Promise<ElcaProjectComponentRow[]> {
-  // TODO: ideally also add project-variant id/uuid here to ensure correctness
-  const result = await query(
-    `
-    select
-      element.access_group_id as access_group_id,
-      element.uuid AS element_uuid,
-      element_component.id AS component_id,
-      element_component.layer_position AS layer_position,
-      process.name AS process_name,
-      process.ref_value AS process_ref_value,
-      process.ref_unit AS process_ref_unit,
-      process.uuid as oekobaudat_process_uuid,
-      process_db.name AS pdb_name,
-      process_db.version AS pdb_version,
-      process_db.uuid AS oekobaudat_process_db_uuid,
-      element.name AS element_name,
-      element_type.name AS element_type_name,
-      element_type.din_code AS din_code,
-      element.ref_unit AS unit,
-      element_component.id as element_component_id,
-      element_component.quantity AS quantity,
-      element_component.layer_size AS layer_size,
-      element_component.layer_length AS layer_length,
-      element_component.layer_width AS layer_width,
-      process_config.density AS process_config_density,
-      process_config.name AS process_config_name
-    FROM elca.elements element
-    JOIN elca.project_variants project_variant ON project_variant.id = element.project_variant_id
-    JOIN elca.projects project ON project.current_variant_id = project_variant.id
-    JOIN elca.element_types element_type ON element_type.node_id = element.element_type_node_id
-    JOIN elca.element_components element_component ON element.id = element_component.element_id
-    JOIN elca.process_configs process_config ON process_config.id = element_component.process_config_id
-    JOIN elca.process_life_cycle_assignments process_life_cycle_assignment ON process_life_cycle_assignment.process_config_id = process_config.id
-    JOIN elca.processes process ON process_life_cycle_assignment.process_id = process.id
-    JOIN elca.life_cycles life_cycle ON life_cycle.ident = process.life_cycle_ident
-    JOIN elca.process_dbs process_db ON process_db.id = process.process_db_id AND process_db.id = project.process_db_id
-    -- join public."groups" groups on groups.id = element.access_group_id 
-    --join public.group_members group_member on group_member.group_id = groups.id 
-    WHERE element.uuid = $1 AND life_cycle.phase = 'prod' and project.owner_id = $2 --and group_member.user_id = $2
-    ORDER BY element_uuid, layer_position, component_id, oekobaudat_process_uuid
-  `,
-    [componentInstanceId, userId]
-  )
-
-  return result.rows as ElcaProjectComponentRow[]
-}
-
-async function getUserDefinedTBaustoffData(
-  componentIds: number[]
-): Promise<UserEnrichedProductDataWithDisturbingSubstanceSelection[]> {
-  return prisma.userEnrichedProductData.findMany({
-    where: {
-      elcaElementComponentId: {
-        in: componentIds,
-      },
-    },
-    include: {
-      selectedDisturbingSubstances: true,
-    },
-  })
-}
-
-async function getTBaustoffMappingEntries(oekobaudatProcessUuids: string[]): Promise<TBs_OekobaudatMapping[]> {
-  return prisma.tBs_OekobaudatMapping.findMany({
-    where: {
-      oebd_processUuid: {
-        in: oekobaudatProcessUuids,
-      },
-    },
-  })
 }
 
 function createMap<T, K>(list: T[], keyGetter: (item: T) => K): Map<K, T> {

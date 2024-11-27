@@ -5,8 +5,8 @@ import { notFound } from "next/navigation"
 import { getServerSession } from "next-auth"
 import authOptions from "app/(utils)/authOptions"
 import UnauthorizedRedirect from "app/[locale]/(circularity)/(components)/UnauthorizedRedirect"
-import { getAvailableTBaustoffProducts } from "lib/domain-logic/circularity/server-actions/getAvailableTBaustoffProducts"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
+import { getAvailableTBaustoffProducts } from "prisma/queries/db"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
 
 const Page = async ({ params }: { params: { projectId: string; componentUuid: string; locale: string } }) => {
@@ -39,7 +39,7 @@ const Page = async ({ params }: { params: { projectId: string; componentUuid: st
     notFound()
   }
 
-  const dinGroupLevelNumber = Math.floor(parseInt(componentData.din_code) / 100) * 100
+  const dinGroupLevelNumber = Math.floor(componentData.din_code / 100) * 100
 
   const availableTBaustoffProducts = (await getAvailableTBaustoffProducts()).map((el) => ({
     id: `${el.id}`,
