@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth"
 import authOptions from "app/(utils)/authOptions"
 import UnauthorizedRedirect from "app/[locale]/(circularity)/(components)/UnauthorizedRedirect"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
+import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { getAvailableTBaustoffProducts } from "prisma/queries/db"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
 
@@ -16,10 +17,8 @@ const Page = async ({ params }: { params: { projectId: string; componentUuid: st
     return <UnauthorizedRedirect />
   }
 
-  const projectComponents = await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(
-    params.componentUuid,
-    session.user.id
-  )
+  const projectComponents: ElcaElementWithComponents<EnrichedElcaElementComponent>[] =
+    await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(params.componentUuid, session.user.id)
 
   // TODO: check this - probably better to check for array length?
   if (!projectComponents) {

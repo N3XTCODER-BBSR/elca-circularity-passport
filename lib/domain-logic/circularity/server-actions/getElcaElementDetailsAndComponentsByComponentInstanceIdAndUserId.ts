@@ -14,8 +14,11 @@ import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEo
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
   componentInstanceId: string,
   userId: string
-): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>[]> => {
-  const projectComponents = await getElcaProjectComponentsByInstanceIdAndUserId(componentInstanceId, userId)
+): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
+  const projectComponents: ElcaProjectComponentRow[] = await getElcaProjectComponentsByInstanceIdAndUserId(
+    componentInstanceId,
+    userId
+  )
 
   const componentIds = Array.from(new Set(projectComponents.map((c) => c.component_id)))
   const oekobaudatProcessUuids = Array.from(new Set(projectComponents.map((c) => c.oekobaudat_process_uuid)))
@@ -33,7 +36,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   const tBaustoffProductsList = await getTBaustoffProducts(tBaustoffProductIds)
   const tBaustoffProductMap = createMap(tBaustoffProductsList, (product) => product.id)
 
-  const projectComponentsWithLayers = processProjectComponents(
+  const projectComponentsWithLayers: ElcaElementWithComponents<EnrichedElcaElementComponent> = processProjectComponents(
     projectComponents,
     userDefinedTBaustoffDataMap,
     tBaustoffMappingEntriesMap,
