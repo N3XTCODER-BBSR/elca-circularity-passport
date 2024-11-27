@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { EditButton, ErrorText } from "app/(components)/generic/layout-elements"
 import { updateTBaustoffProduct } from "lib/domain-logic/circularity/server-actions/updateTBaustoffProductOfLayer"
-import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
+import { EnrichedProduct } from "lib/domain-logic/types/domain-types"
 import Modal from "../../Modal"
 
 type Option = {
@@ -14,13 +14,13 @@ type Option = {
 }
 
 interface TBaustoffProductNameOrSelectorButtonProps {
-  layerData: EnrichedElcaElementComponent
+  layerData: EnrichedProduct
   options: Option[]
 }
 
 interface SelectMaterialButtonProps {
   options: Option[]
-  circulartyEnrichedLayerData: EnrichedElcaElementComponent
+  circulartyEnrichedLayerData: EnrichedProduct
 }
 
 const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyEnrichedLayerData, options }) => {

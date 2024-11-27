@@ -26,10 +26,7 @@ import {
 } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import dismantlingPotentialClassIdMapping from "lib/domain-logic/circularity/utils/dismantlingPotentialClassIdMapping"
 import { EOLScenarioMap } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
-import {
-  DisturbingSubstanceSelectionWithNullabelId,
-  EnrichedElcaElementComponent,
-} from "lib/domain-logic/types/domain-types"
+import { DisturbingSubstanceSelectionWithNullabelId, EnrichedProduct } from "lib/domain-logic/types/domain-types"
 import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import BuiltS4SpecificScenarioModal from "./disturbing-substances/BuiltS4SpecificScenarioModal"
 import DisturbingSubstances from "./DisturbingSubstances"
@@ -153,7 +150,7 @@ const CircularityDetails = ({ layerData }: CircularityDetailsProps) => {
   })
 
   const addOrUpdateDisturbingSubstanceMutation = useMutation<
-    EnrichedElcaElementComponent,
+    EnrichedProduct,
     Error,
     DisturbingSubstanceSelectionWithNullabelId
   >({
@@ -165,7 +162,7 @@ const CircularityDetails = ({ layerData }: CircularityDetailsProps) => {
   })
 
   const removeDisturbingSubstanceMutation = useMutation<
-    EnrichedElcaElementComponent, // TData
+    EnrichedProduct, // TData
     Error,
     number
   >({

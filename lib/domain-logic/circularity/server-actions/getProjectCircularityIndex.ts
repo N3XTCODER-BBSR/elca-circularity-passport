@@ -1,8 +1,8 @@
 import _ from "lodash"
 import {
-  ElcaElementWithComponents,
-  ElcaProjectComponentRow,
-  EnrichedElcaElementComponent,
+  ComponentWithProducts,
+  Product,
+  EnrichedProduct,
   TBaustoffProductData,
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
@@ -15,7 +15,7 @@ import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from
 type ProjectCircularityIndexData = {
   projectId: string
   projectName: string
-  components: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
+  components: ComponentWithProducts<CalculateCircularityDataForLayerReturnType>[]
 }
 
 export const getProjectCircularityIndexData = async (
@@ -31,11 +31,11 @@ export const getProjectCircularityIndexData = async (
   // 2. Call existing function to get all the data for the components
   const components = await Promise.all(
     elements.map(async (element) => {
-      const elementDetailsWithProducts: ElcaElementWithComponents<EnrichedElcaElementComponent>[] =
+      const elementDetailsWithProducts: ComponentWithProducts<EnrichedProduct>[] =
         await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(element.element_uuid, userId)
       // calculateCircularityDataForLayer
 
-      const FOO: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>
+      const FOO: ComponentWithProducts<CalculateCircularityDataForLayerReturnType>
 
       return elementDetailsWithProducts
     })

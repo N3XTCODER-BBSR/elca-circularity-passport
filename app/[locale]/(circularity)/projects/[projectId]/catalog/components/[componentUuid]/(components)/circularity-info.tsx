@@ -21,7 +21,7 @@ import { updateSpecificEolScenario } from "lib/domain-logic/circularity/server-a
 import getEolClassNameByPoints, {
   getEolPointsByScenario,
 } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
-import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
+import { EnrichedProduct } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
 import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import EOLScenarioEditButton from "./layer-details/circularity-info/circularity-details/EOLScenarioEditButton"
@@ -29,7 +29,7 @@ import EolScenarioInfoBox from "./layer-details/circularity-info/circularity-det
 import TBaustoffProductNameOrSelectorButton from "./layer-details/circularity-info/TBaustoffProductNameOrSelectorButton"
 
 type EolDataSectionProps = {
-  layerData: EnrichedElcaElementComponent
+  layerData: EnrichedProduct
   isUpdating: boolean
   onSaveSpecificEolScenario: (
     selectedEolScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined,
@@ -37,7 +37,7 @@ type EolDataSectionProps = {
   ) => void
 }
 
-const getEolUnbuiltKeyValues = (layerData: EnrichedElcaElementComponent) => {
+const getEolUnbuiltKeyValues = (layerData: EnrichedProduct) => {
   if (layerData.eolUnbuiltSpecificScenario) {
     const eolPoints = getEolPointsByScenario(layerData.eolUnbuiltSpecificScenario)
     return [
@@ -123,7 +123,7 @@ const EolDataSection = ({ layerData, isUpdating, onSaveSpecificEolScenario }: Eo
   )
 }
 
-type CircularityInfoProps = { layerData: EnrichedElcaElementComponent; tBaustoffProducts: SelectOption[] }
+type CircularityInfoProps = { layerData: EnrichedProduct; tBaustoffProducts: SelectOption[] }
 const CircularityInfo = (props: CircularityInfoProps) => {
   const { tBaustoffProducts } = props
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo")

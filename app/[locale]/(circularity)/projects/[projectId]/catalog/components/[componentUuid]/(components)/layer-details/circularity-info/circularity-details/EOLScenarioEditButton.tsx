@@ -6,7 +6,7 @@ import { EditButton } from "app/(components)/generic/layout-elements"
 import { Required, Text } from "app/(components)/generic/layout-elements"
 import { updateSpecificEolScenario } from "lib/domain-logic/circularity/server-actions/updateSpecificScenario"
 import { EOLScenarioMap } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
-import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
+import { EnrichedProduct } from "lib/domain-logic/types/domain-types"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import EolScenarioInfoBox from "./EolScenarioInfoBox"
 import Modal from "../../../Modal"
@@ -17,21 +17,21 @@ type Option = {
 }
 
 interface EOLScenarioEditButtonProps {
-  layerData: EnrichedElcaElementComponent
+  layerData: EnrichedProduct
 }
 
 type ModalPage1Props = {
   handleCancel: () => void
   handleNextModalPage: () => void
   isUpdating: boolean
-  layerData: EnrichedElcaElementComponent
+  layerData: EnrichedProduct
 }
 
 type ModalPage2Props = {
   handleCancel: () => void
   handleSave: (scenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined, proofText: string) => void
   options: Option[]
-  layerData: EnrichedElcaElementComponent
+  layerData: EnrichedProduct
 }
 
 const ModalPage1 = ({ layerData, isUpdating, handleCancel, handleNextModalPage }: ModalPage1Props) => {
