@@ -14,7 +14,7 @@ import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEo
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
   componentInstanceId: string,
   userId: string
-): Promise<ElcaElementWithComponents[]> => {
+): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>[]> => {
   const projectComponents = await fetchElcaProjectComponentsByInstanceIdAndUserId(componentInstanceId, userId)
 
   const componentIds = Array.from(new Set(projectComponents.map((c) => c.component_id)))
@@ -206,7 +206,7 @@ function processProjectComponents(
       include: { tBs_ProductDefinitionEOLCategory: true }
     }>
   >
-): ElcaElementWithComponents[] {
+): ElcaElementWithComponents<EnrichedElcaElementComponent>[] {
   return (
     _(projectComponents)
       // TODO: check why this is needed
@@ -223,7 +223,7 @@ function processProjectComponents(
           din_code,
           unit,
           layers,
-        } as ElcaElementWithComponents
+        } as ElcaElementWithComponents<EnrichedElcaElementComponent>
       })
       .value()
   )

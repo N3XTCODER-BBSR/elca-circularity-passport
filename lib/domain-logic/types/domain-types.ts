@@ -73,12 +73,12 @@ export type EnrichedElcaElementComponent = ElcaProjectComponentRow & {
   disturbingEolScenarioForS4: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
 }
 
-export type ElcaElementWithComponents = {
+export type ElcaElementWithComponents<T extends EnrichedElcaElementComponent> = {
   element_uuid: string
   element_type_name: string
   element_name: string
   din_code: string
-  layers: EnrichedElcaElementComponent[]
+  layers: T[]
   unit: string
 }
 
