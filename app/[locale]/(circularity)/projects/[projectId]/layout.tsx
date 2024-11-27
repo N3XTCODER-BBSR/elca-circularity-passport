@@ -1,7 +1,7 @@
 import "styles/global.css"
 import { getServerSession } from "next-auth/next"
 import authOptions from "app/(utils)/authOptions"
-import { getElcaProjectDataWithRequest } from "lib/domain-logic/circularity/server-actions/getElcaProjectDataWithRequestCache"
+import { getElcaProjectData } from "lib/domain-logic/circularity/server-actions/getElcaProjectData"
 import NavBar from "./(components)/NavBar"
 import UnauthorizedRedirect from "../../(components)/UnauthorizedRedirect"
 
@@ -18,7 +18,7 @@ export default async function ProjectLayout({
     return <UnauthorizedRedirect />
   }
 
-  const projectInfo = await getElcaProjectDataWithRequest(params.projectId, session.user.id)
+  const projectInfo = await getElcaProjectData(params.projectId, session.user.id)
 
   if (!projectInfo) {
     return <div>Projects with this ID not found for the current user.</div>

@@ -1,0 +1,43 @@
+type BuildingOverviewProps = {
+  projectId: number
+  projectName: string
+}
+const BuildingOverview = ({ projectId, projectName }: BuildingOverviewProps) => {
+  return (
+    <>
+      <div className="mb-4 flex items-center justify-between">
+        <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
+          Zirkularitätsindex
+        </h1>
+      </div>
+
+      <h2 className="max-w-[50%]">
+        {/* <span className="text-sm font-bold uppercase text-indigo-600">{translations("project")}</span>
+        <br /> */}
+        <span className="text-2xl">{projectName}</span>
+      </h2>
+      {/* <div className="mt-6 border-gray-100">
+        <BuildingBaseInformation passportData={dinEnrichedPassportData} className="mt-16" />
+        <Materials dinEnrichedPassportData={dinEnrichedPassportData} className="my-24 flex flex-col" />
+        <Resources
+          dinEnrichedBuildingComponents={dinEnrichedPassportData.dinEnrichedBuildingComponents}
+          nrf={dinEnrichedPassportData.buildingBaseData.nrf}
+          className="mt-16"
+        />
+        <Circularity
+          dinEnrichedBuildingComponents={dinEnrichedPassportData.dinEnrichedBuildingComponents}
+          className="mt-16"
+        />
+      </div> */}
+    </>
+    // <div>
+    //   {/* <h1 className="mx-[5mm] pl-[2mm] pt-[1mm] leading-none tracking-tight">
+    //     <div className="font-normal">Zirkularitätsindex</div>
+    //     <div className="mt-[1.5mm] font-bold">{projectName}</div>
+    //   </h1>
+    //   <p>Project ID: {projectId}</p> */}
+    // </div>
+  )
+}
+
+export default BuildingOverview
