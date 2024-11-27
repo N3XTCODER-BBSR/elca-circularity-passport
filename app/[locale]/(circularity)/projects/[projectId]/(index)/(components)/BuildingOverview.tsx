@@ -1,3 +1,5 @@
+import CircularityIndexTotal from "./CircularityIndexTotal"
+
 type BuildingOverviewProps = {
   projectId: number
   projectName: string
@@ -9,6 +11,9 @@ const BuildingOverview = ({ projectId, projectName }: BuildingOverviewProps) => 
         <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
           Zirkularitätsindex
         </h1>
+      </div>
+      <div>
+        <CircularityIndexTotal />
       </div>
 
       <h2 className="max-w-[50%]">
