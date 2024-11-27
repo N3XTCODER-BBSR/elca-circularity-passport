@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
-import UnauthorizedRedirect from "../(components)/UnauthorizedRedirect"
+import UnauthenticatedRedirect from "../(components)/UnauthenticatedRedirect"
 
 type SecretResource = {
   message: string
@@ -41,7 +41,7 @@ const Page = () => {
         <dt className="text-xl font-bold">Secret data</dt>
         <dd>
           {session == null ? (
-            <UnauthorizedRedirect />
+            <UnauthenticatedRedirect />
           ) : secretData ? (
             <>
               <dl>

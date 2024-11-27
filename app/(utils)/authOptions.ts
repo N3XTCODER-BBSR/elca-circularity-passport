@@ -44,15 +44,9 @@ const authOptions: NextAuthOptions = {
           return null
         }
 
-        const passwordValid = validatePassword(credentials.password, userFromDb.hashed_password)
+        const passwordIsValid = validatePassword(credentials.password, userFromDb.hashed_password)
 
-        if (passwordValid) {
-          console.log("Password is valid!")
-        } else {
-          console.log("Password is invalid.")
-        }
-
-        if (passwordValid) {
+        if (passwordIsValid) {
           // If the password is valid, return the user object
           console.log("User authorized!")
           return {
@@ -69,17 +63,21 @@ const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/auth/signin",
   },
+  jwt: {
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+  },
+  session: {
+    strategy: "jwt", // jwt is default value
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        // Initial sign-in, add custom properties to the token
         token.id = user.id
         token.auth_name = user.auth_name
       }
       return token
     },
     async session({ session, token }) {
-      // Add custom properties to the session from the token
       if (token) {
         session.user.id = token.id as string
         session.user.auth_name = token.auth_name as string
