@@ -11,6 +11,7 @@ const CircularityIndexTotalBarChart = ({
 }) => {
   return (
     <>
+      circularityTotalIndexPoints: {circularityTotalIndexPoints}
       FOO
       <ResponsiveBar
         //   animate={!isPdf}
@@ -23,7 +24,7 @@ const CircularityIndexTotalBarChart = ({
             },
           },
         }}
-        data={[{ datum: circularityTotalIndexPoints }]}
+        data={[{ datum: circularityTotalIndexPoints, identifier: "Gesamt" }]}
         //   keys={["circularityIndexPoints"]}
         indexBy="identifier"
         margin={margin}
