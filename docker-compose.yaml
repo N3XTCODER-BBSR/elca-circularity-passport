@@ -1,7 +1,9 @@
 services:
 
   run-tests:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile.test
     # TODO: Consider running npx next build
     command: bash -c "npx prisma migrate deploy && yarn run test"
     # TODO: 
@@ -23,6 +25,31 @@ services:
       HTTP_BASIC_AUTH: username:password
       NEXTAUTH_SECRET: ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
       NEXT_PUBLIC_PASSPORT_BASE_URL: http://localhost
+
+  app-prod:
+    build: 
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        DATABASE_URL: ${DATABASE_URL}
+        ELCA_LEGACY_DATABASE_URL: ${ELCA_LEGACY_DATABASE_URL}
+        ELCA_LEGACY_DATABASE_HAS_SSL: ${ELCA_LEGACY_DATABASE_HAS_SSL}
+        DOPPIO_API_KEY: ${DOPPIO_API_KEY}
+        HTTP_BASIC_AUTH: ${HTTP_BASIC_AUTH}
+        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+        NEXT_PUBLIC_PASSPORT_BASE_URL: ${NEXT_PUBLIC_PASSPORT_BASE_URL}
+        NEXT_TELEMETRY_DISABLED: ${NEXT_TELEMETRY_DISABLED}
+        PRISMA_TELEMETRY_DISABLED: ${PRISMA_TELEMETRY_DISABLED}
+    command: sh -c "yarn prisma:generate && npx prisma migrate deploy && yarn start"
+    environment:
+      DATABASE_URL: postgres://building_passport:password@db:5432/building_passport
+      ELCA_LEGACY_DATABASE_URL: postgres://elca:password@legacy-db:5432/elca
+    depends_on:
+      - db
+      - legacy-db
+    ports:
+      - '3000:3000'
+    env_file: .env.public
 
   db:
     image: 'postgres:16.3'
