@@ -26,7 +26,7 @@ jobs:
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps
       - name: Start the web server
-        run: yarn start:docker &
+        run: yarn start:docker
       - name: Run Playwright tests
         run: yarn e2e:headless
       - uses: actions/upload-artifact@v4
