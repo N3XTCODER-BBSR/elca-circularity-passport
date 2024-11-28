@@ -28,6 +28,7 @@ const CircularityIndexTotalBarChart = ({
         //   keys={["circularityIndexPoints"]}
         indexBy="identifier"
         margin={margin}
+        keys={["datum"]}
         colors={() => "#eaeee5"}
         padding={0.2}
         groupMode="grouped"
