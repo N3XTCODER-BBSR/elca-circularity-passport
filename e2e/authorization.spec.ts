@@ -1,41 +1,15 @@
 import { expect, test } from "@playwright/test"
-import { prismaLegacy } from "prisma/prismaClient"
+import { createUser, deleteUserIfExists } from "./utils"
 
 const username = "testuser2"
 const password = "password1!"
 const userId = 1000
 const hashedPassword = "$1$6a7aabf1$tHpd7.FjG03D18kbREnsa1" // hashed password1!
 
-/**
- * delete user with the given id if it exists
- */
-const deleteUserIfExists = async () => {
-  const user = await prismaLegacy.users.findUnique({ where: { id: userId } })
-  if (user) {
-    await prismaLegacy.users.delete({ where: { id: userId } })
-  }
-}
-
-/**
- * create a user with the given username and password that doesn't have any projects
- * @returns newly created user
- */
-const createUser = async () => {
-  return prismaLegacy.users.create({
-    data: {
-      id: userId,
-      auth_name: username,
-      auth_key: hashedPassword,
-      auth_method: 3,
-      group_id: 1,
-    },
-  })
-}
-
 test.describe("Authorization", () => {
   test.beforeEach(async ({ page }) => {
-    await deleteUserIfExists()
-    await createUser()
+    await deleteUserIfExists(userId)
+    await createUser(userId, username, hashedPassword)
 
     await page.goto("http://localhost:3000/auth/signin")
 
@@ -74,6 +48,6 @@ test.describe("Authorization", () => {
 
     await expect(page).toHaveURL(/\/auth\/signin/)
 
-    await deleteUserIfExists()
+    await deleteUserIfExists(userId)
   })
 })
