@@ -1,6 +1,6 @@
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/server-actions/getProjectCircularityIndex"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import CircularityIndexTotal from "./CircularityIndexTotal"
+import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
 import calculateVolumeAndMass from "lib/domain-logic/circularity/utils/calculateVolumeAndMass"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
@@ -68,7 +68,7 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
         </h1>
       </div>
       <div>
-        <CircularityIndexTotal circularityIndexPoints={totalCircularityIndexForProject} />
+        <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
       </div>
       <h2 className="max-w-[50%]">
         {/* <span className="text-sm font-bold uppercase text-indigo-600">{translations("project")}</span>
