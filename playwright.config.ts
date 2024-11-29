@@ -69,6 +69,8 @@ export default defineConfig({
     // },
   ],
 
+  globalTeardown: "./e2e/globalTeardown.ts",
+
   /* Run your local dev server before starting the tests */
   webServer: {
     command: process.env.CI ? "yarn start:docker" : "yarn dev", // TODO: yarn dev only starts the nextjs server, not the database servers
