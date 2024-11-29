@@ -16,9 +16,12 @@ test.describe("Authorization", () => {
     await page.fill('input[name="username"]', username)
     await page.fill('input[name="password"]', password)
 
-    await page.click('button[type="submit"]')
+    await Promise.all([
+      page.waitForURL(/\/en\/projects/), // Wait until the URL matches /en/projects
+      page.click('button[type="submit"]'),
+    ])
 
-    await expect(page).toHaveURL(/\/[a-z]{2}\/projects/)
+    await expect(page).toHaveURL(/\/en\/projects/) // Ensure the URL is as expected
   })
 
   test.afterEach(async ({ page }) => {
