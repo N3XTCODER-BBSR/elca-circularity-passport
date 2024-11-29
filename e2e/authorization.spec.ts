@@ -21,6 +21,16 @@ test.describe("Authorization", () => {
     await expect(page).toHaveURL(/\/[a-z]{2}\/projects/)
   })
 
+  test.afterEach(async ({ page }) => {
+    await page.goto("http://localhost:3000/en/projects")
+    await page.getByTestId("profile-dropdown-button").click()
+    await page.getByTestId("logout-button").click()
+
+    await expect(page).toHaveURL(/\/auth\/signin/)
+
+    await deleteUserIfExists(userId)
+  })
+
   test("should not be able to access project page that user is not authorized to", async ({ page }) => {
     await page.goto("http://localhost:3000/en/projects/1")
 
@@ -40,14 +50,4 @@ test.describe("Authorization", () => {
   })
 
   // TODO: create project programmatically (database function) that user is owner of and test access to it
-
-  test.afterEach(async ({ page }) => {
-    await page.goto("http://localhost:3000/en/projects")
-    await page.getByTestId("profile-dropdown-button").click()
-    await page.getByTestId("logout-button").click()
-
-    await expect(page).toHaveURL(/\/auth\/signin/)
-
-    await deleteUserIfExists(userId)
-  })
 })

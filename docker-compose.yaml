@@ -31,8 +31,6 @@ services:
       context: .
       dockerfile: Dockerfile.prod
       args:
-        DATABASE_URL: ${DATABASE_URL}
-        ELCA_LEGACY_DATABASE_URL: ${ELCA_LEGACY_DATABASE_URL}
         ELCA_LEGACY_DATABASE_HAS_SSL: ${ELCA_LEGACY_DATABASE_HAS_SSL}
         DOPPIO_API_KEY: ${DOPPIO_API_KEY}
         HTTP_BASIC_AUTH: ${HTTP_BASIC_AUTH}
