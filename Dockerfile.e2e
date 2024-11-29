@@ -16,6 +16,8 @@ RUN yarn install --frozen-lockfile
 
 COPY . .
 
+ENV DATABASE_URL=must-be-a-string-only-to-satisfy-zod
+ENV ELCA_LEGACY_DATABASE_URL=must-be-a-string-only-to-satisfy-zod
 ENV ELCA_LEGACY_DATABASE_HAS_SSL=$ELCA_LEGACY_DATABASE_HAS_SSL
 ENV DOPPIO_API_KEY=$DOPPIO_API_KEY
 ENV HTTP_BASIC_AUTH=$HTTP_BASIC_AUTH
