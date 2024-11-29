@@ -3,9 +3,9 @@ import fs from "fs"
 import path from "path"
 
 import generatePassport from "../../lib/domain-logic/grp/data-schema/versions/v1/passportJsonSeeder"
-import { PrismaClient, TBs_ProductDefinitionEOLCategoryScenario } from "../../prisma/generated/client"
+import { TBs_ProductDefinitionEOLCategoryScenario } from "../../prisma/generated/client"
+import { prisma } from "../prismaClient" // needs to be relative path
 
-const prisma = new PrismaClient()
 const csvFilePath = path.resolve(__dirname, "./obd_tbaustoff_mapping.csv")
 
 const seedPassport = async () => {
@@ -188,6 +188,7 @@ async function seedCircularityTool() {
       }
     } catch (error) {
       console.error(`Error processing row: ${JSON.stringify(row)}`, error)
+      throw error
     }
   }
 }
@@ -199,6 +200,7 @@ async function main() {
     console.log("Seeding completed successfully.")
   } catch (error) {
     console.error("Error during seeding:", error)
+    process.exit(1)
   } finally {
     await prisma.$disconnect()
   }
