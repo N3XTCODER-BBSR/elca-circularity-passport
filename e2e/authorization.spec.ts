@@ -26,12 +26,11 @@ test.describe("Authorization", () => {
 
   test.afterEach(async ({ page }) => {
     await page.goto("/en/projects")
+    await page.getByTestId("profile-dropdown-button").waitFor()
     await page.getByTestId("profile-dropdown-button").click()
     await page.getByTestId("logout-button").click()
 
     await expect(page).toHaveURL(/\/auth\/signin/)
-
-    await deleteUserIfExists(userId)
   })
 
   test("should not be able to access project page that user is not authorized to", async ({ page }) => {
