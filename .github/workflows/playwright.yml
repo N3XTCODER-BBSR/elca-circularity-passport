@@ -29,9 +29,9 @@ jobs:
         run: yarn prisma:generate
       - name: Run Playwright tests
         run: yarn e2e:headless
-        env:
-          DATABASE_URL: "postgres://building_passport:password@localhost:65432/building_passport"
-          ELCA_LEGACY_DATABASE_URL: "postgres://elca:password@localhost:65433/elca"
+        # env:
+          # DATABASE_URL: "postgres://building_passport:password@localhost:65432/building_passport"
+          # ELCA_LEGACY_DATABASE_URL: "postgres://elca:password@localhost:65433/elca"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
