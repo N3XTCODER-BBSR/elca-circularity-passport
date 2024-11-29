@@ -82,3 +82,4 @@ services:
       retries: 5
     volumes:
       - ./legacy_db_data:/var/lib/postgresql/data
+      - ./elca_db_dump.sql:/docker-entrypoint-initdb.d/elca_db_dump.sql # HINT: the elca_db_dump.sql script runs when the container is created. It only runs if ./legacy_db_data doesn't contain data so that the database has not been initialized before
