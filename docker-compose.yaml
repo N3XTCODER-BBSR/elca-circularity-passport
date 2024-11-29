@@ -31,6 +31,8 @@ services:
       context: .
       dockerfile: Dockerfile.e2e
       args:
+        DATABASE_URL: postgres://building_passport:password@localhost:65432/building_passport
+        ELCA_LEGACY_DATABASE_URL: postgres://elca:password@localhost:65433/elca
         ELCA_LEGACY_DATABASE_HAS_SSL: ${ELCA_LEGACY_DATABASE_HAS_SSL}
         DOPPIO_API_KEY: ${DOPPIO_API_KEY}
         HTTP_BASIC_AUTH: ${HTTP_BASIC_AUTH}
