@@ -84,7 +84,7 @@ services:
       - e2e-legacy-db
     ports:
       - '3005:3005'
-    env_file: .env.public
+    env_file: .env.test
 
   e2e-db:
     profiles:

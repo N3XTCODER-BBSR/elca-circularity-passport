@@ -1,4 +1,6 @@
 import { defineConfig, devices } from "@playwright/test"
+import * as dotenv from "dotenv"
+dotenv.config({ path: ".env.test" })
 
 /**
  * Read environment variables from file.
@@ -77,9 +79,5 @@ export default defineConfig({
     url: `http://localhost:${process.env.CI ? "3005" : "3000"}`,
     timeout: process.env.CI ? 600 * 1000 : 60 * 1000,
     reuseExistingServer: true,
-    env: {
-      DATABASE_URL: "postgres://building_passport:password@localhost:65432/building_passport",
-      ELCA_LEGACY_DATABASE_URL: "postgres://elca:password@localhost:65433/elca",
-    },
   },
 })
