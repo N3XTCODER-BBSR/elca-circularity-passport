@@ -11,7 +11,7 @@ test.describe("Authorization", () => {
     await deleteUserIfExists(userId)
     await createUser(userId, username, hashedPassword)
 
-    await page.goto("http://localhost:3000/auth/signin")
+    await page.goto("/auth/signin")
 
     await page.fill('input[name="username"]', username)
     await page.fill('input[name="password"]', password)
@@ -22,7 +22,7 @@ test.describe("Authorization", () => {
   })
 
   test.afterEach(async ({ page }) => {
-    await page.goto("http://localhost:3000/en/projects")
+    await page.goto("/en/projects")
     await page.getByTestId("profile-dropdown-button").click()
     await page.getByTestId("logout-button").click()
 
@@ -32,19 +32,19 @@ test.describe("Authorization", () => {
   })
 
   test("should not be able to access project page that user is not authorized to", async ({ page }) => {
-    await page.goto("http://localhost:3000/en/projects/1")
+    await page.goto("/en/projects/1")
 
     expect(page.locator("text=Unauthorized")).toBeTruthy()
   })
 
   test("should not be able to access catalog page that user is not authorized to", async ({ page }) => {
-    await page.goto("http://localhost:3000/en/projects/1/catalog")
+    await page.goto("/en/projects/1/catalog")
 
     expect(page.locator("text=Unauthorized")).toBeTruthy()
   })
 
   test("should not be able to access component page that user is not authorized to", async ({ page }) => {
-    await page.goto("http://localhost:3000/en/projects/1/catalog/components/32af2f0b-d7d8-4fb1-8354-1e9736d4f513")
+    await page.goto("/en/projects/1/catalog/components/32af2f0b-d7d8-4fb1-8354-1e9736d4f513")
 
     expect(page.locator("text=Unauthorized")).toBeTruthy()
   })

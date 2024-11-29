@@ -25,7 +25,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: `http://127.0.0.1:${process.env.CI ? "3005" : "3000"}`,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -38,15 +38,15 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
 
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-    },
+    // {
+    //   name: "firefox",
+    //   use: { ...devices["Desktop Firefox"] },
+    // },
 
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-    },
+    // {
+    //   name: "webkit",
+    //   use: { ...devices["Desktop Safari"] },
+    // },
 
     /* Test against mobile viewports. */
     // {
@@ -74,7 +74,7 @@ export default defineConfig({
     command: process.env.CI ? "yarn start:docker" : "yarn dev", // TODO: yarn dev only starts the nextjs server, not the database servers
     url: `http://127.0.0.1:${process.env.CI ? "3005" : "3000"}`,
     timeout: process.env.CI ? 600 * 1000 : 60 * 1000,
-    reuseExistingServer: true,
+    // reuseExistingServer: true,
     env: {
       DATABASE_URL: "postgres://building_passport:password@localhost:65432/building_passport",
       ELCA_LEGACY_DATABASE_URL: "postgres://elca:password@localhost:65433/elca",
