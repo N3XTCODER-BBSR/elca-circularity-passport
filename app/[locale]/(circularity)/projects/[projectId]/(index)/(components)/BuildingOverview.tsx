@@ -26,11 +26,14 @@ const calculateTotalCircularityIndex = (
   // At the end, divide the total circularity index by the total mass of the project
   // to get the total circularity index of the project
 
-  const totalCircularityIndex = circularityData.reduce((total, component) => {
+  const circularityIndexSumOverAllComponentLayers = circularityData.reduce((total, component) => {
     return (
       total +
-      component.layers.reduce((totalLayer, layer) => {
-        return totalLayer + (layer.circularityIndex || 0)
+      component.layers.reduce((acc, layer) => {
+        if (layer.circularityIndex == null) {
+          return acc
+        }
+        return acc + (layer.circularityIndex || 0)
       }, 0)
     )
   }, 0)
@@ -38,17 +41,24 @@ const calculateTotalCircularityIndex = (
   const totalMass = circularityData.reduce((total, component) => {
     return (
       total +
-      component.layers.reduce((totalLayer, layer) => {
+      component.layers.reduce((acc, layer) => {
         console.log("layer", layer)
+        if (layer.circularityIndex == null) {
+          return acc
+        }
         const { mass } = calculateVolumeAndMass(layer)
-        return totalLayer + (mass || 0)
+        return acc + (mass || 0)
       }, 0)
     )
   }, 0)
 
+  console.log("FOO circularityData", JSON.stringify(circularityData))
+  console.log("FOO circularityIndexSumOverAllComponentLayers", circularityIndexSumOverAllComponentLayers)
+  console.log("FOO totalMass", totalMass)
+
   console.log("totalMass", totalMass)
 
-  const totalCircularityIndexForProject = totalCircularityIndex / totalMass
+  const totalCircularityIndexForProject = circularityIndexSumOverAllComponentLayers / totalMass
   return totalCircularityIndexForProject
 }
 

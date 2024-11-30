@@ -27,6 +27,7 @@ export const getProjectCircularityIndexData = async (
   // add authorization / authentication check here
 
   // 1. Get all components for the project
+  // TODO: only get the elements that are falling into the DIN categories we are considering
   const elements = await getElcaElementsForProjectId(String(projectId), userId)
 
   // 2. Call existing function to get all the data for the components
