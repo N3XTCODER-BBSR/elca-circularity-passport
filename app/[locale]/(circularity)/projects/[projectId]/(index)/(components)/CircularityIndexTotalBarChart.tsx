@@ -29,7 +29,19 @@ const CircularityIndexTotalBarChart = ({
         indexBy="identifier"
         margin={margin}
         keys={["datum"]}
-        colors={() => "#eaeee5"}
+        colors={(datum) => {
+          // dark green	>60
+          // green	40-60
+          // yellow	20-40
+          // red	<20
+
+          if (datum.data.datum > 60) return "#008000"
+          if (datum.data.datum >= 40) return "#00FF00"
+          if (datum.data.datum >= 20) return "#FFFF00"
+          if (datum.data.datum < 20) return "#FF0000"
+
+          return "#FF0000"
+        }}
         padding={0.2}
         groupMode="grouped"
         layout="horizontal"

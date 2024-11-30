@@ -77,14 +77,14 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
           Zirkularitätsindex
         </h1>
       </div>
-      <div>
-        <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
-      </div>
       <h2 className="max-w-[50%]">
         {/* <span className="text-sm font-bold uppercase text-indigo-600">{translations("project")}</span>
         <br /> */}
         <span className="text-2xl">{projectName}</span>
       </h2>
+      <div>
+        <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
+      </div>
       {/* <div className="mt-6 border-gray-100">
         <BuildingBaseInformation passportData={dinEnrichedPassportData} className="mt-16" />
         <Materials dinEnrichedPassportData={dinEnrichedPassportData} className="my-24 flex flex-col" />
