@@ -170,7 +170,7 @@ const generateMaterialProduct = (): MaterialProduct => {
 
 const generateMaterialWaste = (): MaterialWaste => {
   return {
-    wasteCode: faker.random.word(),
+    wasteCode: faker.lorem.word(),
   }
 }
 
@@ -251,7 +251,7 @@ export default function generatePassport(
 ): PassportData {
   faker.seed(fakerSeedValue)
 
-  const randomDate = faker.date.between("2020-01-01", "2024-12-31")
+  const randomDate = faker.date.between({ from: "2020-01-01", to: "2024-12-31" })
   // Format the date to YYYY-MM-DD
   const formattedRandomDate = randomDate.toISOString().split("T")[0]!
 
@@ -283,7 +283,7 @@ export default function generatePassport(
         latitude: faker.location.latitude(),
         longitude: faker.location.longitude(),
       },
-      address: faker.address.streetAddress() + ", " + faker.address.zipCode() + " " + faker.address.city(),
+      address: faker.location.streetAddress() + ", " + faker.location.zipCode() + " " + faker.location.city(),
       buildingPermitYear,
       buildingCompletionYear,
       buildingType: faker.helpers.arrayElement(["1310 - Ministerien / Staatskanzleien / Landesvertretungen"]),

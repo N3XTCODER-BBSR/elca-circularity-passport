@@ -30,7 +30,7 @@
     "tbaustoff-mapping-csv-to-json-transformer": "npx ts-node prisma/seeding/tBaustoffMappingCsvToJsonTransformer.mts"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seeding/dbSeeder.ts"
+    "seed": "ts-node --project prisma/seeding/tsconfig.json prisma/seeding/dbSeeder.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.1",
