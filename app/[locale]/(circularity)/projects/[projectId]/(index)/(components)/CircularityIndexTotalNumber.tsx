@@ -7,8 +7,7 @@ const CircularityIndexTotalNumber = ({ circularityIndexPoints }: { circularityIn
   const circularityIndexPointsStr = `${circularityIndexPoints.toFixed(2)} points`
   return (
     <>
-      <div className="h-[500px] bg-red">
-        FOO
+      <div className="h-[100px]">
         {/* <CircularityBarChart
           data={[
             {
@@ -20,7 +19,6 @@ const CircularityIndexTotalNumber = ({ circularityIndexPoints }: { circularityIn
           ]}
           margin={{ top: 0, right: 30, bottom: 50, left: 150 }}
         /> */}
-        BAR
         <CircularityIndexTotalBarChart
           circularityTotalIndexPoints={circularityIndexPoints}
           margin={{ top: 0, right: 30, bottom: 50, left: 150 }}

@@ -11,8 +11,8 @@ const CircularityIndexTotalBarChart = ({
 }) => {
   return (
     <>
-      circularityTotalIndexPoints: {circularityTotalIndexPoints}
-      FOO
+      {/* circularityTotalIndexPoints: {circularityTotalIndexPoints}
+      FOO */}
       <ResponsiveBar
         //   animate={!isPdf}
         theme={{
