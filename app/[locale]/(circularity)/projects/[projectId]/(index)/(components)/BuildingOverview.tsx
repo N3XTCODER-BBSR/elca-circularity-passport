@@ -4,6 +4,7 @@ import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
 import calculateVolumeAndMass from "lib/domain-logic/circularity/utils/calculateVolumeAndMass"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
 
 type BuildingOverviewProps = {
   projectId: number
@@ -65,13 +66,14 @@ const calculateTotalCircularityIndex = (
 const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProps) => {
   const session = await ensureUserIsAuthenticated()
 
-  const circularityData = await getProjectCircularityIndexData(projectId, session.user.id)
+  const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
+    await getProjectCircularityIndexData(projectId, session.user.id)
 
   const totalCircularityIndexForProject = calculateTotalCircularityIndex(circularityData)
 
   return (
     <>
-      {/* circularityData: {JSON.stringify(circularityData)} */}
+      circularityData: {JSON.stringify(circularityData)}
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
           Zirkularitätsindex
@@ -85,27 +87,14 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
       <div>
         <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
       </div>
-      {/* <div className="mt-6 border-gray-100">
-        <BuildingBaseInformation passportData={dinEnrichedPassportData} className="mt-16" />
-        <Materials dinEnrichedPassportData={dinEnrichedPassportData} className="my-24 flex flex-col" />
-        <Resources
-          dinEnrichedBuildingComponents={dinEnrichedPassportData.dinEnrichedBuildingComponents}
-          nrf={dinEnrichedPassportData.buildingBaseData.nrf}
-          className="mt-16"
+      <div className="m-8 h-[100px]">
+        <CircularityIndexBreakdownByDin
+          circularityData={circularityData}
+          // circularityTotalIndexPoints={circularityIndexPoints}
+          margin={{ top: 0, right: 30, bottom: 50, left: 150 }}
         />
-        <Circularity
-          dinEnrichedBuildingComponents={dinEnrichedPassportData.dinEnrichedBuildingComponents}
-          className="mt-16"
-        />
-      </div> */}
+      </div>
     </>
-    // <div>
-    //   {/* <h1 className="mx-[5mm] pl-[2mm] pt-[1mm] leading-none tracking-tight">
-    //     <div className="font-normal">Zirkularitätsindex</div>
-    //     <div className="mt-[1.5mm] font-bold">{projectName}</div>
-    //   </h1>
-    //   <p>Project ID: {projectId}</p> */}
-    // </div>
   )
 }
 
