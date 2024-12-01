@@ -7,6 +7,7 @@ import {
 } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import React, { useState } from "react"
+import CircularityIndexBarChartBreakdown from "./CircularityIndexBarChartBreakdown"
 
 // Types for DIN hierarchy
 type ComponentType = {
@@ -139,10 +140,29 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
 
   const level1Data = getLevel1Data()
 
+  const FOO = level1Data.length
+
+  const level1DataForChart = level1Data.map((data) => ({
+    identifier: String(data.dinCode),
+    datum: data.averageCircularityIndex !== undefined ? data.averageCircularityIndex : 0,
+  }))
+
   return (
     <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
       {selectedLevel1Din === null ? (
         <>
+          FOO: {FOO}
+          <br />
+          <br />
+          <br />
+          level1Data: {JSON.stringify(level1Data)}
+          <br />
+          <br />
+          <br />
+          level1DataForChart: {JSON.stringify(level1DataForChart)}
+          <div className="m-8 h-[200px]">
+            <CircularityIndexBarChartBreakdown data={level1DataForChart} margin={margin} />
+          </div>
           <h2>DIN Categories</h2>
           <table>
             <thead>
