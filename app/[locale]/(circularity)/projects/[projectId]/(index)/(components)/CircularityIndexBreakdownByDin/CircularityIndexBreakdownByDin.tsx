@@ -140,20 +140,29 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
 
   const level1Data = getLevel1Data()
 
-  const level1DataForChart = level1Data.map((data) => ({
-    identifier: String(data.dinCode),
-    datum: data.averageCircularityIndex !== undefined ? data.averageCircularityIndex : 0,
-  }))
+  // const level1DataForChart = level1Data.map((data) => ({
+  //   identifier: String(data.dinCode),
+  //   datum: data.averageCircularityIndex !== undefined ? data.averageCircularityIndex : 0,
+  // }))
 
   const level2Data = selectedLevel1Din != null ? getLevel2Data(selectedLevel1Din) : []
 
-  const level2DataForChart = level2Data.map((data) => ({
+  // const level2DataForChart = level2Data.map((data) => ({
+  //   identifier: String(data.dinCode),
+  //   datum: data.averageCircularityIndex !== undefined ? data.averageCircularityIndex : 0,
+  // }))
+
+  const dataForChart = (selectedLevel1Din == null ? level1Data : level2Data).map((data) => ({
     identifier: String(data.dinCode),
     datum: data.averageCircularityIndex !== undefined ? data.averageCircularityIndex : 0,
   }))
 
   return (
     <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
+      <div className="m-8 h-[200px]">
+        <CircularityIndexBarChartBreakdown data={dataForChart} margin={margin} />
+      </div>
+
       {selectedLevel1Din === null ? (
         <>
           {/* FOO: {FOO}
@@ -165,9 +174,7 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
           <br />
           <br />
           level1DataForChart: {JSON.stringify(level1DataForChart)} */}
-          <div className="m-8 h-[200px]">
-            <CircularityIndexBarChartBreakdown data={level1DataForChart} margin={margin} />
-          </div>
+
           <h2>DIN Categories</h2>
           <table>
             <thead>
@@ -198,9 +205,6 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
         <>
           <button onClick={() => setSelectedLevel1Din(null)}>Back</button>
           <h2>Subcategories for {selectedLevel1Din}</h2>
-          <div className="m-8 h-[200px]">
-            <CircularityIndexBarChartBreakdown data={level2DataForChart} margin={margin} />
-          </div>
           <table>
             <thead>
               <tr>
