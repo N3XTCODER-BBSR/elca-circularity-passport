@@ -9,60 +9,61 @@ const CustomButtonsLayer = (props) => {
   console.log("FOO props", props)
 
   return (
-    <div
-      style={{
-        backgroundColor: "red",
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: width,
-        height: height,
-        pointerEvents: "none", // Ensure that events pass through
-      }}
-    >
-      {bars.map((bar) => {
-        const handleClick = () => {
-          // Your click handler logic
-          console.log(`Bar ${bar.data.indexValue} clicked`)
-        }
+    <div>TEST</div>
+    // <div
+    //   style={{
+    //     backgroundColor: "red",
+    //     position: "absolute",
+    //     top: 0,
+    //     left: 0,
+    //     width: width,
+    //     height: height,
+    //     pointerEvents: "none", // Ensure that events pass through
+    //   }}
+    // >
+    //   {bars.map((bar) => {
+    //     const handleClick = () => {
+    //       // Your click handler logic
+    //       console.log(`Bar ${bar.data.indexValue} clicked`)
+    //     }
 
-        return (
-          <button
-            key={bar.key}
-            onClick={handleClick}
-            style={{
-              position: "absolute",
-              top: bar.y + margin.top - 10, // Adjust as needed
-              left: 0,
-              width: "300px",
-              height: "20px",
-              backgroundColor: "#fff",
-              border: "none",
-              textAlign: "left",
-              padding: "0 10px",
-              cursor: "pointer",
-              pointerEvents: "auto", // Enable pointer events
-            }}
-          >
-            <span style={{ fontWeight: "bold", color: "#000" }}>{bar.data.indexValue} FOO</span>
-            <span
-              style={{
-                float: "right",
-                backgroundColor: "#fff",
-                border: "1px solid #000",
-                borderRadius: "2px",
-                padding: "2px 5px",
-                height: "5px",
-                lineHeight: "5px",
-                color: "#000",
-              }}
-            >
-              2
-            </span>
-          </button>
-        )
-      })}
-    </div>
+    //     return (
+    //       <button
+    //         key={bar.key}
+    //         onClick={handleClick}
+    //         style={{
+    //           position: "absolute",
+    //           top: bar.y + margin.top - 10, // Adjust as needed
+    //           left: 0,
+    //           width: "300px",
+    //           height: "20px",
+    //           backgroundColor: "#fff",
+    //           border: "none",
+    //           textAlign: "left",
+    //           padding: "0 10px",
+    //           cursor: "pointer",
+    //           pointerEvents: "auto", // Enable pointer events
+    //         }}
+    //       >
+    //         <span style={{ fontWeight: "bold", color: "#000" }}>{bar.data.indexValue} FOO</span>
+    //         <span
+    //           style={{
+    //             float: "right",
+    //             backgroundColor: "#fff",
+    //             border: "1px solid #000",
+    //             borderRadius: "2px",
+    //             padding: "2px 5px",
+    //             height: "5px",
+    //             lineHeight: "5px",
+    //             color: "#000",
+    //           }}
+    //         >
+    //           2
+    //         </span>
+    //       </button>
+    //     )
+    //   })}
+    // </div>
   )
 }
 
