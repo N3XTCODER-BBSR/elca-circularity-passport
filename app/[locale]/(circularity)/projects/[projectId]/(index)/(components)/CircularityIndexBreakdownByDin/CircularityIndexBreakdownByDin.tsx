@@ -140,9 +140,14 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
 
   const level1Data = getLevel1Data()
 
-  const FOO = level1Data.length
-
   const level1DataForChart = level1Data.map((data) => ({
+    identifier: String(data.dinCode),
+    datum: data.averageCircularityIndex !== undefined ? data.averageCircularityIndex : 0,
+  }))
+
+  const level2Data = selectedLevel1Din != null ? getLevel2Data(selectedLevel1Din) : []
+
+  const level2DataForChart = level2Data.map((data) => ({
     identifier: String(data.dinCode),
     datum: data.averageCircularityIndex !== undefined ? data.averageCircularityIndex : 0,
   }))
@@ -193,6 +198,9 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
         <>
           <button onClick={() => setSelectedLevel1Din(null)}>Back</button>
           <h2>Subcategories for {selectedLevel1Din}</h2>
+          <div className="m-8 h-[200px]">
+            <CircularityIndexBarChartBreakdown data={level2DataForChart} margin={margin} />
+          </div>
           <table>
             <thead>
               <tr>
@@ -204,7 +212,7 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
               </tr>
             </thead>
             <tbody>
-              {getLevel2Data(selectedLevel1Din).map((data) => (
+              {level2Data.map((data) => (
                 <tr key={data.dinCode}>
                   <td>{data.dinCode}</td>
                   <td>{data.name}</td>
