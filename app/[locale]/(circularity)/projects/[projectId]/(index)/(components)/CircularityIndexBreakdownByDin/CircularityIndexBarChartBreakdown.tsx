@@ -3,6 +3,69 @@ import CustomTooltip from "app/(components)/generic/CustomToolTip"
 import { eolClassColorsMapper } from "constants/styleConstants"
 import { twMerge } from "tailwind-merge"
 
+const CustomButtonsLayer = (props) => {
+  const { bars, width, height, margin } = props
+
+  console.log("FOO props", props)
+
+  return (
+    <div
+      style={{
+        backgroundColor: "red",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: width,
+        height: height,
+        pointerEvents: "none", // Ensure that events pass through
+      }}
+    >
+      {bars.map((bar) => {
+        const handleClick = () => {
+          // Your click handler logic
+          console.log(`Bar ${bar.data.indexValue} clicked`)
+        }
+
+        return (
+          <button
+            key={bar.key}
+            onClick={handleClick}
+            style={{
+              position: "absolute",
+              top: bar.y + margin.top - 10, // Adjust as needed
+              left: 0,
+              width: "300px",
+              height: "20px",
+              backgroundColor: "#fff",
+              border: "none",
+              textAlign: "left",
+              padding: "0 10px",
+              cursor: "pointer",
+              pointerEvents: "auto", // Enable pointer events
+            }}
+          >
+            <span style={{ fontWeight: "bold", color: "#000" }}>{bar.data.indexValue} FOO</span>
+            <span
+              style={{
+                float: "right",
+                backgroundColor: "#fff",
+                border: "1px solid #000",
+                borderRadius: "2px",
+                padding: "2px 5px",
+                height: "5px",
+                lineHeight: "5px",
+                color: "#000",
+              }}
+            >
+              2
+            </span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
 const CircularityIndexBarChartBreakdown = ({
   //   circularityTotalIndexPoints,
   margin,
@@ -18,6 +81,7 @@ const CircularityIndexBarChartBreakdown = ({
       {/* circularityTotalIndexPoints: {circularityTotalIndexPoints}
       FOO */}
       <ResponsiveBar
+        layers={["grid", "axes", "bars", "markers", "legends", CustomButtonsLayer]}
         //   animate={!isPdf}
         data={data}
         // data={(data) => ({
@@ -71,29 +135,93 @@ const CircularityIndexBarChartBreakdown = ({
           legendOffset: 32,
           truncateTickAt: 0,
         }}
-        axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legendPosition: "middle",
-          legendOffset: -40,
-          truncateTickAt: 0,
-          renderTick: (tick) => {
-            const handleClick = () => {
-              // Your click handler logic here
-              alert(`Tick ${tick.value} clicked`)
-            }
+        // axisLeft={{
+        //   tickSize: 5,
+        //   tickPadding: 5,
+        //   tickRotation: 0,
+        //   legendPosition: "middle",
+        //   legendOffset: -40,
+        //   truncateTickAt: 0,
+        // renderTick: (tick) => {
+        //   const handleClick = () => {
+        //     // Your click handler logic here
+        //     console.log(`Tick ${tick.value} clicked`)
+        //   }
 
-            return (
-              <g transform={`translate(${tick.x},${tick.y})`} onClick={handleClick} style={{ cursor: "pointer" }}>
-                <rect x={-100} y={-10} width={100} height={20} fill="#e0e0e0" rx={4} ry={4} />
-                <text x={-50} y={5} textAnchor="middle" fontSize="0.8rem" fill="#000">
-                  {tick.value}
-                </text>
-              </g>
-            )
-          },
-        }}
+        //   // Button dimensions and styling
+        //   const buttonWidth = 300
+        //   const buttonHeight = 20
+        //   const buttonPadding = 10
+
+        //   // Badge dimensions and styling
+        //   const badgeText = '2' // Static number
+        //   const badgePadding = 2
+        //   const badgeBorderRadius = 2
+        //   const badgeHeight = 5 // As per your requirement
+        //   const badgeWidth = 20 // Adjust as needed for text width
+
+        //   // Calculate positions
+        //   const buttonX = -buttonWidth
+        //   const buttonY = -buttonHeight / 2
+        //   const leftTextX = buttonX + buttonPadding
+        //   const leftTextY = 5 // Vertically centered
+        //   const badgeX = -badgeWidth - buttonPadding
+        //   const badgeY = -badgeHeight / 2
+
+        //   return (
+        //     <g
+        //       transform={`translate(${tick.x},${tick.y})`}
+        //       onClick={handleClick}
+        //       style={{ cursor: 'pointer' }}
+        //     >
+        //       {/* Button Background */}
+        //       <rect
+        //         x={buttonX}
+        //         y={buttonY}
+        //         width={buttonWidth}
+        //         height={buttonHeight}
+        //         fill="#fff"
+        //         rx={4}
+        //         ry={4}
+        //       />
+        //       {/* Left-Aligned Text */}
+        //       <text
+        //         x={leftTextX}
+        //         y={leftTextY}
+        //         textAnchor="start"
+        //         fontSize="12px"
+        //         fill="#000"
+        //         fontWeight="bold"
+        //       >
+        //         {tick.value}
+        //       </text>
+        //       {/* Badge Border */}
+        //       <rect
+        //         x={badgeX}
+        //         y={badgeY}
+        //         width={badgeWidth}
+        //         height={badgeHeight + badgePadding * 2}
+        //         fill="none"
+        //         stroke="#000"
+        //         strokeWidth="1"
+        //         rx={badgeBorderRadius}
+        //         ry={badgeBorderRadius}
+        //       />
+        //       {/* Badge Text */}
+        //       <text
+        //         x={badgeX + badgeWidth / 2}
+        //         y={leftTextY}
+        //         textAnchor="middle"
+        //         fontSize="12px"
+        //         fill="#000"
+        //       >
+        //         {badgeText}
+        //       </text>
+        //     </g>
+        //   )
+        // },
+        // }}
+        axisLeft={null}
         //   tooltip={(datum) => <CustomTooltip value={datum.data.overlayText} />}
         totalsOffset={9}
         enableGridX={false}
