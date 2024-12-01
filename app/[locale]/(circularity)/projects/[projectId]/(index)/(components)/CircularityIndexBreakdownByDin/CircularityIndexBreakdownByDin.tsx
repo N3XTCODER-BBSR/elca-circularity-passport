@@ -9,10 +9,15 @@ import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import React, { useState } from "react"
 
 // Types for DIN hierarchy
-type Din276HierarchyItem = {
+type ComponentType = {
   number: number
   name: string
-  children?: Din276HierarchyItem[]
+}
+
+type ComponentCategory = {
+  number: number
+  name: string
+  children: ComponentType[]
 }
 
 type CircularityIndexBreakdownByDinProps = {
@@ -23,14 +28,17 @@ type CircularityIndexBreakdownByDinProps = {
 const CircularityIndexBreakdownByDin = ({ circularityData, margin }: CircularityIndexBreakdownByDinProps) => {
   const [selectedLevel1Din, setSelectedLevel1Din] = useState<number | null>(null)
 
-  // Filter the DIN hierarchy to include only specified level-1 DIN codes
-  const filteredDinHierarchy = din276Hierarchy.filter((level1) =>
-    costGroupCategoryNumbersToInclude.includes(level1.number)
+  // Flatten the hierarchy to get all ComponentCategories (level-1)
+  const allComponentCategories: ComponentCategory[] = din276Hierarchy.flatMap((group) => group.children)
+
+  // Filter the DIN hierarchy to include only specified level-1 DIN codes (ComponentCategories)
+  const filteredDinHierarchy = allComponentCategories.filter((category) =>
+    costGroupCategoryNumbersToInclude.includes(category.number)
   )
 
   // Function to get level-1 DIN code from a layer's DIN code
   const getLevel1DinCode = (dinCode: number): number => {
-    return Math.floor(dinCode / 10) * 10
+    return Math.floor(dinCode / 10) * 10 // e.g., 332 -> 330
   }
 
   // Function to calculate mass (assuming 'quantity' represents mass in kg)
@@ -54,50 +62,77 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
     return totalMass > 0 ? weightedSum / totalMass : undefined
   }
 
-  // Function to get level-1 data
+  // Function to get level-1 data (ComponentCategories)
   const getLevel1Data = () => {
-    return filteredDinHierarchy?.map((level1) => {
+    return filteredDinHierarchy.map((category) => {
       const layers: CalculateCircularityDataForLayerReturnType[] = []
+      const elementsSet = new Set<string>() // To store unique component IDs
+
       circularityData.forEach((element) => {
+        let elementHasLayerInLevel1 = false
+
         element.layers.forEach((layer) => {
           const layerLevel1DinCode = getLevel1DinCode(layer.din_code)
-          if (layerLevel1DinCode === level1.number) {
+          if (layerLevel1DinCode === category.number) {
             layers.push(layer)
+            elementHasLayerInLevel1 = true
           }
         })
+
+        if (elementHasLayerInLevel1) {
+          elementsSet.add(element.element_uuid)
+        }
       })
+
       const averageCircularityIndex = calculateWeightedAverage(layers)
       const totalMass = layers.reduce((sum, layer) => sum + getLayerMass(layer), 0)
+      const componentCount = elementsSet.size
+
       return {
-        dinCode: level1.number,
-        name: level1.name,
+        dinCode: category.number,
+        name: category.name,
         averageCircularityIndex,
         totalMass,
+        componentCount,
+        children: category.children,
       }
     })
   }
 
-  // Function to get level-2 data for a selected level-1 DIN code
+  // Function to get level-2 data (ComponentTypes) for a selected level-1 DIN code
   const getLevel2Data = (level1DinCode: number) => {
-    const level1 = filteredDinHierarchy?.find((d) => d.number === level1DinCode)
+    const level1 = filteredDinHierarchy.find((d) => d.number === level1DinCode)
     if (!level1 || !level1.children) return []
 
     return level1.children.map((level2) => {
       const layers: CalculateCircularityDataForLayerReturnType[] = []
+      const elementsSet = new Set<string>() // To store unique component IDs
+
       circularityData.forEach((element) => {
+        let elementHasLayerInLevel2 = false
+
         element.layers.forEach((layer) => {
           if (layer.din_code === level2.number) {
             layers.push(layer)
+            elementHasLayerInLevel2 = true
           }
         })
+
+        if (elementHasLayerInLevel2) {
+          elementsSet.add(element.element_uuid)
+        }
       })
+
       const averageCircularityIndex = calculateWeightedAverage(layers)
       const totalMass = layers.reduce((sum, layer) => sum + getLayerMass(layer), 0)
+      const componentCount = elementsSet.size
+
       return {
         dinCode: level2.number,
         name: level2.name,
         averageCircularityIndex,
         totalMass,
+        componentCount,
       }
     })
   }
@@ -108,22 +143,23 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
     <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
       {selectedLevel1Din === null ? (
         <>
-          filteredDinHierarchy: {JSON.stringify(filteredDinHierarchy)}
-          <h2>Level-1 DIN Categories</h2>
+          <h2>DIN Categories</h2>
           <table>
             <thead>
               <tr>
                 <th>DIN Code</th>
                 <th>Name</th>
+                <th>Components</th>
                 <th>Average Circularity Index</th>
                 <th>Total Mass (kg)</th>
               </tr>
             </thead>
             <tbody>
-              {level1Data?.map((data) => (
+              {level1Data.map((data) => (
                 <tr key={data.dinCode} onClick={() => setSelectedLevel1Din(data.dinCode)}>
                   <td>{data.dinCode}</td>
                   <td>{data.name}</td>
+                  <td>{data.componentCount}</td>
                   <td>
                     {data.averageCircularityIndex !== undefined ? data.averageCircularityIndex.toFixed(2) : "N/A"}
                   </td>
@@ -135,13 +171,14 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
         </>
       ) : (
         <>
-          <button onClick={() => setSelectedLevel1Din(null)}>Back to Level-1</button>
-          <h2>Level-2 DIN Categories for {selectedLevel1Din}</h2>
+          <button onClick={() => setSelectedLevel1Din(null)}>Back</button>
+          <h2>Subcategories for {selectedLevel1Din}</h2>
           <table>
             <thead>
               <tr>
                 <th>DIN Code</th>
                 <th>Name</th>
+                <th>Components</th>
                 <th>Average Circularity Index</th>
                 <th>Total Mass (kg)</th>
               </tr>
@@ -151,6 +188,7 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
                 <tr key={data.dinCode}>
                   <td>{data.dinCode}</td>
                   <td>{data.name}</td>
+                  <td>{data.componentCount}</td>
                   <td>
                     {data.averageCircularityIndex !== undefined ? data.averageCircularityIndex.toFixed(2) : "N/A"}
                   </td>
