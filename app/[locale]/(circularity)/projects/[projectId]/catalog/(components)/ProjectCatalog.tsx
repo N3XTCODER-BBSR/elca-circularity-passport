@@ -3,6 +3,7 @@ import _ from "lodash"
 import ComponentsTree from "app/(components)/ComponentsTree"
 import { ElcaProjectElementRow } from "lib/domain-logic/circularity/server-actions/getElcaElementsForProjectId"
 import { ComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
+import { costGroupCategoryNumbersToInclude } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 
 type ProjectCatalogProps = {
   projectId: string
@@ -16,9 +17,6 @@ const ProjectCatalog = ({ projectId, projectComponents }: ProjectCatalogProps) =
   }))
 
   const componentWithBasicFieldsUnique = _.uniqBy(componentWithBasicFields, "uuid")
-
-  // TODO: extract this out (e.g. into or close to data schema?)
-  const costGroupCategoryNumbersToInclude = [320, 330, 340, 350, 360]
 
   const generateLinkUrlForComponent = (uuid: string): string => `/projects/${projectId}/catalog/components/${uuid}`
 

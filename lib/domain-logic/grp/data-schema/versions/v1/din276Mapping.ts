@@ -17,6 +17,8 @@ type ComponentGroup = {
 
 export type Din276Hierarchy = ComponentGroup[]
 
+export const costGroupCategoryNumbersToInclude = [320, 330, 340, 350, 360]
+
 // TODO: Use use i18n here!
 export const din276Hierarchy: Din276Hierarchy = [
   {

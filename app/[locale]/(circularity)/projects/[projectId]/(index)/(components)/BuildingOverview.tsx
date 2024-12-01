@@ -27,14 +27,18 @@ const calculateTotalCircularityIndex = (
   // At the end, divide the total circularity index by the total mass of the project
   // to get the total circularity index of the project
 
-  const circularityIndexSumOverAllComponentLayers = circularityData.reduce((total, component) => {
+  const circularityIndexTimesMassSumOverAllComponentLayers = circularityData.reduce((total, component) => {
     return (
       total +
       component.layers.reduce((acc, layer) => {
         if (layer.circularityIndex == null) {
           return acc
         }
-        return acc + (layer.circularityIndex || 0)
+        const { mass } = calculateVolumeAndMass(layer)
+        if (mass == null) {
+          return acc
+        }
+        return acc + layer.circularityIndex * mass
       }, 0)
     )
   }, 0)
@@ -44,22 +48,23 @@ const calculateTotalCircularityIndex = (
       total +
       component.layers.reduce((acc, layer) => {
         console.log("layer", layer)
-        if (layer.circularityIndex == null) {
+        const { mass } = calculateVolumeAndMass(layer)
+        if (mass == null) {
           return acc
         }
-        const { mass } = calculateVolumeAndMass(layer)
-        return acc + (mass || 0)
+        // TODO: better handle null values by removing / skipping them completely
+        return acc + mass
       }, 0)
     )
   }, 0)
 
   console.log("FOO circularityData", JSON.stringify(circularityData))
-  console.log("FOO circularityIndexSumOverAllComponentLayers", circularityIndexSumOverAllComponentLayers)
+  console.log("FOO circularityIndexSumOverAllComponentLayers", circularityIndexTimesMassSumOverAllComponentLayers)
   console.log("FOO totalMass", totalMass)
 
   console.log("totalMass", totalMass)
 
-  const totalCircularityIndexForProject = circularityIndexSumOverAllComponentLayers / totalMass
+  const totalCircularityIndexForProject = circularityIndexTimesMassSumOverAllComponentLayers / totalMass
   return totalCircularityIndexForProject
 }
 
@@ -73,7 +78,7 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
 
   return (
     <>
-      circularityData: {JSON.stringify(circularityData)}
+      {/* circularityData: {JSON.stringify(circularityData)} */}
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
           Zirkularitätsindex
