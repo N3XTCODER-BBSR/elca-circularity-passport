@@ -151,7 +151,7 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
     <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
       {selectedLevel1Din === null ? (
         <>
-          FOO: {FOO}
+          {/* FOO: {FOO}
           <br />
           <br />
           <br />
@@ -159,7 +159,7 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
           <br />
           <br />
           <br />
-          level1DataForChart: {JSON.stringify(level1DataForChart)}
+          level1DataForChart: {JSON.stringify(level1DataForChart)} */}
           <div className="m-8 h-[200px]">
             <CircularityIndexBarChartBreakdown data={level1DataForChart} margin={margin} />
           </div>
