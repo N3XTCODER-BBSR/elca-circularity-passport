@@ -1,8 +1,19 @@
 "use client"
 
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import {
+  din276Hierarchy,
+  costGroupCategoryNumbersToInclude,
+} from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import React, { useState } from "react"
+
+// Types for DIN hierarchy
+type Din276HierarchyItem = {
+  number: number
+  name: string
+  children?: Din276HierarchyItem[]
+}
 
 type CircularityIndexBreakdownByDinProps = {
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
@@ -12,13 +23,14 @@ type CircularityIndexBreakdownByDinProps = {
 const CircularityIndexBreakdownByDin = ({ circularityData, margin }: CircularityIndexBreakdownByDinProps) => {
   const [selectedLevel1Din, setSelectedLevel1Din] = useState<number | null>(null)
 
-  // Helper functions to extract level-1 and level-2 DIN codes
-  const getLevel1DinCode = (dinCode: number): number => {
-    return Math.floor(dinCode / 10) // Assuming DIN codes are in the format XYZ, where X is level-1
-  }
+  // Filter the DIN hierarchy to include only specified level-1 DIN codes
+  const filteredDinHierarchy = din276Hierarchy.filter((level1) =>
+    costGroupCategoryNumbersToInclude.includes(level1.number)
+  )
 
-  const getLevel2DinCode = (dinCode: number): number => {
-    return dinCode // Assuming full DIN code is level-2
+  // Function to get level-1 DIN code from a layer's DIN code
+  const getLevel1DinCode = (dinCode: number): number => {
+    return Math.floor(dinCode / 10) * 10
   }
 
   // Function to calculate mass (assuming 'quantity' represents mass in kg)
@@ -39,55 +51,53 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
       weightedSum += circularityIndex * mass
     })
 
-    return totalMass > 0 ? weightedSum / totalMass : 0
+    return totalMass > 0 ? weightedSum / totalMass : undefined
   }
 
-  // Group data by level-1 DIN codes
+  // Function to get level-1 data
   const getLevel1Data = () => {
-    const level1Groups: { [key: number]: CalculateCircularityDataForLayerReturnType[] } = {}
-
-    circularityData.forEach((element) => {
-      element.layers.forEach((layer) => {
-        const level1Din = getLevel1DinCode(layer.din_code)
-        if (!level1Groups[level1Din]) {
-          level1Groups[level1Din] = []
-        }
-        level1Groups[level1Din].push(layer)
+    return filteredDinHierarchy?.map((level1) => {
+      const layers: CalculateCircularityDataForLayerReturnType[] = []
+      circularityData.forEach((element) => {
+        element.layers.forEach((layer) => {
+          const layerLevel1DinCode = getLevel1DinCode(layer.din_code)
+          if (layerLevel1DinCode === level1.number) {
+            layers.push(layer)
+          }
+        })
       })
-    })
-
-    return Object.keys(level1Groups).map((dinCode) => {
-      const layers = level1Groups[parseInt(dinCode)]!
+      const averageCircularityIndex = calculateWeightedAverage(layers)
+      const totalMass = layers.reduce((sum, layer) => sum + getLayerMass(layer), 0)
       return {
-        dinCode: parseInt(dinCode),
-        averageCircularityIndex: calculateWeightedAverage(layers),
-        totalMass: layers.reduce((sum, layer) => sum + getLayerMass(layer), 0),
+        dinCode: level1.number,
+        name: level1.name,
+        averageCircularityIndex,
+        totalMass,
       }
     })
   }
 
-  // Group data by level-2 DIN codes for a selected level-1 DIN code
+  // Function to get level-2 data for a selected level-1 DIN code
   const getLevel2Data = (level1DinCode: number) => {
-    const level2Groups: { [key: number]: CalculateCircularityDataForLayerReturnType[] } = {}
+    const level1 = filteredDinHierarchy?.find((d) => d.number === level1DinCode)
+    if (!level1 || !level1.children) return []
 
-    circularityData.forEach((element) => {
-      element.layers.forEach((layer) => {
-        if (getLevel1DinCode(layer.din_code) === level1DinCode) {
-          const level2Din = getLevel2DinCode(layer.din_code)
-          if (!level2Groups[level2Din]) {
-            level2Groups[level2Din] = []
+    return level1.children.map((level2) => {
+      const layers: CalculateCircularityDataForLayerReturnType[] = []
+      circularityData.forEach((element) => {
+        element.layers.forEach((layer) => {
+          if (layer.din_code === level2.number) {
+            layers.push(layer)
           }
-          level2Groups[level2Din].push(layer)
-        }
+        })
       })
-    })
-
-    return Object.keys(level2Groups).map((dinCode) => {
-      const layers = level2Groups[parseInt(dinCode)]!
+      const averageCircularityIndex = calculateWeightedAverage(layers)
+      const totalMass = layers.reduce((sum, layer) => sum + getLayerMass(layer), 0)
       return {
-        dinCode: parseInt(dinCode),
-        averageCircularityIndex: calculateWeightedAverage(layers),
-        totalMass: layers.reduce((sum, layer) => sum + getLayerMass(layer), 0),
+        dinCode: level2.number,
+        name: level2.name,
+        averageCircularityIndex,
+        totalMass,
       }
     })
   }
@@ -98,20 +108,25 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
     <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
       {selectedLevel1Din === null ? (
         <>
+          filteredDinHierarchy: {JSON.stringify(filteredDinHierarchy)}
           <h2>Level-1 DIN Categories</h2>
           <table>
             <thead>
               <tr>
                 <th>DIN Code</th>
+                <th>Name</th>
                 <th>Average Circularity Index</th>
                 <th>Total Mass (kg)</th>
               </tr>
             </thead>
             <tbody>
-              {level1Data.map((data) => (
+              {level1Data?.map((data) => (
                 <tr key={data.dinCode} onClick={() => setSelectedLevel1Din(data.dinCode)}>
                   <td>{data.dinCode}</td>
-                  <td>{data.averageCircularityIndex.toFixed(2)}</td>
+                  <td>{data.name}</td>
+                  <td>
+                    {data.averageCircularityIndex !== undefined ? data.averageCircularityIndex.toFixed(2) : "N/A"}
+                  </td>
                   <td>{data.totalMass.toFixed(2)}</td>
                 </tr>
               ))}
@@ -126,6 +141,7 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
             <thead>
               <tr>
                 <th>DIN Code</th>
+                <th>Name</th>
                 <th>Average Circularity Index</th>
                 <th>Total Mass (kg)</th>
               </tr>
@@ -134,7 +150,10 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
               {getLevel2Data(selectedLevel1Din).map((data) => (
                 <tr key={data.dinCode}>
                   <td>{data.dinCode}</td>
-                  <td>{data.averageCircularityIndex.toFixed(2)}</td>
+                  <td>{data.name}</td>
+                  <td>
+                    {data.averageCircularityIndex !== undefined ? data.averageCircularityIndex.toFixed(2) : "N/A"}
+                  </td>
                   <td>{data.totalMass.toFixed(2)}</td>
                 </tr>
               ))}
