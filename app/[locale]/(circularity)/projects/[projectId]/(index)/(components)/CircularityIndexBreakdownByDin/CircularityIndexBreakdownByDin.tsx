@@ -9,6 +9,7 @@ import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import React, { useEffect, useState } from "react"
 import CircularityIndexBarChartBreakdown from "./CircularityIndexBarChartBreakdown"
 import { set } from "lodash"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 // Types for DIN hierarchy
 type ComponentType = {
@@ -23,11 +24,16 @@ type ComponentCategory = {
 }
 
 type CircularityIndexBreakdownByDinProps = {
+  projectId: number
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   margin: { top: number; right: number; bottom: number; left: number }
 }
 
-const CircularityIndexBreakdownByDin = ({ circularityData, margin }: CircularityIndexBreakdownByDinProps) => {
+const CircularityIndexBreakdownByDin = ({
+  projectId,
+  circularityData,
+  margin,
+}: CircularityIndexBreakdownByDinProps) => {
   // const [selectedLevel1Din, setSelectedLevel1Din] = useState<number | null>(null)
 
   // Flatten the hierarchy to get all ComponentCategories (level-1)
@@ -150,6 +156,10 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
   const [selectedIdentifier, setSelectedIdentifier] = useState<string | null>(null)
   const [labelToIdentifierAndDataMap, setLabelToIdentifierAndDataMap] = useState<Map<string, Data>>(new Map())
 
+  const pathname = usePathname()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   // Use selects a value from the navigation (any level)
   // labelToIdentifierMap is used to get the data for the next level
   // => state update
@@ -161,6 +171,13 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
     console.log("FOOclickHandler", label)
     const identifierAndDatum = labelToIdentifierAndDataMap.get(label)
     if (identifierAndDatum) {
+      if (currentLevel === 3) {
+        // go to detail page of selected component
+        const generateLinkUrlForComponent = (uuid: string): string =>
+          `/projects/${projectId}/catalog/components/${uuid}`
+        // router.push(`${newPath}${queryParams ? `?${queryParams}` : ""}`)
+        router.push(generateLinkUrlForComponent(identifierAndDatum.identifier))
+      }
       console.log("identifierAndDatum", identifierAndDatum)
       setSelectedIdentifier(identifierAndDatum.identifier)
       setCurrentLevel(currentLevel + 1)
@@ -193,12 +210,6 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
       // Iterate through all level-1 DIN codes and
       // get a flattened list of products that are somewhere nested under each respective level-1 DIN code
 
-      // console.log('-------------------')
-      // console.log('filteredDinHierarchy', filteredDinHierarchy)
-      // console.log('-------------------')
-      // console.log('circularityData', circularityData)
-      // console.log('-------------------')
-
       const FOO = filteredDinHierarchy.flatMap((dinLevel2) => {
         // return dinLevel2.children.flatMap((dinLevel3) => {
         // console.log("componentType.number", componentType.number)
@@ -221,54 +232,66 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
           datum: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
           label: `${dinLevel2.number} ${dinLevel2.name}`,
         }
-
-        // return componentType.number
-        // })
       })
 
       setLabelToIdentifierAndDataMap(new Map(FOO.map((data) => [`${data.label}`, data])))
+    } else if (currentLevel === 2) {
+      // Iterate through all level-2 DIN codes for currently selected level-1 DIN code and
+      // get a flattened list of products that are somewhere nested under each respective level-2 DIN code
 
-      // console.log("FOO", FOO)
+      const selectedGroup = filteredDinHierarchy.find(
+        (dinLevel2) => selectedIdentifier != null && dinLevel2.number === parseInt(selectedIdentifier)
+      )
+      // console.log("FOO filteredDinHierarchy", filteredDinHierarchy)
 
-      // then calculate the average circularity index and total mass for each level-1 DIN code
-      // and store the data in an array
-      // and update labelToIdentifierAndDataMap with the new data
+      if (!selectedGroup) {
+        setLabelToIdentifierAndDataMap(new Map())
+        return
+      }
 
-      //////////////////////////////////////////
-      // filteredDinHierarchy.map((category) => {
-      //   const layers: CalculateCircularityDataForLayerReturnType[] = []
-      //   const elementsSet = new Set<string>() // To store unique component IDs
+      // alert(FOO?.number)
 
-      //   circularityData.forEach((element) => {
-      //     let elementHasLayerInLevel1 = false
+      const FOO = selectedGroup?.children.flatMap((dinLevel3) => {
+        // console.log("componentType.number", componentType.number)
+        const componentsForCurrentDinLevel = circularityData.filter((component) => {
+          // console.log("element.din_code", element.din_code)
+          // const normalizedDinCodeOfComponent = Math.floor(component.din_code / 10) * 10
+          // console.log("FOO component.din_code", component.din_code)
+          // console.log("FOO normalizedDinCodeOfComponent", normalizedDinCodeOfComponent)
+          // console.log("FOO dinLevel3.number", dinLevel2.number)
+          // console.log("--------------------")
+          return component.din_code === dinLevel3.number
+        })
 
-      //     element.layers.forEach((layer) => {
-      //       const layerLevel1DinCode = getLevel1DinCode(layer.din_code)
-      //       if (layerLevel1DinCode === category.number) {
-      //         layers.push(layer)
-      //         elementHasLayerInLevel1 = true
-      //       }
-      //     })
+        const productsForCurrentDinLevel = componentsForCurrentDinLevel.flatMap((component) => component.layers)
 
-      //     if (elementHasLayerInLevel1) {
-      //       elementsSet.add(element.element_uuid)
-      //     }
-      //   })
+        const averageCircularityIndex = calculateWeightedAverage(productsForCurrentDinLevel)
 
-      //   const averageCircularityIndex = calculateWeightedAverage(layers)
-      //   const totalMass = layers.reduce((sum, layer) => sum + getLayerMass(layer), 0)
-      //   const componentCount = elementsSet.size
+        return {
+          identifier: `${dinLevel3.number}`,
+          datum: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
+          label: `${dinLevel3.number} ${dinLevel3.name}`,
+        }
+      })
+      setLabelToIdentifierAndDataMap(new Map(FOO.map((data) => [`${data.label}`, data])))
+    } else if (currentLevel === 3) {
+      const selectedComponents = circularityData
+        .filter((component) => {
+          return selectedIdentifier != null && component.din_code === parseInt(selectedIdentifier)
+        })
+        .map((component) => {
+          const averageCircularityIndex = calculateWeightedAverage(component.layers)
+          return {
+            identifier: `${component.din_code}`,
+            datum: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
+            label: `${component.din_code}`,
+          }
+        })
 
-      //   const newMap = new Map(
-      //     filteredDinHierarchy.map((data) => [`${data.number}`, { identifier: `${data.number}`, datum: data.averageCircularityIndex !== undefined ? data.averageCircularityIndex : 0, label: `${data.number} ${data.name}` }])
-      //   )
-      //   setLabelToIdentifierAndDataMap(newMap)
-      // })
+      setLabelToIdentifierAndDataMap(new Map(selectedComponents.map((data) => [`${data.label}`, data])))
 
-      // const newMap = new Map(
-      //   level1Data.map((data) => [`${data.dinCode}`, { label: `${data.dinCode} ${data.name}`, level: 1 }])
-      // )
-      // setLabelToIdentifierMap(newMap)
+      console.log("FOO selectedComponents", selectedComponents)
+      // console.log("FOO filteredDinHierarchy", filteredDinHierarchy)
     } else {
       setLabelToIdentifierAndDataMap(new Map())
     }

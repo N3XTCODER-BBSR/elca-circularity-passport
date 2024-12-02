@@ -100,6 +100,7 @@ const CircularityIndexBarChartBreakdown = ({
         }}
         //   tooltip={(datum) => <CustomTooltip value={datum.data.overlayText} />}
         totalsOffset={9}
+        animate={false}
         enableGridX={false}
         enableGridY={false}
         enableLabel={false}
