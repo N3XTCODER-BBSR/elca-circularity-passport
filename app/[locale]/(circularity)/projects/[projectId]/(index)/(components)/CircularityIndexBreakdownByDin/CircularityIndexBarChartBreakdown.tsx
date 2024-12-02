@@ -3,11 +3,6 @@ import CustomTooltip from "app/(components)/generic/CustomToolTip"
 import { eolClassColorsMapper } from "constants/styleConstants"
 import { twMerge } from "tailwind-merge"
 
-export type ClickedItem = {
-  id: string
-  // level: "dinLevel1" | "dinLevel2" | "dinLevel3" | "componentId"
-}
-
 const CircularityIndexBarChartBreakdown = ({
   //   circularityTotalIndexPoints,
   margin,
@@ -18,7 +13,7 @@ const CircularityIndexBarChartBreakdown = ({
   data: { datum: number; identifier: string }[]
   // [{ datum: circularityTotalIndexPoints, identifier: "Gesamt" }]
   margin: { top: number; right: number; bottom: number; left: number }
-  clickHandler: (clickedItem: ClickedItem) => void
+  clickHandler: (clickedLabel: string) => void
 }) => {
   return (
     <>
@@ -90,10 +85,7 @@ const CircularityIndexBarChartBreakdown = ({
               // tick.
               // Your click handler logic here
               // alert(`Tick ${tick.value} clicked`)
-              clickHandler({
-                id: String(tick.value),
-                // , level: "dinLevel1"
-              })
+              clickHandler(tick.value)
             }
 
             return (

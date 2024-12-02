@@ -6,8 +6,8 @@ import {
   costGroupCategoryNumbersToInclude,
 } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
-import React, { useState } from "react"
-import CircularityIndexBarChartBreakdown, { ClickedItem } from "./CircularityIndexBarChartBreakdown"
+import React, { useEffect, useState } from "react"
+import CircularityIndexBarChartBreakdown from "./CircularityIndexBarChartBreakdown"
 
 // Types for DIN hierarchy
 type ComponentType = {
@@ -63,99 +63,129 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
     return totalMass > 0 ? weightedSum / totalMass : undefined
   }
 
-  // Function to get level-1 data (ComponentCategories)
-  const getLevel1Data = () => {
-    return filteredDinHierarchy.map((category) => {
-      const layers: CalculateCircularityDataForLayerReturnType[] = []
-      const elementsSet = new Set<string>() // To store unique component IDs
+  // // Function to get level-1 data (ComponentCategories)
+  // const getLevel1Data = () => {
+  //   return filteredDinHierarchy.map((category) => {
+  //     const layers: CalculateCircularityDataForLayerReturnType[] = []
+  //     const elementsSet = new Set<string>() // To store unique component IDs
 
-      circularityData.forEach((element) => {
-        let elementHasLayerInLevel1 = false
+  //     circularityData.forEach((element) => {
+  //       let elementHasLayerInLevel1 = false
 
-        element.layers.forEach((layer) => {
-          const layerLevel1DinCode = getLevel1DinCode(layer.din_code)
-          if (layerLevel1DinCode === category.number) {
-            layers.push(layer)
-            elementHasLayerInLevel1 = true
-          }
-        })
+  //       element.layers.forEach((layer) => {
+  //         const layerLevel1DinCode = getLevel1DinCode(layer.din_code)
+  //         if (layerLevel1DinCode === category.number) {
+  //           layers.push(layer)
+  //           elementHasLayerInLevel1 = true
+  //         }
+  //       })
 
-        if (elementHasLayerInLevel1) {
-          elementsSet.add(element.element_uuid)
-        }
-      })
+  //       if (elementHasLayerInLevel1) {
+  //         elementsSet.add(element.element_uuid)
+  //       }
+  //     })
 
-      const averageCircularityIndex = calculateWeightedAverage(layers)
-      const totalMass = layers.reduce((sum, layer) => sum + getLayerMass(layer), 0)
-      const componentCount = elementsSet.size
+  //     const averageCircularityIndex = calculateWeightedAverage(layers)
+  //     const totalMass = layers.reduce((sum, layer) => sum + getLayerMass(layer), 0)
+  //     const componentCount = elementsSet.size
 
-      return {
-        dinCode: category.number,
-        name: category.name,
-        averageCircularityIndex,
-        totalMass,
-        componentCount,
-        children: category.children,
-      }
-    })
-  }
+  //     return {
+  //       dinCode: category.number,
+  //       name: category.name,
+  //       averageCircularityIndex,
+  //       totalMass,
+  //       componentCount,
+  //       children: category.children,
+  //     }
+  //   })
+  // }
 
-  // Function to get level-2 data (ComponentTypes) for a selected level-1 DIN code
-  const getLevel2Data = (level1DinCode: number) => {
-    const level1 = filteredDinHierarchy.find((d) => d.number === level1DinCode)
-    if (!level1 || !level1.children) return []
+  // // Function to get level-2 data (ComponentTypes) for a selected level-1 DIN code
+  // const getLevel2Data = (level1DinCode: number) => {
+  //   const level1 = filteredDinHierarchy.find((d) => d.number === level1DinCode)
+  //   if (!level1 || !level1.children) return []
 
-    return level1.children.map((level2) => {
-      const layers: CalculateCircularityDataForLayerReturnType[] = []
-      const elementsSet = new Set<string>() // To store unique component IDs
+  //   return level1.children.map((level2) => {
+  //     const layers: CalculateCircularityDataForLayerReturnType[] = []
+  //     const elementsSet = new Set<string>() // To store unique component IDs
 
-      circularityData.forEach((element) => {
-        let elementHasLayerInLevel2 = false
+  //     circularityData.forEach((element) => {
+  //       let elementHasLayerInLevel2 = false
 
-        element.layers.forEach((layer) => {
-          if (layer.din_code === level2.number) {
-            layers.push(layer)
-            elementHasLayerInLevel2 = true
-          }
-        })
+  //       element.layers.forEach((layer) => {
+  //         if (layer.din_code === level2.number) {
+  //           layers.push(layer)
+  //           elementHasLayerInLevel2 = true
+  //         }
+  //       })
 
-        if (elementHasLayerInLevel2) {
-          elementsSet.add(element.element_uuid)
-        }
-      })
+  //       if (elementHasLayerInLevel2) {
+  //         elementsSet.add(element.element_uuid)
+  //       }
+  //     })
 
-      const averageCircularityIndex = calculateWeightedAverage(layers)
-      const totalMass = layers.reduce((sum, layer) => sum + getLayerMass(layer), 0)
-      const componentCount = elementsSet.size
+  //     const averageCircularityIndex = calculateWeightedAverage(layers)
+  //     const totalMass = layers.reduce((sum, layer) => sum + getLayerMass(layer), 0)
+  //     const componentCount = elementsSet.size
 
-      return {
-        dinCode: level2.number,
-        name: level2.name,
-        averageCircularityIndex,
-        totalMass,
-        componentCount,
-      }
-    })
+  //     return {
+  //       dinCode: level2.number,
+  //       name: level2.name,
+  //       averageCircularityIndex,
+  //       totalMass,
+  //       componentCount,
+  //     }
+  //   })
+  // }
+
+  const [currentLevel, setCurrentLevel] = useState(1)
+  const [selectedIdentifier, setSelectedIdentifier] = useState<string | null>(null)
+  const [labelToIdentifierMap, setLabelToIdentifierMap] = useState<Map<string, string>>(new Map())
+
+  // Use selects a value from the navigation (any level)
+  // labelToIdentifierMap is used to get the data for the next level
+  // => state update
+  //   => selected identifier
+  //   => current level
+  // useEffect is used to update the labelToIdentifierMap based on the current level and the selected identifier
+
+  const chartLabelClickHandler = (label: string) => {
+    console.log("FOOclickHandler", label)
+    const identifier = labelToIdentifierMap.get(label)
+    if (identifier) {
+      console.log("identified", identifier)
+      setSelectedIdentifier(identifier)
+      setCurrentLevel(currentLevel + 1)
+    }
   }
 
   const level1Data = getLevel1Data()
 
-  const [currentLevel, setCurrentLevel] = useState(1)
+  // const level1Data = getLevel1Data()
 
-  const level1DataForChart = level1Data.map((data) => ({
-    identifier: `${data.dinCode} ${data.name}`,
-    datum: data.averageCircularityIndex !== undefined ? data.averageCircularityIndex : 0,
-  }))
+  // const labelToIdentifiedAndLevelMap: Map<string, { label: string; level: number }> = new Map(
+  //   level1Data.map((data) => [`${data.dinCode}`, { label: `${data.dinCode} ${data.name}`, level: 1 }])
+  // )
 
-  const FOOclickHandler = (clickedItem: ClickedItem) => {
-    // alert(clickedItem.id)
-    // TODO: this is very uggly and should be refactored
-    // the parseInt is only working because the din id number is first part of the string
-    // so the data processing is relying on some visual representation aspect (extremely bad)
-    const dinCode = parseInt(clickedItem.id)
-    // alert(dinCode)
-    setSelectedLevel1Din(dinCode)
-  }
+  // useEffect(() => {
+  //   if(currentLevel === 1) {
+  //     const newMap = new Map(
+  //       level1Data.map((data) => [`${data.dinCode}`, `${data.dinCode} ${data.name}`])
+  //     )
+  //     setLabelToIdentifierMap(newMap)
+  //   }
+  //   console.log("currentLevel", currentLevel)
+
+  // }, [currentLevel])
+
+  // const labelToIdentifierMap: Map<string, string> = new Map(
+  //   level1Data.map((data) => [`${data.dinCode}`, `${data.dinCode} ${data.name}`, level: 1 }])
+  // )
+
+  // const level1DataForChart = level1Data.map((data) => ({
+  //   identifier: `${data.dinCode} ${data.name}`,
+  //   datum: data.averageCircularityIndex !== undefined ? data.averageCircularityIndex : 0,
+  // }))
 
   return (
     <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
@@ -177,7 +207,7 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
             <CircularityIndexBarChartBreakdown
               data={level1DataForChart}
               margin={margin}
-              clickHandler={FOOclickHandler}
+              clickHandler={chartLabelClickHandler}
             />
           </div>
           <h2>DIN Categories</h2>
