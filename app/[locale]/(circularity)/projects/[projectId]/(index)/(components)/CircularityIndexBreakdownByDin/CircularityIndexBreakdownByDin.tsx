@@ -272,14 +272,13 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
     }
   }, [currentLevel])
 
-  const chartData = filteredDinHierarchy.map((category) => {
-    const data = labelToIdentifierAndDataMap.get(`${category.number}`)
-    return {
-      identifier: data?.identifier || "",
-      datum: data?.datum || 0,
-      label: data?.label || "",
-    }
-  })
+  // set chartData to labelToIdentifierAndDataMap
+  const chartData: { datum: number; identifier: string }[] = Array.from(labelToIdentifierAndDataMap.values()).map(
+    (data) => ({
+      identifier: data.label,
+      datum: data.datum,
+    })
+  )
   // const level1Data = getLevel1Data()
 
   // const labelToIdentifiedAndLevelMap: Map<string, { label: string; level: number }> = new Map(
