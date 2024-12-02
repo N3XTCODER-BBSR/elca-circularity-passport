@@ -161,7 +161,7 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
     console.log("FOOclickHandler", label)
     const identifierAndDatum = labelToIdentifierAndDataMap.get(label)
     if (identifierAndDatum) {
-      console.log("identified", identifierAndDatum)
+      console.log("identifierAndDatum", identifierAndDatum)
       setSelectedIdentifier(identifierAndDatum.identifier)
       setCurrentLevel(currentLevel + 1)
     }
@@ -226,7 +226,7 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
         // })
       })
 
-      setLabelToIdentifierAndDataMap(new Map(FOO.map((data) => [`${data.identifier}`, data])))
+      setLabelToIdentifierAndDataMap(new Map(FOO.map((data) => [`${data.label}`, data])))
 
       // console.log("FOO", FOO)
 
@@ -269,6 +269,8 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
       //   level1Data.map((data) => [`${data.dinCode}`, { label: `${data.dinCode} ${data.name}`, level: 1 }])
       // )
       // setLabelToIdentifierMap(newMap)
+    } else {
+      setLabelToIdentifierAndDataMap(new Map())
     }
   }, [currentLevel])
 
@@ -307,6 +309,9 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
 
   return (
     <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
+      currentLevel: {currentLevel}
+      <br />
+      selectedIdentifier: {selectedIdentifier}
       <br />
       <div className="m-8 h-[200px]">
         <CircularityIndexBarChartBreakdown data={chartData} margin={margin} clickHandler={chartLabelClickHandler} />
