@@ -7,7 +7,7 @@ import {
 } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import React, { useState } from "react"
-import CircularityIndexBarChartBreakdown from "./CircularityIndexBarChartBreakdown"
+import CircularityIndexBarChartBreakdown, { ClickedItem } from "./CircularityIndexBarChartBreakdown"
 
 // Types for DIN hierarchy
 type ComponentType = {
@@ -140,29 +140,28 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
 
   const level1Data = getLevel1Data()
 
-  // const level1DataForChart = level1Data.map((data) => ({
-  //   identifier: String(data.dinCode),
-  //   datum: data.averageCircularityIndex !== undefined ? data.averageCircularityIndex : 0,
-  // }))
+  const [currentLevel, setCurrentLevel] = useState(1)
 
-  const level2Data = selectedLevel1Din != null ? getLevel2Data(selectedLevel1Din) : []
-
-  // const level2DataForChart = level2Data.map((data) => ({
-  //   identifier: String(data.dinCode),
-  //   datum: data.averageCircularityIndex !== undefined ? data.averageCircularityIndex : 0,
-  // }))
-
-  const dataForChart = (selectedLevel1Din == null ? level1Data : level2Data).map((data) => ({
-    identifier: String(data.dinCode),
+  const level1DataForChart = level1Data.map((data) => ({
+    identifier: `${data.dinCode} ${data.name}`,
     datum: data.averageCircularityIndex !== undefined ? data.averageCircularityIndex : 0,
   }))
 
+  const FOOclickHandler = (clickedItem: ClickedItem) => {
+    // alert(clickedItem.id)
+    // TODO: this is very uggly and should be refactored
+    // the parseInt is only working because the din id number is first part of the string
+    // so the data processing is relying on some visual representation aspect (extremely bad)
+    const dinCode = parseInt(clickedItem.id)
+    // alert(dinCode)
+    setSelectedLevel1Din(dinCode)
+  }
+
   return (
     <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
-      <div className="m-8 h-[200px]">
-        <CircularityIndexBarChartBreakdown data={dataForChart} margin={margin} />
-      </div>
-
+      <br />
+      selectedLevel1Din: {selectedLevel1Din}
+      <br />
       {selectedLevel1Din === null ? (
         <>
           {/* FOO: {FOO}
@@ -174,7 +173,13 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
           <br />
           <br />
           level1DataForChart: {JSON.stringify(level1DataForChart)} */}
-
+          <div className="m-8 h-[200px]">
+            <CircularityIndexBarChartBreakdown
+              data={level1DataForChart}
+              margin={margin}
+              clickHandler={FOOclickHandler}
+            />
+          </div>
           <h2>DIN Categories</h2>
           <table>
             <thead>
@@ -216,7 +221,7 @@ const CircularityIndexBreakdownByDin = ({ circularityData, margin }: Circularity
               </tr>
             </thead>
             <tbody>
-              {level2Data.map((data) => (
+              {getLevel2Data(selectedLevel1Din).map((data) => (
                 <tr key={data.dinCode}>
                   <td>{data.dinCode}</td>
                   <td>{data.name}</td>
