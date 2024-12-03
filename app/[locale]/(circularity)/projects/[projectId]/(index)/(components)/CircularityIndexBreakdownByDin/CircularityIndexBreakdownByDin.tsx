@@ -52,11 +52,12 @@ const CircularityIndexBreakdownByDin = ({
   const [selectedIdentifier, setSelectedIdentifier] = useState<string | null>(null)
   const [labelToIdentifierAndDataMap, setLabelToIdentifierAndDataMap] = useState<Map<string, Data>>(new Map())
 
-  type BreadCrumpEntry = {
+  type BreadCrumbEntry = {
     label: string
     identifier: string
+    level: number
   }
-  const [breadCrumbs, setBreadCrumbs] = useState<BreadCrumpEntry[]>([])
+  const [breadCrumbs, setBreadCrumbs] = useState<BreadCrumbEntry[]>([])
 
   const router = useRouter()
 
@@ -126,10 +127,8 @@ const CircularityIndexBreakdownByDin = ({
           datum: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
         }
       })
-      // setBreadCrumbs([{
-      //   label,
-      //   identifier
-      // }])
+
+      setBreadCrumbs([])
 
       setLabelToIdentifierAndDataMap(new Map(FOO.map((data) => [`${data.label}`, data])))
     } else if (currentLevel === 2) {
@@ -160,7 +159,17 @@ const CircularityIndexBreakdownByDin = ({
           label: `${dinLevel3.number} ${dinLevel3.name}`,
         }
       })
+
       setLabelToIdentifierAndDataMap(new Map(FOO.map((data) => [`${data.label}`, data])))
+
+      const selectedGroupLabel = `${selectedGroup.number} ${selectedGroup.name}`
+      setBreadCrumbs([
+        {
+          label: selectedGroupLabel,
+          identifier: String(selectedGroup.number),
+          level: 2,
+        },
+      ])
     } else if (currentLevel === 3) {
       const selectedComponents = circularityData
         .filter((component) => {
@@ -194,6 +203,18 @@ const CircularityIndexBreakdownByDin = ({
 
   return (
     <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
+      {breadCrumbs.map((entry) => (
+        <button
+          key={entry.label}
+          onClick={() => {
+            debugger
+            setSelectedIdentifier(entry.identifier)
+            setCurrentLevel(entry.level)
+          }}
+        >
+          {entry.label}
+        </button>
+      ))}
       {/* currentLevel: {currentLevel}
       <br />
       selectedIdentifier: {selectedIdentifier}
