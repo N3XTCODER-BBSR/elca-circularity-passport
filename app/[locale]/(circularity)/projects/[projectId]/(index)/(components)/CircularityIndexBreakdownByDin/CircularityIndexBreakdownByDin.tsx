@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import {
   costGroupCategoryNumbersToInclude,
@@ -27,6 +27,18 @@ type CircularityIndexBreakdownByDinProps = {
   projectName: string
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   margin: { top: number; right: number; bottom: number; left: number }
+}
+
+type Data = {
+  identifier: string
+  datum: number
+  label: string
+}
+
+type BreadCrumbEntry = {
+  label: string
+  identifier: string
+  level: number
 }
 
 // Flatten the hierarchy to get all ComponentCategories (level-1)
@@ -59,23 +71,15 @@ const CircularityIndexBreakdownByDin = ({
 }: CircularityIndexBreakdownByDinProps) => {
   // TODO: general todo: ensure to handle correctly (e.g. by filtering out?) elements with missing DIN codes
 
-  type Data = {
-    identifier: string
-    datum: number
-    label: string
-  }
   const [currentLevel, setCurrentLevel] = useState(1)
   const [selectedIdentifier, setSelectedIdentifier] = useState<string | null>(null)
   const [labelToIdentifierAndDataMap, setLabelToIdentifierAndDataMap] = useState<Map<string, Data>>(new Map())
 
-  type BreadCrumbEntry = {
-    label: string
-    identifier: string
-    level: number
-  }
   const [breadCrumbs, setBreadCrumbs] = useState<BreadCrumbEntry[]>([])
 
   const router = useRouter()
+
+  const filteredDinHierarchyWithoutEmptyCategories = useMemo(() => filteredDinHierarchy.filter((category) => true), [])
 
   // Use selects a value from the navigation (any level)
   // labelToIdentifierMap is used to get the data for the next level
@@ -124,7 +128,7 @@ const CircularityIndexBreakdownByDin = ({
       // Iterate through all level-1 DIN codes and
       // get a flattened list of products that are somewhere nested under each respective level-1 DIN code
 
-      const FOO = filteredDinHierarchy.flatMap((dinLevel2) => {
+      const FOO = filteredDinHierarchyWithoutEmptyCategories.flatMap((dinLevel2) => {
         const componentsForCurrentDinLeve = circularityData.filter((component) => {
           const normalizedDinCodeOfComponent = Math.floor(component.din_code / 10) * 10
           return normalizedDinCodeOfComponent === dinLevel2.number
@@ -151,7 +155,7 @@ const CircularityIndexBreakdownByDin = ({
       // Iterate through all level-2 DIN codes for currently selected level-1 DIN code and
       // get a flattened list of products that are somewhere nested under each respective level-2 DIN code
 
-      const selectedGroup = filteredDinHierarchy.find(
+      const selectedGroup = filteredDinHierarchyWithoutEmptyCategories.find(
         (dinLevel2) => selectedIdentifier != null && dinLevel2.number === parseInt(selectedIdentifier)
       )
 
