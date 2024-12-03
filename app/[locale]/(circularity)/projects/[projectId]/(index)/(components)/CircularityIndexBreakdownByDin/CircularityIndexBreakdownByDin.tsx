@@ -29,9 +29,9 @@ type CircularityIndexBreakdownByDinProps = {
   margin: { top: number; right: number; bottom: number; left: number }
 }
 
-type Data = {
+type ValueWithIdentifierAndLabel = {
   identifier: string
-  datum: number
+  value: number
   label: string
 }
 
@@ -73,7 +73,9 @@ const CircularityIndexBreakdownByDin = ({
 
   const [currentLevel, setCurrentLevel] = useState(1)
   const [selectedIdentifier, setSelectedIdentifier] = useState<string | null>(null)
-  const [labelToIdentifierAndDataMap, setLabelToIdentifierAndDataMap] = useState<Map<string, Data>>(new Map())
+  const [labelToIdentifierAndDataMap, setLabelToIdentifierAndDataMap] = useState<
+    Map<string, ValueWithIdentifierAndLabel>
+  >(new Map())
 
   const [breadCrumbs, setBreadCrumbs] = useState<BreadCrumbEntry[]>([])
 
@@ -105,7 +107,6 @@ const CircularityIndexBreakdownByDin = ({
   // useEffect is used to update the labelToIdentifierMap based on the current level and the selected identifier
 
   const chartLabelClickHandler = (label: string) => {
-    console.log("FOOclickHandler", label)
     const identifierAndDatum = labelToIdentifierAndDataMap.get(label)
     if (identifierAndDatum) {
       if (currentLevel === 3) {
@@ -114,7 +115,6 @@ const CircularityIndexBreakdownByDin = ({
           `/projects/${projectId}/catalog/components/${uuid}`
         router.push(generateLinkUrlForComponent(identifierAndDatum.identifier))
       } else {
-        console.log("identifierAndDatum", identifierAndDatum)
         setSelectedIdentifier(identifierAndDatum.identifier)
         setCurrentLevel(currentLevel + 1)
       }
@@ -144,7 +144,7 @@ const CircularityIndexBreakdownByDin = ({
       // Iterate through all level-1 DIN codes and
       // get a flattened list of products that are somewhere nested under each respective level-1 DIN code
 
-      const FOO = filteredDinHierarchyWithoutEmptyCategories.flatMap((dinLevel2) => {
+      const valueWithIdentifierAndLabelList = filteredDinHierarchyWithoutEmptyCategories.flatMap((dinLevel2) => {
         const componentsForCurrentDinLeve = circularityData.filter((component) => {
           const normalizedDinCodeOfComponent = Math.floor(component.din_code / 10) * 10
           return normalizedDinCodeOfComponent === dinLevel2.number
@@ -160,13 +160,13 @@ const CircularityIndexBreakdownByDin = ({
         return {
           identifier,
           label,
-          datum: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
-        }
+          value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
+        } as ValueWithIdentifierAndLabel
       })
 
       setBreadCrumbs([])
 
-      setLabelToIdentifierAndDataMap(new Map(FOO.map((data) => [`${data.label}`, data])))
+      setLabelToIdentifierAndDataMap(new Map(valueWithIdentifierAndLabelList.map((data) => [`${data.label}`, data])))
     } else if (currentLevel === 2) {
       // Iterate through all level-2 DIN codes for currently selected level-1 DIN code and
       // get a flattened list of products that are somewhere nested under each respective level-2 DIN code
@@ -191,9 +191,9 @@ const CircularityIndexBreakdownByDin = ({
 
         return {
           identifier: `${dinLevel3.number}`,
-          datum: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
+          value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
           label: `${dinLevel3.number} ${dinLevel3.name}`,
-        }
+        } as ValueWithIdentifierAndLabel
       })
 
       setLabelToIdentifierAndDataMap(new Map(FOO.map((data) => [`${data.label}`, data])))
@@ -224,9 +224,9 @@ const CircularityIndexBreakdownByDin = ({
           const averageCircularityIndex = calculateWeightedAverage(component.layers)
           return {
             identifier: `${component.element_uuid}`,
-            datum: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
+            value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
             label: `${component.element_name}`,
-          }
+          } as ValueWithIdentifierAndLabel
         })
 
       setLabelToIdentifierAndDataMap(new Map(selectedComponents.map((data) => [`${data.label}`, data])))
@@ -255,19 +255,23 @@ const CircularityIndexBreakdownByDin = ({
           level: 3,
         },
       ])
-
-      console.log("FOO selectedComponents", selectedComponents)
-      // console.log("FOO filteredDinHierarchy", filteredDinHierarchy)
     } else {
       setLabelToIdentifierAndDataMap(new Map())
     }
-  }, [circularityData, currentLevel, projectId, projectName, selectedIdentifier])
+  }, [
+    circularityData,
+    currentLevel,
+    filteredDinHierarchyWithoutEmptyCategories,
+    projectId,
+    projectName,
+    selectedIdentifier,
+  ])
 
   // set chartData to labelToIdentifierAndDataMap
   const chartData: { datum: number; identifier: string }[] = Array.from(labelToIdentifierAndDataMap.values()).map(
     (data) => ({
       identifier: data.label,
-      datum: data.datum,
+      datum: data.value,
     })
   )
 

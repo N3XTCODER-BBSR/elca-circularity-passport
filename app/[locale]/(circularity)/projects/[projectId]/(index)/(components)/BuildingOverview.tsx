@@ -60,12 +60,6 @@ const calculateTotalCircularityIndex = (
     )
   }, 0)
 
-  console.log("FOO circularityData", JSON.stringify(circularityData))
-  console.log("FOO circularityIndexSumOverAllComponentLayers", circularityIndexTimesMassSumOverAllComponentLayers)
-  console.log("FOO totalMass", totalMass)
-
-  console.log("totalMass", totalMass)
-
   const totalCircularityIndexForProject = circularityIndexTimesMassSumOverAllComponentLayers / totalMass
   return totalCircularityIndexForProject
 }
@@ -90,8 +84,6 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
         </h1>
       </div>
       <h2 className="max-w-[50%]">
-        {/* <span className="text-sm font-bold uppercase text-indigo-600">{translations("project")}</span>
-        <br /> */}
         <span className="text-2xl">{projectName}</span>
       </h2>
       {isCircularityIndexMissingForAnyProduct ? (
@@ -125,7 +117,6 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
               projectId={projectId}
               projectName={projectName}
               circularityData={circularityData}
-              // circularityTotalIndexPoints={circularityIndexPoints}
               margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
             />
           </div>
