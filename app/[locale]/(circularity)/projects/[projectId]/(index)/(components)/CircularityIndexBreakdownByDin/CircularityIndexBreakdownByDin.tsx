@@ -28,20 +28,20 @@ type CircularityIndexBreakdownByDinProps = {
   margin: { top: number; right: number; bottom: number; left: number }
 }
 
+// Flatten the hierarchy to get all ComponentCategories (level-1)
+const allComponentCategories: ComponentCategory[] = din276Hierarchy.flatMap((group) => group.children)
+
+// Filter the DIN hierarchy to include only specified level-1 DIN codes (ComponentCategories)
+const filteredDinHierarchy = allComponentCategories.filter((category) =>
+  costGroupCategoryNumbersToInclude.includes(category.number)
+)
+
 const CircularityIndexBreakdownByDin = ({
   projectId,
   circularityData,
   margin,
 }: CircularityIndexBreakdownByDinProps) => {
   // const [selectedLevel1Din, setSelectedLevel1Din] = useState<number | null>(null)
-
-  // Flatten the hierarchy to get all ComponentCategories (level-1)
-  const allComponentCategories: ComponentCategory[] = din276Hierarchy.flatMap((group) => group.children)
-
-  // Filter the DIN hierarchy to include only specified level-1 DIN codes (ComponentCategories)
-  const filteredDinHierarchy = allComponentCategories.filter((category) =>
-    costGroupCategoryNumbersToInclude.includes(category.number)
-  )
 
   // TODO: general todo: ensure to handle correctly (e.g. by filtering out?) elements with missing DIN codes
 
@@ -205,80 +205,3 @@ const CircularityIndexBreakdownByDin = ({
 }
 
 export default CircularityIndexBreakdownByDin
-
-// selectedLevel1Din: {selectedLevel1Din}
-//       <br />
-//       {selectedLevel1Din === null ? (
-//         <>
-//           {/* FOO: {FOO}
-//           <br />
-//           <br />
-//           <br />
-//           level1Data: {JSON.stringify(level1Data)}
-//           <br />
-//           <br />
-//           <br />
-//           level1DataForChart: {JSON.stringify(level1DataForChart)} */}
-//           <div className="m-8 h-[200px]">
-//             <CircularityIndexBarChartBreakdown
-//               data={level1DataForChart}
-//               margin={margin}
-//               clickHandler={chartLabelClickHandler}
-//             />
-//           </div>
-//           <h2>DIN Categories</h2>
-//           <table>
-//             <thead>
-//               <tr>
-//                 <th>DIN Code</th>
-//                 <th>Name</th>
-//                 <th>Components</th>
-//                 <th>Average Circularity Index</th>
-//                 <th>Total Mass (kg)</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {level1Data.map((data) => (
-//                 <tr key={data.dinCode} onClick={() => setSelectedLevel1Din(data.dinCode)}>
-//                   <td>{data.dinCode}</td>
-//                   <td>{data.name}</td>
-//                   <td>{data.componentCount}</td>
-//                   <td>
-//                     {data.averageCircularityIndex !== undefined ? data.averageCircularityIndex.toFixed(2) : "N/A"}
-//                   </td>
-//                   <td>{data.totalMass.toFixed(2)}</td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </>
-//       ) : (
-//         <>
-//           <button onClick={() => setSelectedLevel1Din(null)}>Back</button>
-//           <h2>Subcategories for {selectedLevel1Din}</h2>
-//           <table>
-//             <thead>
-//               <tr>
-//                 <th>DIN Code</th>
-//                 <th>Name</th>
-//                 <th>Components</th>
-//                 <th>Average Circularity Index</th>
-//                 <th>Total Mass (kg)</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {getLevel2Data(selectedLevel1Din).map((data) => (
-//                 <tr key={data.dinCode}>
-//                   <td>{data.dinCode}</td>
-//                   <td>{data.name}</td>
-//                   <td>{data.componentCount}</td>
-//                   <td>
-//                     {data.averageCircularityIndex !== undefined ? data.averageCircularityIndex.toFixed(2) : "N/A"}
-//                   </td>
-//                   <td>{data.totalMass.toFixed(2)}</td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </>
-//       )}
