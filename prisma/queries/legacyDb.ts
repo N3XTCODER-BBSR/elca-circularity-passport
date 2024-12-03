@@ -163,8 +163,12 @@ export const getDataForMassCalculationByProductId = async (productId: number) =>
       id: productId,
     },
     include: {
-      // Include related process_configs
-      process_configs: true,
+      // Include related process_configs and their attributes
+      process_configs: {
+        include: {
+          process_config_attributes: true,
+        },
+      },
       // Include related process_conversions and their versions
       process_conversions: {
         include: {
