@@ -49,7 +49,6 @@ const calculateTotalCircularityIndex = (
     return (
       total +
       component.layers.reduce((acc, layer) => {
-        console.log("layer", layer)
         const { mass } = calculateVolumeAndMass(layer)
         if (mass == null) {
           return acc

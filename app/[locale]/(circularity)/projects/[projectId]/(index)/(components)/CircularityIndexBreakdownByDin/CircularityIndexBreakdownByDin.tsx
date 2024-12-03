@@ -88,7 +88,7 @@ const CircularityIndexBreakdownByDin = ({
     [circularityData]
   )
 
-  // Use selects a value from the navigation (any level)
+  // User selects a value from the navigation (any level)
   // labelToIdentifierMap is used to get the data for the next level
   // => state update
   //   => selected identifier
