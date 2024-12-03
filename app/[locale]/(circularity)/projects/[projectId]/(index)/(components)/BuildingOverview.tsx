@@ -78,6 +78,7 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
 
   return (
     <>
+      {/* <div className="bg-gray-100 px-[-32px]"> */}
       {/* circularityData: {JSON.stringify(circularityData)} */}
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
@@ -92,7 +93,7 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
       <div>
         <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
       </div>
-      <div className="m-8 h-[170px]">
+      <div className="mx-8 my-24 h-[170px]">
         <CircularityIndexBreakdownByDin
           projectId={projectId}
           projectName={projectName}

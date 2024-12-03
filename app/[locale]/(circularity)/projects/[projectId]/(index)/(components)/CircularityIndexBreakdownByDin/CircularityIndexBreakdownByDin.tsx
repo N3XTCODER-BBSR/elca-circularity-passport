@@ -252,38 +252,48 @@ const CircularityIndexBreakdownByDin = ({
   )
 
   return (
-    <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
-      {breadCrumbs.map((entry, idx) => (
-        <>
-          {idx === breadCrumbs.length - 1 ? (
-            <>
-              {" "}
-              <span key={entry.label}>{entry.label}</span>
-            </>
-          ) : (
-            <>
-              <button
-                key={entry.label}
-                onClick={() => {
-                  setSelectedIdentifier(entry.identifier)
-                  setCurrentLevel(entry.level)
-                }}
-              >
-                {entry.label}
-              </button>
-              {" > "}
-            </>
-          )}
-        </>
-      ))}
-      {/* currentLevel: {currentLevel}
+    <>
+      <div className="flex flex-col items-center">
+        <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400">Zirkularitätsindex DIN 276</h2>
+        <div className="mt-4 px-8 py-4">{breadCrumbs[breadCrumbs.length - 1]?.label}</div>
+      </div>
+
+      <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
+        {breadCrumbs.map((entry, idx) => (
+          <React.Fragment key={entry.identifier}>
+            {idx === breadCrumbs.length - 1 ? (
+              <>
+                {" "}
+                <span key={entry.label} className="text-gray500 text-sm">
+                  {entry.label}
+                </span>
+              </>
+            ) : (
+              <>
+                <button
+                  key={entry.label}
+                  className="text-gray500 text-sm"
+                  onClick={() => {
+                    setSelectedIdentifier(entry.identifier)
+                    setCurrentLevel(entry.level)
+                  }}
+                >
+                  {entry.label}
+                </button>
+                {" > "}
+              </>
+            )}
+          </React.Fragment>
+        ))}
+        {/* currentLevel: {currentLevel}
       <br />
       selectedIdentifier: {selectedIdentifier}
       <br /> */}
-      <div className="m-8 h-[200px]">
-        <CircularityIndexBarChartBreakdown data={chartData} margin={margin} clickHandler={chartLabelClickHandler} />
+        <div className="mx-8 mb-64 h-[200px]">
+          <CircularityIndexBarChartBreakdown data={chartData} margin={margin} clickHandler={chartLabelClickHandler} />
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 
