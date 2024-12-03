@@ -178,7 +178,11 @@ const CircularityIndexBreakdownByDin = ({
 
       const selectedGroupLabel = `${selectedGroup.number} ${selectedGroup.name}`
       setBreadCrumbs([
-        ...breadCrumbs,
+        {
+          label: "PROJECT FOOBAR",
+          identifier: String(projectId),
+          level: 1,
+        },
         {
           label: selectedGroupLabel,
           identifier: String(selectedGroup.number),
@@ -211,6 +215,11 @@ const CircularityIndexBreakdownByDin = ({
 
       setBreadCrumbs([
         // ...breadCrumbs,
+        {
+          label: "PROJECT FOOBAR",
+          identifier: String(projectId),
+          level: 1,
+        },
         {
           // label: selectedGroup!.name,
           label: `${dinGroupForSelectedDinCodeForLevel2?.number} ${dinGroupForSelectedDinCodeForLevel2?.name}`,
