@@ -102,7 +102,7 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
             calculation. Once this information is updated, your data will be visualized here.
           </div>
           <Link
-            href={"/projects/${projectId}/catalog/components/"}
+            href={`/projects/${projectId}/catalog/`}
             className="mt-8 inline-block rounded-md bg-blue-600 px-2 py-1 text-white"
           >
             Update Building Data
