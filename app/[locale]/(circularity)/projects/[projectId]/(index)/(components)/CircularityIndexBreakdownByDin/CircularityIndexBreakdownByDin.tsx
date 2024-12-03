@@ -4,23 +4,12 @@ import { useRouter } from "next/navigation"
 import React, { useEffect, useMemo, useState } from "react"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import {
+  ComponentCategory,
   costGroupCategoryNumbersToInclude,
   din276Hierarchy,
 } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import CircularityIndexBarChartBreakdown from "./CircularityIndexBarChartBreakdown"
-
-// Types for DIN hierarchy
-type ComponentType = {
-  number: number
-  name: string
-}
-
-type ComponentCategory = {
-  number: number
-  name: string
-  children: ComponentType[]
-}
 
 type CircularityIndexBreakdownByDinProps = {
   projectId: number
