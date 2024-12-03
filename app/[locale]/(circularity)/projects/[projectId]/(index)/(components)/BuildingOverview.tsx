@@ -1,10 +1,10 @@
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/server-actions/getProjectCircularityIndex"
-import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
-import calculateVolumeAndMass from "lib/domain-logic/circularity/utils/calculateVolumeAndMass"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import calculateVolumeAndMass from "lib/domain-logic/circularity/utils/calculateVolumeAndMass"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
+import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
 
 type BuildingOverviewProps = {
   projectId: number
@@ -12,7 +12,7 @@ type BuildingOverviewProps = {
 }
 
 // TODO: rename and move into domain logic
-const calculateTotalCircularityIndex = (
+const calculateTotalCircularityIndex = async (
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
 ) => {
   // TODO: ensure to exlude
@@ -27,36 +27,31 @@ const calculateTotalCircularityIndex = (
   // At the end, divide the total circularity index by the total mass of the project
   // to get the total circularity index of the project
 
-  const circularityIndexTimesMassSumOverAllComponentLayers = circularityData.reduce((total, component) => {
-    return (
-      total +
-      component.layers.reduce((acc, layer) => {
-        if (layer.circularityIndex == null) {
-          return acc
-        }
-        const { mass } = calculateVolumeAndMass(layer)
-        if (mass == null) {
-          return acc
-        }
-        return acc + layer.circularityIndex * mass
-      }, 0)
-    )
-  }, 0)
+  let circularityIndexTimesMassSumOverAllComponentLayers = 0
+  let totalMass = 0
 
-  const totalMass = circularityData.reduce((total, component) => {
-    return (
-      total +
-      component.layers.reduce((acc, layer) => {
-        console.log("layer", layer)
-        const { mass } = calculateVolumeAndMass(layer)
-        if (mass == null) {
-          return acc
-        }
-        // TODO: better handle null values by removing / skipping them completely
-        return acc + mass
-      }, 0)
-    )
-  }, 0)
+  for (const component of circularityData) {
+    for (const layer of component.layers) {
+      console.log("layer", layer)
+
+      // Await the asynchronous function
+      const { mass } = await calculateVolumeAndMass(layer)
+      if (mass == null) {
+        continue
+      }
+
+      // Accumulate total mass
+      totalMass += mass
+
+      // Only proceed if circularityIndex is not null
+      if (layer.circularityIndex == null) {
+        continue
+      }
+
+      // Accumulate the product of circularityIndex and mass
+      circularityIndexTimesMassSumOverAllComponentLayers += layer.circularityIndex * mass
+    }
+  }
 
   console.log("FOO circularityData", JSON.stringify(circularityData))
   console.log("FOO circularityIndexSumOverAllComponentLayers", circularityIndexTimesMassSumOverAllComponentLayers)
@@ -64,6 +59,7 @@ const calculateTotalCircularityIndex = (
 
   console.log("totalMass", totalMass)
 
+  // Calculate the total circularity index for the project
   const totalCircularityIndexForProject = circularityIndexTimesMassSumOverAllComponentLayers / totalMass
   return totalCircularityIndexForProject
 }
@@ -74,7 +70,7 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
   const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
     await getProjectCircularityIndexData(projectId, session.user.id)
 
-  const totalCircularityIndexForProject = calculateTotalCircularityIndex(circularityData)
+  const totalCircularityIndexForProject = await calculateTotalCircularityIndex(circularityData)
 
   return (
     <>

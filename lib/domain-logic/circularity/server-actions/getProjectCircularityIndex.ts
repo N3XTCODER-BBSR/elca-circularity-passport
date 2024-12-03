@@ -1,16 +1,9 @@
-import _ from "lodash"
-import {
-  ElcaElementWithComponents,
-  ElcaProjectComponentRow,
-  EnrichedElcaElementComponent,
-  TBaustoffProductData,
-  UserEnrichedProductDataWithDisturbingSubstanceSelection,
-} from "lib/domain-logic/types/domain-types"
+import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
+import { getElcaElementsForProjectId } from "./getElcaElementsForProjectId"
 import calculateCircularityDataForLayer, {
   CalculateCircularityDataForLayerReturnType,
 } from "../utils/calculate-circularity-data-for-layer"
-import { getElcaElementsForProjectId } from "./getElcaElementsForProjectId"
-import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 
 // type ProjectCircularityIndexData = {
 //   projectId: string

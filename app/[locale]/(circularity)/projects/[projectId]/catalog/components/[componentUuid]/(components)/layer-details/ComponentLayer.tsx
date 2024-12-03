@@ -28,7 +28,14 @@ const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }:
     staleTime: Infinity,
   })
 
-  const { volume, mass } = calculateVolumeAndMass(currentLayerData)
+  const { data: massAndVolume } = useQuery({
+    queryKey: ["layerData", currentLayerData, "volumeAndMass"],
+    queryFn: () => {
+      return calculateVolumeAndMass(currentLayerData)
+    },
+  })
+
+  const { mass, volume } = massAndVolume || {}
 
   const layerKeyValues: KeyValueTuple[] = [
     {
@@ -37,7 +44,7 @@ const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }:
     },
     {
       key: "Volumen [m3]",
-      value: volume.toFixed(2),
+      value: volume?.toFixed(2),
     },
     {
       key: "Oekobaudat UUID",
@@ -69,7 +76,7 @@ const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }:
     },
     {
       key: "Masse [kg]",
-      value: mass.toFixed(2),
+      value: mass?.toFixed(2),
     },
     {
       key: "Schichtdicke [m]",
