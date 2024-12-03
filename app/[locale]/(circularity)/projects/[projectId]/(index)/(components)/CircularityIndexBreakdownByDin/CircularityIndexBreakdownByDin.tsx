@@ -169,7 +169,7 @@ const CircularityIndexBreakdownByDin = ({
         return
       }
 
-      const FOO = selectedGroup?.children.flatMap((dinLevel3) => {
+      const valueWithIdentifierAndLabelList = selectedGroup?.children.flatMap((dinLevel3) => {
         const componentsForCurrentDinLevel = circularityData.filter((component) => {
           return component.din_code === dinLevel3.number
         })
@@ -185,7 +185,7 @@ const CircularityIndexBreakdownByDin = ({
         } as ValueWithIdentifierAndLabel
       })
 
-      setLabelToIdentifierAndDataMap(new Map(FOO.map((data) => [`${data.label}`, data])))
+      setLabelToIdentifierAndDataMap(new Map(valueWithIdentifierAndLabelList.map((data) => [`${data.label}`, data])))
 
       const selectedGroupLabel = `${selectedGroup.number} ${selectedGroup.name}`
       setBreadCrumbs([
@@ -225,20 +225,17 @@ const CircularityIndexBreakdownByDin = ({
       const dinGroupForSelectedDinCodeForLevel2 = getDinGroupByDinCode(Math.floor(selectedIdentiferAsNumber / 10) * 10)
 
       setBreadCrumbs([
-        // ...breadCrumbs,
         {
           label: projectName,
           identifier: String(projectId),
           level: 1,
         },
         {
-          // label: selectedGroup!.name,
           label: `${dinGroupForSelectedDinCodeForLevel2?.number} ${dinGroupForSelectedDinCodeForLevel2?.name}`,
           identifier: String(dinGroupForSelectedDinCodeForLevel2?.number),
           level: 2,
         },
         {
-          // label: selectedGroup!.name,
           label: `${dinGroupForSelectedDinCodeForLevel3?.number} ${dinGroupForSelectedDinCodeForLevel3?.name}`,
           identifier: String(dinGroupForSelectedDinCodeForLevel3?.number),
           level: 3,
@@ -298,10 +295,6 @@ const CircularityIndexBreakdownByDin = ({
             )}
           </React.Fragment>
         ))}
-        {/* currentLevel: {currentLevel}
-      <br />
-      selectedIdentifier: {selectedIdentifier}
-      <br /> */}
         <div className="mx-8 mb-64 h-[200px]">
           <CircularityIndexBarChartBreakdown data={chartData} margin={margin} clickHandler={chartLabelClickHandler} />
         </div>
