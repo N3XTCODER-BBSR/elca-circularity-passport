@@ -1,12 +1,12 @@
-import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/server-actions/getProjectCircularityIndex"
-import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
-import calculateVolumeAndMass from "lib/domain-logic/circularity/utils/calculateVolumeAndMass"
-import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
-import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
-import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { Link } from "i18n/routing"
+import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/server-actions/getProjectCircularityIndex"
+import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import calculateVolumeAndMass from "lib/domain-logic/circularity/utils/calculateVolumeAndMass"
+import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
+import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
+import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
 
 type BuildingOverviewProps = {
   projectId: number
@@ -96,6 +96,13 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
       </h2>
       {isCircularityIndexMissingForAnyProduct ? (
         <div className="mx-64 flex-col items-center text-center">
+          <Image
+            src="/missing-circularity-data-icon.svg"
+            width={24}
+            height={24}
+            className="mb-6 inline-block size-28"
+            alt={"missing-circularity-data"}
+          />
           <h3 className="mx-2 mb-8 text-2xl font-semibold">Data Needed to Display Circularity Index</h3>
           <div>
             To view the circularity index, please ensure that each building product is either complete or excluded from
