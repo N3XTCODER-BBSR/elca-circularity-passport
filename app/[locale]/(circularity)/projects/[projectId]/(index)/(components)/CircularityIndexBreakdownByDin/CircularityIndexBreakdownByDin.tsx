@@ -41,8 +41,6 @@ const CircularityIndexBreakdownByDin = ({
   circularityData,
   margin,
 }: CircularityIndexBreakdownByDinProps) => {
-  // const [selectedLevel1Din, setSelectedLevel1Din] = useState<number | null>(null)
-
   // TODO: general todo: ensure to handle correctly (e.g. by filtering out?) elements with missing DIN codes
 
   type Data = {
@@ -53,6 +51,12 @@ const CircularityIndexBreakdownByDin = ({
   const [currentLevel, setCurrentLevel] = useState(1)
   const [selectedIdentifier, setSelectedIdentifier] = useState<string | null>(null)
   const [labelToIdentifierAndDataMap, setLabelToIdentifierAndDataMap] = useState<Map<string, Data>>(new Map())
+
+  type BreadCrumpEntry = {
+    label: string
+    identifier: string
+  }
+  const [breadCrumbs, setBreadCrumbs] = useState<BreadCrumpEntry[]>([])
 
   const router = useRouter()
 
@@ -71,16 +75,13 @@ const CircularityIndexBreakdownByDin = ({
         // go to detail page of selected component
         const generateLinkUrlForComponent = (uuid: string): string =>
           `/projects/${projectId}/catalog/components/${uuid}`
-        // router.push(`${newPath}${queryParams ? `?${queryParams}` : ""}`)
         router.push(generateLinkUrlForComponent(identifierAndDatum.identifier))
+      } else {
+        console.log("identifierAndDatum", identifierAndDatum)
+        setSelectedIdentifier(identifierAndDatum.identifier)
+        setCurrentLevel(currentLevel + 1)
       }
-      console.log("identifierAndDatum", identifierAndDatum)
-      setSelectedIdentifier(identifierAndDatum.identifier)
-      setCurrentLevel(currentLevel + 1)
     }
-
-    // TODO: move this into an effect
-    // calculate next level data
   }
 
   const calculateWeightedAverage = (productsForCurrentDinLevel: CalculateCircularityDataForLayerReturnType[]) => {
@@ -107,15 +108,8 @@ const CircularityIndexBreakdownByDin = ({
       // get a flattened list of products that are somewhere nested under each respective level-1 DIN code
 
       const FOO = filteredDinHierarchy.flatMap((dinLevel2) => {
-        // return dinLevel2.children.flatMap((dinLevel3) => {
-        // console.log("componentType.number", componentType.number)
         const componentsForCurrentDinLeve = circularityData.filter((component) => {
-          // console.log("element.din_code", element.din_code)
           const normalizedDinCodeOfComponent = Math.floor(component.din_code / 10) * 10
-          console.log("FOO component.din_code", component.din_code)
-          console.log("FOO normalizedDinCodeOfComponent", normalizedDinCodeOfComponent)
-          console.log("FOO dinLevel3.number", dinLevel2.number)
-          console.log("--------------------")
           return normalizedDinCodeOfComponent === dinLevel2.number
         })
 
@@ -123,12 +117,19 @@ const CircularityIndexBreakdownByDin = ({
 
         const averageCircularityIndex = calculateWeightedAverage(productsForCurrentDinLevel)
 
+        const label = `${dinLevel2.number} ${dinLevel2.name}`
+        const identifier = `${dinLevel2.number}`
+
         return {
-          identifier: `${dinLevel2.number}`,
+          identifier,
+          label,
           datum: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
-          label: `${dinLevel2.number} ${dinLevel2.name}`,
         }
       })
+      // setBreadCrumbs([{
+      //   label,
+      //   identifier
+      // }])
 
       setLabelToIdentifierAndDataMap(new Map(FOO.map((data) => [`${data.label}`, data])))
     } else if (currentLevel === 2) {
@@ -168,9 +169,9 @@ const CircularityIndexBreakdownByDin = ({
         .map((component) => {
           const averageCircularityIndex = calculateWeightedAverage(component.layers)
           return {
-            identifier: `${component.din_code}`,
+            identifier: `${component.element_uuid}`,
             datum: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
-            label: `${component.din_code}`,
+            label: `${component.element_name}`,
           }
         })
 
@@ -193,10 +194,10 @@ const CircularityIndexBreakdownByDin = ({
 
   return (
     <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
-      currentLevel: {currentLevel}
+      {/* currentLevel: {currentLevel}
       <br />
       selectedIdentifier: {selectedIdentifier}
-      <br />
+      <br /> */}
       <div className="m-8 h-[200px]">
         <CircularityIndexBarChartBreakdown data={chartData} margin={margin} clickHandler={chartLabelClickHandler} />
       </div>
