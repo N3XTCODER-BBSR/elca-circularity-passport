@@ -1,6 +1,4 @@
-import { ArrowLongLeftIcon } from "@heroicons/react/20/solid"
 import Image from "next/image"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import errorHandler from "app/(utils)/errorHandler"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
@@ -8,6 +6,7 @@ import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/dom
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { getAvailableTBaustoffProducts } from "prisma/queries/db"
+import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
 
 const Page = async ({ params }: { params: { projectId: string; componentUuid: string; locale: string } }) => {
@@ -46,13 +45,7 @@ const Page = async ({ params }: { params: { projectId: string; componentUuid: st
 
     return (
       <div>
-        <Link
-          className="inline-flex items-center gap-x-1.5 rounded-md bg-gray-200 px-8 py-2 text-sm font-semibold text-blue-900"
-          href={`/${params.locale}/projects/${params.projectId}/catalog#${componentData?.din_code}`}
-        >
-          <ArrowLongLeftIcon aria-hidden="true" className="-ml-0.5 size-5" />
-          Zurück
-        </Link>
+        <HistoryBackButton />
         <h1 className="mt-12 text-2xl font-semibold leading-6">{componentData?.element_name}</h1>
         <div className="flex flex-col md:flex-row">
           <div className="w-full py-4 md:w-1/3">

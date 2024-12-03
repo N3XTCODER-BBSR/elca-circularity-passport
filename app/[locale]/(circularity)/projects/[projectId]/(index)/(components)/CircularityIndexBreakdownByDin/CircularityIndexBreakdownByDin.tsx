@@ -24,6 +24,7 @@ type ComponentCategory = {
 
 type CircularityIndexBreakdownByDinProps = {
   projectId: number
+  projectName: string
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   margin: { top: number; right: number; bottom: number; left: number }
 }
@@ -52,6 +53,7 @@ const getDinGroupByDinCode = (dinCode: number) => {
 
 const CircularityIndexBreakdownByDin = ({
   projectId,
+  projectName,
   circularityData,
   margin,
 }: CircularityIndexBreakdownByDinProps) => {
@@ -179,7 +181,7 @@ const CircularityIndexBreakdownByDin = ({
       const selectedGroupLabel = `${selectedGroup.number} ${selectedGroup.name}`
       setBreadCrumbs([
         {
-          label: "PROJECT FOOBAR",
+          label: projectName,
           identifier: String(projectId),
           level: 1,
         },
@@ -216,7 +218,7 @@ const CircularityIndexBreakdownByDin = ({
       setBreadCrumbs([
         // ...breadCrumbs,
         {
-          label: "PROJECT FOOBAR",
+          label: projectName,
           identifier: String(projectId),
           level: 1,
         },
@@ -239,7 +241,7 @@ const CircularityIndexBreakdownByDin = ({
     } else {
       setLabelToIdentifierAndDataMap(new Map())
     }
-  }, [circularityData, currentLevel, selectedIdentifier])
+  }, [circularityData, currentLevel, projectId, projectName, selectedIdentifier])
 
   // set chartData to labelToIdentifierAndDataMap
   const chartData: { datum: number; identifier: string }[] = Array.from(labelToIdentifierAndDataMap.values()).map(
@@ -251,17 +253,28 @@ const CircularityIndexBreakdownByDin = ({
 
   return (
     <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
-      {breadCrumbs.map((entry) => (
-        <button
-          key={entry.label}
-          onClick={() => {
-            debugger
-            setSelectedIdentifier(entry.identifier)
-            setCurrentLevel(entry.level)
-          }}
-        >
-          {entry.label}
-        </button>
+      {breadCrumbs.map((entry, idx) => (
+        <>
+          {idx === breadCrumbs.length - 1 ? (
+            <>
+              {" "}
+              <span key={entry.label}>{entry.label}</span>
+            </>
+          ) : (
+            <>
+              <button
+                key={entry.label}
+                onClick={() => {
+                  setSelectedIdentifier(entry.identifier)
+                  setCurrentLevel(entry.level)
+                }}
+              >
+                {entry.label}
+              </button>
+              {" > "}
+            </>
+          )}
+        </>
       ))}
       {/* currentLevel: {currentLevel}
       <br />
