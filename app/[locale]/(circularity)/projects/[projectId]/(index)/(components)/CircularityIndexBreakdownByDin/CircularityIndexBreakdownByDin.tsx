@@ -164,6 +164,7 @@ const CircularityIndexBreakdownByDin = ({
 
       const selectedGroupLabel = `${selectedGroup.number} ${selectedGroup.name}`
       setBreadCrumbs([
+        ...breadCrumbs,
         {
           label: selectedGroupLabel,
           identifier: String(selectedGroup.number),
@@ -185,6 +186,23 @@ const CircularityIndexBreakdownByDin = ({
         })
 
       setLabelToIdentifierAndDataMap(new Map(selectedComponents.map((data) => [`${data.label}`, data])))
+
+      // const selectedGroupLabel = `${selectedGroup.number} ${selectedGroup.name}`
+
+      // get name for selectedIdentifier
+      const selectedGroup = filteredDinHierarchy
+        .flatMap((el) => el.children)
+        .find((dinLevel2) => selectedIdentifier != null && dinLevel2.number === parseInt(selectedIdentifier))
+
+      setBreadCrumbs([
+        ...breadCrumbs,
+        {
+          // label: selectedGroup!.name,
+          label: `${selectedGroup?.number} ${selectedGroup?.name}`,
+          identifier: String(selectedIdentifier),
+          level: 3,
+        },
+      ])
 
       console.log("FOO selectedComponents", selectedComponents)
       // console.log("FOO filteredDinHierarchy", filteredDinHierarchy)
