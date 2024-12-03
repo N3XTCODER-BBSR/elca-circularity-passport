@@ -36,6 +36,20 @@ const filteredDinHierarchy = allComponentCategories.filter((category) =>
   costGroupCategoryNumbersToInclude.includes(category.number)
 )
 
+const getDinGroupByDinCode = (dinCode: number) => {
+  // determine code level
+  // if the code last two digits are 0, it's level 1
+  // if only the last digit is 0, it's level 2
+  // otherwise it's level 3
+  const dinCodeLevel = dinCode % 10 === 0 ? (dinCode % 100 === 0 ? 1 : 2) : 3
+
+  if (dinCodeLevel === 2) {
+    return filteredDinHierarchy.find((el) => el.number === dinCode)
+  } else if (dinCodeLevel === 3) {
+    return filteredDinHierarchy.flatMap((el) => el.children).find((dinLevel2) => dinLevel2.number === dinCode)
+  }
+}
+
 const CircularityIndexBreakdownByDin = ({
   projectId,
   circularityData,
@@ -172,6 +186,10 @@ const CircularityIndexBreakdownByDin = ({
         },
       ])
     } else if (currentLevel === 3) {
+      if (selectedIdentifier === null) {
+        // TODO: error logging
+        return
+      }
       const selectedComponents = circularityData
         .filter((component) => {
           return selectedIdentifier != null && component.din_code === parseInt(selectedIdentifier)
@@ -187,19 +205,22 @@ const CircularityIndexBreakdownByDin = ({
 
       setLabelToIdentifierAndDataMap(new Map(selectedComponents.map((data) => [`${data.label}`, data])))
 
-      // const selectedGroupLabel = `${selectedGroup.number} ${selectedGroup.name}`
-
-      // get name for selectedIdentifier
-      const selectedGroup = filteredDinHierarchy
-        .flatMap((el) => el.children)
-        .find((dinLevel2) => selectedIdentifier != null && dinLevel2.number === parseInt(selectedIdentifier))
+      const selectedIdentiferAsNumber = parseInt(selectedIdentifier)
+      const dinGroupForSelectedDinCodeForLevel3 = getDinGroupByDinCode(selectedIdentiferAsNumber)
+      const dinGroupForSelectedDinCodeForLevel2 = getDinGroupByDinCode(Math.floor(selectedIdentiferAsNumber / 10) * 10)
 
       setBreadCrumbs([
-        ...breadCrumbs,
+        // ...breadCrumbs,
         {
           // label: selectedGroup!.name,
-          label: `${selectedGroup?.number} ${selectedGroup?.name}`,
-          identifier: String(selectedIdentifier),
+          label: `${dinGroupForSelectedDinCodeForLevel2?.number} ${dinGroupForSelectedDinCodeForLevel2?.name}`,
+          identifier: String(dinGroupForSelectedDinCodeForLevel2?.number),
+          level: 2,
+        },
+        {
+          // label: selectedGroup!.name,
+          label: `${dinGroupForSelectedDinCodeForLevel3?.number} ${dinGroupForSelectedDinCodeForLevel3?.name}`,
+          identifier: String(dinGroupForSelectedDinCodeForLevel3?.number),
           level: 3,
         },
       ])
