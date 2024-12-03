@@ -79,7 +79,23 @@ const CircularityIndexBreakdownByDin = ({
 
   const router = useRouter()
 
-  const filteredDinHierarchyWithoutEmptyCategories = useMemo(() => filteredDinHierarchy.filter((category) => true), [])
+  const filteredDinHierarchyWithoutEmptyCategories = useMemo(
+    () =>
+      filteredDinHierarchy
+        .map(
+          (category) =>
+            ({
+              ...category,
+              children: category.children.filter((componentType) => {
+                return circularityData.some((component) => {
+                  return component.din_code === componentType.number
+                })
+              }),
+            }) as ComponentCategory
+        )
+        .filter((category) => category.children.length > 0),
+    [circularityData]
+  )
 
   // Use selects a value from the navigation (any level)
   // labelToIdentifierMap is used to get the data for the next level

@@ -1,3 +1,5 @@
+import Image from "next/image"
+import { Link } from "i18n/routing"
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/server-actions/getProjectCircularityIndex"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import calculateVolumeAndMass from "lib/domain-logic/circularity/utils/calculateVolumeAndMass"
@@ -72,10 +74,12 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
 
   const totalCircularityIndexForProject = await calculateTotalCircularityIndex(circularityData)
 
+  const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
+    component.layers.some((layer) => layer.circularityIndex == null)
+  )
+
   return (
     <>
-      {/* <div className="bg-gray-100 px-[-32px]"> */}
-      {/* circularityData: {JSON.stringify(circularityData)} */}
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
           Zirkularitätsindex
@@ -86,18 +90,43 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
         <br /> */}
         <span className="text-2xl">{projectName}</span>
       </h2>
-      <div>
-        <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
-      </div>
-      <div className="mx-8 my-24 h-[170px]">
-        <CircularityIndexBreakdownByDin
-          projectId={projectId}
-          projectName={projectName}
-          circularityData={circularityData}
-          // circularityTotalIndexPoints={circularityIndexPoints}
-          margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
-        />
-      </div>
+      {isCircularityIndexMissingForAnyProduct ? (
+        <div className="mx-64 flex-col items-center text-center">
+          <Image
+            src="/missing-circularity-data-icon.svg"
+            width={24}
+            height={24}
+            className="mb-6 inline-block size-28"
+            alt={"missing-circularity-data"}
+          />
+          <h3 className="mx-2 mb-8 text-2xl font-semibold">Data Needed to Display Circularity Index</h3>
+          <div>
+            To view the circularity index, please ensure that each building product is either complete or excluded from
+            calculation. Once this information is updated, your data will be visualized here.
+          </div>
+          <Link
+            href={`/projects/${projectId}/catalog/`}
+            className="mt-8 inline-block rounded-md bg-blue-600 px-2 py-1 text-white"
+          >
+            Update Building Data
+          </Link>
+        </div>
+      ) : (
+        <>
+          <div>
+            <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
+          </div>
+          <div className="mx-8 my-24 h-[170px]">
+            <CircularityIndexBreakdownByDin
+              projectId={projectId}
+              projectName={projectName}
+              circularityData={circularityData}
+              // circularityTotalIndexPoints={circularityIndexPoints}
+              margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
+            />
+          </div>
+        </>
+      )}
     </>
   )
 }
