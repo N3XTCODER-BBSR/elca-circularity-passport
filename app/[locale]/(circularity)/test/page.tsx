@@ -13,7 +13,23 @@ const Test = async () => {
     include: {
       elements: {
         include: {
-          elements: true,
+          elements: {
+            include: {
+              element_components: {
+                include: {
+                  process_configs: {
+                    include: {
+                      process_categories: {
+                        include: {
+                          nested_nodes: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },
