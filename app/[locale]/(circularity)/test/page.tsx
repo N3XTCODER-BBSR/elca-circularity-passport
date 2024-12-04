@@ -11,73 +11,87 @@ type CategoryNode = {
   svg_pattern_id: number | null
 }
 
-type Material = {
+type MaterialNode = {
   id: number
   name: string
   process_category_node_id: number
-  // Other fields can be included as needed
+  // Include other fields as necessary
 }
 
-interface CategoryTreeNode extends CategoryNode {
-  children: TreeNode[]
+interface RootCategoryNode extends CategoryNode {
+  subcategories?: SubCategoryNode[]
+  materials?: MaterialNode[]
 }
 
-type TreeNode = CategoryTreeNode | Material
+interface SubCategoryNode extends CategoryNode {
+  materials?: MaterialNode[]
+}
 
-function buildTree(categories: CategoryNode[], materials: Material[]): TreeNode[] {
-  const categoryByRefNum: Map<string, CategoryTreeNode> = new Map()
-  const categoryByNodeId: Map<number, CategoryTreeNode> = new Map()
+function buildTree(categories: CategoryNode[], materials: MaterialNode[]): RootCategoryNode[] {
+  // Maps for quick lookup
+  const categoriesByRefNum: { [refNum: string]: CategoryNode } = {}
+  const categoriesByNodeId: { [nodeId: number]: CategoryNode } = {}
 
-  // Initialize categories as TreeNodes with empty children arrays
-  const categoriesWithChildren: CategoryTreeNode[] = categories.map((category) => ({
-    ...category,
-    children: [],
-  }))
-
-  // Build maps for quick lookup
-  categoriesWithChildren.forEach((category) => {
+  categories.forEach((category) => {
     if (category.ref_num) {
-      categoryByRefNum.set(category.ref_num, category)
+      categoriesByRefNum[category.ref_num] = category
     }
-    categoryByNodeId.set(category.node_id, category)
+    categoriesByNodeId[category.node_id] = category
   })
 
-  const roots: CategoryTreeNode[] = []
+  // Initialize root categories
+  const rootCategories: { [refNum: string]: RootCategoryNode } = {}
 
-  // Build the category tree
-  categoriesWithChildren.forEach((category) => {
-    const refNum = category.ref_num
-    if (!refNum) {
-      // Categories with null ref_num are considered roots
-      roots.push(category)
+  categories.forEach((category) => {
+    if (category.ref_num && !category.ref_num.includes(".")) {
+      // This is a root category
+      rootCategories[category.ref_num] = {
+        ...category,
+        subcategories: [],
+        materials: [],
+      }
+    }
+  })
+
+  // Build subcategories
+  const subCategoriesByNodeId: { [nodeId: number]: SubCategoryNode } = {}
+
+  categories.forEach((category) => {
+    if (category.ref_num && category.ref_num.includes(".")) {
+      // This is a subcategory
+      const parentRefNum = getParentRefNum(category.ref_num)
+      const parentCategory = rootCategories[parentRefNum!]
+      if (parentCategory) {
+        const subCategoryNode: SubCategoryNode = {
+          ...category,
+          materials: [],
+        }
+        parentCategory.subcategories?.push(subCategoryNode)
+        subCategoriesByNodeId[category.node_id] = subCategoryNode
+      }
+    }
+  })
+
+  // Assign materials to subcategories or root categories
+  materials.forEach((material) => {
+    const subCategory = subCategoriesByNodeId[material.process_category_node_id]
+    if (subCategory) {
+      subCategory.materials?.push(material)
     } else {
-      const parentRefNum = getParentRefNum(refNum)
-      if (parentRefNum === null) {
-        // No parent ref_num means this category is a root
-        roots.push(category)
-      } else {
-        const parentCategory = categoryByRefNum.get(parentRefNum)
-        if (parentCategory) {
-          parentCategory.children.push(category)
+      const category = categoriesByNodeId[material.process_category_node_id]
+      if (category && category.ref_num) {
+        if (!category.ref_num.includes(".")) {
+          // Material belongs to a root category
+          const rootCategory = rootCategories[category.ref_num]
+          rootCategory?.materials?.push(material)
         } else {
-          // Parent category not found; consider as root or handle accordingly
-          roots.push(category)
+          // Handle materials with no matching category if necessary
         }
       }
     }
   })
 
-  // Assign materials to their respective categories
-  materials.forEach((material) => {
-    const category = categoryByNodeId.get(material.process_category_node_id)
-    if (category) {
-      category.children.push(material)
-    } else {
-      // Handle materials with no matching category if necessary
-    }
-  })
-
-  return roots
+  return Object.values(rootCategories)
 }
 
 // Helper function to get the parent ref_num

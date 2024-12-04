@@ -93,7 +93,7 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
   // TODO: check why this is not working (it was workign for Daniel with his DB state, but does not after resetting the new DB)
   // after resolved, ensure that the static false flag is replaced by the correct logic
   const isCircularityIndexMissingForAnyProduct = false
-  // circularityData.some((component) =>
+  // const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
   //   component.layers.some((layer) => layer.circularityIndex == null)
   // )
 
