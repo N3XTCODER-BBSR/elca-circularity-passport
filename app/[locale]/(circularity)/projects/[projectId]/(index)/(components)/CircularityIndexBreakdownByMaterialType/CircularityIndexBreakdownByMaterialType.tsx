@@ -197,20 +197,21 @@ const CircularityIndexBreakdownByMaterialType = ({
         return
       }
 
-      const valueWithIdentifierAndLabelList = selectedGroup?.materials.flatMap((level) => {
-        const componentsForCurrentDinLevel = circularityData.filter((component) => {
-          return component.element_uuid === level.component_uuid
-        })
+      debugger
+      const valueWithIdentifierAndLabelList = selectedGroup?.subcategories.flatMap((subcategory) => {
+        // const componentsForCurrentDinLevel = circularityData.filter((component) => {
+        //   return component.element_uuid === subcategory.materials
+        // })
 
-        const productsForCurrentDinLevel = componentsForCurrentDinLevel.flatMap((component) => component.layers)
+        // const productsForCurrentDinLevel = componentsForCurrentDinLevel.flatMap((component) => component.layers)
 
         // const averageCircularityIndex = calculateWeightedAverage(productsForCurrentDinLevel)
 
         return {
-          identifier: `${level.component_uuid}`,
+          identifier: `${subcategory.node_id}`,
           // value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
           value: 12340,
-          label: `${level.component_uuid} ${level.name}`,
+          label: subcategory.name,
         } as ValueWithIdentifierAndLabel
       })
 
