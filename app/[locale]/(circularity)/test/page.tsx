@@ -17,10 +17,14 @@ const Test = async () => {
         select: {
           id: true,
           name: true,
+        },
+        include: {
           elements: {
             select: {
               id: true,
               name: true,
+            },
+            include: {
               element_components: {
                 select: {
                   id: true,
