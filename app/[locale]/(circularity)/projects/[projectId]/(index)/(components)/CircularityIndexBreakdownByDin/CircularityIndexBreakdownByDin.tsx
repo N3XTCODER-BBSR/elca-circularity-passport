@@ -16,7 +16,6 @@ type CircularityIndexBreakdownByDinProps = {
   projectName: string
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   margin: { top: number; right: number; bottom: number; left: number }
-  totalMass: number
 }
 
 type ValueWithIdentifierAndLabel = {
@@ -29,6 +28,40 @@ type BreadCrumbEntry = {
   label: string
   identifier: string
   level: number
+}
+
+const calculateWeightForGroup = (
+  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
+  currentLevel: number,
+  selectedIdentifier?: number
+) => {
+  // if level 1 --> all
+  // if level 2 --> all din codes with the same first two digits
+  // if level 3 --> all din codes with exactly the same digits (3 digits)
+  const filteredCircularityData = circularityData.filter((component) => {
+    if (currentLevel === 1) {
+      return true
+    }
+    if (currentLevel === 2 && selectedIdentifier !== undefined) {
+      return Math.floor(component.din_code / 10) * 10 === selectedIdentifier
+    }
+    if (currentLevel === 3 && selectedIdentifier !== undefined) {
+      return component.din_code === selectedIdentifier
+    }
+    return false
+  })
+
+  let weightSum = 0
+  filteredCircularityData.forEach((component) => {
+    component.layers.forEach((layer) => {
+      if (layer.weight == null) {
+        return
+      }
+      weightSum += layer.weight
+    })
+  })
+
+  return weightSum
 }
 
 // Flatten the hierarchy to get all ComponentCategories (level-1)
@@ -58,7 +91,6 @@ const CircularityIndexBreakdownByDin = ({
   projectName,
   circularityData,
   margin,
-  totalMass,
 }: CircularityIndexBreakdownByDinProps) => {
   // TODO: general todo: ensure to handle correctly (e.g. by filtering out?) elements with missing DIN codes
 
@@ -67,6 +99,12 @@ const CircularityIndexBreakdownByDin = ({
   const [labelToIdentifierAndDataMap, setLabelToIdentifierAndDataMap] = useState<
     Map<string, ValueWithIdentifierAndLabel>
   >(new Map())
+
+  const totalWeight = calculateWeightForGroup(
+    circularityData,
+    currentLevel,
+    selectedIdentifier ? parseInt(selectedIdentifier) : undefined
+  )
 
   const [breadCrumbs, setBreadCrumbs] = useState<BreadCrumbEntry[]>([])
 
@@ -269,7 +307,7 @@ const CircularityIndexBreakdownByDin = ({
         <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400">Zirkularitätsindex DIN 276</h2>
         <div>
           Total mass:{" "}
-          {totalMass.toLocaleString("de-DE", {
+          {totalWeight.toLocaleString("de-DE", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })}{" "}

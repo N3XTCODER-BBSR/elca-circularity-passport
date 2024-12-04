@@ -13,22 +13,6 @@ type BuildingOverviewProps = {
   projectName: string
 }
 
-const calculateTotalWeight = (
-  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
-) => {
-  let weightSum = 0
-  circularityData.forEach((component) => {
-    component.layers.forEach((layer) => {
-      if (layer.weight == null) {
-        return
-      }
-      weightSum += layer.weight
-    })
-  })
-
-  return weightSum
-}
-
 // TODO: rename and move into domain logic
 const calculateTotalCircularityIndex = async (
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
@@ -88,8 +72,6 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
 
   const totalCircularityIndexForProject = await calculateTotalCircularityIndex(circularityData)
 
-  const totalWeight = calculateTotalWeight(circularityData)
-
   // TODO: check why this is not working (it was workign for Daniel with his DB state, but does not after resetting the new DB)
   // after resolved, ensure that the static false flag is replaced by the correct logic
   const isCircularityIndexMissingForAnyProduct = false
@@ -135,7 +117,6 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
           </div>
           <div className="mx-8 my-24 h-[170px]">
             <CircularityIndexBreakdownByDin
-              totalMass={totalWeight}
               projectId={projectId}
               projectName={projectName}
               circularityData={circularityData}
