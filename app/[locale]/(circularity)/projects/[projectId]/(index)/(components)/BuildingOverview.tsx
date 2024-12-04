@@ -34,8 +34,6 @@ const calculateTotalCircularityIndex = async (
 
   for (const component of circularityData) {
     for (const layer of component.layers) {
-      console.log("layer", layer)
-
       // Await the asynchronous function
       const { mass } = await calculateVolumeAndMass(layer)
       if (mass == null) {
@@ -74,9 +72,12 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
 
   const totalCircularityIndexForProject = await calculateTotalCircularityIndex(circularityData)
 
-  const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
-    component.layers.some((layer) => layer.circularityIndex == null)
-  )
+  // TODO: check why this is not working (it was workign for Daniel with his DB state, but does not after resetting the new DB)
+  // after resolved, ensure that the static false flag is replaced by the correct logic
+  const isCircularityIndexMissingForAnyProduct = false
+  // circularityData.some((component) =>
+  //   component.layers.some((layer) => layer.circularityIndex == null)
+  // )
 
   return (
     <>
@@ -86,8 +87,6 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
         </h1>
       </div>
       <h2 className="max-w-[50%]">
-        {/* <span className="text-sm font-bold uppercase text-indigo-600">{translations("project")}</span>
-        <br /> */}
         <span className="text-2xl">{projectName}</span>
       </h2>
       {isCircularityIndexMissingForAnyProduct ? (
@@ -121,7 +120,6 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
               projectId={projectId}
               projectName={projectName}
               circularityData={circularityData}
-              // circularityTotalIndexPoints={circularityIndexPoints}
               margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
             />
           </div>

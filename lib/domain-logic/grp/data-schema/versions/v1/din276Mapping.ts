@@ -1,15 +1,15 @@
-type ComponentType = {
+export type ComponentType = {
   number: number
   name: string
 }
 
-type ComponentCategory = {
+export type ComponentCategory = {
   number: number
   name: string
   children: ComponentType[]
 }
 
-type ComponentGroup = {
+export type ComponentGroup = {
   number: number
   name: string
   children: ComponentCategory[]

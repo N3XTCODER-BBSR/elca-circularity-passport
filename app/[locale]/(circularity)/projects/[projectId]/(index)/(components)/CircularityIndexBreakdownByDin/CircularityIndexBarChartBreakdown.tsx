@@ -4,27 +4,18 @@ import { eolClassColorsMapper } from "constants/styleConstants"
 import { twMerge } from "tailwind-merge"
 
 const CircularityIndexBarChartBreakdown = ({
-  //   circularityTotalIndexPoints,
   margin,
   data,
   clickHandler,
 }: {
-  //   circularityTotalIndexPoints: number
   data: { datum: number; identifier: string }[]
-  // [{ datum: circularityTotalIndexPoints, identifier: "Gesamt" }]
   margin: { top: number; right: number; bottom: number; left: number }
   clickHandler: (clickedLabel: string) => void
 }) => {
   return (
     <>
-      {/* circularityTotalIndexPoints: {circularityTotalIndexPoints}
-      FOO */}
       <ResponsiveBar
-        //   animate={!isPdf}
         data={data}
-        // data={(data) => ({
-        //   datum: data.
-        // })}
         theme={{
           axis: {
             ticks: {
@@ -34,16 +25,10 @@ const CircularityIndexBarChartBreakdown = ({
             },
           },
         }}
-        //   keys={["circularityIndexPoints"]}
         indexBy="identifier"
         margin={margin}
         keys={["datum"]}
         colors={(datum) => {
-          // dark green	>60
-          // green	40-60
-          // yellow	20-40
-          // red	<20
-
           if (datum.data.datum > 60) return "#008000"
           if (datum.data.datum >= 40) return "#00FF00"
           if (datum.data.datum >= 20) return "#FFFF00"
@@ -56,7 +41,6 @@ const CircularityIndexBarChartBreakdown = ({
         layout="horizontal"
         valueScale={{ type: "linear" }}
         indexScale={{ type: "band", round: true }}
-        //   colors={(d) => eolClassColorsMapper(d.data.eolClass)}
         borderColor={{
           from: "color",
           modifiers: [["darker", 1.6]],
@@ -82,15 +66,11 @@ const CircularityIndexBarChartBreakdown = ({
           truncateTickAt: 0,
           renderTick: (tick) => {
             const handleClick = () => {
-              // tick.
-              // Your click handler logic here
-              // alert(`Tick ${tick.value} clicked`)
               clickHandler(tick.value)
             }
 
             return (
               <g transform={`translate(${tick.x},${tick.y})`} onClick={handleClick} style={{ cursor: "pointer" }}>
-                {/* <rect x={-100} y={-10} width={50} height={20} strokeWidth={1} stroke="gray" fill="white" rx={4} ry={4} /> */}
                 <text x={-60} y={5} textAnchor="middle" fontWeight={"regular"} fontSize="0.8rem" fill="#000">
                   {tick.value}
                 </text>
@@ -98,7 +78,6 @@ const CircularityIndexBarChartBreakdown = ({
             )
           },
         }}
-        //   tooltip={(datum) => <CustomTooltip value={datum.data.overlayText} />}
         totalsOffset={9}
         animate={false}
         enableGridX={false}

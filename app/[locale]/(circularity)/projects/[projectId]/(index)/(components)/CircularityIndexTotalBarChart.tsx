@@ -11,10 +11,7 @@ const CircularityIndexTotalBarChart = ({
 }) => {
   return (
     <>
-      {/* circularityTotalIndexPoints: {circularityTotalIndexPoints}
-      FOO */}
       <ResponsiveBar
-        //   animate={!isPdf}
         theme={{
           axis: {
             ticks: {
@@ -25,16 +22,10 @@ const CircularityIndexTotalBarChart = ({
           },
         }}
         data={[{ datum: circularityTotalIndexPoints, identifier: "Gesamt" }]}
-        //   keys={["circularityIndexPoints"]}
         indexBy="identifier"
         margin={margin}
         keys={["datum"]}
         colors={(datum) => {
-          // dark green	>60
-          // green	40-60
-          // yellow	20-40
-          // red	<20
-
           if (datum.data.datum > 60) return "#008000"
           if (datum.data.datum >= 40) return "#00FF00"
           if (datum.data.datum >= 20) return "#FFFF00"
@@ -47,7 +38,6 @@ const CircularityIndexTotalBarChart = ({
         layout="horizontal"
         valueScale={{ type: "linear" }}
         indexScale={{ type: "band", round: true }}
-        //   colors={(d) => eolClassColorsMapper(d.data.eolClass)}
         borderColor={{
           from: "color",
           modifiers: [["darker", 1.6]],
@@ -71,9 +61,7 @@ const CircularityIndexTotalBarChart = ({
           legendPosition: "middle",
           legendOffset: -40,
           truncateTickAt: 0,
-          // format: replaceWhiteSpaceWithLineBreak,
         }}
-        //   tooltip={(datum) => <CustomTooltip value={datum.data.overlayText} />}
         totalsOffset={9}
         enableGridX={false}
         enableGridY={false}
