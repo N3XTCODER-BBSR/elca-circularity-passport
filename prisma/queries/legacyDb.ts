@@ -156,3 +156,30 @@ export const getProjectsByOwnerId = async (userId: number) => {
     },
   })
 }
+
+export const getDataForMassCalculationByProductId = async (productId: number) => {
+  return prismaLegacy.elca_element_components.findUnique({
+    where: {
+      id: productId,
+    },
+    include: {
+      // Include related process_configs and their attributes
+      process_configs: {
+        include: {
+          process_config_attributes: true,
+        },
+      },
+      // Include related process_conversions and their versions
+      process_conversions: {
+        include: {
+          process_conversion_versions: {
+            orderBy: {
+              created: "desc", // You may adjust this to select the appropriate version
+            },
+            take: 1, // Get the most recent version
+          },
+        },
+      },
+    },
+  })
+}
