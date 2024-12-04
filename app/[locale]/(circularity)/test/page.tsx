@@ -16,32 +16,21 @@ const Test = async () => {
       elements: {
         select: {
           id: true,
-          name: true,
-        },
-        include: {
-          elements: {
+          element_components: {
             select: {
               id: true,
-              name: true,
-            },
-            include: {
-              element_components: {
+              quantity: true,
+              process_configs: {
                 select: {
-                  id: true,
-
-                  process_configs: {
+                  name: true,
+                  process_categories: {
                     select: {
-                      id: true,
                       name: true,
-                      process_categories: {
+                      nested_nodes: {
                         select: {
-                          nested_nodes: {
+                          process_categories: {
                             select: {
-                              process_categories: {
-                                select: {
-                                  name: true,
-                                },
-                              },
+                              name: true,
                             },
                           },
                         },
@@ -53,9 +42,60 @@ const Test = async () => {
             },
           },
         },
+        // include: {
+        // element_components: {
+        //     select: {
+        //         id: true,
+
+        //     }
+        // }
+        // }
       },
     },
   })
+
+  //   elements: {
+  //     select: {
+  //       id: true,
+  //       name: true,
+  //     },
+  //     include: {
+  //       elements: {
+  //         select: {
+  //           id: true,
+  //           name: true,
+  //         },
+  //         include: {
+  //           element_components: {
+  //             select: {
+  //               id: true,
+
+  //               process_configs: {
+  //                 select: {
+  //                   id: true,
+  //                   name: true,
+  //                   process_categories: {
+  //                     select: {
+  //                       nested_nodes: {
+  //                         select: {
+  //                           process_categories: {
+  //                             select: {
+  //                               name: true,
+  //                             },
+  //                           },
+  //                         },
+  //                       },
+  //                     },
+  //                   },
+  //                 },
+  //               },
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   },
+
   //   const dataTestResult = await prismaLegacy.projects.findFirst({
   //     where: {
   //       id: 1,
@@ -66,8 +106,29 @@ const Test = async () => {
   //     },
   //   })
 
-  return <div>result: {JSON.stringify(dataTestResult)}</div>
+  var jsonPretty = JSON.stringify(dataTestResult, null, 2)
+
   //   return <div>result: {JSON.stringify(dataTestResult, null, 4)}</div>
+  console.log(jsonPretty)
+  return (
+    <div>
+      {JSON.stringify(dataTestResult, null, 4)}
+      <ul>
+        {dataTestResult?.elements.map((el) => (
+          <ul>
+            <li>{el.id}</li>
+            <li>
+              <ul>
+                {el.element_components.map((el2) => (
+                  <div>{String(el2.quantity)}</div>
+                ))}
+              </ul>
+            </li>
+          </ul>
+        ))}
+      </ul>
+    </div>
+  )
 }
 
 export default Test
