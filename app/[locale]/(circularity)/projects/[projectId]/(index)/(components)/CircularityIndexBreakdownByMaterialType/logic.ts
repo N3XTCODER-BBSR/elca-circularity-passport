@@ -14,8 +14,8 @@ export type MaterialNode = {
 }
 
 export interface RootCategoryNode extends CategoryNode {
-  subcategories?: SubCategoryNode[]
-  materials?: MaterialNode[]
+  subcategories: SubCategoryNode[]
+  materials: MaterialNode[]
 }
 
 export interface SubCategoryNode extends CategoryNode {

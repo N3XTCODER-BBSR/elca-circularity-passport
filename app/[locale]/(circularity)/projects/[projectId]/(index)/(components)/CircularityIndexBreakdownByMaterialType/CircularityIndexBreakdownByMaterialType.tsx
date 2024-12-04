@@ -183,52 +183,55 @@ const CircularityIndexBreakdownByMaterialType = ({
       setBreadCrumbs([])
 
       setLabelToIdentifierAndDataMap(new Map(valueWithIdentifierAndLabelList.map((data) => [`${data.label}`, data])))
+    } else if (currentLevel === 2) {
+      // Iterate through all level-2 DIN codes for currently selected level-1 DIN code and
+      // get a flattened list of products that are somewhere nested under each respective level-2 DIN code
+
+      // const selectedGroup = filteredDinHierarchyWithoutEmptyCategories.find(
+      //   (dinLevel2) => selectedIdentifier != null && dinLevel2.number === parseInt(selectedIdentifier)
+      // )
+
+      const selectedGroup = tree.find((el) => selectedIdentifier != null && el.node_id === parseInt(selectedIdentifier))
+
+      if (!selectedGroup) {
+        setLabelToIdentifierAndDataMap(new Map())
+        return
+      }
+
+      const valueWithIdentifierAndLabelList = selectedGroup?.materials.flatMap((level) => {
+        const componentsForCurrentDinLevel = circularityData.filter((component) => {
+          return component.element_uuid === level.component_uuid
+        })
+
+        const productsForCurrentDinLevel = componentsForCurrentDinLevel.flatMap((component) => component.layers)
+
+        // const averageCircularityIndex = calculateWeightedAverage(productsForCurrentDinLevel)
+
+        return {
+          identifier: `${level.component_uuid}`,
+          // value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
+          value: 12340,
+          label: `${level.component_uuid} ${level.name}`,
+        } as ValueWithIdentifierAndLabel
+      })
+
+      setLabelToIdentifierAndDataMap(new Map(valueWithIdentifierAndLabelList.map((data) => [`${data.label}`, data])))
+
+      const selectedGroupLabel = selectedGroup.name
+      setBreadCrumbs([
+        {
+          label: projectName,
+          identifier: String(projectId),
+          level: 1,
+        },
+        {
+          label: selectedGroupLabel,
+          identifier: String(selectedGroup.node_id),
+          level: 2,
+        },
+      ])
     }
-    // else if (currentLevel === 2) {
-    //   // Iterate through all level-2 DIN codes for currently selected level-1 DIN code and
-    //   // get a flattened list of products that are somewhere nested under each respective level-2 DIN code
-
-    //   const selectedGroup = filteredDinHierarchyWithoutEmptyCategories.find(
-    //     (dinLevel2) => selectedIdentifier != null && dinLevel2.number === parseInt(selectedIdentifier)
-    //   )
-
-    //   if (!selectedGroup) {
-    //     setLabelToIdentifierAndDataMap(new Map())
-    //     return
-    //   }
-
-    //   const valueWithIdentifierAndLabelList = selectedGroup?.children.flatMap((dinLevel3) => {
-    //     const componentsForCurrentDinLevel = circularityData.filter((component) => {
-    //       return component.din_code === dinLevel3.number
-    //     })
-
-    //     const productsForCurrentDinLevel = componentsForCurrentDinLevel.flatMap((component) => component.layers)
-
-    //     const averageCircularityIndex = calculateWeightedAverage(productsForCurrentDinLevel)
-
-    //     return {
-    //       identifier: `${dinLevel3.number}`,
-    //       value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
-    //       label: `${dinLevel3.number} ${dinLevel3.name}`,
-    //     } as ValueWithIdentifierAndLabel
-    //   })
-
-    //   setLabelToIdentifierAndDataMap(new Map(valueWithIdentifierAndLabelList.map((data) => [`${data.label}`, data])))
-
-    //   const selectedGroupLabel = `${selectedGroup.number} ${selectedGroup.name}`
-    //   setBreadCrumbs([
-    //     {
-    //       label: projectName,
-    //       identifier: String(projectId),
-    //       level: 1,
-    //     },
-    //     {
-    //       label: selectedGroupLabel,
-    //       identifier: String(selectedGroup.number),
-    //       level: 2,
-    //     },
-    //   ])
-    // } else if (currentLevel === 3) {
+    // else if (currentLevel === 3) {
     //   if (selectedIdentifier === null) {
     //     // TODO: error logging
     //     return
@@ -306,7 +309,7 @@ const CircularityIndexBreakdownByMaterialType = ({
         </div>
         <div className="mt-4 px-8 py-4">{breadCrumbs[breadCrumbs.length - 1]?.label}</div>
       </div>
-
+      currentLevel: {currentLevel}
       <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
         {breadCrumbs.map((entry, idx) => (
           <React.Fragment key={entry.identifier}>
