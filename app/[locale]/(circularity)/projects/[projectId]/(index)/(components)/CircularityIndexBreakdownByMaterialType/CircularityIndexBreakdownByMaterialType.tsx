@@ -312,8 +312,6 @@ const CircularityIndexBreakdownByMaterialType = ({
         <div>Total mass: 123445 kg</div>
         <div className="mt-4 px-8 py-4">{breadCrumbs[breadCrumbs.length - 1]?.label}</div>
       </div>
-      currentLevel: {currentLevel}
-      selectedIdentifier: {selectedIdentifier}
       <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
         {breadCrumbs.map((entry, idx) => (
           <React.Fragment key={entry.identifier}>
