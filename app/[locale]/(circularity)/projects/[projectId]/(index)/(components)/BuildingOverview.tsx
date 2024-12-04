@@ -151,7 +151,6 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
           </div>
           <div className="mx-8 my-24 h-[170px]">
             <CircularityIndexBreakdownByMaterialType
-              totalMass={totalWeight}
               projectId={projectId}
               projectName={projectName}
               processCategories={processCategories}
