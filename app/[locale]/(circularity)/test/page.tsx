@@ -12,7 +12,8 @@ type CategoryNode = {
 }
 
 type MaterialNode = {
-  id: number
+  component_uuid: string
+  product_id: number
   name: string
   process_category_node_id: number
   // Include other fields as necessary
@@ -121,11 +122,15 @@ const Test = async () => {
 
   const products: CalculateCircularityDataForLayerReturnType[] = circularityData.flatMap((el) => el.layers)
 
-  const FOO = products.map((el) => ({
-    id: 12345,
-    name: "FOO NAME",
-    process_category_node_id: el.process_category_node_id,
-  }))
+  const FOO = products.map(
+    (el) =>
+      ({
+        component_uuid: el.element_uuid,
+        product_id: el.component_id,
+        name: el.process_name,
+        process_category_node_id: el.process_category_node_id,
+      }) as MaterialNode
+  )
 
   const tree = buildTree(dataTestResult, FOO)
 
