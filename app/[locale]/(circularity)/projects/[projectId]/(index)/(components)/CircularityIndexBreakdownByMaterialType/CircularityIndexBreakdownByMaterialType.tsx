@@ -292,8 +292,10 @@ const CircularityIndexBreakdownByMaterialType = ({
 
   return (
     <>
-      <div className="flex flex-col items-center">
-        <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400">Zirkularitätsindex DIN 276</h2>
+      <div className="mt-48 flex flex-col items-center">
+        <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400">
+          Zirkularitätsindex nach Bauproduktgruppen
+        </h2>
         <div>
           Total mass:{" "}
           {totalMass.toLocaleString("de-DE", {
