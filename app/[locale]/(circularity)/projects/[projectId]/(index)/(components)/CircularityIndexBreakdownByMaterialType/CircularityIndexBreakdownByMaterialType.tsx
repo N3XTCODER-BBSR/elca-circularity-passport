@@ -10,10 +10,19 @@ import {
 } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import CircularityIndexBarChartBreakdown from "../CircularityIndexBarChartBreakdown"
+import { buildTree, MaterialNode } from "./logic"
+
+// TODO: maybe move this into domain/type file/folder
+export type ProcessCategory = {
+  node_id: number
+  name: string
+  ref_num: string | null
+}
 
 type CircularityIndexBreakdownByDinProps = {
   projectId: number
   projectName: string
+  processCategories: ProcessCategory[]
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   margin: { top: number; right: number; bottom: number; left: number }
   totalMass: number
@@ -39,23 +48,24 @@ const filteredDinHierarchy = allComponentCategories.filter((category) =>
   costGroupCategoryNumbersToInclude.includes(category.number)
 )
 
-const getDinGroupByDinCode = (dinCode: number) => {
-  // determine code level
-  // if the code last two digits are 0, it's level 1
-  // if only the last digit is 0, it's level 2
-  // otherwise it's level 3
-  const dinCodeLevel = dinCode % 10 === 0 ? (dinCode % 100 === 0 ? 1 : 2) : 3
+// const getDinGroupByDinCode = (dinCode: number) => {
+//   // determine code level
+//   // if the code last two digits are 0, it's level 1
+//   // if only the last digit is 0, it's level 2
+//   // otherwise it's level 3
+//   const dinCodeLevel = dinCode % 10 === 0 ? (dinCode % 100 === 0 ? 1 : 2) : 3
 
-  if (dinCodeLevel === 2) {
-    return filteredDinHierarchy.find((el) => el.number === dinCode)
-  } else if (dinCodeLevel === 3) {
-    return filteredDinHierarchy.flatMap((el) => el.children).find((dinLevel2) => dinLevel2.number === dinCode)
-  }
-}
+//   if (dinCodeLevel === 2) {
+//     return filteredDinHierarchy.find((el) => el.number === dinCode)
+//   } else if (dinCodeLevel === 3) {
+//     return filteredDinHierarchy.flatMap((el) => el.children).find((dinLevel2) => dinLevel2.number === dinCode)
+//   }
+// }
 
-const CircularityIndexBreakdownByDin = ({
+const CircularityIndexBreakdownByMaterialType = ({
   projectId,
   projectName,
+  processCategories,
   circularityData,
   margin,
   totalMass,
@@ -97,6 +107,20 @@ const CircularityIndexBreakdownByDin = ({
   //   => current level
   // useEffect is used to update the labelToIdentifierMap based on the current level and the selected identifier
 
+  const products: CalculateCircularityDataForLayerReturnType[] = circularityData.flatMap((el) => el.layers)
+
+  const FOO = products.map(
+    (el) =>
+      ({
+        component_uuid: el.element_uuid,
+        product_id: el.component_id,
+        name: el.process_name,
+        process_category_node_id: el.process_category_node_id,
+      }) as MaterialNode
+  )
+
+  const tree = buildTree(processCategories, FOO)
+
   const chartLabelClickHandler = (label: string) => {
     const identifierAndDatum = labelToIdentifierAndDataMap.get(label)
     if (identifierAndDatum) {
@@ -112,11 +136,11 @@ const CircularityIndexBreakdownByDin = ({
     }
   }
 
-  const calculateWeightedAverage = (productsForCurrentDinLevel: CalculateCircularityDataForLayerReturnType[]) => {
+  const calculateWeightedAverage = (productsForCurrentLevel: CalculateCircularityDataForLayerReturnType[]) => {
     let totalMass = 0
     let weightedSum = 0
 
-    productsForCurrentDinLevel.forEach((product) => {
+    productsForCurrentLevel.forEach((product) => {
       const mass = product.quantity
 
       // TODO: the following check should not be necessary anymore once the data is cleaned up
@@ -158,92 +182,94 @@ const CircularityIndexBreakdownByDin = ({
       setBreadCrumbs([])
 
       setLabelToIdentifierAndDataMap(new Map(valueWithIdentifierAndLabelList.map((data) => [`${data.label}`, data])))
-    } else if (currentLevel === 2) {
-      // Iterate through all level-2 DIN codes for currently selected level-1 DIN code and
-      // get a flattened list of products that are somewhere nested under each respective level-2 DIN code
+    }
+    // else if (currentLevel === 2) {
+    //   // Iterate through all level-2 DIN codes for currently selected level-1 DIN code and
+    //   // get a flattened list of products that are somewhere nested under each respective level-2 DIN code
 
-      const selectedGroup = filteredDinHierarchyWithoutEmptyCategories.find(
-        (dinLevel2) => selectedIdentifier != null && dinLevel2.number === parseInt(selectedIdentifier)
-      )
+    //   const selectedGroup = filteredDinHierarchyWithoutEmptyCategories.find(
+    //     (dinLevel2) => selectedIdentifier != null && dinLevel2.number === parseInt(selectedIdentifier)
+    //   )
 
-      if (!selectedGroup) {
-        setLabelToIdentifierAndDataMap(new Map())
-        return
-      }
+    //   if (!selectedGroup) {
+    //     setLabelToIdentifierAndDataMap(new Map())
+    //     return
+    //   }
 
-      const valueWithIdentifierAndLabelList = selectedGroup?.children.flatMap((dinLevel3) => {
-        const componentsForCurrentDinLevel = circularityData.filter((component) => {
-          return component.din_code === dinLevel3.number
-        })
+    //   const valueWithIdentifierAndLabelList = selectedGroup?.children.flatMap((dinLevel3) => {
+    //     const componentsForCurrentDinLevel = circularityData.filter((component) => {
+    //       return component.din_code === dinLevel3.number
+    //     })
 
-        const productsForCurrentDinLevel = componentsForCurrentDinLevel.flatMap((component) => component.layers)
+    //     const productsForCurrentDinLevel = componentsForCurrentDinLevel.flatMap((component) => component.layers)
 
-        const averageCircularityIndex = calculateWeightedAverage(productsForCurrentDinLevel)
+    //     const averageCircularityIndex = calculateWeightedAverage(productsForCurrentDinLevel)
 
-        return {
-          identifier: `${dinLevel3.number}`,
-          value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
-          label: `${dinLevel3.number} ${dinLevel3.name}`,
-        } as ValueWithIdentifierAndLabel
-      })
+    //     return {
+    //       identifier: `${dinLevel3.number}`,
+    //       value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
+    //       label: `${dinLevel3.number} ${dinLevel3.name}`,
+    //     } as ValueWithIdentifierAndLabel
+    //   })
 
-      setLabelToIdentifierAndDataMap(new Map(valueWithIdentifierAndLabelList.map((data) => [`${data.label}`, data])))
+    //   setLabelToIdentifierAndDataMap(new Map(valueWithIdentifierAndLabelList.map((data) => [`${data.label}`, data])))
 
-      const selectedGroupLabel = `${selectedGroup.number} ${selectedGroup.name}`
-      setBreadCrumbs([
-        {
-          label: projectName,
-          identifier: String(projectId),
-          level: 1,
-        },
-        {
-          label: selectedGroupLabel,
-          identifier: String(selectedGroup.number),
-          level: 2,
-        },
-      ])
-    } else if (currentLevel === 3) {
-      if (selectedIdentifier === null) {
-        // TODO: error logging
-        return
-      }
-      const selectedComponents = circularityData
-        .filter((component) => {
-          return selectedIdentifier != null && component.din_code === parseInt(selectedIdentifier)
-        })
-        .map((component) => {
-          const averageCircularityIndex = calculateWeightedAverage(component.layers)
-          return {
-            identifier: `${component.element_uuid}`,
-            value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
-            label: `${component.element_name}`,
-          } as ValueWithIdentifierAndLabel
-        })
+    //   const selectedGroupLabel = `${selectedGroup.number} ${selectedGroup.name}`
+    //   setBreadCrumbs([
+    //     {
+    //       label: projectName,
+    //       identifier: String(projectId),
+    //       level: 1,
+    //     },
+    //     {
+    //       label: selectedGroupLabel,
+    //       identifier: String(selectedGroup.number),
+    //       level: 2,
+    //     },
+    //   ])
+    // } else if (currentLevel === 3) {
+    //   if (selectedIdentifier === null) {
+    //     // TODO: error logging
+    //     return
+    //   }
+    //   const selectedComponents = circularityData
+    //     .filter((component) => {
+    //       return selectedIdentifier != null && component.din_code === parseInt(selectedIdentifier)
+    //     })
+    //     .map((component) => {
+    //       const averageCircularityIndex = calculateWeightedAverage(component.layers)
+    //       return {
+    //         identifier: `${component.element_uuid}`,
+    //         value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
+    //         label: `${component.element_name}`,
+    //       } as ValueWithIdentifierAndLabel
+    //     })
 
-      setLabelToIdentifierAndDataMap(new Map(selectedComponents.map((data) => [`${data.label}`, data])))
+    //   setLabelToIdentifierAndDataMap(new Map(selectedComponents.map((data) => [`${data.label}`, data])))
 
-      const selectedIdentiferAsNumber = parseInt(selectedIdentifier)
-      const dinGroupForSelectedDinCodeForLevel3 = getDinGroupByDinCode(selectedIdentiferAsNumber)
-      const dinGroupForSelectedDinCodeForLevel2 = getDinGroupByDinCode(Math.floor(selectedIdentiferAsNumber / 10) * 10)
+    //   const selectedIdentiferAsNumber = parseInt(selectedIdentifier)
+    //   const dinGroupForSelectedDinCodeForLevel3 = getDinGroupByDinCode(selectedIdentiferAsNumber)
+    //   const dinGroupForSelectedDinCodeForLevel2 = getDinGroupByDinCode(Math.floor(selectedIdentiferAsNumber / 10) * 10)
 
-      setBreadCrumbs([
-        {
-          label: projectName,
-          identifier: String(projectId),
-          level: 1,
-        },
-        {
-          label: `${dinGroupForSelectedDinCodeForLevel2?.number} ${dinGroupForSelectedDinCodeForLevel2?.name}`,
-          identifier: String(dinGroupForSelectedDinCodeForLevel2?.number),
-          level: 2,
-        },
-        {
-          label: `${dinGroupForSelectedDinCodeForLevel3?.number} ${dinGroupForSelectedDinCodeForLevel3?.name}`,
-          identifier: String(dinGroupForSelectedDinCodeForLevel3?.number),
-          level: 3,
-        },
-      ])
-    } else {
+    //   setBreadCrumbs([
+    //     {
+    //       label: projectName,
+    //       identifier: String(projectId),
+    //       level: 1,
+    //     },
+    //     {
+    //       label: `${dinGroupForSelectedDinCodeForLevel2?.number} ${dinGroupForSelectedDinCodeForLevel2?.name}`,
+    //       identifier: String(dinGroupForSelectedDinCodeForLevel2?.number),
+    //       level: 2,
+    //     },
+    //     {
+    //       label: `${dinGroupForSelectedDinCodeForLevel3?.number} ${dinGroupForSelectedDinCodeForLevel3?.name}`,
+    //       identifier: String(dinGroupForSelectedDinCodeForLevel3?.number),
+    //       level: 3,
+    //     },
+    //   ])
+    // }
+    else {
       setLabelToIdentifierAndDataMap(new Map())
     }
   }, [
@@ -313,4 +339,4 @@ const CircularityIndexBreakdownByDin = ({
   )
 }
 
-export default CircularityIndexBreakdownByDin
+export default CircularityIndexBreakdownByMaterialType

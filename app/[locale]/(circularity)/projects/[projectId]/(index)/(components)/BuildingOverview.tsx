@@ -7,6 +7,10 @@ import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
 import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
+import { prismaLegacy } from "prisma/prismaClient"
+import CircularityIndexBreakdownByMaterialType, {
+  ProcessCategory,
+} from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
 
 type BuildingOverviewProps = {
   projectId: number
@@ -83,12 +87,15 @@ export const calculateTotalCircularityIndex = async (
 const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProps) => {
   const session = await ensureUserIsAuthenticated()
 
+  // TODO: move probably most things here into domain logic
   const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
     await getProjectCircularityIndexData(projectId, session.user.id)
 
   const totalCircularityIndexForProject = await calculateTotalCircularityIndex(circularityData)
 
   const totalWeight = calculateTotalWeight(circularityData)
+
+  const processCategories: ProcessCategory[] = await prismaLegacy.process_categories.findMany()
 
   // TODO: check why this is not working (it was workign for Daniel with his DB state, but does not after resetting the new DB)
   // after resolved, ensure that the static false flag is replaced by the correct logic
@@ -138,6 +145,16 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
               totalMass={totalWeight}
               projectId={projectId}
               projectName={projectName}
+              circularityData={circularityData}
+              margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
+            />
+          </div>
+          <div className="mx-8 my-24 h-[170px]">
+            <CircularityIndexBreakdownByMaterialType
+              totalMass={totalWeight}
+              projectId={projectId}
+              projectName={projectName}
+              processCategories={processCategories}
               circularityData={circularityData}
               margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
             />
