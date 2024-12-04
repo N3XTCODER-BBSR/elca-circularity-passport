@@ -19,7 +19,7 @@ export interface RootCategoryNode extends CategoryNode {
 }
 
 export interface SubCategoryNode extends CategoryNode {
-  materials?: MaterialNode[]
+  materials: MaterialNode[]
 }
 
 export function buildTree(categories: CategoryNode[], materials: MaterialNode[]): RootCategoryNode[] {
@@ -86,9 +86,16 @@ export function buildTree(categories: CategoryNode[], materials: MaterialNode[])
     }
   })
 
-  return Object.values(rootCategories).filter(
-    (el) => el.subcategories?.some((el2) => el2.materials && el2.materials.length > 0)
-  )
+  //   TODO rename
+  const FOO = Object.values(rootCategories)
+
+  return FOO.map((el) => {
+    const filteredSubcategories = el.subcategories.filter((sub) => sub.materials.length > 0)
+    return {
+      ...el,
+      subcategories: filteredSubcategories,
+    }
+  }).filter((el) => el.subcategories.length > 0)
 }
 
 // Helper function to get the parent ref_num

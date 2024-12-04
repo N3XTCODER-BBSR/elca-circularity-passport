@@ -82,8 +82,9 @@ const CircularityIndexBreakdownByMaterialType = ({
   const router = useRouter()
 
   const products: CalculateCircularityDataForLayerReturnType[] = circularityData.flatMap((el) => el.layers)
+  // console.log('FOO circularityData', circularityData)
 
-  const FOO = products.map(
+  const mappedProducts = products.map(
     (el) =>
       ({
         component_uuid: el.element_uuid,
@@ -93,7 +94,12 @@ const CircularityIndexBreakdownByMaterialType = ({
       }) as MaterialNode
   )
 
-  const tree = buildTree(processCategories, FOO)
+  console.log("foo mappedProducts", JSON.stringify(mappedProducts))
+
+  const tree = buildTree(processCategories, mappedProducts)
+  console.log("tree", JSON.stringify(tree))
+  const lengthsOfMaterials = tree.map((el) => el.subcategories.map((subcategory) => subcategory.materials?.length))
+  console.log("FOO lengthsOfMaterials", lengthsOfMaterials)
 
   // const filteredDinHierarchyWithoutEmptyCategories: ComponentCategory[] = useMemo(
   //   () =>
