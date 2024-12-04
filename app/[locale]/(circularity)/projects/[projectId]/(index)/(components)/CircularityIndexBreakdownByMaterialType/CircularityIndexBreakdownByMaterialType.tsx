@@ -25,7 +25,6 @@ type CircularityIndexBreakdownByDinProps = {
   processCategories: ProcessCategory[]
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   margin: { top: number; right: number; bottom: number; left: number }
-  totalMass: number
 }
 
 type ValueWithIdentifierAndLabel = {
