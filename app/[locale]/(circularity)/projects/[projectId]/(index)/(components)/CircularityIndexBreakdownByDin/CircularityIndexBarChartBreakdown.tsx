@@ -1,19 +1,21 @@
 import { ResponsiveBar } from "@nivo/bar"
-import CustomTooltip from "app/(components)/generic/CustomToolTip"
-import { eolClassColorsMapper } from "constants/styleConstants"
-import { twMerge } from "tailwind-merge"
+
+const key = "datum"
 
 const CircularityIndexBarChartBreakdown = ({
   margin,
   data,
   clickHandler,
 }: {
-  data: { datum: number; identifier: string }[]
+  data: { [key]: number; identifier: string }[]
   margin: { top: number; right: number; bottom: number; left: number }
   clickHandler: (clickedLabel: string) => void
 }) => {
+  const identifiers = new Set(data.map((d) => d[key]))
+  const length = identifiers.size
+
   return (
-    <>
+    <div style={{ height: `${length * 2.25 + 5.5}rem` }} className="w-full">
       <ResponsiveBar
         data={data}
         theme={{
@@ -27,7 +29,7 @@ const CircularityIndexBarChartBreakdown = ({
         }}
         indexBy="identifier"
         margin={margin}
-        keys={["datum"]}
+        keys={[key]}
         colors={(datum) => {
           if (datum.data.datum > 60) return "#008000"
           if (datum.data.datum >= 40) return "#00FF00"
@@ -85,7 +87,7 @@ const CircularityIndexBarChartBreakdown = ({
         enableLabel={false}
         role="application"
       />
-    </>
+    </div>
   )
 }
 
