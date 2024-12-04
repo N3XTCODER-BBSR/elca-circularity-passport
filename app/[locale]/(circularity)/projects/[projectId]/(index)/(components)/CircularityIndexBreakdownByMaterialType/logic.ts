@@ -2,7 +2,7 @@ export type CategoryNode = {
   node_id: number
   name: string
   ref_num: string | null
-  svg_pattern_id: number | null
+  //   svg_pattern_id: number | null
 }
 
 export type MaterialNode = {
@@ -86,7 +86,9 @@ export function buildTree(categories: CategoryNode[], materials: MaterialNode[])
     }
   })
 
-  return Object.values(rootCategories)
+  return Object.values(rootCategories).filter(
+    (el) => el.subcategories?.some((el2) => el2.materials && el2.materials.length > 0)
+  )
 }
 
 // Helper function to get the parent ref_num

@@ -72,7 +72,7 @@ const CircularityIndexBreakdownByDin = ({
 
   const router = useRouter()
 
-  const filteredDinHierarchyWithoutEmptyCategories = useMemo(
+  const filteredDinHierarchyWithoutEmptyCategories: ComponentCategory[] = useMemo(
     () =>
       filteredDinHierarchy
         .map(
@@ -135,25 +135,26 @@ const CircularityIndexBreakdownByDin = ({
       // Iterate through all level-1 DIN codes and
       // get a flattened list of products that are somewhere nested under each respective level-1 DIN code
 
-      const valueWithIdentifierAndLabelList = filteredDinHierarchyWithoutEmptyCategories.flatMap((dinLevel2) => {
-        const componentsForCurrentDinLeve = circularityData.filter((component) => {
-          const normalizedDinCodeOfComponent = Math.floor(component.din_code / 10) * 10
-          return normalizedDinCodeOfComponent === dinLevel2.number
+      const valueWithIdentifierAndLabelList: ValueWithIdentifierAndLabel[] =
+        filteredDinHierarchyWithoutEmptyCategories.flatMap((dinLevel2) => {
+          const componentsForCurrentDinLeve = circularityData.filter((component) => {
+            const normalizedDinCodeOfComponent = Math.floor(component.din_code / 10) * 10
+            return normalizedDinCodeOfComponent === dinLevel2.number
+          })
+
+          const productsForCurrentDinLevel = componentsForCurrentDinLeve.flatMap((component) => component.layers)
+
+          const averageCircularityIndex = calculateWeightedAverage(productsForCurrentDinLevel)
+
+          const label = `${dinLevel2.number} ${dinLevel2.name}`
+          const identifier = `${dinLevel2.number}`
+
+          return {
+            identifier,
+            label,
+            value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
+          } as ValueWithIdentifierAndLabel
         })
-
-        const productsForCurrentDinLevel = componentsForCurrentDinLeve.flatMap((component) => component.layers)
-
-        const averageCircularityIndex = calculateWeightedAverage(productsForCurrentDinLevel)
-
-        const label = `${dinLevel2.number} ${dinLevel2.name}`
-        const identifier = `${dinLevel2.number}`
-
-        return {
-          identifier,
-          label,
-          value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
-        } as ValueWithIdentifierAndLabel
-      })
 
       setBreadCrumbs([])
 

@@ -3,11 +3,11 @@
 import { useRouter } from "next/navigation"
 import React, { useEffect, useMemo, useState } from "react"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import {
-  ComponentCategory,
-  costGroupCategoryNumbersToInclude,
-  din276Hierarchy,
-} from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
+// import {
+// ComponentCategory,
+// costGroupCategoryNumbersToInclude,
+// din276Hierarchy,
+// } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import CircularityIndexBarChartBreakdown from "../CircularityIndexBarChartBreakdown"
 import { buildTree, MaterialNode } from "./logic"
@@ -41,12 +41,12 @@ type BreadCrumbEntry = {
 }
 
 // Flatten the hierarchy to get all ComponentCategories (level-1)
-const allComponentCategories: ComponentCategory[] = din276Hierarchy.flatMap((group) => group.children)
+// const allComponentCategories: ComponentCategory[] = din276Hierarchy.flatMap((group) => group.children)
 
 // Filter the DIN hierarchy to include only specified level-1 DIN codes (ComponentCategories)
-const filteredDinHierarchy = allComponentCategories.filter((category) =>
-  costGroupCategoryNumbersToInclude.includes(category.number)
-)
+// const filteredDinHierarchy = allComponentCategories.filter((category) =>
+//   costGroupCategoryNumbersToInclude.includes(category.number)
+// )
 
 // const getDinGroupByDinCode = (dinCode: number) => {
 //   // determine code level
@@ -82,31 +82,6 @@ const CircularityIndexBreakdownByMaterialType = ({
 
   const router = useRouter()
 
-  const filteredDinHierarchyWithoutEmptyCategories = useMemo(
-    () =>
-      filteredDinHierarchy
-        .map(
-          (category) =>
-            ({
-              ...category,
-              children: category.children.filter((componentType) => {
-                return circularityData.some((component) => {
-                  return component.din_code === componentType.number
-                })
-              }),
-            }) as ComponentCategory
-        )
-        .filter((category) => category.children.length > 0),
-    [circularityData]
-  )
-
-  // User selects a value from the navigation (any level)
-  // labelToIdentifierMap is used to get the data for the next level
-  // => state update
-  //   => selected identifier
-  //   => current level
-  // useEffect is used to update the labelToIdentifierMap based on the current level and the selected identifier
-
   const products: CalculateCircularityDataForLayerReturnType[] = circularityData.flatMap((el) => el.layers)
 
   const FOO = products.map(
@@ -120,6 +95,31 @@ const CircularityIndexBreakdownByMaterialType = ({
   )
 
   const tree = buildTree(processCategories, FOO)
+
+  // const filteredDinHierarchyWithoutEmptyCategories: ComponentCategory[] = useMemo(
+  //   () =>
+  //     filteredDinHierarchy
+  //       .map(
+  //         (category) =>
+  //           ({
+  //             ...category,
+  //             children: category.children.filter((componentType) => {
+  //               return circularityData.some((component) => {
+  //                 return component.din_code === componentType.number
+  //               })
+  //             }),
+  //           }) as ComponentCategory
+  //       )
+  //       .filter((category) => category.children.length > 0),
+  //   [circularityData]
+  // )
+
+  // User selects a value from the navigation (any level)
+  // labelToIdentifierMap is used to get the data for the next level
+  // => state update
+  //   => selected identifier
+  //   => current level
+  // useEffect is used to update the labelToIdentifierMap based on the current level and the selected identifier
 
   const chartLabelClickHandler = (label: string) => {
     const identifierAndDatum = labelToIdentifierAndDataMap.get(label)
@@ -159,23 +159,24 @@ const CircularityIndexBreakdownByMaterialType = ({
       // Iterate through all level-1 DIN codes and
       // get a flattened list of products that are somewhere nested under each respective level-1 DIN code
 
-      const valueWithIdentifierAndLabelList = filteredDinHierarchyWithoutEmptyCategories.flatMap((dinLevel2) => {
-        const componentsForCurrentDinLeve = circularityData.filter((component) => {
-          const normalizedDinCodeOfComponent = Math.floor(component.din_code / 10) * 10
-          return normalizedDinCodeOfComponent === dinLevel2.number
-        })
+      // const valueWithIdentifierAndLabelList: ValueWithIdentifierAndLabel[] = filteredDinHierarchyWithoutEmptyCategories.flatMap((dinLevel2) => {
+      // // const valueWithIdentifierAndLabelList = filteredDinHierarchyWithoutEmptyCategories.flatMap((dinLevel2) => {
+      //   const componentsForCurrentDinLeve = circularityData.filter((component) => {
+      //     const normalizedDinCodeOfComponent = Math.floor(component.din_code / 10) * 10
+      //     return normalizedDinCodeOfComponent === dinLevel2.number
+      //   })
+      const valueWithIdentifierAndLabelList: ValueWithIdentifierAndLabel[] = tree.map((el) => {
+        // const productsForCurrentDinLevel = componentsForCurrentDinLeve.flatMap((component) => component.layers)
 
-        const productsForCurrentDinLevel = componentsForCurrentDinLeve.flatMap((component) => component.layers)
+        // const averageCircularityIndex = calculateWeightedAverage(productsForCurrentDinLevel)
 
-        const averageCircularityIndex = calculateWeightedAverage(productsForCurrentDinLevel)
-
-        const label = `${dinLevel2.number} ${dinLevel2.name}`
-        const identifier = `${dinLevel2.number}`
+        // const label = `${dinLevel2.number} ${dinLevel2.name}`
+        // const identifier = `${dinLevel2.number}`
 
         return {
-          identifier,
-          label,
-          value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
+          identifier: String(el.node_id),
+          label: el.name,
+          value: 12345,
         } as ValueWithIdentifierAndLabel
       })
 
@@ -275,7 +276,7 @@ const CircularityIndexBreakdownByMaterialType = ({
   }, [
     circularityData,
     currentLevel,
-    filteredDinHierarchyWithoutEmptyCategories,
+    // filteredDinHierarchyWithoutEmptyCategories,
     projectId,
     projectName,
     selectedIdentifier,
