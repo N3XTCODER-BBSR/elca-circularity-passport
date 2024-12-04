@@ -14,7 +14,7 @@ type BuildingOverviewProps = {
 }
 
 // TODO: rename and move into domain logic
-const calculateTotalCircularityIndex = async (
+export const calculateTotalCircularityIndex = async (
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
 ) => {
   // TODO: ensure to exlude

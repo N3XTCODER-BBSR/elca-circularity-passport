@@ -2,6 +2,7 @@ import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/ser
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { prisma, prismaLegacy } from "prisma/prismaClient"
+import { calculateTotalCircularityIndex } from "../projects/[projectId]/(index)/(components)/BuildingOverview"
 
 type CategoryNode = {
   node_id: number
@@ -100,11 +101,19 @@ const Test = async () => {
   const dataTestResult2 = await prismaLegacy.process_configs.findMany()
 
   const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
-    await getProjectCircularityIndexData(1, 2)
+    await getProjectCircularityIndexData(1, "2")
 
-  const totalCircularityIndexForProject = await calculateTotalCircularityIndex(circularityData)
+  //   const totalCircularityIndexForProject = await calculateTotalCircularityIndex(circularityData)
 
-  const tree = buildTree(dataTestResult, materials)
+  const products: CalculateCircularityDataForLayerReturnType[] = circularityData.flatMap((el) => el.layers)
+
+  const FOO = products.map((el) => ({
+    id: 12345,
+    name: "FOO NAME",
+    process_category_node_id: el.process_category_node_id,
+  }))
+
+  const tree = buildTree(dataTestResult, FOO)
 
   //   const dataTestResult = await prismaLegacy.elca_project_variants.findFirst({
   //     where: {
@@ -167,12 +176,19 @@ const Test = async () => {
   //   })
   return (
     <div>
-      {JSON.stringify(dataTestResult, null, 4)}
+      {JSON.stringify(tree, null, 4)}
+      {tree.map((l1) => (
+        <div className="pl-2">{l1.name}</div>
+      ))}
+      <br />
+      <br />
+      <br />
+      {/* {JSON.stringify(dataTestResult, null, 4)} */}
       <br />
       <br />
       <br />
       <br />
-      {JSON.stringify(dataTestResult2, null, 4)}
+      {/* {JSON.stringify(dataTestResult2, null, 4)} */}
       {/* <ul>
         {dataTestResult?.elements.map((el) => (
           <ul>

@@ -61,6 +61,7 @@ export type ElcaProjectComponentRow = {
   layer_width: number
   process_config_density: number
   process_config_name: string
+  process_category_node_id: number
 }
 
 export type EnrichedElcaElementComponent = ElcaProjectComponentRow & {

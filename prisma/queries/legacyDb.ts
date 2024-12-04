@@ -85,7 +85,8 @@ export const getElcaProjectComponentsByInstanceIdAndUserId = async (componentIns
       element_component.layer_length::FLOAT AS layer_length,
       element_component.layer_width::FLOAT AS layer_width,
       process_config.density::FLOAT AS process_config_density,
-      process_config.name AS process_config_name
+      process_config.name AS process_config_name, 
+      process_config.process_category_node_id AS process_category_node_id
     FROM elca.elements element
     JOIN elca.project_variants project_variant ON project_variant.id = element.project_variant_id
     JOIN elca.projects project ON project.current_variant_id = project_variant.id
