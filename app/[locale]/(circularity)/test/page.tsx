@@ -10,18 +10,36 @@ const Test = async () => {
       project_id: 1,
     },
     // select: { id: true },
-    include: {
+    select: {
+      id: true,
+      name: true,
       elements: {
-        include: {
+        select: {
+          id: true,
+          name: true,
           elements: {
-            include: {
+            select: {
+              id: true,
+              name: true,
               element_components: {
-                include: {
+                select: {
+                  id: true,
+
                   process_configs: {
-                    include: {
+                    select: {
+                      id: true,
+                      name: true,
                       process_categories: {
-                        include: {
-                          nested_nodes: true,
+                        select: {
+                          nested_nodes: {
+                            select: {
+                              process_categories: {
+                                select: {
+                                  name: true,
+                                },
+                              },
+                            },
+                          },
                         },
                       },
                     },
@@ -44,7 +62,8 @@ const Test = async () => {
   //     },
   //   })
 
-  return <div>result: {JSON.stringify(dataTestResult, null, 2)}</div>
+  return <div>result: {JSON.stringify(dataTestResult)}</div>
+  //   return <div>result: {JSON.stringify(dataTestResult, null, 4)}</div>
 }
 
 export default Test
