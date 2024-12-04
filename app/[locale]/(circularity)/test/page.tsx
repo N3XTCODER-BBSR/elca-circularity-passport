@@ -5,27 +5,30 @@ const Test = async () => {
   //     where: {
   //         pr
   //   })
-  //   const dataTestResult = await prismaLegacy.elca_project_variants.findFirst({
+  const dataTestResult = await prismaLegacy.elca_project_variants.findFirst({
+    where: {
+      project_id: 1,
+    },
+    // select: { id: true },
+    include: {
+      elements: {
+        include: {
+          elements: true,
+        },
+      },
+    },
+  })
+  //   const dataTestResult = await prismaLegacy.projects.findFirst({
   //     where: {
-  //       project_id: 1,
-
+  //       id: 1,
   //     },
   //     select: { id: true },
   //     include: {
-  //         project_var
+  //         project_variants_projects_current_variant_idToproject_variants: true
   //     },
   //   })
-  const dataTestResult = await prismaLegacy.projects.findFirst({
-    where: {
-      id: 1,
-    },
-    select: { id: true },
-    // include: {
-    //     project_variants_projects_current_variant_idToproject_variants: true
-    // },
-  })
 
-  return <div>result: {JSON.stringify(dataTestResult)}</div>
+  return <div>result: {JSON.stringify(dataTestResult, null, 2)}</div>
 }
 
 export default Test
