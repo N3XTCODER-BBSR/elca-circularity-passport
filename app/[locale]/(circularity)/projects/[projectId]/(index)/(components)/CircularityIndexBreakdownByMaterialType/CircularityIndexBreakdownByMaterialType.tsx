@@ -236,50 +236,50 @@ const CircularityIndexBreakdownByMaterialType = ({
           level: 2,
         },
       ])
-    }
-    // else if (currentLevel === 3) {
-    //   if (selectedIdentifier === null) {
-    //     // TODO: error logging
-    //     return
-    //   }
-    //   const selectedComponents = circularityData
-    //     .filter((component) => {
-    //       return selectedIdentifier != null && component.din_code === parseInt(selectedIdentifier)
-    //     })
-    //     .map((component) => {
-    //       const averageCircularityIndex = calculateWeightedAverage(component.layers)
-    //       return {
-    //         identifier: `${component.element_uuid}`,
-    //         value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
-    //         label: `${component.element_name}`,
-    //       } as ValueWithIdentifierAndLabel
-    //     })
+    } else if (currentLevel === 3) {
+      if (selectedIdentifier === null) {
+        // TODO: error logging
+        return
+      }
+      const selectedComponents = circularityData
+        // TODO: IMPORTANT - FILTERING IS MISSING
+        // .filter((component) => {
+        //   return selectedIdentifier != null && component.layers.some(el => el. selectedIdentifier
+        // })
+        .map((component) => {
+          const averageCircularityIndex = calculateWeightedAverage(component.layers)
+          return {
+            identifier: `${component.element_uuid}`,
+            value: averageCircularityIndex !== undefined ? averageCircularityIndex : 0,
+            label: `${component.element_name}`,
+          } as ValueWithIdentifierAndLabel
+        })
 
-    //   setLabelToIdentifierAndDataMap(new Map(selectedComponents.map((data) => [`${data.label}`, data])))
+      console.log("FOO selectedComponents", JSON.stringify(selectedComponents))
+      setLabelToIdentifierAndDataMap(new Map(selectedComponents.map((data) => [`${data.label}`, data])))
 
-    //   const selectedIdentiferAsNumber = parseInt(selectedIdentifier)
-    //   const dinGroupForSelectedDinCodeForLevel3 = getDinGroupByDinCode(selectedIdentiferAsNumber)
-    //   const dinGroupForSelectedDinCodeForLevel2 = getDinGroupByDinCode(Math.floor(selectedIdentiferAsNumber / 10) * 10)
+      const selectedIdentiferAsNumber = parseInt(selectedIdentifier)
+      // const dinGroupForSelectedDinCodeForLevel3 = getDinGroupByDinCode(selectedIdentiferAsNumber)
+      // const dinGroupForSelectedDinCodeForLevel2 = getDinGroupByDinCode(Math.floor(selectedIdentiferAsNumber / 10) * 10)
 
-    //   setBreadCrumbs([
-    //     {
-    //       label: projectName,
-    //       identifier: String(projectId),
-    //       level: 1,
-    //     },
-    //     {
-    //       label: `${dinGroupForSelectedDinCodeForLevel2?.number} ${dinGroupForSelectedDinCodeForLevel2?.name}`,
-    //       identifier: String(dinGroupForSelectedDinCodeForLevel2?.number),
-    //       level: 2,
-    //     },
-    //     {
-    //       label: `${dinGroupForSelectedDinCodeForLevel3?.number} ${dinGroupForSelectedDinCodeForLevel3?.name}`,
-    //       identifier: String(dinGroupForSelectedDinCodeForLevel3?.number),
-    //       level: 3,
-    //     },
-    //   ])
-    // }
-    else {
+      setBreadCrumbs([
+        {
+          label: projectName,
+          identifier: String(projectId),
+          level: 1,
+        },
+        // {
+        //   label: `${dinGroupForSelectedDinCodeForLevel2?.number} ${dinGroupForSelectedDinCodeForLevel2?.name}`,
+        //   identifier: String(dinGroupForSelectedDinCodeForLevel2?.number),
+        //   level: 2,
+        // },
+        // {
+        //   label: `${dinGroupForSelectedDinCodeForLevel3?.number} ${dinGroupForSelectedDinCodeForLevel3?.name}`,
+        //   identifier: String(dinGroupForSelectedDinCodeForLevel3?.number),
+        //   level: 3,
+        // },
+      ])
+    } else {
       setLabelToIdentifierAndDataMap(new Map())
     }
   }, [
@@ -299,6 +299,10 @@ const CircularityIndexBreakdownByMaterialType = ({
     })
   )
 
+  useEffect(() => {
+    console.log("FOO chartData", JSON.stringify(chartData))
+  })
+
   return (
     <>
       <div className="mt-48 flex flex-col items-center">
@@ -309,6 +313,7 @@ const CircularityIndexBreakdownByMaterialType = ({
         <div className="mt-4 px-8 py-4">{breadCrumbs[breadCrumbs.length - 1]?.label}</div>
       </div>
       currentLevel: {currentLevel}
+      selectedIdentifier: {selectedIdentifier}
       <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
         {breadCrumbs.map((entry, idx) => (
           <React.Fragment key={entry.identifier}>
