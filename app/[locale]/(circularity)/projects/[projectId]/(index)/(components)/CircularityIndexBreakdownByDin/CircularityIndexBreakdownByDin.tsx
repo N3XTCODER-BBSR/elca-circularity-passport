@@ -16,6 +16,7 @@ type CircularityIndexBreakdownByDinProps = {
   projectName: string
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   margin: { top: number; right: number; bottom: number; left: number }
+  totalMass: number
 }
 
 type ValueWithIdentifierAndLabel = {
@@ -57,6 +58,7 @@ const CircularityIndexBreakdownByDin = ({
   projectName,
   circularityData,
   margin,
+  totalMass,
 }: CircularityIndexBreakdownByDinProps) => {
   // TODO: general todo: ensure to handle correctly (e.g. by filtering out?) elements with missing DIN codes
 
@@ -265,6 +267,14 @@ const CircularityIndexBreakdownByDin = ({
     <>
       <div className="flex flex-col items-center">
         <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400">Zirkularitätsindex DIN 276</h2>
+        <div>
+          Total mass:{" "}
+          {totalMass.toLocaleString("de-DE", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}{" "}
+          kg
+        </div>
         <div className="mt-4 px-8 py-4">{breadCrumbs[breadCrumbs.length - 1]?.label}</div>
       </div>
 

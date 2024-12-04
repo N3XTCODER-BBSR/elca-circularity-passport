@@ -64,6 +64,7 @@ export type ElcaProjectComponentRow = {
 }
 
 export type EnrichedElcaElementComponent = ElcaProjectComponentRow & {
+  weight: number
   tBaustoffProductSelectedByUser?: boolean
   tBaustoffProductData?: TBaustoffProductData | null
   dismantlingPotentialClassId?: DismantlingPotentialClassId | null
