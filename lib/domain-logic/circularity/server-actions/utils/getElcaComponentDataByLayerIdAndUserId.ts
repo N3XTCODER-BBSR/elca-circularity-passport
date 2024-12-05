@@ -15,7 +15,7 @@ import { getElcaComponentDataByLayerIdAndUserId } from "prisma/queries/legacyDb"
 import { calculateEolDataByEolCateogryData } from "../../utils/calculateEolDataByEolCateogryData"
 
 export const fetchElcaComponentByIdAndUserId = async (layerId: number, userId: string) => {
-  const projectComponent = await getElcaComponentDataByLayerIdAndUserId(layerId, userId)
+  const projectComponent = await getElcaComponentDataByLayerIdAndUserId(layerId)
 
   const [userDefinedData, mappingEntry] = await Promise.all([
     getUserDefinedTBaustoffDataForComponentId(layerId),

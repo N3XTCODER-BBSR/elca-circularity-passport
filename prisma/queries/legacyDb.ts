@@ -1,7 +1,7 @@
 import { ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
 import { prismaLegacy } from "prisma/prismaClient"
 
-export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number, userId: string) => {
+export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number) => {
   // TODO: ideally also add project-variant id/uuid here to ensure correctness
 
   // TODO: IMPORTANT: add user permission check here
