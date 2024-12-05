@@ -1,4 +1,11 @@
-import { getElcaComponentDataByLayerIdAndUserId, getElcaProjectComponentsByInstanceIdAndUserId } from "./legacyDb"
+import {
+  findUsersByAuthName,
+  getElcaComponentDataByLayerIdAndUserId,
+  getElcaProjectComponentsByInstanceIdAndUserId,
+  getElcaProjectElementsByProjectIdAndUserId,
+  getProjectsByIdAndOwnerId,
+  getProjectsByOwnerId,
+} from "./legacyDb"
 
 describe("legacyDb", () => {
   describe("getElcaComponentDataByLayerIdAndUserId", () => {
@@ -28,7 +35,7 @@ describe("legacyDb", () => {
   })
   describe("getElcaProjectComponentsByInstanceIdAndUserId", () => {
     it("should return the correct project components for a given instance ID and user ID", async () => {
-      const result = await getElcaProjectComponentsByInstanceIdAndUserId("32af2f0b-d7d8-4fb1-8354-1e9736d4f513", "2")
+      const result = await getElcaProjectComponentsByInstanceIdAndUserId("32af2f0b-d7d8-4fb1-8354-1e9736d4f513", 2)
 
       const want = [
         {
@@ -109,6 +116,104 @@ describe("legacyDb", () => {
       result.forEach((resultComponent, i) => {
         expect(resultComponent).toMatchObject(want[i]!)
       })
+    })
+  })
+  describe("getProjectsByIdAndOwnerId", () => {
+    it("should return the correct project data for a given project ID and owner ID", async () => {
+      const result = await getProjectsByIdAndOwnerId(1, 2)
+
+      const want = [{ id: 1, name: "Test Project 1" }]
+
+      expect(result).toHaveLength(want.length)
+      expect(result[0]).toMatchObject(want[0]!)
+    })
+  })
+  describe("getProjectsByOwnerId", () => {
+    it("should return the correct project data for a given owner ID", async () => {
+      const result = await getProjectsByOwnerId(2)
+
+      const want = [
+        {
+          id: 1,
+          name: "Test Project 1",
+          created: new Date("2024-11-02T15:12:42.000Z"),
+          users: { auth_name: "testuser" },
+        },
+      ]
+
+      expect(result).toHaveLength(want.length)
+      expect(result[0]).toMatchObject(want[0]!)
+    })
+  })
+  describe("getElcaProjectElementsByProjectIdAndUserId", () => {
+    it("should return the correct project elements for a given project ID and user ID", async () => {
+      const result = await getElcaProjectElementsByProjectIdAndUserId(1, 2)
+
+      const want = [
+        {
+          uuid: "cf37aa10-7ff5-4b42-bec5-d6dd3a7814fb",
+          name: "Aussenwand Test 1",
+          project_variant_id: 1,
+          element_types: { din_code: 311 },
+        },
+        {
+          uuid: "b2f759d5-2f8e-47f8-a3d9-4f71d5795f7d",
+          name: "Aussenwand Test 1",
+          project_variant_id: 2,
+          element_types: { din_code: 311 },
+        },
+        {
+          uuid: "32af2f0b-d7d8-4fb1-8354-1e9736d4f513",
+          name: "Fundament 1",
+          project_variant_id: 1,
+          element_types: { din_code: 321 },
+        },
+        {
+          uuid: "cfddd4f3-ef16-45ab-a027-c82ea4e3fe4f",
+          name: "Aussenwand Test 1",
+          project_variant_id: 3,
+          element_types: { din_code: 311 },
+        },
+        {
+          uuid: "8d9f9a47-c9e0-4198-92a1-a04eebb49d6c",
+          name: "Fundament 1",
+          project_variant_id: 3,
+          element_types: { din_code: 321 },
+        },
+        {
+          uuid: "1b9ead66-2911-4b60-983b-0eeb118d6837",
+          name: "Aussenwand Test 1",
+          project_variant_id: 1,
+          element_types: { din_code: 333 },
+        },
+        {
+          uuid: "17517962-b544-4433-b4bc-49aa101814ab",
+          name: "Aussenwand Test 2",
+          project_variant_id: 1,
+          element_types: { din_code: 333 },
+        },
+      ]
+
+      expect(result).toHaveLength(want.length)
+      result.forEach((resultElement, i) => {
+        expect(resultElement).toMatchObject(want[i]!)
+      })
+    })
+  })
+  describe("findUsersByAuthName", () => {
+    it("should return the correct user data for a given auth name", async () => {
+      const result = await findUsersByAuthName("testuser")
+
+      const want = [
+        {
+          id: 2,
+          auth_name: "testuser",
+          auth_key: "$1$6a7aabf1$tHpd7.FjG03D18kbREnsa1",
+        },
+      ]
+
+      expect(result).toHaveLength(want.length)
+      expect(result[0]).toMatchObject(want[0]!)
     })
   })
 })
