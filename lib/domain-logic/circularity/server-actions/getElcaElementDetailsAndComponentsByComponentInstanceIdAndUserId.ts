@@ -15,10 +15,12 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   componentInstanceId: string,
   userId: string
 ): Promise<ElcaElementWithComponents[]> => {
-  const projectComponents = await getElcaProjectComponentsByInstanceIdAndUserId(componentInstanceId, userId)
+  const projectComponents = await getElcaProjectComponentsByInstanceIdAndUserId(componentInstanceId, Number(userId))
 
   const componentIds = Array.from(new Set(projectComponents.map((c) => c.component_id)))
-  const oekobaudatProcessUuids = Array.from(new Set(projectComponents.map((c) => c.oekobaudat_process_uuid)))
+  const oekobaudatProcessUuids = Array.from(
+    new Set(projectComponents.map((c) => c.oekobaudat_process_uuid).filter(Boolean))
+  )
 
   const [userDefinedTBaustoffDataList, tBaustoffMappingEntries] = await Promise.all([
     getUserDefinedTBaustoffData(componentIds),
@@ -34,7 +36,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   const tBaustoffProductMap = createMap(tBaustoffProductsList, (product) => product.id)
 
   const projectComponentsWithLayers = processProjectComponents(
-    projectComponents,
+    projectComponents as ElcaProjectComponentRow[],
     userDefinedTBaustoffDataMap,
     tBaustoffMappingEntriesMap,
     tBaustoffProductMap
@@ -67,7 +69,7 @@ function getUniqueTBaustoffProductIds(
 
 function getTBaustoffProductData(
   componentId: number,
-  oekobaudatProcessUuid: string,
+  oekobaudatProcessUuid: string | null,
   userDefinedMap: Map<number, UserEnrichedProductData>,
   mappingEntriesMap: Map<string, TBs_OekobaudatMapping>,
   productMap: Map<
@@ -81,7 +83,7 @@ function getTBaustoffProductData(
   let productId = userDefinedData?.tBaustoffProductDefinitionId
 
   if (productId == null) {
-    const mappingEntry = mappingEntriesMap.get(oekobaudatProcessUuid)
+    const mappingEntry = mappingEntriesMap.get(oekobaudatProcessUuid!)
     productId = mappingEntry?.tBs_productId
   }
 

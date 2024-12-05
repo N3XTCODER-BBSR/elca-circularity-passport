@@ -19,7 +19,7 @@ export const fetchElcaComponentByIdAndUserId = async (layerId: number, userId: s
 
   const [userDefinedData, mappingEntry] = await Promise.all([
     getUserDefinedTBaustoffDataForComponentId(layerId),
-    getTBaustoffMappingEntry(projectComponent.oekobaudat_process_uuid, projectComponent.oekobaudat_process_db_uuid),
+    getTBaustoffMappingEntry(projectComponent.oekobaudat_process_uuid, projectComponent.oekobaudat_process_db_uuid!),
   ])
 
   const productId = userDefinedData?.tBaustoffProductDefinitionId ?? mappingEntry?.tBs_productId
@@ -29,7 +29,12 @@ export const fetchElcaComponentByIdAndUserId = async (layerId: number, userId: s
     product = await getTBaustoffProduct(productId)
   }
 
-  const enrichedComponent = processProjectComponent(projectComponent, userDefinedData, mappingEntry, product)
+  const enrichedComponent = processProjectComponent(
+    projectComponent as unknown as ElcaProjectComponentRow, // TODO: adapt types so they are compatible to Prisma types
+    userDefinedData,
+    mappingEntry,
+    product
+  )
 
   return enrichedComponent
 }
