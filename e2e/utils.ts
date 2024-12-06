@@ -1,12 +1,12 @@
-import { prismaLegacy } from "prisma/prismaClient"
+import { prismaLegacySuperUser } from "prisma/prismaClient"
 
 /**
  * delete user with the given id if it exists
  */
 export const deleteUserIfExists = async (userId: number) => {
-  const user = await prismaLegacy.users.findUnique({ where: { id: userId } })
+  const user = await prismaLegacySuperUser.users.findUnique({ where: { id: userId } })
   if (user) {
-    await prismaLegacy.users.delete({ where: { id: userId } })
+    await prismaLegacySuperUser.users.delete({ where: { id: userId } })
   }
 }
 
@@ -15,7 +15,7 @@ export const deleteUserIfExists = async (userId: number) => {
  * @returns newly created user
  */
 export const createUser = async (userId: number, userName: string, hashedPassword: string) => {
-  return prismaLegacy.users.create({
+  return prismaLegacySuperUser.users.create({
     data: {
       id: userId,
       auth_name: userName,

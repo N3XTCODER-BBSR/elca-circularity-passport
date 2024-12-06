@@ -42,6 +42,7 @@ const main = async () => {
     const elcaDbPort = elcaDbContainer.getMappedPort(5432).toString()
 
     const passportDbUrl = `postgres://${buildingPassportDbUsername}:${buildingPassportDbPassword}@localhost:${passportDbPort}/${buildingPassportDbName}`
+    const elcaDbUrlWithSuperUser = `postgres://${elcaDbUsername}:${elcaDbPassword}@localhost:${elcaDbPort}/${elcaDbName}`
     const elcaDbUrlWithReadOnlyUser = `postgres://${elcaDbReadOnlyUsername}:${elcaDbPassword}@localhost:${elcaDbPort}/${elcaDbName}`
 
     // migrations for passport db
@@ -52,6 +53,7 @@ const main = async () => {
 
     process.env.DATABASE_URL = passportDbUrl
     process.env.ELCA_LEGACY_DATABASE_URL = elcaDbUrlWithReadOnlyUser
+    process.env.ELCA_LEGACY_DATABASE_URL_SUPERUSER = elcaDbUrlWithSuperUser
     ;(globalThis as unknown as { [key: string]: StartedTestContainer }).__PASSPORT_DB_CONTAINER__ = passportDbContainer
     ;(globalThis as unknown as { [key: string]: StartedTestContainer }).__ELCA_DB_CONTAINER__ = elcaDbContainer
   } catch (error) {

@@ -3,14 +3,12 @@ on:
   push:
     branches:
       - main
+      - feat-test-legacy-db-dals # TODO before: delete line
   pull_request:
   workflow_dispatch:
 
 jobs:
   test:
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      HTTP_BASIC_AUTH: ${{ secrets.HTTP_BASIC_AUTH }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:

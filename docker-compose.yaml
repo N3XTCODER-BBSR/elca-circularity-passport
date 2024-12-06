@@ -39,8 +39,9 @@ services:
       context: .
       dockerfile: Dockerfile.e2e
       args:
-        DATABASE_URL: postgres://building_passport:password@localhost:65432/building_passport
-        ELCA_LEGACY_DATABASE_URL: postgres://elca:password@localhost:65433/elca
+        DATABASE_URL: ${DATABASE_URL}
+        ELCA_LEGACY_DATABASE_URL: ${ELCA_LEGACY_DATABASE_URL}
+        ELCA_LEGACY_DATABASE_URL_SUPERUSER: ${ELCA_LEGACY_DATABASE_URL_SUPERUSER}
         ELCA_LEGACY_DATABASE_HAS_SSL: ${ELCA_LEGACY_DATABASE_HAS_SSL}
         DOPPIO_API_KEY: ${DOPPIO_API_KEY}
         HTTP_BASIC_AUTH: ${HTTP_BASIC_AUTH}
@@ -51,7 +52,8 @@ services:
     command: sh -c "yarn prisma:generate && npx prisma migrate deploy && PORT=3005 yarn start"
     environment:
       DATABASE_URL: postgres://building_passport:password@e2e-db:5432/building_passport
-      ELCA_LEGACY_DATABASE_URL: postgres://elca:password@e2e-legacy-db:5432/elca
+      ELCA_LEGACY_DATABASE_URL: postgres://elca_read_only:password@e2e-legacy-db:5432/elca
+      ELCA_LEGACY_DATABASE_URL_SUPERUSER: postgres://elca:password@e2e-legacy-db:5432/elca
       NEXTAUTH_URL: http://localhost:3005
     depends_on:
       - e2e-db
@@ -81,8 +83,7 @@ services:
       - '65433:5432'
     environment:
       POSTGRES_DB: elca
-      POSTGRES_USER: elca
+      POSTGRES_USER: elca # HINT: this is the superuser, elca_read_only is the read only user
       POSTGRES_PASSWORD: password
     volumes:
-      - ./legacy_db_data:/var/lib/postgresql/data
-      - ./elca_db_dump.sql:/docker-entrypoint-initdb.d/elca_db_dump.sql # HINT: the elca_db_dump.sql script runs when the container is created. It only runs if ./legacy_db_data doesn't contain data so that the database has not been initialized before
+      - ./elca_db_init.sql:/docker-entrypoint-initdb.d/elca_db_init.sql # HINT: the elca_db_init.sql script runs when the container is created. It only runs if ./legacy_db_data doesn't contain data so that the database has not been initialized before
