@@ -162,7 +162,8 @@ export const getElcaProjectComponentsByInstanceIdAndUserId = async (componentIns
         access_group_id: element.access_group_id,
         element_uuid: element.uuid,
         component_id: ec.id,
-        layer_position: ec.layer_position,
+        // TODO: Check whether this is proper handling of null values in DB
+        layer_position: ec.layer_position || -1,
         process_name: pc.name,
         process_ref_value: process?.ref_value ? Number(process.ref_value) : null,
         process_ref_unit: process?.ref_unit,
