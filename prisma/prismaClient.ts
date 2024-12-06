@@ -13,7 +13,10 @@ const prismaLegacyClientSingleton = () => {
 }
 
 const prismaLegacySuperUserClientSingleton = () => {
-  return new PrismaLegacyClient({ ...options, datasourceUrl: process.env.ELCA_LEGACY_DATABASE_URL_SUPERUSER })
+  return new PrismaLegacyClient({
+    ...options,
+    datasourceUrl: process.env.ELCA_LEGACY_DATABASE_URL_SUPERUSER_FOR_TESTING,
+  })
 }
 
 declare const globalThis: {

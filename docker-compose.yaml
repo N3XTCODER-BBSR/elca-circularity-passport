@@ -41,7 +41,6 @@ services:
       args:
         DATABASE_URL: ${DATABASE_URL}
         ELCA_LEGACY_DATABASE_URL: ${ELCA_LEGACY_DATABASE_URL}
-        ELCA_LEGACY_DATABASE_URL_SUPERUSER: ${ELCA_LEGACY_DATABASE_URL_SUPERUSER}
         ELCA_LEGACY_DATABASE_HAS_SSL: ${ELCA_LEGACY_DATABASE_HAS_SSL}
         DOPPIO_API_KEY: ${DOPPIO_API_KEY}
         HTTP_BASIC_AUTH: ${HTTP_BASIC_AUTH}
@@ -53,7 +52,6 @@ services:
     environment:
       DATABASE_URL: postgres://building_passport:password@e2e-db:5432/building_passport
       ELCA_LEGACY_DATABASE_URL: postgres://elca_read_only:password@e2e-legacy-db:5432/elca
-      ELCA_LEGACY_DATABASE_URL_SUPERUSER: postgres://elca:password@e2e-legacy-db:5432/elca
       NEXTAUTH_URL: http://localhost:3005
     depends_on:
       - e2e-db
@@ -68,7 +66,7 @@ services:
     image: 'postgres:16.3'
     restart: always
     ports:
-      - '65432:5432'
+      - '65434:5432'
     environment:
       POSTGRES_DB: building_passport
       POSTGRES_USER: building_passport
@@ -80,7 +78,7 @@ services:
     image: 'postgres:13-alpine'
     restart: always
     ports:
-      - '65433:5432'
+      - '65435:5432'
     environment:
       POSTGRES_DB: elca
       POSTGRES_USER: elca # HINT: this is the superuser, elca_read_only is the read only user
