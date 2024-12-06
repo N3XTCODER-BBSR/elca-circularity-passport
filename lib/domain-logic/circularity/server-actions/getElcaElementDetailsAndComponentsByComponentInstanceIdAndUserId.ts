@@ -74,7 +74,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
     din_code: componentData?.din_code,
     unit: componentData?.unit,
     layers: await processLayers(
-      // projectComponents,
+      projectComponents,
       userDefinedTBaustoffDataMap,
       tBaustoffMappingEntriesMap,
       tBaustoffProductMap
