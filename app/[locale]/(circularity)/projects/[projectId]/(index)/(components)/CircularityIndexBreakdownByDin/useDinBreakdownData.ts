@@ -158,7 +158,7 @@ function aggregateLevelOneData(
       (comp) => Math.floor(comp.din_code / 10) * 10 === group.number
     )
     const label = `${group.number} ${group.name}`
-    return { datum: avg, identifier: String(group.number), label }
+    return { datum: avg, identifier: label, label }
   })
 }
 
@@ -173,7 +173,7 @@ function aggregateLevelTwoData(
   return group.children.map((child) => {
     const avg = calculateAverageCircularityIndex(circularityData, (comp) => comp.din_code === child.number)
     const label = `${child.number} ${child.name}`
-    return { datum: avg, identifier: String(child.number), label }
+    return { datum: avg, identifier: label, label }
   })
 }
 

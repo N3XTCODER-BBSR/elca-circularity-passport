@@ -15,6 +15,7 @@ const CircularityIndexBarChartBreakdown = ({ margin, data, clickHandler }: Circu
 
   return (
     <div style={{ height: `${length * 2.25 + 5.5}rem` }} className="w-full">
+      {/* data: {JSON.stringify(data)} */}
       <ResponsiveBar
         data={data}
         theme={{

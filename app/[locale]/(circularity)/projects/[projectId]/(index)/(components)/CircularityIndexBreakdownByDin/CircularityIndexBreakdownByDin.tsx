@@ -66,6 +66,7 @@ const CircularityIndexBreakdownByDin = ({
   return (
     <>
       <div className="flex flex-col items-center">
+        {/* chartData: {JSON.stringify(chartData)} */}
         <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400">Zirkularitätsindex DIN 276</h2>
         <div>
           Total mass:{" "}
