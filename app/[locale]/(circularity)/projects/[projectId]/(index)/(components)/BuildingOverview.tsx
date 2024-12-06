@@ -123,12 +123,13 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
             <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
           </div>
           <div className="mx-8 my-24 h-[170px]">
-            <CircularityIndexBreakdownByDin
+            <CircularityIndexBreakdownByDin />
+            {/* <CircularityIndexBreakdownByDin
               projectId={projectId}
               projectName={projectName}
               circularityData={circularityData}
               margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
-            />
+            /> */}
           </div>
           <div className="mx-8 my-24 h-[170px]">
             <CircularityIndexBreakdownByMaterialType
