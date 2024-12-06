@@ -26,6 +26,7 @@ type ChartAndBreadCrumpComponentProps = {
   leafClickHandler: (resourceId: string) => void
   title: string
   labelTotalDimensionalValue: string
+  unitNameTotalDimensionalValue: string
 }
 
 const ChartAndBreadCrumpComponent: React.FC<ChartAndBreadCrumpComponentProps> = ({
@@ -33,6 +34,7 @@ const ChartAndBreadCrumpComponent: React.FC<ChartAndBreadCrumpComponentProps> = 
   leafClickHandler,
   title,
   labelTotalDimensionalValue,
+  unitNameTotalDimensionalValue,
 }) => {
   const [path, setPath] = useState<ChartDataNode[]>([rootChartDataNode])
 
@@ -76,8 +78,12 @@ const ChartAndBreadCrumpComponent: React.FC<ChartAndBreadCrumpComponentProps> = 
     <div className="flex w-full flex-col items-center">
       <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400">{title}</h2>
       <div className="mt-2">
-        {labelTotalDimensionalValue}:{" "}
-        {currentNode.dimensionalValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        {`${labelTotalDimensionalValue}: `}
+        {currentNode.dimensionalValue.toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}{" "}
+        {unitNameTotalDimensionalValue}
       </div>
       <div className="mt-4 px-8 py-4">{currentNode.label}</div>
 
@@ -163,7 +169,7 @@ function mapDatumToColor(value: number): string {
 
 const sampleRoot: ChartDataInternalNode = {
   isLeaf: false,
-  label: "Root",
+  label: "Foo Test Project",
   metricValue: 80,
   dimensionalValue: 3000,
   children: [
@@ -298,6 +304,7 @@ export default function ExamplePage() {
       leafClickHandler={exampleLeafClickHandler}
       title="Zirkularitätsindex DIN 276"
       labelTotalDimensionalValue="Total mass"
+      unitNameTotalDimensionalValue="kg"
     />
   )
 }
