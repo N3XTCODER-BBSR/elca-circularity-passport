@@ -11,6 +11,7 @@ import { prismaLegacy } from "prisma/prismaClient"
 import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
 } from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
+import CircularityBreakdownChart from "./CircularityIndexBreakdownByDin/CircularityBreakdownChart"
 
 type BuildingOverviewProps = {
   projectId: number
@@ -123,15 +124,15 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
             <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
           </div>
           <div className="mx-8 my-24 h-[170px]">
-            <CircularityIndexBreakdownByDin />
-            {/* <CircularityIndexBreakdownByDin
+            <CircularityBreakdownChart />
+            <CircularityIndexBreakdownByDin
               projectId={projectId}
               projectName={projectName}
               circularityData={circularityData}
               margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
-            /> */}
+            />
           </div>
-          <div className="mx-8 my-24 h-[170px]">
+          {/* <div className="mx-8 my-24 h-[170px]">
             <CircularityIndexBreakdownByMaterialType
               projectId={projectId}
               projectName={projectName}
@@ -139,7 +140,7 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
               circularityData={circularityData}
               margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
             />
-          </div>
+          </div> */}
         </>
       )}
     </>
