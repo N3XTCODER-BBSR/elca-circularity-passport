@@ -1,0 +1,1340 @@
+{
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/jest.config.ts": {
+    "language": "TypeScript",
+    "code": 18,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/reset.d.ts": {
+    "language": "TypeScript",
+    "code": 1,
+    "comment": 1,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/postcss.config.js": {
+    "language": "JavaScript",
+    "code": 6,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/e2e/globalTeardown.ts": {
+    "language": "TypeScript",
+    "code": 7,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/e2e/authorization.spec.ts": {
+    "language": "TypeScript",
+    "code": 38,
+    "comment": 1,
+    "blank": 16
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/e2e/passportPage.spec.ts": {
+    "language": "TypeScript",
+    "code": 7,
+    "comment": 11,
+    "blank": 7
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/instrumentation.ts": {
+    "language": "TypeScript",
+    "code": 4,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/e2e/login.spec.ts": {
+    "language": "TypeScript",
+    "code": 33,
+    "comment": 19,
+    "blank": 14
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/env.mjs": {
+    "language": "JavaScript",
+    "code": 35,
+    "comment": 2,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/playwright.config.ts": {
+    "language": "TypeScript",
+    "code": 37,
+    "comment": 36,
+    "blank": 11
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/i18n/routing.ts": {
+    "language": "TypeScript",
+    "code": 7,
+    "comment": 7,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/tsconfig.json": {
+    "language": "JSON with Comments",
+    "code": 41,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/.eslintrc.js": {
+    "language": "JavaScript",
+    "code": 88,
+    "comment": 1,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/components.json": {
+    "language": "JSON",
+    "code": 17,
+    "comment": 0,
+    "blank": 0
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/passport-json-schema-draft-v1-.json": {
+    "language": "JSON",
+    "code": 53,
+    "comment": 13,
+    "blank": 0
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/README.md": {
+    "language": "Markdown",
+    "code": 169,
+    "comment": 0,
+    "blank": 61
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/.dockerignore": {
+    "language": "Ignore",
+    "code": 24,
+    "comment": 7,
+    "blank": 7
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/CONTRIBUTING.md": {
+    "language": "Markdown",
+    "code": 21,
+    "comment": 0,
+    "blank": 7
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/package.json": {
+    "language": "JSON",
+    "code": 172,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/db/db-test-teardown.ts": {
+    "language": "TypeScript",
+    "code": 19,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/git-conventional-commits.yaml": {
+    "language": "YAML",
+    "code": 31,
+    "comment": 9,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/db/db-test-setup.ts": {
+    "language": "TypeScript",
+    "code": 51,
+    "comment": 2,
+    "blank": 13
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/public/chevron-down.svg": {
+    "language": "XML",
+    "code": 4,
+    "comment": 0,
+    "blank": 0
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/ensureAuthenticated.ts": {
+    "language": "TypeScript",
+    "code": 11,
+    "comment": 4,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/errors.ts": {
+    "language": "TypeScript",
+    "code": 10,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prettier.config.js": {
+    "language": "JavaScript",
+    "code": 7,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/CODE_OF_CONDUCT.md": {
+    "language": "Markdown",
+    "code": 97,
+    "comment": 0,
+    "blank": 36
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/ensureAuthorized.ts": {
+    "language": "TypeScript",
+    "code": 14,
+    "comment": 10,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/styles/print.global.css": {
+    "language": "CSS",
+    "code": 70,
+    "comment": 0,
+    "blank": 25
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/next-env.d.ts": {
+    "language": "TypeScript",
+    "code": 0,
+    "comment": 4,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/.prettierignore": {
+    "language": "Ignore",
+    "code": 2,
+    "comment": 0,
+    "blank": 0
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/getPassportData.ts": {
+    "language": "TypeScript",
+    "code": 33,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/styles/global.css": {
+    "language": "CSS",
+    "code": 56,
+    "comment": 0,
+    "blank": 20
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/shared/basic-types.ts": {
+    "language": "TypeScript",
+    "code": 5,
+    "comment": 1,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/public/user_profile_placeholder.svg": {
+    "language": "XML",
+    "code": 14,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/data-schema/versionType.ts": {
+    "language": "TypeScript",
+    "code": 17,
+    "comment": 2,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 391,
+    "comment": 0,
+    "blank": 29
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/.github/workflows/check.yml": {
+    "language": "YAML",
+    "code": 35,
+    "comment": 7,
+    "blank": 3
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/modules/passport-overview/resources/resources-data-aggregation.ts": {
+    "language": "TypeScript",
+    "code": 202,
+    "comment": 4,
+    "blank": 38
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/public/missing-circularity-data-icon.svg": {
+    "language": "XML",
+    "code": 37,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/.github/workflows/integration-tests.yml": {
+    "language": "YAML",
+    "code": 0,
+    "comment": 23,
+    "blank": 0
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/.github/workflows/playwright.yml": {
+    "language": "YAML",
+    "code": 32,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/.github/workflows/cr.yml": {
+    "language": "YAML",
+    "code": 0,
+    "comment": 18,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/.github/workflows/nextjs_bundle_analysis.yml": {
+    "language": "YAML",
+    "code": 0,
+    "comment": 107,
+    "blank": 16
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/public/component-layer.svg": {
+    "language": "XML",
+    "code": 9,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents.ts": {
+    "language": "TypeScript",
+    "code": 70,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels.test.ts": {
+    "language": "TypeScript",
+    "code": 49,
+    "comment": 6,
+    "blank": 7
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/data-schema/versions/v1/passportParser.ts": {
+    "language": "TypeScript",
+    "code": 23,
+    "comment": 1,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/data-schema/versions/v1/passportJsonSeeder.ts": {
+    "language": "TypeScript",
+    "code": 278,
+    "comment": 7,
+    "blank": 18
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/data-schema/versions/v1/passportParser.test.ts": {
+    "language": "TypeScript",
+    "code": 246,
+    "comment": 2,
+    "blank": 19
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/data-schema/versions/v1/din276Mapping.ts": {
+    "language": "TypeScript",
+    "code": 226,
+    "comment": 1,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils.test.ts": {
+    "language": "TypeScript",
+    "code": 69,
+    "comment": 0,
+    "blank": 18
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/modules/passport-overview/circularity/circularity-data-aggregation.ts": {
+    "language": "TypeScript",
+    "code": 76,
+    "comment": 0,
+    "blank": 17
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/modules/passport-overview/circularity/circularity-data-aggregation.test.ts": {
+    "language": "TypeScript",
+    "code": 236,
+    "comment": 0,
+    "blank": 25
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels.ts": {
+    "language": "TypeScript",
+    "code": 36,
+    "comment": 1,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/data-schema/versions/v1/passportSchema.ts": {
+    "language": "TypeScript",
+    "code": 171,
+    "comment": 31,
+    "blank": 40
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils.ts": {
+    "language": "TypeScript",
+    "code": 78,
+    "comment": 8,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/styles/tailwind.css": {
+    "language": "CSS",
+    "code": 3,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/types/domain-types.ts": {
+    "language": "TypeScript",
+    "code": 75,
+    "comment": 6,
+    "blank": 9
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/types/helper-types.ts": {
+    "language": "TypeScript",
+    "code": 4,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/.storybook/main.ts": {
+    "language": "TypeScript",
+    "code": 22,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/.storybook/preview.ts": {
+    "language": "TypeScript",
+    "code": 14,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/getWeightByProductId.ts": {
+    "language": "TypeScript",
+    "code": 59,
+    "comment": 12,
+    "blank": 14
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/utils/calculateVolumeAndMass.ts": {
+    "language": "TypeScript",
+    "code": 14,
+    "comment": 3,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/utils/calculateEolDataByEolCateogryData.ts": {
+    "language": "TypeScript",
+    "code": 27,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/updateSpecificScenario.ts": {
+    "language": "TypeScript",
+    "code": 21,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/queries/legacyDb.ts": {
+    "language": "TypeScript",
+    "code": 312,
+    "comment": 62,
+    "blank": 19
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/utils/calculateEolBuiltPoints.ts": {
+    "language": "TypeScript",
+    "code": 170,
+    "comment": 7,
+    "blank": 12
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/getElcaComponentDataByLayerId.ts": {
+    "language": "TypeScript",
+    "code": 14,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/schemaLegacy.prisma": {
+    "language": "Prisma",
+    "code": 1481,
+    "comment": 5,
+    "blank": 220
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/queries/utils.ts": {
+    "language": "TypeScript",
+    "code": 18,
+    "comment": 7,
+    "blank": 3
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/prismaClient.ts": {
+    "language": "TypeScript",
+    "code": 30,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/seeding/tsconfig.json": {
+    "language": "JSON with Comments",
+    "code": 11,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/seeding/dbSeeder.ts": {
+    "language": "TypeScript",
+    "code": 176,
+    "comment": 12,
+    "blank": 22
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/migrations/20241119161148_add_disturbing_eol_scenario_for_s4/migration.sql": {
+    "language": "MS SQL",
+    "code": 1,
+    "comment": 1,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/queries/legacyDb.test.ts": {
+    "language": "TypeScript",
+    "code": 250,
+    "comment": 0,
+    "blank": 31
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/modules/passport-overview/materials/materials-data-presentation-enrichment.ts": {
+    "language": "TypeScript",
+    "code": 0,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/queries/db.ts": {
+    "language": "TypeScript",
+    "code": 216,
+    "comment": 12,
+    "blank": 21
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/migrations/20241113171530_disturbing_substances/migration.sql": {
+    "language": "MS SQL",
+    "code": 11,
+    "comment": 5,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/migrations/20241114121159_add_disturbing_substance_name/migration.sql": {
+    "language": "MS SQL",
+    "code": 1,
+    "comment": 1,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/modules/passport-overview/materials/materials-data-aggregation.test.ts": {
+    "language": "TypeScript",
+    "code": 444,
+    "comment": 1,
+    "blank": 30
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/grp/modules/passport-overview/materials/materials-data-aggregation.ts": {
+    "language": "TypeScript",
+    "code": 122,
+    "comment": 0,
+    "blank": 20
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/migrations/20240710174104_move_to_passport_json/migration.sql": {
+    "language": "MS SQL",
+    "code": 18,
+    "comment": 25,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/migrations/20240704125105_init/migration.sql": {
+    "language": "MS SQL",
+    "code": 20,
+    "comment": 1,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer.ts": {
+    "language": "TypeScript",
+    "code": 85,
+    "comment": 0,
+    "blank": 13
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/updateTBaustoffProductOfLayer.ts": {
+    "language": "TypeScript",
+    "code": 16,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/schema.prisma": {
+    "language": "Prisma",
+    "code": 87,
+    "comment": 12,
+    "blank": 21
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/utils/dismantlingPotentialClassIdMapping.ts": {
+    "language": "TypeScript",
+    "code": 20,
+    "comment": 1,
+    "blank": 3
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/migrations/20241113112904_circularity_enrichment_related_db_renamings/migration.sql": {
+    "language": "MS SQL",
+    "code": 1,
+    "comment": 7,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/next.config.mjs": {
+    "language": "JavaScript",
+    "code": 23,
+    "comment": 3,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/migrations/20241114160954_disturbing_substance_iteration/migration.sql": {
+    "language": "MS SQL",
+    "code": 1,
+    "comment": 1,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/seeding/obd_tbaustoff_mapping.csv": {
+    "language": "CSV",
+    "code": 589,
+    "comment": 0,
+    "blank": 0
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/migrations/20241112155910_t_baustoff_initialization/migration.sql": {
+    "language": "MS SQL",
+    "code": 41,
+    "comment": 10,
+    "blank": 15
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/renovate.json": {
+    "language": "JSON",
+    "code": 16,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/migrations/20241118142608_add_unique_constraint_on_name/migration.sql": {
+    "language": "MS SQL",
+    "code": 1,
+    "comment": 7,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/.pre-commit-config.yaml": {
+    "language": "YAML",
+    "code": 5,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/jest.setup.js": {
+    "language": "JavaScript",
+    "code": 1,
+    "comment": 1,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/i18n.ts": {
+    "language": "TypeScript",
+    "code": 9,
+    "comment": 3,
+    "blank": 3
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/getProjectCircularityIndex.ts": {
+    "language": "TypeScript",
+    "code": 26,
+    "comment": 19,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/tailwind.config.js": {
+    "language": "JavaScript",
+    "code": 75,
+    "comment": 1,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/messages/es.ts": {
+    "language": "TypeScript",
+    "code": 410,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/getElcaProjectData.ts": {
+    "language": "TypeScript",
+    "code": 20,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/messages/en.ts": {
+    "language": "TypeScript",
+    "code": 456,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/constants/styleConstants.ts": {
+    "language": "TypeScript",
+    "code": 43,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/messages/de.ts": {
+    "language": "TypeScript",
+    "code": 457,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/updateDismantlingPotentialClassId.ts": {
+    "language": "TypeScript",
+    "code": 16,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/messages/wip.json": {
+    "language": "JSON",
+    "code": 519,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/getElcaElementsForProjectId.ts": {
+    "language": "TypeScript",
+    "code": 20,
+    "comment": 2,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/getWeightByProductId.test.ts": {
+    "language": "TypeScript",
+    "code": 24,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId.ts": {
+    "language": "TypeScript",
+    "code": 131,
+    "comment": 62,
+    "blank": 29
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/disturbingSubstances/addOrUpdateDisturbingSubstance.ts": {
+    "language": "TypeScript",
+    "code": 64,
+    "comment": 1,
+    "blank": 13
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/getElcaProjectsForUserId.ts": {
+    "language": "TypeScript",
+    "code": 12,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/disturbingSubstances/removeDisturbingSubstances.ts": {
+    "language": "TypeScript",
+    "code": 21,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/disturbingSubstances/updateDisturbingEolScenarioForS4.ts": {
+    "language": "TypeScript",
+    "code": 18,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/lib/domain-logic/circularity/server-actions/utils/getElcaComponentDataByLayerIdAndUserId.ts": {
+    "language": "TypeScript",
+    "code": 79,
+    "comment": 1,
+    "blank": 15
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/docker-compose.yaml": {
+    "language": "YAML",
+    "code": 83,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/prisma/migrations/20241113113022_circularity_enrichment_related_db_renamings/migration.sql": {
+    "language": "MS SQL",
+    "code": 42,
+    "comment": 25,
+    "blank": 20
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%28utils%29/authOptions.ts": {
+    "language": "TypeScript",
+    "code": 81,
+    "comment": 2,
+    "blank": 11
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/middleware.ts": {
+    "language": "TypeScript",
+    "code": 6,
+    "comment": 4,
+    "blank": 3
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/%28components%29/NavBarProfileDropdown.tsx": {
+    "language": "TypeScript JSX",
+    "code": 43,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/%28components%29/UnauthenticatedRedirect.tsx": {
+    "language": "TypeScript JSX",
+    "code": 4,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%28utils%29/errorHandler.tsx": {
+    "language": "TypeScript JSX",
+    "code": 17,
+    "comment": 1,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%28utils%29/next-auth.d.ts": {
+    "language": "TypeScript",
+    "code": 17,
+    "comment": 1,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/%28components%29/Unauthorized.tsx": {
+    "language": "TypeScript JSX",
+    "code": 12,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%28components%29/generic/AccordionItem.tsx": {
+    "language": "TypeScript JSX",
+    "code": 59,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%28components%29/generic/Tooltip.tsx": {
+    "language": "TypeScript JSX",
+    "code": 20,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%28components%29/generic/SingleValueDisplay.tsx": {
+    "language": "TypeScript JSX",
+    "code": 10,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%28components%29/generic/SideBySideDescriptionListsWithHeadline.tsx": {
+    "language": "TypeScript JSX",
+    "code": 72,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%28components%29/ComponentsTree.tsx": {
+    "language": "TypeScript JSX",
+    "code": 174,
+    "comment": 5,
+    "blank": 17
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%28components%29/generic/layout-elements.tsx": {
+    "language": "TypeScript JSX",
+    "code": 55,
+    "comment": 1,
+    "blank": 10
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%28components%29/generic/CustomToolTip.tsx": {
+    "language": "TypeScript JSX",
+    "code": 13,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28components%29/domain-specific/modules/passport-overview/resources/ResourcesPenrtGwpDonutChart.tsx": {
+    "language": "TypeScript JSX",
+    "code": 99,
+    "comment": 0,
+    "blank": 12
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%28index%29/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 37,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/layout.tsx": {
+    "language": "TypeScript JSX",
+    "code": 45,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28components%29/domain-specific/modules/passport-overview/resources/ResourcesRmiPieChart.tsx": {
+    "language": "TypeScript JSX",
+    "code": 69,
+    "comment": 0,
+    "blank": 10
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28components%29/domain-specific/modules/passport-overview/circularity/CircularityBarChart.tsx": {
+    "language": "TypeScript JSX",
+    "code": 77,
+    "comment": 1,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/not-found.tsx": {
+    "language": "TypeScript JSX",
+    "code": 7,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28components%29/generic/Button/Button.stories.tsx": {
+    "language": "TypeScript JSX",
+    "code": 27,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28components%29/generic/VerticalNavigation/VerticalNavigation.tsx": {
+    "language": "TypeScript JSX",
+    "code": 40,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28components%29/generic/Button/Button.tsx": {
+    "language": "TypeScript JSX",
+    "code": 43,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/layout.tsx": {
+    "language": "TypeScript JSX",
+    "code": 17,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/catalog/components/%5BcomponentId%5D/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 65,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/catalog/components/%5BcomponentId%5D/component-layer.tsx": {
+    "language": "TypeScript JSX",
+    "code": 46,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/%28index%29/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 11,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/catalog/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 16,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/%28components%29/DummyAccordion.tsx": {
+    "language": "TypeScript JSX",
+    "code": 22,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/catalog/components/%5BcomponentId%5D/%28components%29/LayerDetailInfo/index.tsx": {
+    "language": "TypeScript JSX",
+    "code": 22,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/catalog/components/%5BcomponentId%5D/%28components%29/LayerDetailInfo/MaterialInfo.tsx": {
+    "language": "TypeScript JSX",
+    "code": 72,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/catalog/components/%5BcomponentId%5D/%28components%29/LayerDetailInfo/TabBar.tsx": {
+    "language": "TypeScript JSX",
+    "code": 53,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/catalog/components/%5BcomponentId%5D/%28components%29/LayerDetailInfo/ResourceInfo.tsx": {
+    "language": "TypeScript JSX",
+    "code": 38,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/%28components%29/NavBar/NavBar.tsx": {
+    "language": "TypeScript JSX",
+    "code": 55,
+    "comment": 4,
+    "blank": 9
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/catalog/components/%5BcomponentId%5D/%28components%29/LayerDetailInfo/CircularityInfo.tsx": {
+    "language": "TypeScript JSX",
+    "code": 30,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28components%29/domain-specific/modules/passport-overview/materials/MaterialsBarChart.tsx": {
+    "language": "TypeScript JSX",
+    "code": 91,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/error.tsx": {
+    "language": "TypeScript JSX",
+    "code": 15,
+    "comment": 1,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/devops/scalingoPostbuild.sh": {
+    "language": "Shell Script",
+    "code": 7,
+    "comment": 4,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 4,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%28components%29/LanguageDropdown.tsx": {
+    "language": "TypeScript JSX",
+    "code": 57,
+    "comment": 2,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/DEMO-protected-client-component/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 58,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/catalog/components/%5BcomponentId%5D/%28components%29/ProjectCatalog.tsx": {
+    "language": "TypeScript JSX",
+    "code": 16,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/layout.tsx": {
+    "language": "TypeScript JSX",
+    "code": 45,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/benchmark/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 3,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28components%29/generic/layout-elements.tsx": {
+    "language": "TypeScript JSX",
+    "code": 20,
+    "comment": 1,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/%28components%29/tabs/overview.tsx": {
+    "language": "TypeScript JSX",
+    "code": 61,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/%28components%29/tabs/modules/Circularity/Circularity.tsx": {
+    "language": "TypeScript JSX",
+    "code": 80,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/%28components%29/tabs/modules/Resources/Gwp.tsx": {
+    "language": "TypeScript JSX",
+    "code": 72,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/%28components%29/tabs/modules/components/TotalAndNrfRelativeValuesDisplay.tsx": {
+    "language": "TypeScript JSX",
+    "code": 29,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/api/health/route.ts": {
+    "language": "TypeScript",
+    "code": 3,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/%28components%29/tabs/modules/Resources/Penrt.tsx": {
+    "language": "TypeScript JSX",
+    "code": 70,
+    "comment": 0,
+    "blank": 11
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/%28components%29/tabs/modules/Resources/Resources.tsx": {
+    "language": "TypeScript JSX",
+    "code": 62,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/%28components%29/tabs/modules/Resources/Rmi.tsx": {
+    "language": "TypeScript JSX",
+    "code": 64,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/%28components%29/tabs/modules/BuildingBaseInformation.tsx": {
+    "language": "TypeScript JSX",
+    "code": 75,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/api/circularity/secret-resource/route.ts": {
+    "language": "TypeScript",
+    "code": 10,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/%28components%29/tabs/modules/Materials/Materials.tsx": {
+    "language": "TypeScript JSX",
+    "code": 117,
+    "comment": 0,
+    "blank": 12
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/api/auth/%5B...nextauth%5D/route.ts": {
+    "language": "TypeScript",
+    "code": 4,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%28index%29/layout.tsx": {
+    "language": "TypeScript JSX",
+    "code": 12,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/api/grp/pdf-export/%5BpassportId%5D/route.ts": {
+    "language": "TypeScript",
+    "code": 30,
+    "comment": 1,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/layout.tsx": {
+    "language": "TypeScript JSX",
+    "code": 32,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%28index%29/%28components%29/ProjectsLinkList.tsx": {
+    "language": "TypeScript JSX",
+    "code": 42,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 17,
+    "comment": 0,
+    "blank": 7
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%28index%29/%28components%29/NavBar.tsx": {
+    "language": "TypeScript JSX",
+    "code": 38,
+    "comment": 3,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/%28index%29/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 17,
+    "comment": 0,
+    "blank": 7
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/%28components%29/ProjectCatalog.tsx": {
+    "language": "TypeScript JSX",
+    "code": 29,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/auth/signin/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 93,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%28index%29/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 20,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/%28index%29/%28components%29/CircularityIndexTotalNumber.tsx": {
+    "language": "TypeScript JSX",
+    "code": 20,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/%28index%29/%28components%29/CircularityIndexTotalBarChart.tsx": {
+    "language": "TypeScript JSX",
+    "code": 72,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28web-optimized%29/%5BpassportId%5D/%28components%29/tabs/modules/components/InfoIcon.tsx": {
+    "language": "TypeScript JSX",
+    "code": 134,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/%28index%29/%28components%29/BuildingOverview.tsx": {
+    "language": "TypeScript JSX",
+    "code": 108,
+    "comment": 22,
+    "blank": 19
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/components/%5BcomponentUuid%5D/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 77,
+    "comment": 12,
+    "blank": 10
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/%28components%29/NavBar.tsx": {
+    "language": "TypeScript JSX",
+    "code": 99,
+    "comment": 10,
+    "blank": 13
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/components/%5BcomponentUuid%5D/%28components%29/Modal.tsx": {
+    "language": "TypeScript JSX",
+    "code": 51,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/%28index%29/%28components%29/CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin.tsx": {
+    "language": "TypeScript JSX",
+    "code": 283,
+    "comment": 25,
+    "blank": 48
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/%28index%29/%28components%29/CircularityIndexBarChartBreakdown.tsx": {
+    "language": "TypeScript JSX",
+    "code": 88,
+    "comment": 0,
+    "blank": 7
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/%28index%29/%28components%29/CircularityIndexBreakdownByMaterialType/logic.ts": {
+    "language": "TypeScript",
+    "code": 84,
+    "comment": 12,
+    "blank": 14
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/components/%5BcomponentUuid%5D/%28components%29/HistoryBackButton.tsx": {
+    "language": "TypeScript JSX",
+    "code": 26,
+    "comment": 1,
+    "blank": 7
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/test/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 42,
+    "comment": 79,
+    "blank": 12
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/components/%5BcomponentUuid%5D/%28components%29/circularity-info.tsx": {
+    "language": "TypeScript JSX",
+    "code": 260,
+    "comment": 6,
+    "blank": 18
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/%28utils%29/i18nFormattingOptions.ts": {
+    "language": "TypeScript",
+    "code": 16,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/components/%5BcomponentUuid%5D/%28components%29/layer-details/circularity-info/CircularityInfo.tsx": {
+    "language": "TypeScript JSX",
+    "code": 46,
+    "comment": 2,
+    "blank": 9
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/pdf-optimized/SideBySideDescriptionListsWithHeadline.tsx": {
+    "language": "TypeScript JSX",
+    "code": 52,
+    "comment": 6,
+    "blank": 10
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/%28index%29/%28components%29/CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType.tsx": {
+    "language": "TypeScript JSX",
+    "code": 207,
+    "comment": 94,
+    "blank": 49
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/report-bundle-size.js": {
+    "language": "JavaScript",
+    "code": 76,
+    "comment": 31,
+    "blank": 27
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%28utils%29/client-providers.tsx": {
+    "language": "TypeScript JSX",
+    "code": 15,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/components/%5BcomponentUuid%5D/%28components%29/layer-details/circularity-info/TBaustoffProductNameOrSelectorButton.tsx": {
+    "language": "TypeScript JSX",
+    "code": 114,
+    "comment": 0,
+    "blank": 14
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/pdf-optimized/%5BpassportId%5D/BuildingInformation.tsx": {
+    "language": "TypeScript JSX",
+    "code": 49,
+    "comment": 2,
+    "blank": 3
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/pdf-optimized/%28components%29/layout-elements.tsx": {
+    "language": "TypeScript JSX",
+    "code": 50,
+    "comment": 3,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/pdf-optimized/%5BpassportId%5D/Footer.tsx": {
+    "language": "TypeScript JSX",
+    "code": 29,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/pdf-optimized/%5BpassportId%5D/MaterialsModule/MaterialsModule.tsx": {
+    "language": "TypeScript JSX",
+    "code": 98,
+    "comment": 0,
+    "blank": 10
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/pdf-optimized/%5BpassportId%5D/ResourcesModule/ResourcesChartLegendTable.tsx": {
+    "language": "TypeScript JSX",
+    "code": 60,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/components/%5BcomponentUuid%5D/%28components%29/layer-details/circularity-info/circularity-details/DisturbingSubstances.tsx": {
+    "language": "TypeScript JSX",
+    "code": 237,
+    "comment": 1,
+    "blank": 27
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/components/%5BcomponentUuid%5D/%28components%29/layer-details/circularity-info/circularity-details/CircularityDetails.tsx": {
+    "language": "TypeScript JSX",
+    "code": 345,
+    "comment": 3,
+    "blank": 32
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/pdf-optimized/%5BpassportId%5D/page.tsx": {
+    "language": "TypeScript JSX",
+    "code": 38,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/pdf-optimized/layout.tsx": {
+    "language": "TypeScript JSX",
+    "code": 39,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/components/%5BcomponentUuid%5D/%28components%29/layer-details/ComponentLayer.tsx": {
+    "language": "TypeScript JSX",
+    "code": 97,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/pdf-optimized/%5BpassportId%5D/ResourcesModule/PenrtSection.tsx": {
+    "language": "TypeScript JSX",
+    "code": 78,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/pdf-optimized/%5BpassportId%5D/ResourcesModule/RmiSection.tsx": {
+    "language": "TypeScript JSX",
+    "code": 112,
+    "comment": 3,
+    "blank": 9
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/pdf-optimized/%5BpassportId%5D/ResourcesModule/GwpSection.tsx": {
+    "language": "TypeScript JSX",
+    "code": 81,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/pdf-optimized/%5BpassportId%5D/CircularityModule/index.tsx": {
+    "language": "TypeScript JSX",
+    "code": 80,
+    "comment": 2,
+    "blank": 7
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/grp/pdf-optimized/%5BpassportId%5D/ResourcesModule/index.tsx": {
+    "language": "TypeScript JSX",
+    "code": 23,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/components/%5BcomponentUuid%5D/%28components%29/layer-details/circularity-info/circularity-details/disturbing-substances/BuiltS4SpecificScenarioModal.tsx": {
+    "language": "TypeScript JSX",
+    "code": 249,
+    "comment": 0,
+    "blank": 12
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/components/%5BcomponentUuid%5D/%28components%29/layer-details/circularity-info/circularity-details/EolScenarioInfoBox.tsx": {
+    "language": "TypeScript JSX",
+    "code": 36,
+    "comment": 2,
+    "blank": 6
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/app/%5Blocale%5D/%28circularity%29/projects/%5BprojectId%5D/catalog/components/%5BcomponentUuid%5D/%28components%29/layer-details/circularity-info/circularity-details/EOLScenarioEditButton.tsx": {
+    "language": "TypeScript JSX",
+    "code": 178,
+    "comment": 0,
+    "blank": 23
+  },
+  "file:///Volumes/nextcoder/code/elca/new-app/passport/elca_db_init.sql": {
+    "language": "MS SQL",
+    "code": 205008,
+    "comment": 2836,
+    "blank": 3218
+  }
+}

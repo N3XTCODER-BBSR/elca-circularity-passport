@@ -14,14 +14,21 @@ import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEo
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
   componentInstanceId: string,
   userId: string
+  // <<<<<<< HEAD
+  // ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
+  //   const projectComponents: ElcaProjectComponentRow[] = await getElcaProjectComponentsByInstanceIdAndUserId(
+  //     componentInstanceId,
+  //     userId
+  //   )
+  // =======
 ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
-  const projectComponents: ElcaProjectComponentRow[] = await getElcaProjectComponentsByInstanceIdAndUserId(
-    componentInstanceId,
-    userId
-  )
+  const projectComponents = await getElcaProjectComponentsByInstanceIdAndUserId(componentInstanceId, Number(userId))
+  // >>>>>>> feat-test-legacy-db-dals
 
   const componentIds = Array.from(new Set(projectComponents.map((c) => c.component_id)))
-  const oekobaudatProcessUuids = Array.from(new Set(projectComponents.map((c) => c.oekobaudat_process_uuid)))
+  const oekobaudatProcessUuids = Array.from(
+    new Set(projectComponents.map((c) => c.oekobaudat_process_uuid).filter(Boolean))
+  )
 
   const [userDefinedTBaustoffDataList, tBaustoffMappingEntries] = await Promise.all([
     getUserDefinedTBaustoffData(componentIds),
@@ -36,7 +43,16 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   const tBaustoffProductsList = await getTBaustoffProducts(tBaustoffProductIds)
   const tBaustoffProductMap = createMap(tBaustoffProductsList, (product) => product.id)
 
-  //         const { element_name, element_type_name, din_code, unit } = components[0]!
+  // <<<<<<< HEAD
+  //   //         const { element_name, element_type_name, din_code, unit } = components[0]!
+  // =======
+  // const projectComponentsWithLayers = processProjectComponents(
+  //   projectComponents as ElcaProjectComponentRow[],
+  //   userDefinedTBaustoffDataMap,
+  //   tBaustoffMappingEntriesMap,
+  //   tBaustoffProductMap
+  // )
+  // >>>>>>> feat-test-legacy-db-dals
 
   //         const layers = processLayers(components, userDefinedMap, mappingEntriesMap, productMap)
 
@@ -58,7 +74,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
     din_code: componentData?.din_code,
     unit: componentData?.unit,
     layers: await processLayers(
-      projectComponents,
+      // projectComponents,
       userDefinedTBaustoffDataMap,
       tBaustoffMappingEntriesMap,
       tBaustoffProductMap
@@ -91,7 +107,7 @@ function getUniqueTBaustoffProductIds(
 
 function getTBaustoffProductData(
   componentId: number,
-  oekobaudatProcessUuid: string,
+  oekobaudatProcessUuid: string | null,
   userDefinedMap: Map<number, UserEnrichedProductData>,
   mappingEntriesMap: Map<string, TBs_OekobaudatMapping>,
   productMap: Map<
@@ -105,7 +121,7 @@ function getTBaustoffProductData(
   let productId = userDefinedData?.tBaustoffProductDefinitionId
 
   if (productId == null) {
-    const mappingEntry = mappingEntriesMap.get(oekobaudatProcessUuid)
+    const mappingEntry = mappingEntriesMap.get(oekobaudatProcessUuid!)
     productId = mappingEntry?.tBs_productId
   }
 

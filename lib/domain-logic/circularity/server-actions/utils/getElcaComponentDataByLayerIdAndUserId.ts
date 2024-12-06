@@ -15,11 +15,11 @@ import { getElcaComponentDataByLayerIdAndUserId } from "prisma/queries/legacyDb"
 import { calculateEolDataByEolCateogryData } from "../../utils/calculateEolDataByEolCateogryData"
 
 export const fetchElcaComponentByIdAndUserId = async (layerId: number, userId: string) => {
-  const projectComponent = await getElcaComponentDataByLayerIdAndUserId(layerId, userId)
+  const projectComponent = await getElcaComponentDataByLayerIdAndUserId(layerId)
 
   const [userDefinedData, mappingEntry] = await Promise.all([
     getUserDefinedTBaustoffDataForComponentId(layerId),
-    getTBaustoffMappingEntry(projectComponent.oekobaudat_process_uuid, projectComponent.oekobaudat_process_db_uuid),
+    getTBaustoffMappingEntry(projectComponent.oekobaudat_process_uuid, projectComponent.oekobaudat_process_db_uuid!),
   ])
 
   const productId = userDefinedData?.tBaustoffProductDefinitionId ?? mappingEntry?.tBs_productId
@@ -29,7 +29,12 @@ export const fetchElcaComponentByIdAndUserId = async (layerId: number, userId: s
     product = await getTBaustoffProduct(productId)
   }
 
-  const enrichedComponent = processProjectComponent(projectComponent, userDefinedData, mappingEntry, product)
+  const enrichedComponent = processProjectComponent(
+    projectComponent as unknown as ElcaProjectComponentRow, // TODO: adapt types so they are compatible to Prisma types
+    userDefinedData,
+    mappingEntry,
+    product
+  )
 
   return enrichedComponent
 }
