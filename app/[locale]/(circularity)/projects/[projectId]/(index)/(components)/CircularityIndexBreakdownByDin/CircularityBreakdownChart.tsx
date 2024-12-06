@@ -2,8 +2,12 @@
 "use client"
 import React, { useState } from "react"
 import { ResponsiveBar } from "@nivo/bar"
+import { transformCircularityDataAndDinHierachyToChartTree } from "./transformCircularityDataAndDinHierachyToChartTree"
+import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { getWeightByProductId } from "lib/domain-logic/circularity/server-actions/getWeightByProductId"
 
-type ChartDataLeaf = {
+export type ChartDataLeaf = {
   isLeaf: true
   metricValue: number
   dimensionalValue: number
@@ -11,7 +15,7 @@ type ChartDataLeaf = {
   resourceId: string
 }
 
-type ChartDataInternalNode = {
+export type ChartDataInternalNode = {
   isLeaf: false
   metricValue: number
   dimensionalValue: number
@@ -19,9 +23,9 @@ type ChartDataInternalNode = {
   children: ChartDataNode[]
 }
 
-type ChartDataNode = ChartDataLeaf | ChartDataInternalNode
+export type ChartDataNode = ChartDataLeaf | ChartDataInternalNode
 
-type ChartAndBreadCrumpComponentProps = {
+export type ChartAndBreadCrumpComponentProps = {
   rootChartDataNode: ChartDataNode
   leafClickHandler: (resourceId: string) => void
   title: string
@@ -296,11 +300,15 @@ function exampleLeafClickHandler(resourceId: string) {
   alert(`Leaf clicked: ${resourceId}`)
 }
 
+type ExamplePageProps = {
+  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
+}
 // Example usage in a page or parent component
-export default function ExamplePage() {
+export default async function ExamplePage(props: ExamplePageProps) {
+  const chartData = await transformCircularityDataAndDinHierachyToChartTree(props.circularityData, getWeightByProductId)
   return (
     <ChartAndBreadCrumpComponent
-      rootChartDataNode={sampleRoot}
+      rootChartDataNode={chartData}
       leafClickHandler={exampleLeafClickHandler}
       title="Zirkularitätsindex DIN 276"
       labelTotalDimensionalValue="Total mass"
