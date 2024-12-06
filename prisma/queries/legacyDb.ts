@@ -249,3 +249,65 @@ export const getProjectsByOwnerId = async (userId: number) => {
     },
   })
 }
+
+export const isUserAuthorizedToElementComponent = async (userId: number, elementComponentId: number) => {
+  return await prismaLegacy.elca_element_components.findFirst({
+    where: {
+      id: elementComponentId,
+      OR: [
+        // Element is public
+        {
+          elements: {
+            is_public: true,
+          },
+        },
+        // User is authorized via project
+        {
+          elements: {
+            project_variants: {
+              projects_project_variants_project_idToprojects: {
+                OR: getProjectAuthorizationConditions(userId),
+              },
+            },
+          },
+        },
+      ],
+    },
+    select: { id: true },
+  })
+}
+
+export const isUserAuthorizedToProject = async (userId: number, projectId: number) => {
+  return await prismaLegacy.projects.findFirst({
+    where: {
+      id: projectId,
+      OR: getProjectAuthorizationConditions(userId),
+    },
+    select: { id: true },
+  })
+}
+
+const getProjectAuthorizationConditions = (userId: number) => [
+  // User is the owner of the project
+  { owner_id: userId },
+  // User is a member of the project's access group
+  {
+    groups: {
+      group_members: {
+        some: {
+          user_id: userId,
+        },
+      },
+    },
+  },
+  // User has a confirmed access token for the project
+  {
+    project_access_tokens: {
+      some: {
+        user_id: userId,
+        is_confirmed: true,
+        can_edit: true,
+      },
+    },
+  },
+]

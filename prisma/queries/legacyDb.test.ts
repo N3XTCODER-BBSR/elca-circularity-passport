@@ -5,7 +5,10 @@ import {
   getElcaProjectElementsByProjectIdAndUserId,
   getProjectsByIdAndOwnerId,
   getProjectsByOwnerId,
+  isUserAuthorizedToElementComponent,
+  isUserAuthorizedToProject,
 } from "./legacyDb"
+import { createUser, deleteUserIfExists } from "./utils"
 
 describe("legacyDb", () => {
   describe("getElcaComponentDataByLayerIdAndUserId", () => {
@@ -214,6 +217,64 @@ describe("legacyDb", () => {
 
       expect(result).toHaveLength(want.length)
       expect(result[0]).toMatchObject(want[0]!)
+    })
+  })
+  describe("isUserAuthorizedToProject", () => {
+    beforeEach(() => {})
+
+    it("should return the project id if the user is authorized to the project", async () => {
+      const result = await isUserAuthorizedToProject(2, 1)
+
+      const want = { id: 1 }
+
+      expect(result).toMatchObject(want)
+    })
+    it("should return null if the user is does not exist", async () => {
+      const result = await isUserAuthorizedToProject(3, 1)
+
+      const want = null
+
+      expect(result).toBe(want)
+    })
+    it("should return null if the user is not authorized to the project", async () => {
+      const userId = 3
+      await createUser(userId, "testuser2")
+
+      const result = await isUserAuthorizedToProject(userId, 2)
+
+      const want = null
+
+      expect(result).toBe(want)
+
+      await deleteUserIfExists(userId)
+    })
+  })
+  describe("isUserAuthorizedToElementComponent", () => {
+    it("should return the element component id if the user is authorized to the element component", async () => {
+      const result = await isUserAuthorizedToElementComponent(2, 5)
+
+      const want = { id: 5 }
+
+      expect(result).toMatchObject(want)
+    })
+    it("should return null if the user does not exist", async () => {
+      const result = await isUserAuthorizedToElementComponent(3, 5)
+
+      const want = null
+
+      expect(result).toBe(want)
+    })
+    it("should return null if the user is not authorized to the element component", async () => {
+      const userId = 3
+      await createUser(userId, "testuser2")
+
+      const result = await isUserAuthorizedToElementComponent(userId, 5)
+
+      const want = null
+
+      expect(result).toBe(want)
+
+      await deleteUserIfExists(userId)
     })
   })
 })

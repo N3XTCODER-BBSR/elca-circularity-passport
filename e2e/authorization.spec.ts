@@ -1,15 +1,14 @@
 import { expect, test } from "@playwright/test"
-import { createUser, deleteUserIfExists } from "./utils"
+import { createUser, deleteUserIfExists } from "prisma/queries/utils"
 
 const username = "testuser2"
 const password = "password1!"
 const userId = 1000
-const hashedPassword = "$1$6a7aabf1$tHpd7.FjG03D18kbREnsa1" // hashed password1!
 
 test.describe("Authorization", () => {
   test.beforeEach(async ({ page }) => {
     await deleteUserIfExists(userId)
-    await createUser(userId, username, hashedPassword)
+    await createUser(userId, username)
 
     await page.goto("/auth/signin")
 
