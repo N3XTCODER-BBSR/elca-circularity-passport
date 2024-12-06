@@ -89,6 +89,7 @@ The following scripts are available in the `package.json`:
 - `dev`: Starts the development server
 - `build`: Builds the app for production
 - `start`: Starts the production server
+- `start:docker`: Build and start docker containers for the app, and the two DBs
 - `lint`: Lints the code using ESLint
 - `lint:fix`: Automatically fixes linting errors
 - `prettier`: Checks the code for proper formatting
