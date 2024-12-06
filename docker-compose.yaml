@@ -21,7 +21,7 @@ services:
       - '65433:5432'
     environment:
       POSTGRES_DB: elca
-      POSTGRES_USER: elca # this is the superuser, elca_read_only is the read only user
+      POSTGRES_USER: elca # HINT: this is the superuser, elca_read_only is the read only user
       POSTGRES_PASSWORD: password
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U elca -d elca"]
@@ -30,4 +30,59 @@ services:
       retries: 5
     volumes:
       - ./legacy_db_data:/var/lib/postgresql/data
-      - ./elca_db_init.sql:/docker-entrypoint-initdb.d/elca_db_init.sql # scripts in docker-entrypoint-initdb.d will be run on container startup
+      - ./elca_db_init.sql:/docker-entrypoint-initdb.d/elca_db_init.sql # HINT: scripts in docker-entrypoint-initdb.d will be run on container startup
+
+  app-e2e-tests:
+    profiles:
+      - e2e-tests
+    build: 
+      context: .
+      dockerfile: Dockerfile.e2e
+      args:
+        DATABASE_URL: postgres://building_passport:password@localhost:65432/building_passport
+        ELCA_LEGACY_DATABASE_URL: postgres://elca:password@localhost:65433/elca
+        ELCA_LEGACY_DATABASE_HAS_SSL: ${ELCA_LEGACY_DATABASE_HAS_SSL}
+        DOPPIO_API_KEY: ${DOPPIO_API_KEY}
+        HTTP_BASIC_AUTH: ${HTTP_BASIC_AUTH}
+        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+        NEXT_PUBLIC_PASSPORT_BASE_URL: ${NEXT_PUBLIC_PASSPORT_BASE_URL}
+        NEXT_TELEMETRY_DISABLED: ${NEXT_TELEMETRY_DISABLED}
+        PRISMA_TELEMETRY_DISABLED: ${PRISMA_TELEMETRY_DISABLED}
+    command: sh -c "yarn prisma:generate && npx prisma migrate deploy && PORT=3005 yarn start"
+    environment:
+      DATABASE_URL: postgres://building_passport:password@e2e-db:5432/building_passport
+      ELCA_LEGACY_DATABASE_URL: postgres://elca:password@e2e-legacy-db:5432/elca
+      NEXTAUTH_URL: http://localhost:3005
+    depends_on:
+      - e2e-db
+      - e2e-legacy-db
+    ports:
+      - '3005:3005'
+    env_file: .env.test
+
+  e2e-db:
+    profiles:
+      - e2e-tests
+    image: 'postgres:16.3'
+    restart: always
+    ports:
+      - '65432:5432'
+    environment:
+      POSTGRES_DB: building_passport
+      POSTGRES_USER: building_passport
+      POSTGRES_PASSWORD: password
+
+  e2e-legacy-db:
+    profiles:
+      - e2e-tests
+    image: 'postgres:13-alpine'
+    restart: always
+    ports:
+      - '65433:5432'
+    environment:
+      POSTGRES_DB: elca
+      POSTGRES_USER: elca
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./legacy_db_data:/var/lib/postgresql/data
+      - ./elca_db_dump.sql:/docker-entrypoint-initdb.d/elca_db_dump.sql # HINT: the elca_db_dump.sql script runs when the container is created. It only runs if ./legacy_db_data doesn't contain data so that the database has not been initialized before
