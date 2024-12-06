@@ -11,9 +11,10 @@ const buildingPassportDbPassword = "password"
 
 const elcaDbName = "elca"
 const elcaDbUsername = "elca"
+const elcaDbReadOnlyUsername = "elca_read_only"
 const elcaDbPassword = "password"
 
-const elcaDbDumpFile = "elca_db_dump.sql"
+const elcaDbDumpFile = "elca_db_init.sql"
 
 const main = async () => {
   try {
@@ -41,18 +42,18 @@ const main = async () => {
     const elcaDbPort = elcaDbContainer.getMappedPort(5432).toString()
 
     const passportDbUrl = `postgres://${buildingPassportDbUsername}:${buildingPassportDbPassword}@localhost:${passportDbPort}/${buildingPassportDbName}`
-    const elcaDbUrl = `postgres://${elcaDbUsername}:${elcaDbPassword}@localhost:${elcaDbPort}/${elcaDbName}`
-
-    process.env.DATABASE_URL = passportDbUrl
-    process.env.ELCA_LEGACY_DATABASE_URL = elcaDbUrl
-    ;(globalThis as unknown as { [key: string]: StartedTestContainer }).__PASSPORT_DB_CONTAINER__ = passportDbContainer
-    ;(globalThis as unknown as { [key: string]: StartedTestContainer }).__ELCA_DB_CONTAINER__ = elcaDbContainer
+    const elcaDbUrlWithReadOnlyUser = `postgres://${elcaDbReadOnlyUsername}:${elcaDbPassword}@localhost:${elcaDbPort}/${elcaDbName}`
 
     // migrations for passport db
     await execAsync(`DATABASE_URL=${passportDbUrl} yarn prisma migrate deploy`)
 
     // run migrations for elca db
     await elcaDbContainer.exec(["psql", "-U", elcaDbUsername, "-f", `/tmp/${elcaDbDumpFile}`])
+
+    process.env.DATABASE_URL = passportDbUrl
+    process.env.ELCA_LEGACY_DATABASE_URL = elcaDbUrlWithReadOnlyUser
+    ;(globalThis as unknown as { [key: string]: StartedTestContainer }).__PASSPORT_DB_CONTAINER__ = passportDbContainer
+    ;(globalThis as unknown as { [key: string]: StartedTestContainer }).__ELCA_DB_CONTAINER__ = elcaDbContainer
   } catch (error) {
     console.error(error)
     process.exit(1)
