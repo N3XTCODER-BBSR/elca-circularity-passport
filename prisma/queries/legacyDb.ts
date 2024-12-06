@@ -130,8 +130,6 @@ export const getElcaProjectComponentsByInstanceIdAndUserId = async (componentIns
           process_configs: {
             select: {
               process_category_node_id: true,
-            },
-            include: {
               process_life_cycle_assignments: {
                 include: {
                   processes: {

@@ -25,7 +25,7 @@ const Test = async () => {
 
   const products: CalculateCircularityDataForLayerReturnType[] = circularityData.flatMap((el) => el.layers)
 
-  const FOO = products.map(
+  const materialNodes: MaterialNode[] = products.map(
     (el) =>
       ({
         component_uuid: el.element_uuid,
@@ -35,7 +35,7 @@ const Test = async () => {
       }) as MaterialNode
   )
 
-  const tree = buildTree(dataTestResult, FOO)
+  const tree = buildTree(dataTestResult, materialNodes)
 
   //   const dataTestResult = await prismaLegacy.elca_project_variants.findFirst({
   //     where: {
