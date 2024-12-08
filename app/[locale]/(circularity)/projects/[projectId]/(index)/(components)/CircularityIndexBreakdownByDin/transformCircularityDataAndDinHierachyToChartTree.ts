@@ -19,17 +19,20 @@ type GetWeightByProductIdFn = (componentId: number) => Promise<number>
  * 2. Create leaf nodes for each layer (CalculateCircularityDataForLayerReturnType).
  * 3. Build internal nodes from `din276Hierarchy` that contain these leaf nodes.
  * 4. Compute weighted average `metricValue` for internal nodes.
+ * 5. If `skipRootNode` is true, ensure that the `rootLabel` is used at the top level but
+ *    remove any unnecessary single top-level node layer so we don't start with a single bar.
  *
  * @param circularityData array of ElcaElementWithComponents
  * @param getWeightByProductId function to get the weight for a given product_id
- * @param rootLabel label for the root node (if you want a single artificial root)
+ * @param rootLabel the projectName or main title for the root breadcrumb
+ * @param skipRootNode if true, we do not show the artificial root node from the DIN hierarchy and start directly from the next level down, but still use `rootLabel` for the top-level.
  * @returns ChartDataNode representing the entire hierarchy
  */
 export async function transformCircularityDataAndDinHierachyToChartTree(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
-  // TODO: move this out and do the weight enrichment upstream in datalayer / domin layer
   getWeightByProductId: GetWeightByProductIdFn,
-  rootLabel: string
+  rootLabel: string,
+  skipRootNode = true
 ): Promise<ChartDataNode> {
   // 1. Filter data
   const filteredData = filterDataByCostGroup(circularityData)
@@ -38,19 +41,41 @@ export async function transformCircularityDataAndDinHierachyToChartTree(
   const dinCodeToLeaves = await buildDinCodeToLeafNodesMap(filteredData, getWeightByProductId)
 
   // 3. Build the hierarchy from `din276Hierarchy`
-  //    We might have multiple top-level groups. Let's create a single root that contains them.
   const children = din276Hierarchy
     .map((group) => buildNodeFromGroup(group, dinCodeToLeaves))
     .filter((node): node is ChartDataInternalNode => node !== null)
 
-  // If there's only one top-level node, you could return it directly.
-  // Otherwise, return a root node combining all top-level groups.
-  const rootNode: ChartDataInternalNode = {
-    isLeaf: false,
-    label: rootLabel,
-    children: children,
-    metricValue: 0, // Will compute after building children
-    dimensionalValue: 0,
+  let rootNode: ChartDataNode
+
+  if (skipRootNode) {
+    // We don't show the artificial DIN root node.
+    // Instead, use rootLabel for the top-level node.
+
+    // Even if there are multiple top-level nodes, we combine them:
+    rootNode = {
+      isLeaf: false,
+      label: rootLabel,
+      children: children,
+      metricValue: 0,
+      dimensionalValue: 0,
+    }
+
+    // After building, if there's exactly one top-level child and it's internal,
+    // we "flatten" it by lifting its children up. This avoids starting with a single bar.
+    if (rootNode.children.length === 1 && !rootNode.children[0]!.isLeaf) {
+      const singleChild = rootNode.children[0] as ChartDataInternalNode
+      // Replace root's children with singleChild's children
+      rootNode.children = singleChild.children
+    }
+  } else {
+    // skipRootNode = false: we show an artificial root node
+    rootNode = {
+      isLeaf: false,
+      label: rootLabel,
+      children: children,
+      metricValue: 0, // Will compute after building children
+      dimensionalValue: 0,
+    }
   }
 
   // 4. Compute weighted averages bottom-up
@@ -101,10 +126,7 @@ async function buildDinCodeToLeafNodesMap(
   return map
 }
 
-/**
- * Recursively build a node from a ComponentGroup.
- * If the group or its descendants don't have any leaves, return null.
- */
+/** Build a node from a ComponentGroup. Returns null if no descendants. */
 function buildNodeFromGroup(
   group: ComponentGroup,
   dinCodeToLeaves: Map<number, ChartDataLeaf[]>
@@ -113,9 +135,7 @@ function buildNodeFromGroup(
     .map((category) => buildNodeFromCategory(category, dinCodeToLeaves))
     .filter((node): node is ChartDataInternalNode => node !== null)
 
-  if (childrenNodes.length === 0) {
-    return null
-  }
+  if (childrenNodes.length === 0) return null
 
   return {
     isLeaf: false,
@@ -126,10 +146,7 @@ function buildNodeFromGroup(
   }
 }
 
-/**
- * Recursively build a node from a ComponentCategory.
- * If the category or its descendants have no leaves, return null.
- */
+/** Build a node from a ComponentCategory. Returns null if no descendants. */
 function buildNodeFromCategory(
   category: ComponentCategory,
   dinCodeToLeaves: Map<number, ChartDataLeaf[]>
@@ -138,9 +155,7 @@ function buildNodeFromCategory(
     .map((type) => buildNodeFromType(type, dinCodeToLeaves))
     .filter((node): node is ChartDataNode => node !== null)
 
-  if (childrenNodes.length === 0) {
-    return null
-  }
+  if (childrenNodes.length === 0) return null
 
   return {
     isLeaf: false,
@@ -151,58 +166,35 @@ function buildNodeFromCategory(
   }
 }
 
-/**
- * Build a node from a ComponentType.
- * A ComponentType can have multiple leaf nodes (if multiple elements matched this din_code)
- * or no leaves at all. If no leaves, return null.
- */
+/** Build a node from a ComponentType. Returns null if no leaves. */
 function buildNodeFromType(type: ComponentType, dinCodeToLeaves: Map<number, ChartDataLeaf[]>): ChartDataNode | null {
   const leaves = dinCodeToLeaves.get(type.number)
   if (!leaves || leaves.length === 0) {
     return null
   }
 
-  // If there are multiple leaves, we keep it as an internal node containing those leaves.
-  // If there's only one leaf, we could directly return that leaf. But let's keep hierarchy consistent:
-  // The instructions do not say we must flatten single-child nodes. We'll keep it as internal with children.
-  if (leaves.length === 1) {
-    // Optionally, return the leaf directly if you prefer:
-    // return leaves[0]
-  }
-
   return {
     isLeaf: false,
     label: `${type.number}: ${type.name}`,
-    children: leaves, // all leaves for this DIN code
+    children: leaves,
     metricValue: 0,
     dimensionalValue: 0,
   }
 }
 
-/**
- * Compute weighted metric values for internal nodes by aggregating their children.
- * For leaves, metricValue is already set.
- * For internal nodes: metricValue = sum(child.metricValue*child.dimensionalValue) / sum(child.dimensionalValue)
- */
+/** Compute weighted metric values for internal nodes recursively. */
 function computeWeightedMetrics(node: ChartDataNode): void {
-  if (node.isLeaf) {
-    // Leaf: metricValue and dimensionalValue already set
-    return
-  }
+  if (node.isLeaf) return
 
-  // Internal node: compute children's metrics first
   for (const child of node.children) {
     computeWeightedMetrics(child)
   }
 
   let totalWeight = 0
   let weightedSum = 0
-
   for (const child of node.children) {
-    const childMetric = child.metricValue
-    const childDim = child.dimensionalValue
-    totalWeight += childDim
-    weightedSum += childMetric * childDim
+    totalWeight += child.dimensionalValue
+    weightedSum += child.metricValue * child.dimensionalValue
   }
 
   node.dimensionalValue = totalWeight
