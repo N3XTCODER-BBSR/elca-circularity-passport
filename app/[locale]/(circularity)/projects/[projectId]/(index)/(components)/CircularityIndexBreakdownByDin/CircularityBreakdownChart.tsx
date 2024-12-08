@@ -6,6 +6,7 @@ import { transformCircularityDataAndDinHierachyToChartTree } from "./transformCi
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { getWeightByProductId } from "lib/domain-logic/circularity/server-actions/getWeightByProductId"
+import { useRouter } from "next/navigation"
 
 export type ChartDataLeaf = {
   isLeaf: true
@@ -295,17 +296,28 @@ function mapDatumToColor(value: number): string {
 //   ],
 // }
 
-// Example leaf click handler
-function exampleLeafClickHandler(resourceId: string) {
-  alert(`Leaf clicked: ${resourceId}`)
-}
+// function getDetailLinkForLeaf(label: string) {
+//     // On leaf level, we have components. The identifier is an element_uuid
+//     const clickedItem = chartData.find((item) => item.label === label)
+//     if (!clickedItem) return undefined
+//     return
+//   }
 
 type CircularityBreakdownChartProps = {
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   projectName: string
+  projectId: number
 }
+
 // Example usage in a page or parent component
 export default async function CircularityBreakdownChart(props: CircularityBreakdownChartProps) {
+  const router = useRouter()
+
+  function exampleLeafClickHandler(resourceId: string) {
+    const detailLink = `/projects/${props.projectId}/catalog/components/${resourceId}`
+    if (detailLink) router.push(detailLink)
+  }
+
   const chartData = await transformCircularityDataAndDinHierachyToChartTree(
     props.circularityData,
     getWeightByProductId,

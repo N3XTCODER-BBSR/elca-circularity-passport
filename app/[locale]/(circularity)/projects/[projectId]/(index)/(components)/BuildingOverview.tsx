@@ -124,7 +124,11 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
             <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
           </div>
           <div className="mx-8 my-24 h-[170px]">
-            <CircularityBreakdownChart circularityData={circularityData} projectName={projectName} />
+            <CircularityBreakdownChart
+              circularityData={circularityData}
+              projectName={projectName}
+              projectId={projectId}
+            />
             <CircularityIndexBreakdownByDin
               projectId={projectId}
               projectName={projectName}
