@@ -28,17 +28,17 @@ type GetWeightByProductIdFn = (componentId: number) => Promise<number>
  * @param skipRootNode if true, we do not show the artificial root node from the DIN hierarchy and start directly from the next level down, but still use `rootLabel` for the top-level.
  * @returns ChartDataNode representing the entire hierarchy
  */
-export async function transformCircularityDataAndDinHierachyToChartTree(
+export function transformCircularityDataAndDinHierachyToChartTree(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
-  getWeightByProductId: GetWeightByProductIdFn,
+  // getWeightByProductId: GetWeightByProductIdFn,
   rootLabel: string,
   skipRootNode = true
-): Promise<ChartDataNode> {
+): ChartDataNode {
   // 1. Filter data
   const filteredData = filterDataByCostGroup(circularityData)
 
   // 2. Map DIN codes to leaf nodes
-  const dinCodeToLeaves = await buildDinCodeToLeafNodesMap(filteredData, getWeightByProductId)
+  const dinCodeToLeaves = buildDinCodeToLeafNodesMap(filteredData) //, getWeightByProductId)
 
   // 3. Build the hierarchy from `din276Hierarchy`
   const children = din276Hierarchy
@@ -95,16 +95,17 @@ function filterDataByCostGroup(
 }
 
 /** Build a map from DIN code to an array of leaf nodes (ChartDataLeaf). */
-async function buildDinCodeToLeafNodesMap(
-  data: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
-  getWeightByProductId: GetWeightByProductIdFn
-): Promise<Map<number, ChartDataLeaf[]>> {
+function buildDinCodeToLeafNodesMap(
+  data: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
+  // getWeightByProductId: GetWeightByProductIdFn
+): Map<number, ChartDataLeaf[]> {
   const map = new Map<number, ChartDataLeaf[]>()
 
   for (const element of data) {
     const { din_code } = element
     for (const layer of element.layers) {
-      const weight = layer.weight ?? (await getWeightByProductId(layer.component_id))
+      console.log("FOO layer.weight", layer.weight)
+      const weight = layer.weight //?? (await getWeightByProductId(layer.component_id))
       const metricValue = layer.circularityIndex ?? 0
       const dimensionalValue = weight
 

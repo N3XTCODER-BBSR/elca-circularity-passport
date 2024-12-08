@@ -73,7 +73,7 @@ const ChartAndBreadCrumpComponent: React.FC<ChartAndBreadCrumpComponentProps> = 
   }
 
   const chartData = !currentNode.isLeaf
-    ? currentNode.children.map((child) => ({
+    ? currentNode.children?.map((child) => ({
         identifier: child.label,
         datum: child.metricValue,
       }))
@@ -161,148 +161,6 @@ function mapDatumToColor(value: number): string {
   return "#FF0000"
 }
 
-/** Example usage with a sample tree data **/
-
-// Let's create a tree with 3 levels total, and 17 elements altogether.
-// Structure:
-// root (internal)
-//   - child1 (internal) -> 5 leaf children
-//   - child2 (internal) -> 4 leaf children
-//   - child3 (internal) -> 4 leaf children
-//
-// Counting: 1(root) + 3(internals) + (5+4+4)=13 leaves = 17 nodes total.
-
-// const sampleRoot: ChartDataInternalNode = {
-//   isLeaf: false,
-//   label: "Foo Test Project",
-//   metricValue: 80,
-//   dimensionalValue: 3000,
-//   children: [
-//     {
-//       isLeaf: false,
-//       label: "Category A",
-//       metricValue: 50,
-//       dimensionalValue: 1000,
-//       children: [
-//         {
-//           isLeaf: true,
-//           label: "A1",
-//           metricValue: 10,
-//           dimensionalValue: 200,
-//           resourceId: "res-a1",
-//         },
-//         {
-//           isLeaf: true,
-//           label: "A2",
-//           metricValue: 15,
-//           dimensionalValue: 300,
-//           resourceId: "res-a2",
-//         },
-//         {
-//           isLeaf: true,
-//           label: "A3",
-//           metricValue: 5,
-//           dimensionalValue: 100,
-//           resourceId: "res-a3",
-//         },
-//         {
-//           isLeaf: true,
-//           label: "A4",
-//           metricValue: 12,
-//           dimensionalValue: 250,
-//           resourceId: "res-a4",
-//         },
-//         {
-//           isLeaf: true,
-//           label: "A5",
-//           metricValue: 8,
-//           dimensionalValue: 150,
-//           resourceId: "res-a5",
-//         },
-//       ],
-//     },
-//     {
-//       isLeaf: false,
-//       label: "Category B",
-//       metricValue: 30,
-//       dimensionalValue: 900,
-//       children: [
-//         {
-//           isLeaf: true,
-//           label: "B1",
-//           metricValue: 5,
-//           dimensionalValue: 200,
-//           resourceId: "res-b1",
-//         },
-//         {
-//           isLeaf: true,
-//           label: "B2",
-//           metricValue: 10,
-//           dimensionalValue: 300,
-//           resourceId: "res-b2",
-//         },
-//         {
-//           isLeaf: true,
-//           label: "B3",
-//           metricValue: 8,
-//           dimensionalValue: 250,
-//           resourceId: "res-b3",
-//         },
-//         {
-//           isLeaf: true,
-//           label: "B4",
-//           metricValue: 7,
-//           dimensionalValue: 150,
-//           resourceId: "res-b4",
-//         },
-//       ],
-//     },
-//     {
-//       isLeaf: false,
-//       label: "Category C",
-//       metricValue: 40,
-//       dimensionalValue: 1100,
-//       children: [
-//         {
-//           isLeaf: true,
-//           label: "C1",
-//           metricValue: 15,
-//           dimensionalValue: 300,
-//           resourceId: "res-c1",
-//         },
-//         {
-//           isLeaf: true,
-//           label: "C2",
-//           metricValue: 10,
-//           dimensionalValue: 300,
-//           resourceId: "res-c2",
-//         },
-//         {
-//           isLeaf: true,
-//           label: "C3",
-//           metricValue: 5,
-//           dimensionalValue: 200,
-//           resourceId: "res-c3",
-//         },
-//         {
-//           isLeaf: true,
-//           label: "C4",
-//           metricValue: 10,
-//           dimensionalValue: 300,
-//           resourceId: "res-c4",
-//         },
-//       ],
-//     },
-//   ],
-// }
-
-// function getDetailLinkForLeaf(label: string) {
-//     // On leaf level, we have components. The identifier is an element_uuid
-//     const clickedItem = chartData.find((item) => item.label === label)
-//     if (!clickedItem) return undefined
-//     return
-//   }
-
 type CircularityBreakdownChartProps = {
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   projectName: string
@@ -310,7 +168,7 @@ type CircularityBreakdownChartProps = {
 }
 
 // Example usage in a page or parent component
-export default async function CircularityBreakdownChart(props: CircularityBreakdownChartProps) {
+export default function CircularityBreakdownChart(props: CircularityBreakdownChartProps) {
   const router = useRouter()
 
   function exampleLeafClickHandler(resourceId: string) {
@@ -318,11 +176,7 @@ export default async function CircularityBreakdownChart(props: CircularityBreakd
     if (detailLink) router.push(detailLink)
   }
 
-  const chartData = await transformCircularityDataAndDinHierachyToChartTree(
-    props.circularityData,
-    getWeightByProductId,
-    props.projectName
-  )
+  const chartData = transformCircularityDataAndDinHierachyToChartTree(props.circularityData, props.projectName)
   return (
     <ChartAndBreadCrumpComponent
       rootChartDataNode={chartData}
