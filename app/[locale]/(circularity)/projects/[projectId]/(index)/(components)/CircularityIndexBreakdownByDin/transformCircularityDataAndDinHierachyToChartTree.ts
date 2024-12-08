@@ -29,7 +29,7 @@ export async function transformCircularityDataAndDinHierachyToChartTree(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
   // TODO: move this out and do the weight enrichment upstream in datalayer / domin layer
   getWeightByProductId: GetWeightByProductIdFn,
-  rootLabel: string = "Zirkularitätsindex DIN 276"
+  rootLabel: string
 ): Promise<ChartDataNode> {
   // 1. Filter data
   const filteredData = filterDataByCostGroup(circularityData)

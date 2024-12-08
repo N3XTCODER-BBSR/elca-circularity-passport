@@ -171,141 +171,146 @@ function mapDatumToColor(value: number): string {
 //
 // Counting: 1(root) + 3(internals) + (5+4+4)=13 leaves = 17 nodes total.
 
-const sampleRoot: ChartDataInternalNode = {
-  isLeaf: false,
-  label: "Foo Test Project",
-  metricValue: 80,
-  dimensionalValue: 3000,
-  children: [
-    {
-      isLeaf: false,
-      label: "Category A",
-      metricValue: 50,
-      dimensionalValue: 1000,
-      children: [
-        {
-          isLeaf: true,
-          label: "A1",
-          metricValue: 10,
-          dimensionalValue: 200,
-          resourceId: "res-a1",
-        },
-        {
-          isLeaf: true,
-          label: "A2",
-          metricValue: 15,
-          dimensionalValue: 300,
-          resourceId: "res-a2",
-        },
-        {
-          isLeaf: true,
-          label: "A3",
-          metricValue: 5,
-          dimensionalValue: 100,
-          resourceId: "res-a3",
-        },
-        {
-          isLeaf: true,
-          label: "A4",
-          metricValue: 12,
-          dimensionalValue: 250,
-          resourceId: "res-a4",
-        },
-        {
-          isLeaf: true,
-          label: "A5",
-          metricValue: 8,
-          dimensionalValue: 150,
-          resourceId: "res-a5",
-        },
-      ],
-    },
-    {
-      isLeaf: false,
-      label: "Category B",
-      metricValue: 30,
-      dimensionalValue: 900,
-      children: [
-        {
-          isLeaf: true,
-          label: "B1",
-          metricValue: 5,
-          dimensionalValue: 200,
-          resourceId: "res-b1",
-        },
-        {
-          isLeaf: true,
-          label: "B2",
-          metricValue: 10,
-          dimensionalValue: 300,
-          resourceId: "res-b2",
-        },
-        {
-          isLeaf: true,
-          label: "B3",
-          metricValue: 8,
-          dimensionalValue: 250,
-          resourceId: "res-b3",
-        },
-        {
-          isLeaf: true,
-          label: "B4",
-          metricValue: 7,
-          dimensionalValue: 150,
-          resourceId: "res-b4",
-        },
-      ],
-    },
-    {
-      isLeaf: false,
-      label: "Category C",
-      metricValue: 40,
-      dimensionalValue: 1100,
-      children: [
-        {
-          isLeaf: true,
-          label: "C1",
-          metricValue: 15,
-          dimensionalValue: 300,
-          resourceId: "res-c1",
-        },
-        {
-          isLeaf: true,
-          label: "C2",
-          metricValue: 10,
-          dimensionalValue: 300,
-          resourceId: "res-c2",
-        },
-        {
-          isLeaf: true,
-          label: "C3",
-          metricValue: 5,
-          dimensionalValue: 200,
-          resourceId: "res-c3",
-        },
-        {
-          isLeaf: true,
-          label: "C4",
-          metricValue: 10,
-          dimensionalValue: 300,
-          resourceId: "res-c4",
-        },
-      ],
-    },
-  ],
-}
+// const sampleRoot: ChartDataInternalNode = {
+//   isLeaf: false,
+//   label: "Foo Test Project",
+//   metricValue: 80,
+//   dimensionalValue: 3000,
+//   children: [
+//     {
+//       isLeaf: false,
+//       label: "Category A",
+//       metricValue: 50,
+//       dimensionalValue: 1000,
+//       children: [
+//         {
+//           isLeaf: true,
+//           label: "A1",
+//           metricValue: 10,
+//           dimensionalValue: 200,
+//           resourceId: "res-a1",
+//         },
+//         {
+//           isLeaf: true,
+//           label: "A2",
+//           metricValue: 15,
+//           dimensionalValue: 300,
+//           resourceId: "res-a2",
+//         },
+//         {
+//           isLeaf: true,
+//           label: "A3",
+//           metricValue: 5,
+//           dimensionalValue: 100,
+//           resourceId: "res-a3",
+//         },
+//         {
+//           isLeaf: true,
+//           label: "A4",
+//           metricValue: 12,
+//           dimensionalValue: 250,
+//           resourceId: "res-a4",
+//         },
+//         {
+//           isLeaf: true,
+//           label: "A5",
+//           metricValue: 8,
+//           dimensionalValue: 150,
+//           resourceId: "res-a5",
+//         },
+//       ],
+//     },
+//     {
+//       isLeaf: false,
+//       label: "Category B",
+//       metricValue: 30,
+//       dimensionalValue: 900,
+//       children: [
+//         {
+//           isLeaf: true,
+//           label: "B1",
+//           metricValue: 5,
+//           dimensionalValue: 200,
+//           resourceId: "res-b1",
+//         },
+//         {
+//           isLeaf: true,
+//           label: "B2",
+//           metricValue: 10,
+//           dimensionalValue: 300,
+//           resourceId: "res-b2",
+//         },
+//         {
+//           isLeaf: true,
+//           label: "B3",
+//           metricValue: 8,
+//           dimensionalValue: 250,
+//           resourceId: "res-b3",
+//         },
+//         {
+//           isLeaf: true,
+//           label: "B4",
+//           metricValue: 7,
+//           dimensionalValue: 150,
+//           resourceId: "res-b4",
+//         },
+//       ],
+//     },
+//     {
+//       isLeaf: false,
+//       label: "Category C",
+//       metricValue: 40,
+//       dimensionalValue: 1100,
+//       children: [
+//         {
+//           isLeaf: true,
+//           label: "C1",
+//           metricValue: 15,
+//           dimensionalValue: 300,
+//           resourceId: "res-c1",
+//         },
+//         {
+//           isLeaf: true,
+//           label: "C2",
+//           metricValue: 10,
+//           dimensionalValue: 300,
+//           resourceId: "res-c2",
+//         },
+//         {
+//           isLeaf: true,
+//           label: "C3",
+//           metricValue: 5,
+//           dimensionalValue: 200,
+//           resourceId: "res-c3",
+//         },
+//         {
+//           isLeaf: true,
+//           label: "C4",
+//           metricValue: 10,
+//           dimensionalValue: 300,
+//           resourceId: "res-c4",
+//         },
+//       ],
+//     },
+//   ],
+// }
 
 // Example leaf click handler
 function exampleLeafClickHandler(resourceId: string) {
   alert(`Leaf clicked: ${resourceId}`)
 }
 
-type ExamplePageProps = {
+type CircularityBreakdownChartProps = {
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
+  projectName: string
 }
 // Example usage in a page or parent component
-export default async function ExamplePage(props: ExamplePageProps) {
-  const chartData = await transformCircularityDataAndDinHierachyToChartTree(props.circularityData, getWeightByProductId)
+export default async function CircularityBreakdownChart(props: CircularityBreakdownChartProps) {
+  const chartData = await transformCircularityDataAndDinHierachyToChartTree(
+    props.circularityData,
+    getWeightByProductId,
+    props.projectName
+  )
   return (
     <ChartAndBreadCrumpComponent
       rootChartDataNode={chartData}
