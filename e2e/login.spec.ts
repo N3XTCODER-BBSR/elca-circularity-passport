@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test"
 test.describe("Login Page", () => {
   test("should redirect to login page from root URL", async ({ page }) => {
     // Navigate to the root URL
-    await page.goto("http://localhost:3000/")
+    await page.goto("/")
 
     // Expect the URL to be the login page URL
     await expect(page).toHaveURL(/\/auth\/signin/)
@@ -24,7 +24,7 @@ test.describe("Login Page", () => {
     }
 
     // Navigate to the login page
-    await page.goto("http://localhost:3000/auth/signin")
+    await page.goto("/auth/signin")
 
     // Fill the login form with correct credentials
     await page.fill('input[name="username"]', "admin_bbsr")
@@ -49,7 +49,7 @@ test.describe("Login Page", () => {
       return
     }
     // Navigate to the login page
-    await page.goto("http://localhost:3000/auth/signin")
+    await page.goto("/auth/signin")
 
     // Fill the login form with incorrect credentials
     await page.fill('input[name="username"]', "invalid_user@example.com")
