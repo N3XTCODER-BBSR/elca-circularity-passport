@@ -135,14 +135,21 @@ export function generateComponents(
   return componentsWithLayers
 }
 
-function weightedRandomEolPoints() {
-  // 40% chance of being in the range [-60, -20]
+function weightedRandomPoints(range1: [number, number], range2: [number, number]): number {
+  // 40% chance of being in range1
   if (Math.random() < 0.4) {
-    return faker.number.int({ min: -60, max: -20 })
+    return faker.number.int({ min: range1[0], max: range1[1] })
   } else {
-    // 60% chance of being in the range [-19, 140]
-    return faker.number.int({ min: -19, max: 140 })
+    // 60% chance of being in the range2
+    return faker.number.int({ min: range2[0], max: range2[1] })
   }
+}
+
+function randomRebuildPoints(): 0 | 50 | 75 | 100 {
+  const values: Array<0 | 50 | 75 | 100> = [0, 50, 75, 100]
+  const randomIndex = Math.floor(Math.random() * values.length)
+
+  return values[randomIndex] as 0 | 50 | 75 | 100
 }
 
 const generateMaterialProduct = (): MaterialProduct => {
@@ -177,7 +184,8 @@ const generateMaterialWaste = (): MaterialWaste => {
 const generateLayers = (layerCount: number) => Array.from({ length: layerCount }, generateSingleLayer)
 
 function generateSingleLayer(): Layer {
-  const eolPoints = weightedRandomEolPoints()
+  const eolPoints = weightedRandomPoints([-60, -20], [-19, 140])
+  const rebuildPoints = randomRebuildPoints()
 
   const layer: Layer = {
     name: faker.helpers.arrayElement(["Gypsum Plasterboard"]),
@@ -199,6 +207,7 @@ function generateSingleLayer(): Layer {
     },
     circularity: {
       eolPoints: eolPoints,
+      circularityIndex: Math.round(0.7 * eolPoints + 0.3 * rebuildPoints),
       version: faker.helpers.arrayElement(["KSB BNB 2.0.6", "KSB BNB 4.1.4"]),
       category: faker.helpers.arrayElement(["Zerstörungsfrei"]),
       proofReuse: faker.helpers.arrayElement(["Rücknahmegarantie"]),

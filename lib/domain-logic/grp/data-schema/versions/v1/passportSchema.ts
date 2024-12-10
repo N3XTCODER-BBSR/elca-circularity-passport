@@ -93,6 +93,7 @@ const InterferingSubstancesSchema = z.object({
 
 const CircularitySchema = z.object({
   eolPoints: z.number().optional(),
+  circularityIndex: z.number().optional(), //TODO: could technically be calculated from the 2 fields above. consider normalization vs separate responsibilies (circularity tool is for calculation, the passport is a timestamped document)
   version: z.string().optional(),
   category: z.string().optional(),
   proofReuse: z.string().optional(),
