@@ -145,7 +145,7 @@ function calculateEolBuiltPoints(
     },
     {
       from: -50,
-      to: -65,
+      to: -60,
       minusPoints: {
         S0: 0,
         S1: 0,

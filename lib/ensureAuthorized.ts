@@ -1,4 +1,4 @@
-import { prismaLegacy } from "prisma/prismaClient"
+import { isUserAuthorizedToElementComponent, isUserAuthorizedToProject } from "prisma/queries/legacyDb"
 import { UnauthorizedError } from "./errors"
 
 /**
@@ -7,13 +7,7 @@ import { UnauthorizedError } from "./errors"
  * @param projectId
  */
 export const ensureUserAuthorizationToProject = async (userId: number, projectId: number) => {
-  const isAuthorized = await prismaLegacy.projects.findFirst({
-    where: {
-      id: projectId,
-      OR: getProjectAuthorizationConditions(userId),
-    },
-    select: { id: true },
-  })
+  const isAuthorized = isUserAuthorizedToProject(userId, projectId)
 
   if (!isAuthorized) {
     throw new UnauthorizedError()
@@ -26,57 +20,9 @@ export const ensureUserAuthorizationToProject = async (userId: number, projectId
  * @param elementId
  */
 export const ensureUserAuthorizationToElementComponent = async (userId: number, elementComponentId: number) => {
-  const isAuthorized = await prismaLegacy.elca_element_components.findFirst({
-    where: {
-      id: elementComponentId,
-      OR: [
-        // Element is public
-        {
-          elements: {
-            is_public: true,
-          },
-        },
-        // User is authorized via project
-        {
-          elements: {
-            project_variants: {
-              projects_project_variants_project_idToprojects: {
-                OR: getProjectAuthorizationConditions(userId),
-              },
-            },
-          },
-        },
-      ],
-    },
-    select: { id: true },
-  })
+  const isAuthorized = await isUserAuthorizedToElementComponent(userId, elementComponentId)
 
   if (!isAuthorized) {
     throw new UnauthorizedError()
   }
 }
-
-const getProjectAuthorizationConditions = (userId: number) => [
-  // User is the owner of the project
-  { owner_id: userId },
-  // User is a member of the project's access group
-  {
-    groups: {
-      group_members: {
-        some: {
-          user_id: userId,
-        },
-      },
-    },
-  },
-  // User has a confirmed access token for the project
-  {
-    project_access_tokens: {
-      some: {
-        user_id: userId,
-        is_confirmed: true,
-        can_edit: true,
-      },
-    },
-  },
-]

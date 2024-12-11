@@ -44,6 +44,7 @@ const CircularityBarChart = ({
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
       colors={(d) => eolClassColorsMapper(d.data.eolClass)}
+      // colors={(d) => "#eaeee5"}
       borderColor={{
         from: "color",
         modifiers: [["darker", 1.6]],

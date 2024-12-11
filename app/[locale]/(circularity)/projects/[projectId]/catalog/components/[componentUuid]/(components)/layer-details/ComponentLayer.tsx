@@ -6,6 +6,7 @@ import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import getElcaComponentDataByLayerId from "lib/domain-logic/circularity/server-actions/getElcaComponentDataByLayerId"
+import calculateVolumeAndMass from "lib/domain-logic/circularity/utils/calculateVolumeAndMass"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
 import CircularityInfo from "./circularity-info/CircularityInfo"
@@ -27,8 +28,14 @@ const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }:
     staleTime: Infinity,
   })
 
-  const volume = currentLayerData.layer_length * currentLayerData.layer_width * currentLayerData.layer_size
-  const mass = currentLayerData.process_config_density * volume
+  const { data: massAndVolume } = useQuery({
+    queryKey: ["layerData", currentLayerData, "volumeAndMass"],
+    queryFn: () => {
+      return calculateVolumeAndMass(currentLayerData)
+    },
+  })
+
+  const { mass, volume } = massAndVolume || {}
 
   const layerKeyValues: KeyValueTuple[] = [
     {
@@ -37,7 +44,7 @@ const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }:
     },
     {
       key: "Volumen [m3]",
-      value: volume.toFixed(2),
+      value: volume?.toFixed(2),
     },
     {
       key: "Oekobaudat UUID",
@@ -69,7 +76,7 @@ const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }:
     },
     {
       key: "Masse [kg]",
-      value: mass.toFixed(2),
+      value: mass?.toFixed(2),
     },
     {
       key: "Schichtdicke [m]",

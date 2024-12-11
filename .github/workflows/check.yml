@@ -31,6 +31,8 @@ jobs:
         run: yarn lint
       - name: Format check
         run: yarn prettier
+      - name: Generate Prisma Clients
+        run: yarn prisma:generate
       - name: Unit & Integration tests
         run: yarn test
     #   - name: Smoke & Acceptance tests

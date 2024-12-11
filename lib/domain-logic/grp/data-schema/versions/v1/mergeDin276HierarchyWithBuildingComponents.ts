@@ -35,8 +35,8 @@ const filterDinHierachysForCategoryNumbersToInclude = (categoryNumbersToInclude?
   return filtered
 }
 
-const mergeDin276HierarchyWithBuildingComponents = (
-  buildingComponents: ComponentWithBasicFields[],
+const mergeDin276HierarchyWithBuildingComponents = <T extends ComponentWithBasicFields[]>(
+  buildingComponents: T,
   categoryNumbersToInclude?: number[]
 ): Din276MergedComponent[] => {
   const filteredDin276Hierarchy = filterDinHierachysForCategoryNumbersToInclude(categoryNumbersToInclude)

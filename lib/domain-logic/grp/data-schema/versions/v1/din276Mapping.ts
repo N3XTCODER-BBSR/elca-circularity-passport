@@ -1,21 +1,23 @@
-type ComponentType = {
+export type ComponentType = {
   number: number
   name: string
 }
 
-type ComponentCategory = {
+export type ComponentCategory = {
   number: number
   name: string
   children: ComponentType[]
 }
 
-type ComponentGroup = {
+export type ComponentGroup = {
   number: number
   name: string
   children: ComponentCategory[]
 }
 
 export type Din276Hierarchy = ComponentGroup[]
+
+export const costGroupCategoryNumbersToInclude = [320, 330, 340, 350, 360]
 
 // TODO: Use use i18n here!
 export const din276Hierarchy: Din276Hierarchy = [

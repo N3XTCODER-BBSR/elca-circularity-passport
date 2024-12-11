@@ -61,9 +61,11 @@ export type ElcaProjectComponentRow = {
   layer_width: number
   process_config_density: number
   process_config_name: string
+  process_category_node_id: number
 }
 
 export type EnrichedElcaElementComponent = ElcaProjectComponentRow & {
+  weight: number
   tBaustoffProductSelectedByUser?: boolean
   tBaustoffProductData?: TBaustoffProductData | null
   dismantlingPotentialClassId?: DismantlingPotentialClassId | null
@@ -73,12 +75,12 @@ export type EnrichedElcaElementComponent = ElcaProjectComponentRow & {
   disturbingEolScenarioForS4: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
 }
 
-export type ElcaElementWithComponents = {
+export type ElcaElementWithComponents<T extends EnrichedElcaElementComponent> = {
   element_uuid: string
   element_type_name: string
   element_name: string
   din_code: number
-  layers: EnrichedElcaElementComponent[]
+  layers: T[]
   unit: string
 }
 
