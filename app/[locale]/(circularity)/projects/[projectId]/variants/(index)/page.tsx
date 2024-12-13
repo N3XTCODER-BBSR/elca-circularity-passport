@@ -1,25 +1,29 @@
+import Link from "next/link"
 import errorHandler from "app/(utils)/errorHandler"
-import { getElcaProjectData } from "lib/domain-logic/circularity/server-actions/getElcaProjectData"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import BuildingOverview from "./(components)/BuildingOverview"
+import { getVariantsByProjectId } from "prisma/queries/legacyDb"
 
 const Page = async ({ params }: { params: { projectId: string } }) => {
   return errorHandler(async () => {
     const session = await ensureUserIsAuthenticated()
 
-    const userId = Number(session.user.id)
     const projectId = Number(params.projectId)
+    const userId = Number(session.user.id)
 
     await ensureUserAuthorizationToProject(userId, projectId)
 
-    const projectInfo = await getElcaProjectData(projectId, userId)
+    const variants = await getVariantsByProjectId(projectId)
 
-    if (!projectInfo) {
-      return <div>Projects with this ID not found for the current user.</div>
-    }
+    const displayVariants = variants.map((variant) => {
+      return (
+        <Link key={variant.id} href={`variants/${variant.id}/catalog`} className="block">
+          {variant.name}
+        </Link>
+      )
+    })
 
-    return <BuildingOverview projectName={projectInfo.project_name} projectId={projectInfo.id} />
+    return <div>{displayVariants}</div>
   })
 }
 

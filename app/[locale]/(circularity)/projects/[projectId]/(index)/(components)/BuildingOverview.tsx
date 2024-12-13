@@ -5,13 +5,11 @@ import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/cir
 import calculateVolumeAndMass from "lib/domain-logic/circularity/utils/calculateVolumeAndMass"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
-import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
 import { prismaLegacy } from "prisma/prismaClient"
-import CircularityIndexBreakdownByMaterialType, {
-  ProcessCategory,
-} from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
 import CircularityBreakdownChart from "./CircularityIndexBreakdownByDin/CircularityBreakdownChart"
+import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
+import { ProcessCategory } from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
+import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
 
 type BuildingOverviewProps = {
   projectId: number

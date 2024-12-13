@@ -1,6 +1,6 @@
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
-import { getElcaElementsForProjectId } from "./getElcaElementsForProjectId"
+import { getElcaElementsForVariantId } from "./getElcaElementsForProjectId"
 import calculateCircularityDataForLayer, {
   CalculateCircularityDataForLayerReturnType,
 } from "../utils/calculate-circularity-data-for-layer"
@@ -21,7 +21,9 @@ export const getProjectCircularityIndexData = async (
 
   // 1. Get all components for the project
   // TODO: only get the elements that are falling into the DIN categories we are considering
-  const elements = await getElcaElementsForProjectId(String(projectId), userId)
+
+  // CHECK: have 2 queries here, one project specific and one variant specific?
+  const elements = await getElcaElementsForVariantId(projectId)
 
   // 2. Call existing function to get all the data for the components
   const componentsWithProducts: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =

@@ -1,7 +1,7 @@
 import { ElcaProjectInfo } from "lib/domain-logic/types/domain-types"
 import { getProjectsByIdAndOwnerId } from "prisma/queries/legacyDb"
 
-export const getElcaProjectData = async (projectId: string, userId: string): Promise<ElcaProjectInfo> => {
+export const getElcaProjectData = async (projectId: number, userId: number): Promise<ElcaProjectInfo> => {
   const projects = await getProjectsByIdAndOwnerId(Number(projectId), Number(userId))
 
   if (projects.length < 1) {

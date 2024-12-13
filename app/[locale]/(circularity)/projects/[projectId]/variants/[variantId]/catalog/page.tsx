@@ -1,25 +1,26 @@
 import errorHandler from "app/(utils)/errorHandler"
-import { getElcaProjectData } from "lib/domain-logic/circularity/server-actions/getElcaProjectData"
+import { getElcaElementsForVariantId } from "lib/domain-logic/circularity/server-actions/getElcaElementsForProjectId"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import BuildingOverview from "./(components)/BuildingOverview"
+import ProjectCatalog from "./(components)/ProjectCatalog"
 
-const Page = async ({ params }: { params: { projectId: string } }) => {
+const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
   return errorHandler(async () => {
     const session = await ensureUserIsAuthenticated()
 
     const userId = Number(session.user.id)
     const projectId = Number(params.projectId)
+    const variantId = Number(params.variantId)
 
     await ensureUserAuthorizationToProject(userId, projectId)
 
-    const projectInfo = await getElcaProjectData(projectId, userId)
+    const dataResult = await getElcaElementsForVariantId(variantId)
 
-    if (!projectInfo) {
+    if (!dataResult) {
       return <div>Projects with this ID not found for the current user.</div>
     }
 
-    return <BuildingOverview projectName={projectInfo.project_name} projectId={projectInfo.id} />
+    return <ProjectCatalog projectId={projectId} variantId={variantId} projectComponents={dataResult} />
   })
 }
 

@@ -2,7 +2,7 @@ import {
   findUsersByAuthName,
   getElcaComponentDataByLayerIdAndUserId,
   getElcaProjectComponentsByInstanceIdAndUserId,
-  getElcaProjectElementsByProjectIdAndUserId,
+  getComponentsByVariantId,
   getProjectsByIdAndOwnerId,
   getProjectsByOwnerId,
   isUserAuthorizedToElementComponent,
@@ -150,7 +150,7 @@ describe("legacyDb", () => {
   })
   describe("getElcaProjectElementsByProjectIdAndUserId", () => {
     it("should return the correct project elements for a given project ID and user ID", async () => {
-      const result = await getElcaProjectElementsByProjectIdAndUserId(1, 2)
+      const result = await getComponentsByVariantId(1, 2)
 
       const want = [
         {

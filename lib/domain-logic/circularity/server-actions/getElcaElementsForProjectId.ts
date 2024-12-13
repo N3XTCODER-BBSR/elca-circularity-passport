@@ -1,4 +1,4 @@
-import { getElcaProjectElementsByProjectIdAndUserId } from "prisma/queries/legacyDb"
+import { getComponentsByVariantId } from "prisma/queries/legacyDb"
 
 export type ElcaProjectElementRow = {
   element_uuid: string
@@ -8,9 +8,9 @@ export type ElcaProjectElementRow = {
 }
 
 // TODO: Switch to project-variant here
-export const getElcaElementsForProjectId = async (projectId: string, userId: string) => {
+export const getElcaElementsForVariantId = async (projectVariantId: number) => {
   // TODO: ideally also add project-variant id/uuid here to ensure correctness
-  const result = await getElcaProjectElementsByProjectIdAndUserId(Number(projectId), Number(userId))
+  const result = await getComponentsByVariantId(projectVariantId)
 
   return result.map<ElcaProjectElementRow>((element) => {
     const projectVariantId = element.project_variant_id === null ? "" : String(element.project_variant_id)

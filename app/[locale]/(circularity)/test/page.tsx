@@ -1,8 +1,7 @@
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/server-actions/getProjectCircularityIndex"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
-import { prisma, prismaLegacy } from "prisma/prismaClient"
-import { calculateTotalCircularityIndex } from "../projects/[projectId]/(index)/(components)/BuildingOverview"
+import { prismaLegacy } from "prisma/prismaClient"
 import {
   buildTree,
   MaterialNode,
