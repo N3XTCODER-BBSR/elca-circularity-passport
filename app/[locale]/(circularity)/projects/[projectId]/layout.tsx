@@ -1,8 +1,6 @@
 import "styles/global.css"
-import { getServerSession } from "next-auth/next"
-import authOptions from "app/(utils)/authOptions"
-import { getElcaProjectData } from "lib/domain-logic/circularity/server-actions/getElcaProjectData"
 import errorHandler from "app/(utils)/errorHandler"
+import { getElcaProjectData } from "lib/domain-logic/circularity/server-actions/getElcaProjectData"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import NavBar from "./(components)/NavBar"
@@ -17,9 +15,12 @@ export default async function ProjectLayout({
   return errorHandler(async () => {
     const session = await ensureUserIsAuthenticated()
 
-    await ensureUserAuthorizationToProject(Number(session.user.id), Number(params.projectId))
+    const projectId = Number(params.projectId)
+    const userId = Number(session.user.id)
 
-    const projectInfo = await getElcaProjectData(params.projectId, session.user.id)
+    await ensureUserAuthorizationToProject(userId, projectId)
+
+    const projectInfo = await getElcaProjectData(projectId, userId)
 
     if (!projectInfo) {
       return <div>Projects with this ID not found for the current user.</div>
