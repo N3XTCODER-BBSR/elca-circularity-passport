@@ -3,19 +3,28 @@ import errorHandler from "app/(utils)/errorHandler"
 import { getElcaProjectData } from "lib/domain-logic/circularity/server-actions/getElcaProjectData"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import NavBar from "./(components)/NavBar"
+import NavBar from "./NavBar"
 
-export default async function ProjectLayout({
+const ProjectLayout = ({
   children,
-  params,
+  projectId,
+  variantId,
+  showAvatar,
+  showBackButton,
+  showMenu,
+  showProjectAndVariantInfo,
 }: {
   children: React.ReactNode
-  params: { projectId: string }
-}) {
+  projectId: number
+  variantId?: number
+  showAvatar?: boolean
+  showBackButton?: boolean
+  showMenu?: boolean
+  showProjectAndVariantInfo?: boolean
+}) => {
   return errorHandler(async () => {
     const session = await ensureUserIsAuthenticated()
 
-    const projectId = Number(params.projectId)
     const userId = Number(session.user.id)
 
     await ensureUserAuthorizationToProject(userId, projectId)
@@ -26,9 +35,21 @@ export default async function ProjectLayout({
       return <div>Projects with this ID not found for the current user.</div>
     }
 
+    const nestedRootUrl = `/projects/${projectInfo.id}`
+
+    const navLinks = [
+      { id: "overview", name: "Überblick", href: nestedRootUrl },
+      { id: "catalog", name: "Katalog", href: `${nestedRootUrl}/catalog` },
+    ]
+
     return (
       <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
-        <NavBar projectInfo={projectInfo} />
+        <NavBar
+          projectInfo={showProjectAndVariantInfo ? projectInfo : undefined}
+          navLinks={showMenu ? navLinks : undefined}
+          showAvatar={showAvatar}
+          showBackButton={showBackButton}
+        />
         <section className="bg-white dark:bg-gray-900">
           <div className="py-8">{children}</div>
         </section>
@@ -36,3 +57,5 @@ export default async function ProjectLayout({
     )
   })
 }
+
+export default ProjectLayout

@@ -3,6 +3,7 @@ import errorHandler from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { getVariantsByProjectId } from "prisma/queries/legacyDb"
+import ProjectLayout from "../../(components)/ProjectLayout"
 
 const Page = async ({ params }: { params: { projectId: string } }) => {
   return errorHandler(async () => {
@@ -27,4 +28,18 @@ const Page = async ({ params }: { params: { projectId: string } }) => {
   })
 }
 
-export default Page
+const PageWithLayout = async ({ params }: { params: { projectId: string } }) => {
+  const projectId = Number(params.projectId)
+  const page = await Page({ params })
+
+  const projectLayout = await ProjectLayout({
+    children: page,
+    projectId,
+    showAvatar: true,
+    showBackButton: true,
+  })
+
+  return <>{projectLayout}</>
+}
+
+export default PageWithLayout

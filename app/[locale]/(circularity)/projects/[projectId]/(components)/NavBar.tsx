@@ -9,18 +9,12 @@ import NavigationLinks from "./NavigationLinks"
 import ProfileSection from "./ProfileSection"
 import ProjectInfo from "./ProjectInfo"
 
-type NavBarProps = {
-  projectInfo: ElcaProjectInfo
-}
-
-const NavBar: FC<NavBarProps> = ({ projectInfo }: NavBarProps) => {
-  const nestedRootUrl = `/projects/${projectInfo.id}`
-
-  const navigation = [
-    { id: "overview", name: "Überblick", href: nestedRootUrl },
-    { id: "catalog", name: "Katalog", href: `${nestedRootUrl}/catalog` },
-  ]
-
+const NavBar: FC<{
+  projectInfo?: ElcaProjectInfo
+  showAvatar?: boolean
+  showBackButton?: boolean
+  navLinks?: { id: string; name: string; href: string }[]
+}> = ({ projectInfo, showAvatar, showBackButton, navLinks }) => {
   const [curNaviElIdx, setCurNaviElIdx] = useState<number>()
 
   // TODO: set currNaviElIdx based on path and:
@@ -31,27 +25,27 @@ const NavBar: FC<NavBarProps> = ({ projectInfo }: NavBarProps) => {
   }, [])
 
   return (
-    <Disclosure as="nav" className="bg-white">
+    <Disclosure as="nav" className="mx-auto h-16 max-w-7xl bg-white">
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-0">
-            <div className="relative flex h-16 justify-between">
-              {/* Mobile menu button */}
-              <MobileMenuButton open={open} />
+          <div className="relative flex h-full items-center">
+            {/* Mobile menu button */}
+            {navLinks && <MobileMenuButton open={open} />}
 
-              {/* Navigation Links */}
-              <NavigationLinks navigation={navigation} curNaviElIdx={curNaviElIdx} />
+            {/* Navigation Links */}
+            {navLinks && <NavigationLinks navigation={navLinks} curNaviElIdx={curNaviElIdx} />}
 
-              {/* Right Side: Project Info and Profile */}
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <ProjectInfo projectName={projectInfo.project_name} />
-                <ProfileSection />
-              </div>
+            <div className="flex-1" />
+
+            {/* Right Side: Project Info and Profile */}
+            <div className="flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              {projectInfo && <ProjectInfo projectName={projectInfo.project_name} />}
+              {showAvatar && <ProfileSection />}
             </div>
           </div>
 
           {/* Mobile Menu Panel */}
-          <MobileMenuPanel open={open} navigation={navigation} curNaviElIdx={curNaviElIdx} />
+          {navLinks && <MobileMenuPanel open={open} navigation={navLinks} curNaviElIdx={curNaviElIdx} />}
         </>
       )}
     </Disclosure>
