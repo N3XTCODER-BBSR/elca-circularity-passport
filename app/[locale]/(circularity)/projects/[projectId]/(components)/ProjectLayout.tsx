@@ -1,8 +1,8 @@
 import "styles/global.css"
 import errorHandler from "app/(utils)/errorHandler"
-import { getElcaProjectData } from "lib/domain-logic/circularity/server-actions/getElcaProjectData"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
+import { getProjectDataWithVariants } from "prisma/queries/legacyDb"
 import NavBar from "./NavBar"
 
 const ProjectLayout = ({
@@ -29,21 +29,31 @@ const ProjectLayout = ({
 
     await ensureUserAuthorizationToProject(userId, projectId)
 
-    const projectInfo = await getElcaProjectData(projectId, userId)
+    const projectData = await getProjectDataWithVariants(projectId)
+    const variantName =
+      projectData?.project_variants_project_variants_project_idToprojects.find((v) => v.id === variantId)?.name || ""
 
-    if (!projectInfo) {
+    if (!projectData) {
       return <div>Projects with this ID not found for the current user.</div>
     }
 
     const navLinks = [
-      { id: "overview", name: "Überblick", href: `/projects/${projectInfo.id}/variants` },
-      { id: "catalog", name: "Katalog", href: `/projects/${projectInfo.id}/variants/${variantId}/catalog` },
+      { id: "overview", name: "Überblick", href: `/projects/${projectData.id}/variants` },
+      { id: "catalog", name: "Katalog", href: `/projects/${projectData.id}/variants/${variantId}/catalog` },
     ]
 
     return (
       <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
         <NavBar
-          projectInfo={showProjectAndVariantInfo ? projectInfo : undefined}
+          projectInfo={
+            showProjectAndVariantInfo
+              ? {
+                  projectName: projectData.name,
+                  variantName: variantName,
+                  projectId: projectData.id,
+                }
+              : undefined
+          }
           navLinks={showMenu ? navLinks : undefined}
           showAvatar={showAvatar}
           backButtonTo={backButtonTo}

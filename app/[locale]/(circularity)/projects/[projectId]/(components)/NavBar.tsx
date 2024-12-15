@@ -4,15 +4,22 @@ import { Disclosure } from "@headlessui/react"
 import { useRouter } from "next/navigation"
 import { FC } from "react"
 import BackButton from "app/(components)/generic/BackButton"
-import { ElcaProjectInfo } from "lib/domain-logic/types/domain-types"
+import NavBarDropdownMenu from "app/(components)/generic/NavBarMenuDropdown"
+import NavBarProfileDropdown from "app/[locale]/(circularity)/(components)/NavBarProfileDropdown"
 import MobileMenuButton from "./MobileMenuButton"
 import MobileMenuPanel from "./MobileMenuPanel"
 import NavigationLinks from "./NavigationLinks"
-import ProfileSection from "./ProfileSection"
-import ProjectInfo from "./ProjectInfo"
+import ProjectInfo from "./ProjectVariantInfo"
+import ProjectVariantInfo from "./ProjectVariantInfo"
+
+type ProjectInfo = {
+  projectName: string
+  variantName: string
+  projectId: number
+}
 
 const NavBar: FC<{
-  projectInfo?: ElcaProjectInfo
+  projectInfo?: ProjectInfo
   showAvatar?: boolean
   backButtonTo?: string
   navLinks?: { id: string; name: string; href: string }[]
@@ -40,8 +47,22 @@ const NavBar: FC<{
 
               {/* Right Side: Project Info and Profile */}
               <div className="flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {projectInfo && <ProjectInfo projectName={projectInfo.project_name} />}
-                {showAvatar && <ProfileSection />}
+                {projectInfo && (
+                  <NavBarDropdownMenu
+                    className="mr-4"
+                    menuButton={
+                      <ProjectVariantInfo projectName={projectInfo.projectName} variantName={projectInfo.variantName} />
+                    }
+                    items={[
+                      { text: "Switch Project", href: "/projects" },
+                      {
+                        text: "Switch Variant",
+                        href: `/projects/${projectInfo.projectId}/variants`,
+                      },
+                    ]}
+                  />
+                )}
+                {showAvatar && <NavBarProfileDropdown />}
               </div>
             </div>
           </div>

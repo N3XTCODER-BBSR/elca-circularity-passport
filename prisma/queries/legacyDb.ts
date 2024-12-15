@@ -247,6 +247,7 @@ export const getProjectDataWithVariants = async (projectId: number) => {
       id: projectId,
     },
     select: {
+      id: true,
       name: true,
       project_variants_project_variants_project_idToprojects: {
         select: {
