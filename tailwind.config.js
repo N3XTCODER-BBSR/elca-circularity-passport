@@ -20,7 +20,10 @@ module.exports = {
         foreground: "hsl(var(--foreground))",
         error: "#991B1B",
         "bbsr-blue": {
+          700: "#005378",
           600: "#04678C",
+          200: "#6496B533",
+          50: "#F4F9FB",
         },
         gray: {
           900: "#111827",

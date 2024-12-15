@@ -274,6 +274,13 @@ export const getProjectsByOwnerId = async (userId: number) => {
           auth_name: true,
         },
       },
+      project_variants_project_variants_project_idToprojects: {
+        select: {
+          id: true,
+          name: true,
+          created: true,
+        },
+      },
     },
   })
 }

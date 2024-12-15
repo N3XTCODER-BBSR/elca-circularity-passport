@@ -25,22 +25,24 @@ const NavBar: FC<{
   }, [])
 
   return (
-    <Disclosure as="nav" className="mx-auto h-16 max-w-7xl bg-white">
+    <Disclosure as="nav" className="bg-white">
       {({ open }) => (
         <>
-          <div className="relative flex h-full items-center">
-            {/* Mobile menu button */}
-            {navLinks && <MobileMenuButton open={open} />}
+          <div className="mx-auto max-w-7xl">
+            <div className="relative flex h-16 justify-between">
+              {/* Mobile menu button */}
+              {navLinks && <MobileMenuButton open={open} />}
 
-            {/* Navigation Links */}
-            {navLinks && <NavigationLinks navigation={navLinks} curNaviElIdx={curNaviElIdx} />}
+              {/* Navigation Links */}
+              {navLinks && <NavigationLinks navigation={navLinks} curNaviElIdx={curNaviElIdx} />}
 
-            <div className="flex-1" />
+              <div className="flex-1" />
 
-            {/* Right Side: Project Info and Profile */}
-            <div className="flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              {projectInfo && <ProjectInfo projectName={projectInfo.project_name} />}
-              {showAvatar && <ProfileSection />}
+              {/* Right Side: Project Info and Profile */}
+              <div className="flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                {projectInfo && <ProjectInfo projectName={projectInfo.project_name} />}
+                {showAvatar && <ProfileSection />}
+              </div>
             </div>
           </div>
 

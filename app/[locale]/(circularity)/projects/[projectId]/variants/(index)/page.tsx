@@ -18,9 +18,11 @@ const Page = async ({ params }: { params: { projectId: string } }) => {
     const variants = projectData?.project_variants_project_variants_project_idToprojects || []
 
     const displayVariants = variants.map((variant) => {
+      const description = `Created on ${variant.created.toLocaleDateString()}`
+
       return (
         <ListItemLink
-          dateText={`Created on ${variant.created.toLocaleDateString()}`}
+          description={description}
           linkTo={`variants/${variant.id}/catalog`}
           key={variant.id}
           title={variant.name}
