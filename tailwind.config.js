@@ -19,6 +19,14 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         error: "#991B1B",
+        "bbsr-blue": {
+          600: "#04678C",
+        },
+        gray: {
+          900: "#111827",
+          600: "#6B7280",
+          100: "#F3F4F6",
+        },
         info: "#991B1B",
         warning: "#991B1B",
         red: "#E11D48",

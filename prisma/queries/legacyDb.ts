@@ -241,15 +241,20 @@ export const getProjectsByIdAndOwnerId = async (id: number, userId: number) => {
   })
 }
 
-export const getVariantsByProjectId = async (projectId: number) => {
-  return await prismaLegacy.elca_project_variants.findMany({
+export const getProjectDataWithVariants = async (projectId: number) => {
+  return await prismaLegacy.projects.findUnique({
     where: {
-      project_id: projectId,
+      id: projectId,
     },
     select: {
-      id: true,
       name: true,
-      created: true,
+      project_variants_project_variants_project_idToprojects: {
+        select: {
+          id: true,
+          name: true,
+          created: true,
+        },
+      },
     },
   })
 }
