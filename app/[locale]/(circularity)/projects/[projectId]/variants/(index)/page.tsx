@@ -48,7 +48,7 @@ const PageWithLayout = async ({ params }: { params: { projectId: string } }) => 
     children: page,
     projectId,
     showAvatar: true,
-    showBackButton: true,
+    backButtonTo: "/projects",
   })
 
   return <>{projectLayout}</>

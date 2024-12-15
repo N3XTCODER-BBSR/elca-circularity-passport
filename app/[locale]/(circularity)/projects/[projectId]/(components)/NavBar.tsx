@@ -1,7 +1,9 @@
 "use client"
 
 import { Disclosure } from "@headlessui/react"
+import { useRouter } from "next/navigation"
 import { FC, useEffect, useState } from "react"
+import BackButton from "app/(components)/generic/BackButton"
 import { ElcaProjectInfo } from "lib/domain-logic/types/domain-types"
 import MobileMenuButton from "./MobileMenuButton"
 import MobileMenuPanel from "./MobileMenuPanel"
@@ -12,9 +14,9 @@ import ProjectInfo from "./ProjectInfo"
 const NavBar: FC<{
   projectInfo?: ElcaProjectInfo
   showAvatar?: boolean
-  showBackButton?: boolean
+  backButtonTo?: string
   navLinks?: { id: string; name: string; href: string }[]
-}> = ({ projectInfo, showAvatar, showBackButton, navLinks }) => {
+}> = ({ projectInfo, showAvatar, backButtonTo, navLinks }) => {
   const [curNaviElIdx, setCurNaviElIdx] = useState<number>()
 
   // TODO: set currNaviElIdx based on path and:
@@ -23,6 +25,8 @@ const NavBar: FC<{
   useEffect(() => {
     // TODO: Implement
   }, [])
+
+  const router = useRouter()
 
   return (
     <Disclosure as="nav" className="bg-white">
@@ -33,6 +37,11 @@ const NavBar: FC<{
               {/* Mobile menu button */}
               {navLinks && <MobileMenuButton open={open} />}
 
+              {backButtonTo && (
+                <div className="flex items-center">
+                  <BackButton handleOnClick={() => router.push(backButtonTo)} text="Back" />
+                </div>
+              )}
               {/* Navigation Links */}
               {navLinks && <NavigationLinks navigation={navLinks} curNaviElIdx={curNaviElIdx} />}
 

@@ -10,7 +10,7 @@ const ProjectLayout = ({
   projectId,
   variantId,
   showAvatar,
-  showBackButton,
+  backButtonTo,
   showMenu,
   showProjectAndVariantInfo,
 }: {
@@ -18,7 +18,7 @@ const ProjectLayout = ({
   projectId: number
   variantId?: number
   showAvatar?: boolean
-  showBackButton?: boolean
+  backButtonTo?: string
   showMenu?: boolean
   showProjectAndVariantInfo?: boolean
 }) => {
@@ -46,7 +46,7 @@ const ProjectLayout = ({
           projectInfo={showProjectAndVariantInfo ? projectInfo : undefined}
           navLinks={showMenu ? navLinks : undefined}
           showAvatar={showAvatar}
-          showBackButton={showBackButton}
+          backButtonTo={backButtonTo}
         />
         <section className="bg-white dark:bg-gray-900">
           <div className="py-8">{children}</div>
