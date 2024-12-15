@@ -5,7 +5,7 @@ import { prismaLegacy } from "prisma/prismaClient"
 import {
   buildTree,
   MaterialNode,
-} from "../projects/[projectId]/(index)/(components)/CircularityIndexBreakdownByMaterialType/logic"
+} from "../projects/[projectId]/variants/[variantId]/(index)/(components)/CircularityIndexBreakdownByMaterialType/logic"
 
 const Test = async () => {
   //   const FOO = await prismaLegacy.elca_element_components.findMany({

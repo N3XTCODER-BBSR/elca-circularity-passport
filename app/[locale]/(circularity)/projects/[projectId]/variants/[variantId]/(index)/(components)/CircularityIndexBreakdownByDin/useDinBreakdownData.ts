@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react"
-import { BreadCrumbEntry, ChartDatum } from "./CircularityIndexBreakdownByDin"
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import {
   ComponentCategory,
-  din276Hierarchy,
   costGroupCategoryNumbersToInclude,
+  din276Hierarchy,
 } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
-import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import { BreadCrumbEntry, ChartDatum } from "./CircularityIndexBreakdownByDin"
 
 type UseDinBreakdownDataProps = {
   projectId: number

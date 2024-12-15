@@ -1,5 +1,5 @@
 import "styles/global.css"
-import ProjectLayout from "../../../(components)/ProjectLayout"
+import ProjectLayout from "../../(components)/ProjectLayout"
 
 export default async function CatalogueLayout({
   children,

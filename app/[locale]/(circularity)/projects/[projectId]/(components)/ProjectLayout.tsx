@@ -35,11 +35,9 @@ const ProjectLayout = ({
       return <div>Projects with this ID not found for the current user.</div>
     }
 
-    const nestedRootUrl = `/projects/${projectInfo.id}`
-
     const navLinks = [
-      { id: "overview", name: "Überblick", href: nestedRootUrl },
-      { id: "catalog", name: "Katalog", href: `${nestedRootUrl}/catalog` },
+      { id: "overview", name: "Überblick", href: `/projects/${projectInfo.id}/variants` },
+      { id: "catalog", name: "Katalog", href: `/projects/${projectInfo.id}/variants/${variantId}/catalog` },
     ]
 
     return (

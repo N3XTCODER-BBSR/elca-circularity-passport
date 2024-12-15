@@ -3,7 +3,6 @@ import { getElcaProjectData } from "lib/domain-logic/circularity/server-actions/
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import BuildingOverview from "./(components)/BuildingOverview"
-import ProjectLayout from "../(components)/ProjectLayout"
 
 const Page = async ({ params }: { params: { projectId: string } }) => {
   return errorHandler(async () => {
@@ -24,18 +23,18 @@ const Page = async ({ params }: { params: { projectId: string } }) => {
   })
 }
 
-const PageWithLayout = async ({ params }: { params: { projectId: string } }) => {
-  const projectId = Number(params.projectId)
-  const page = await Page({ params })
+// const PageWithLayout = async ({ params }: { params: { projectId: string } }) => {
+//   const projectId = Number(params.projectId)
+//   const page = await Page({ params })
 
-  const projectLayout = await ProjectLayout({
-    children: page,
-    projectId,
-    showAvatar: true,
-    showBackButton: true,
-  })
+//   const projectLayout = await ProjectLayout({
+//     children: page,
+//     projectId,
+//     showAvatar: true,
+//     showBackButton: true,
+//   })
 
-  return <>{projectLayout}</>
-}
+//   return <>{projectLayout}</>
+// }
 
-export default PageWithLayout
+export default Page

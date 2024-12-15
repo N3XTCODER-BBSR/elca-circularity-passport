@@ -23,7 +23,7 @@ const Page = async ({ params }: { params: { projectId: string } }) => {
       return (
         <ListItemLink
           description={description}
-          linkTo={`variants/${variant.id}/catalog`}
+          linkTo={`variants/${variant.id}`}
           key={variant.id}
           title={variant.name}
         />

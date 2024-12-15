@@ -37,7 +37,7 @@ const ProjectList: FC<{ projects: Awaited<ReturnType<typeof getProjectsByOwnerId
         return (
           <ListItemLink
             key={project.id}
-            linkTo={`projects/${project.id}`}
+            linkTo={`projects/${project.id}/variants`}
             title={project.name}
             description={description}
             badgeText={badgeText}
