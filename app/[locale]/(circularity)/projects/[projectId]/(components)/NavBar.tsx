@@ -2,7 +2,7 @@
 
 import { Disclosure } from "@headlessui/react"
 import { useRouter } from "next/navigation"
-import { FC, useEffect, useState } from "react"
+import { FC } from "react"
 import BackButton from "app/(components)/generic/BackButton"
 import { ElcaProjectInfo } from "lib/domain-logic/types/domain-types"
 import MobileMenuButton from "./MobileMenuButton"
@@ -17,15 +17,6 @@ const NavBar: FC<{
   backButtonTo?: string
   navLinks?: { id: string; name: string; href: string }[]
 }> = ({ projectInfo, showAvatar, backButtonTo, navLinks }) => {
-  const [curNaviElIdx, setCurNaviElIdx] = useState<number>()
-
-  // TODO: set currNaviElIdx based on path and:
-  // 1. check whether there is more established/idomatic alternative solution than using useEffect as below
-  // 2. also implement this then for the grp navbar for a passport
-  useEffect(() => {
-    // TODO: Implement
-  }, [])
-
   const router = useRouter()
 
   return (
@@ -43,7 +34,7 @@ const NavBar: FC<{
                 </div>
               )}
               {/* Navigation Links */}
-              {navLinks && <NavigationLinks navigation={navLinks} curNaviElIdx={curNaviElIdx} />}
+              {navLinks && <NavigationLinks navigation={navLinks} />}
 
               <div className="flex-1" />
 
@@ -56,7 +47,7 @@ const NavBar: FC<{
           </div>
 
           {/* Mobile Menu Panel */}
-          {navLinks && <MobileMenuPanel open={open} navigation={navLinks} curNaviElIdx={curNaviElIdx} />}
+          {navLinks && <MobileMenuPanel open={open} navigation={navLinks} />}
         </>
       )}
     </Disclosure>
