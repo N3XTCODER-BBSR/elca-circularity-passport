@@ -1,31 +1,4 @@
 services:
-
-  run-tests:
-    build: 
-      context: .
-      dockerfile: Dockerfile.test
-    # TODO: Consider running npx next build
-    command: bash -c "npx prisma migrate deploy && yarn run test"
-    # TODO: 
-    # - This service should only run, when the following profile is invoked, e.g. with COMPOSE_PROFILE=test docker compose ...
-    # - e.g. profiles declaration below:
-    # profiles: 
-    #   - ci
-    #   - test
-    depends_on:
-      - db
-      - legacy-db
-    volumes:
-      - ./output:/output
-    environment:
-      DATABASE_URL: postgresql://app:password@db/db
-      ELCA_LEGACY_DATABASE_URL: postgres://app:password@db/elca
-      ELCA_LEGACY_DATABASE_HAS_SSL: false
-      DOPPIO_API_KEY: ABCDEF123456
-      HTTP_BASIC_AUTH: username:password
-      NEXTAUTH_SECRET: ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
-      NEXT_PUBLIC_PASSPORT_BASE_URL: http://localhost
-
   db:
     image: 'postgres:16.3'
     restart: always
@@ -48,7 +21,7 @@ services:
       - '65433:5432'
     environment:
       POSTGRES_DB: elca
-      POSTGRES_USER: elca
+      POSTGRES_USER: elca # HINT: this is the superuser, elca_read_only is the read only user
       POSTGRES_PASSWORD: password
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U elca -d elca"]
@@ -57,6 +30,7 @@ services:
       retries: 5
     volumes:
       - ./legacy_db_data:/var/lib/postgresql/data
+      - ./elca_db_init.sql:/docker-entrypoint-initdb.d/elca_db_init.sql # HINT: scripts in docker-entrypoint-initdb.d will be run on container startup
 
   app-e2e-tests:
     profiles:
@@ -65,8 +39,8 @@ services:
       context: .
       dockerfile: Dockerfile.e2e
       args:
-        DATABASE_URL: postgres://building_passport:password@localhost:65432/building_passport
-        ELCA_LEGACY_DATABASE_URL: postgres://elca:password@localhost:65433/elca
+        DATABASE_URL: ${DATABASE_URL}
+        ELCA_LEGACY_DATABASE_URL: ${ELCA_LEGACY_DATABASE_URL}
         ELCA_LEGACY_DATABASE_HAS_SSL: ${ELCA_LEGACY_DATABASE_HAS_SSL}
         DOPPIO_API_KEY: ${DOPPIO_API_KEY}
         HTTP_BASIC_AUTH: ${HTTP_BASIC_AUTH}
@@ -77,7 +51,7 @@ services:
     command: sh -c "yarn prisma:generate && npx prisma migrate deploy && PORT=3005 yarn start"
     environment:
       DATABASE_URL: postgres://building_passport:password@e2e-db:5432/building_passport
-      ELCA_LEGACY_DATABASE_URL: postgres://elca:password@e2e-legacy-db:5432/elca
+      ELCA_LEGACY_DATABASE_URL: postgres://elca_read_only:password@e2e-legacy-db:5432/elca
       NEXTAUTH_URL: http://localhost:3005
     depends_on:
       - e2e-db
@@ -92,7 +66,7 @@ services:
     image: 'postgres:16.3'
     restart: always
     ports:
-      - '65432:5432'
+      - '65434:5432'
     environment:
       POSTGRES_DB: building_passport
       POSTGRES_USER: building_passport
@@ -104,11 +78,10 @@ services:
     image: 'postgres:13-alpine'
     restart: always
     ports:
-      - '65433:5432'
+      - '65435:5432'
     environment:
       POSTGRES_DB: elca
-      POSTGRES_USER: elca
+      POSTGRES_USER: elca # HINT: this is the superuser, elca_read_only is the read only user
       POSTGRES_PASSWORD: password
     volumes:
-      - ./legacy_db_data:/var/lib/postgresql/data
-      - ./elca_db_dump.sql:/docker-entrypoint-initdb.d/elca_db_dump.sql # HINT: the elca_db_dump.sql script runs when the container is created. It only runs if ./legacy_db_data doesn't contain data so that the database has not been initialized before
+      - ./elca_db_init.sql:/docker-entrypoint-initdb.d/elca_db_init.sql # HINT: the elca_db_init.sql script runs when the container is created. It only runs if ./legacy_db_data doesn't contain data so that the database has not been initialized before

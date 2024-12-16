@@ -13,6 +13,12 @@ module.exports = {
     },
     extend: {
       colors: {
+        circularityIndex: {
+          lower20: "#C64032",
+          btw20and40: "#F9E196",
+          btw40and60: "#7CBB6D",
+          gt60: "#2B663B",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -22,6 +28,8 @@ module.exports = {
         info: "#991B1B",
         warning: "#991B1B",
         red: "#E11D48",
+        "bbsr-blue": { 600: "#04678C" },
+        gray: { 200: "#E5E7EB" },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

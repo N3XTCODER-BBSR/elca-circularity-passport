@@ -46,3 +46,11 @@ export const eolClassColorsMapper = (eolClass: string) => {
   }
   return colors[eolClass] || "black"
 }
+
+export const circularityBarCharColorMapping = (value: number): string => {
+  if (value > 60) return "#2B663B"
+  if (value >= 40) return "#7CBB6D"
+  if (value >= 20) return "#F9E196"
+  if (value < 20) return "#C64032"
+  return "#FF0000"
+}

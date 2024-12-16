@@ -117,3 +117,7 @@ model UserEnrichedProductData {
   specificEolBuiltTotalScenario          TBs_ProductDefinitionEOLCategoryScenario?
   specificEolBuiltTotalScenarioProofText String?
 }
+
+model ExcludedProduct {
+  productId Int @id
+}

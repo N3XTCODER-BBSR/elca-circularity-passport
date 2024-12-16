@@ -6,10 +6,10 @@ import Link from "next/link"
 import { FC, useEffect, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import NavBarProfileDropdown from "app/[locale]/(circularity)/(components)/NavBarProfileDropdown"
-import { ElcaProjectInfo } from "lib/domain-logic/types/domain-types"
+import { Project } from "prisma/queries/legacyDb"
 
 type NavBarProps = {
-  projectInfo: ElcaProjectInfo
+  projectInfo: Project
 }
 
 const NavBar: FC<NavBarProps> = ({ projectInfo }: NavBarProps) => {
@@ -76,7 +76,7 @@ const NavBar: FC<NavBarProps> = ({ projectInfo }: NavBarProps) => {
                 <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                   {/* Navigation Links */}
                   <div className="hidden sm:ml-6 sm:flex sm:space-x-8 lg:ml-0">
-                    <span className="text-xs text-indigo-500">Project: {projectInfo.project_name}</span>
+                    <span className="text-xs text-indigo-500">Project: {projectInfo.name}</span>
                   </div>
                 </div>
 

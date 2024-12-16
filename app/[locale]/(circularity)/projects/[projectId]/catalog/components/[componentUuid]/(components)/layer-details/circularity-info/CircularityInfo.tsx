@@ -24,6 +24,9 @@ type CircularityInfoProps = {
 const CircularityInfo = (props: CircularityInfoProps) => {
   const { tBaustoffProducts } = props
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
+
+  // TODO: consider to do this calucation on the server side
+  // (or at least be consistent with the other calculation in the conext of the overview page / project circularity index)
   const circulartyEnrichedLayerData = calculateCircularityDataForLayer(props.layerData)
 
   const showCircularityDetails = !!circulartyEnrichedLayerData.tBaustoffProductData

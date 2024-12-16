@@ -1,6 +1,6 @@
 import "styles/global.css"
 import errorHandler from "app/(utils)/errorHandler"
-import { getElcaProjectDataWithRequest } from "lib/domain-logic/circularity/server-actions/getElcaProjectDataWithRequestCache"
+import { getElcaProjectData } from "lib/domain-logic/circularity/server-actions/getElcaProjectData"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import NavBar from "./(components)/NavBar"
@@ -17,7 +17,7 @@ export default async function ProjectLayout({
 
     await ensureUserAuthorizationToProject(Number(session.user.id), Number(params.projectId))
 
-    const projectInfo = await getElcaProjectDataWithRequest(params.projectId, session.user.id)
+    const projectInfo = await getElcaProjectData(params.projectId, session.user.id)
 
     if (!projectInfo) {
       return <div>Projects with this ID not found for the current user.</div>

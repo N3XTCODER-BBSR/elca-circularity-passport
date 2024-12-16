@@ -41,6 +41,41 @@ export const getUserDefinedTBaustoffData = async (componentIds: number[]) => {
   })
 }
 
+export const getExcludedProductIds = async (productIds: number[]) => {
+  return await prisma.excludedProduct.findMany({
+    where: {
+      productId: {
+        in: productIds,
+      },
+    },
+    select: {
+      productId: true,
+    },
+  })
+}
+
+export const getExcludedProductId = async (productId: number) => {
+  return await prisma.excludedProduct.findUnique({
+    where: {
+      productId,
+    },
+  })
+}
+
+export const toggleExcludedProduct = async (productId: number) => {
+  await prisma.$transaction(async (tx) => {
+    try {
+      await tx.excludedProduct.delete({ where: { productId } })
+    } catch (error) {
+      await tx.excludedProduct.create({ data: { productId } })
+    }
+  })
+}
+
+export const truncateExcludedProductTable = async () => {
+  return await prisma.$executeRaw`TRUNCATE TABLE "ExcludedProduct" RESTART IDENTITY CASCADE;`
+}
+
 export const getTBaustoffMappingEntries = async (oekobaudatProcessUuids: string[]) => {
   return await prisma.tBs_OekobaudatMapping.findMany({
     where: {

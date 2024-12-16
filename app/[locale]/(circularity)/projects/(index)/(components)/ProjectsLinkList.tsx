@@ -1,8 +1,8 @@
 import { ChevronRightIcon } from "@heroicons/react/20/solid"
-import { ElcaProjectInfo } from "../../../../../../lib/domain-logic/types/domain-types"
+import { ProjectWithUserName } from "prisma/queries/legacyDb"
 
 type ProjectsLinkListProps = {
-  projects: ElcaProjectInfo[]
+  projects: ProjectWithUserName[]
 }
 
 const ProjectsLinkList = ({ projects }: ProjectsLinkListProps) => {
@@ -16,24 +16,22 @@ const ProjectsLinkList = ({ projects }: ProjectsLinkListProps) => {
           >
             <div className="min-w-0">
               <div className="flex items-start gap-x-3">
-                <p className="text-sm font-semibold leading-6 text-gray-900">{project.project_name}</p>
+                <p className="text-sm font-semibold leading-6 text-gray-900">{project.name}</p>
               </div>
               <div className="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
                 <p className="whitespace-nowrap">
                   Created at{" "}
-                  <time dateTime={project.created_at?.toLocaleDateString()}>
-                    {project.created_at?.toLocaleDateString()}
-                  </time>
+                  <time dateTime={project.created?.toLocaleDateString()}>{project.created?.toLocaleDateString()}</time>
                 </p>
                 <svg viewBox="0 0 2 2" className="size-0.5 fill-current">
                   <circle r={1} cx={1} cy={1} />
                 </svg>
-                <p className="truncate">Created by {project.created_by_user_name}</p>
+                <p className="truncate">Created by {project.users.auth_name}</p>
               </div>
             </div>
             <div className="flex flex-none items-center gap-x-4">
               <ChevronRightIcon className="size-5" aria-hidden="true" />
-              <span className="sr-only">View project, {project.project_name}</span>
+              <span className="sr-only">View project, {project.name}</span>
             </div>
           </a>
         </li>

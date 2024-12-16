@@ -1,21 +1,31 @@
-type ComponentType = {
+export type ComponentType = {
   number: number
   name: string
 }
 
-type ComponentCategory = {
+export type ComponentCategory = {
   number: number
   name: string
   children: ComponentType[]
 }
 
-type ComponentGroup = {
+export type ComponentGroup = {
   number: number
   name: string
   children: ComponentCategory[]
 }
 
 export type Din276Hierarchy = ComponentGroup[]
+
+export const costGroupCategoryNumbersToInclude = [320, 330, 340, 350, 360]
+
+export const costGroupyDinNumbersToInclude = // for each entry in costGroupCategoryNumbersToInclude: all numbers for the decimal-range
+  // e.g. for 320: 321, 322, 323, 324, 325, 326, 327, 329
+  costGroupCategoryNumbersToInclude.flatMap((categoryNumber) => {
+    const categoryNumberAsString = categoryNumber.toString()
+    const decimalRange = categoryNumberAsString.slice(0, -1)
+    return Array.from({ length: 10 }, (_, i) => parseInt(`${decimalRange}${i}`))
+  })
 
 // TODO: Use use i18n here!
 export const din276Hierarchy: Din276Hierarchy = [
