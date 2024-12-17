@@ -1,8 +1,7 @@
-import { ElcaProjectInfo } from "lib/domain-logic/types/domain-types"
-import { getProjectsByIdAndOwnerId } from "prisma/queries/legacyDb"
+import { getProjectsByIdAndOwnerId, Project } from "prisma/queries/legacyDb"
 
-export const getElcaProjectData = async (projectId: number, userId: number): Promise<ElcaProjectInfo> => {
-  const projects = await getProjectsByIdAndOwnerId(Number(projectId), Number(userId))
+export const getElcaProjectData = async (projectId: number, userId: number): Promise<Project> => {
+  const projects = await getProjectsByIdAndOwnerId(projectId, userId)
 
   if (projects.length < 1) {
     throw new Error(`Project with ID ${projectId} not found for user ${userId}`)
@@ -16,12 +15,7 @@ export const getElcaProjectData = async (projectId: number, userId: number): Pro
     throw new Error(`no projects found for user ${userId}`)
   }
 
-  const projectInfo: ElcaProjectInfo = {
-    id: projects[0].id,
-    project_name: projects[0].name,
-  }
-
-  console.log("getProjectDataCachedDuringRequest - projectInfo", projectInfo)
+  const projectInfo: Project = projects[0]
 
   return projectInfo
 }

@@ -2,13 +2,13 @@ import Image from "next/image"
 import { Link } from "i18n/routing"
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/server-actions/getProjectCircularityIndex"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import calculateVolumeAndMass from "lib/domain-logic/circularity/utils/calculateVolumeAndMass"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { prismaLegacy } from "prisma/prismaClient"
-import CircularityBreakdownChart from "./CircularityIndexBreakdownByDin/CircularityBreakdownChart"
 import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
-import { ProcessCategory } from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
+import CircularityIndexBreakdownByMaterialType, {
+  ProcessCategory,
+} from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
 import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
 
 type BuildingOverviewProps = {
@@ -38,7 +38,7 @@ export const calculateTotalCircularityIndex = async (
   for (const component of circularityData) {
     for (const layer of component.layers) {
       // Await the asynchronous function
-      const { mass } = await calculateVolumeAndMass(layer)
+      const { mass } = layer
       if (mass == null) {
         continue
       }
@@ -55,14 +55,8 @@ export const calculateTotalCircularityIndex = async (
       circularityIndexTimesMassSumOverAllComponentLayers += layer.circularityIndex * mass
     }
   }
-
-  console.log("FOO circularityData", JSON.stringify(circularityData))
-  console.log("FOO circularityIndexSumOverAllComponentLayers", circularityIndexTimesMassSumOverAllComponentLayers)
-  console.log("FOO totalMass", totalMass)
-
-  console.log("totalMass", totalMass)
-
   // Calculate the total circularity index for the project
+
   const totalCircularityIndexForProject = circularityIndexTimesMassSumOverAllComponentLayers / totalMass
   return totalCircularityIndexForProject
 }
@@ -78,12 +72,9 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
 
   const processCategories: ProcessCategory[] = await prismaLegacy.process_categories.findMany()
 
-  // TODO: check why this is not working (it was workign for Daniel with his DB state, but does not after resetting the new DB)
-  // after resolved, ensure that the static false flag is replaced by the correct logic
-  const isCircularityIndexMissingForAnyProduct = false
-  // const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
-  //   component.layers.some((layer) => layer.circularityIndex == null)
-  // )
+  const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
+    component.layers.some((layer) => layer.circularityIndex == null)
+  )
 
   return (
     <>
@@ -121,28 +112,18 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
           <div>
             <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
           </div>
-          <div className="mx-8 my-24 h-[170px]">
-            <CircularityBreakdownChart
-              circularityData={circularityData}
-              projectName={projectName}
-              projectId={projectId}
-            />
-            <CircularityIndexBreakdownByDin
-              projectId={projectId}
-              projectName={projectName}
-              circularityData={circularityData}
-              margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
-            />
-          </div>
-          {/* <div className="mx-8 my-24 h-[170px]">
-            <CircularityIndexBreakdownByMaterialType
-              projectId={projectId}
-              projectName={projectName}
-              processCategories={processCategories}
-              circularityData={circularityData}
-              margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
-            />
-          </div> */}
+          <CircularityIndexBreakdownByDin
+            circularityData={circularityData}
+            projectName={projectName}
+            projectId={projectId}
+          />
+          <CircularityIndexBreakdownByMaterialType
+            projectId={projectId}
+            projectName={projectName}
+            processCategories={processCategories}
+            circularityData={circularityData}
+            margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
+          />
         </>
       )}
     </>

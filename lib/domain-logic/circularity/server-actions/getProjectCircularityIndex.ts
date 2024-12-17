@@ -1,4 +1,5 @@
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import { getExcludedProductIds } from "prisma/queries/db"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import { getElcaElementsForVariantId } from "./getElcaElementsForProjectId"
 import calculateCircularityDataForLayer, {
@@ -33,10 +34,17 @@ export const getProjectCircularityIndexData = async (
           element.element_uuid,
           userId
         )
+
+        const productIds = elementDetailsWithProducts.layers.map((layer) => layer.component_id)
+        const excludedProductIds = await getExcludedProductIds(productIds)
+        const excludedProductIdsSet = new Set(excludedProductIds.map((entry) => entry.productId))
+
         // return elementDetailsWithProducts
         return {
           ...elementDetailsWithProducts,
-          layers: elementDetailsWithProducts.layers.map((layer) => calculateCircularityDataForLayer(layer)),
+          layers: elementDetailsWithProducts.layers
+            .filter((layer) => !excludedProductIdsSet.has(layer.component_id))
+            .map((layer) => calculateCircularityDataForLayer(layer)),
         } as ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>
       })
     )

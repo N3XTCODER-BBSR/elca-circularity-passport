@@ -1,15 +1,13 @@
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
-import {
-  din276Hierarchy,
-  costGroupCategoryNumbersToInclude,
-  ComponentGroup,
-  ComponentCategory,
-  ComponentType,
-} from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
-import { ChartDataInternalNode, ChartDataLeaf, ChartDataNode } from "./CircularityBreakdownChart"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-
-type GetWeightByProductIdFn = (componentId: number) => Promise<number>
+import {
+  ComponentCategory,
+  ComponentGroup,
+  ComponentType,
+  costGroupCategoryNumbersToInclude,
+  din276Hierarchy,
+} from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
+import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import { ChartDataInternalNode, ChartDataLeaf, ChartDataNode } from "./ChartAndBreadCrumbComponent"
 
 /**
  * Transforms the given `circularityData` into the ChartDataNode tree structure.
@@ -38,7 +36,7 @@ export function transformCircularityDataAndDinHierachyToChartTree(
   const filteredData = filterDataByCostGroup(circularityData)
 
   // 2. Map DIN codes to leaf nodes
-  const dinCodeToLeaves = buildDinCodeToLeafNodesMap(filteredData) //, getWeightByProductId)
+  const dinCodeToLeaves = buildDinCodeToLeafNodesMap(filteredData)
 
   // 3. Build the hierarchy from `din276Hierarchy`
   const children = din276Hierarchy
@@ -104,15 +102,17 @@ function buildDinCodeToLeafNodesMap(
   for (const element of data) {
     const { din_code } = element
     for (const layer of element.layers) {
-      console.log("FOO layer.weight", layer.weight)
-      const weight = layer.weight //?? (await getWeightByProductId(layer.component_id))
-      const metricValue = layer.circularityIndex ?? 0
+      const weight = layer.mass
+      const metricValue = layer.circularityIndex ?? 0 // TODO: probably not valid to fall back to 0; better throw error or ensure on type level beforehand
+      // that circularityIndex is never null for any layer before being passed to this function
+
       const dimensionalValue = weight
 
       const leaf: ChartDataLeaf = {
         isLeaf: true,
         metricValue,
-        dimensionalValue,
+        // TODO: check whether this is valid handling or whether we should change the types
+        dimensionalValue: dimensionalValue || 0,
         label: layer.element_name,
         resourceId: layer.element_uuid,
       }

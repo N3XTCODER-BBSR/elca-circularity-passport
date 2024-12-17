@@ -1,8 +1,8 @@
 import {
   findUsersByAuthName,
+  getComponentsByVariantId,
   getElcaComponentDataByLayerIdAndUserId,
   getElcaProjectComponentsByInstanceIdAndUserId,
-  getComponentsByVariantId,
   getProjectsByIdAndOwnerId,
   getProjectsByOwnerId,
   isUserAuthorizedToElementComponent,
@@ -10,7 +10,7 @@ import {
 } from "./legacyDb"
 import { createUser, deleteUserIfExists } from "./utils"
 
-describe("legacyDb", () => {
+describe("legacyDb queries", () => {
   describe("getElcaComponentDataByLayerIdAndUserId", () => {
     it("should return the correct component data for a given layer ID", async () => {
       const result = await getElcaComponentDataByLayerIdAndUserId(5)
@@ -20,8 +20,8 @@ describe("legacyDb", () => {
         component_id: 5,
         layer_position: 1,
         process_name: "Beton der Druckfestigkeitsklasse C 30/37",
-        process_ref_value: 1,
-        process_ref_unit: "m3",
+        // process_ref_value: 1,
+        // process_ref_unit: "m3",
         oekobaudat_process_uuid: "b6096c9c-1248-4ce1-9c2d-f4a48aade80f",
         oekobaudat_process_db_uuid: "22885a6e-1765-4ade-a35e-ae668bd07256",
         element_component_id: 5,
@@ -47,8 +47,8 @@ describe("legacyDb", () => {
           component_id: 5,
           layer_position: 1,
           process_name: "Beton der Druckfestigkeitsklasse C 30/37",
-          process_ref_value: 1,
-          process_ref_unit: "m3",
+          // process_ref_value: 1,
+          // process_ref_unit: "m3",
           oekobaudat_process_uuid: "b6096c9c-1248-4ce1-9c2d-f4a48aade80f",
           pdb_name: "copy of OBD_2023_I for import in eLCA",
           pdb_version: "v1",
@@ -71,8 +71,8 @@ describe("legacyDb", () => {
           component_id: 6,
           layer_position: 2,
           process_name: "Keramische Fassadenplatte TONALITY®",
-          process_ref_value: 1,
-          process_ref_unit: "m2",
+          // process_ref_value: 1,
+          // process_ref_unit: "m2",
           oekobaudat_process_uuid: "bb51d66a-b04b-4ec7-8947-185e9697e671",
           pdb_name: "copy of OBD_2023_I for import in eLCA",
           pdb_version: "v1",
@@ -95,8 +95,8 @@ describe("legacyDb", () => {
           component_id: 7,
           layer_position: 3,
           process_name: "Kunststoffprofil SBR",
-          process_ref_value: 1,
-          process_ref_unit: "kg",
+          // process_ref_value: 1,
+          // process_ref_unit: "kg",
           oekobaudat_process_uuid: "1b69b3a2-3164-436b-a934-ed7d926f5f53",
           pdb_name: "copy of OBD_2023_I for import in eLCA",
           pdb_version: "v1",
@@ -144,13 +144,16 @@ describe("legacyDb", () => {
         },
       ]
 
+      expect(result).toBeDefined()
       expect(result).toHaveLength(want.length)
-      expect(result[0]).toMatchObject(want[0]!)
+      expect(result![0]).toMatchObject(want[0]!)
     })
   })
   describe("getElcaProjectElementsByProjectIdAndUserId", () => {
-    it("should return the correct project elements for a given project ID and user ID", async () => {
-      const result = await getComponentsByVariantId(1, 2)
+    it(`should return the correct project elements for a given project ID and user ID, 
+      but only the ones which fall into the DIN category number pool 
+      for the Circularity Tool (const costGroupCategoryNumbersToInclude = [320, 330, 340, 350, 360])`, async () => {
+      const result = await getComponentsByVariantId(1)
 
       const want = [
         {
@@ -197,9 +200,12 @@ describe("legacyDb", () => {
         },
       ]
 
-      expect(result).toHaveLength(want.length)
+      const expectedLength = 4 // because of the DIN category number pool
+
+      expect(result).toHaveLength(expectedLength)
       result.forEach((resultElement, i) => {
-        expect(resultElement).toMatchObject(want[i]!)
+        const matchingElement = want.find((element) => element.uuid === resultElement.uuid)
+        expect(resultElement).toMatchObject(matchingElement!)
       })
     })
   })

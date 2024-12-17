@@ -13,6 +13,12 @@ module.exports = {
     },
     extend: {
       colors: {
+        circularityIndex: {
+          lower20: "#C64032",
+          btw20and40: "#F9E196",
+          btw40and60: "#7CBB6D",
+          gt60: "#2B663B",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -29,6 +35,7 @@ module.exports = {
         gray: {
           900: "#111827",
           600: "#6B7280",
+          200: "#E5E7EB",
           100: "#F3F4F6",
         },
         info: "#991B1B",

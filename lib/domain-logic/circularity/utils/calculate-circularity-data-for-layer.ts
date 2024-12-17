@@ -78,8 +78,9 @@ const calculateCircularityDataForLayer = (
     layerData.disturbingEolScenarioForS4
   )
 
-  const circularityIndex =
-    eolBuilt == null || dismantlingPoints == null ? null : dismantlingPoints * 0.3 + eolBuilt.points * 0.7
+  const incompleteCircularityRequiredData = eolBuilt == null || dismantlingPoints == null
+
+  const circularityIndex = incompleteCircularityRequiredData ? null : dismantlingPoints * 0.3 + eolBuilt.points * 0.7
 
   return {
     ...layerData,

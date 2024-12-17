@@ -1,5 +1,7 @@
 FROM node:20-alpine AS builder
 
+RUN apk add --no-cache openssl
+
 ARG DATABASE_URL
 ARG ELCA_LEGACY_DATABASE_URL
 ARG ELCA_LEGACY_DATABASE_HAS_SSL

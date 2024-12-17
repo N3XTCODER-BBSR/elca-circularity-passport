@@ -1,3 +1,5 @@
+import { costGroupyDinNumbersToInclude } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
+import { Prisma } from "prisma/generated/client-legacy"
 import { prismaLegacy } from "prisma/prismaClient"
 
 // CHECK: adding a projectVariantId does it really matter?
@@ -74,8 +76,7 @@ export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number, pr
     component_id: data.id,
     layer_position: data.layer_position,
     process_name: process.name,
-    process_ref_value: Number(process.ref_value),
-    process_ref_unit: process.ref_unit,
+    // process_ref_unit: process.ref_unit,
     oekobaudat_process_uuid: process.uuid,
     oekobaudat_process_db_uuid: processDb?.uuid || null,
     element_component_id: data.id,
@@ -99,6 +100,11 @@ export const getElcaProjectComponentsByInstanceIdAndUserId = async (
   const elements = await prismaLegacy.elca_elements.findMany({
     where: {
       uuid: componentInstanceId,
+      element_types: {
+        din_code: {
+          in: costGroupyDinNumbersToInclude,
+        },
+      },
       project_variant_id: projectVariantId, // added because element.project_variant_id can be null
       element_components: {
         some: {
@@ -133,11 +139,18 @@ export const getElcaProjectComponentsByInstanceIdAndUserId = async (
           },
         },
       },
-      element_types: true,
+      element_types: {
+        select: {
+          name: true,
+          din_code: true,
+        },
+      },
       element_components: {
         include: {
           process_configs: {
             select: {
+              name: true,
+              density: true,
               process_category_node_id: true,
               process_life_cycle_assignments: {
                 include: {
@@ -172,8 +185,7 @@ export const getElcaProjectComponentsByInstanceIdAndUserId = async (
         // TODO: Check whether this is proper handling of null values in DB
         layer_position: ec.layer_position || -1,
         process_name: pc.name,
-        process_ref_value: process?.ref_value ? Number(process.ref_value) : null,
-        process_ref_unit: process?.ref_unit,
+        // process_ref_unit: process?.ref_unit,
         oekobaudat_process_uuid: process?.uuid,
         pdb_name: pdb?.name,
         pdb_version: pdb?.version,
@@ -209,9 +221,14 @@ export const findUsersByAuthName = async (authName: string) => {
 }
 
 // CHECK: instead of projectId, just pass in projectVariantId?, because one variant belongs always to one project?
-export const getComponentsByVariantId = async (projectVariantId = 1) => {
+export const getComponentsByVariantId = async (projectVariantId: number) => {
   return await prismaLegacy.elca_elements.findMany({
     where: {
+      element_types: {
+        din_code: {
+          in: costGroupyDinNumbersToInclude,
+        },
+      },
       project_variant_id: projectVariantId,
     },
     select: {
@@ -227,8 +244,28 @@ export const getComponentsByVariantId = async (projectVariantId = 1) => {
   })
 }
 
-// CHECK: just leave like it is, because it is still needed?
-export const getProjectsByIdAndOwnerId = async (id: number, userId: number) => {
+export type Project = Prisma.projectsGetPayload<{
+  select: {
+    id: true
+    name: true
+    created: true
+  }
+}>
+
+export type ProjectWithUserName = Prisma.projectsGetPayload<{
+  select: {
+    id: true
+    name: true
+    created: true
+    users: {
+      select: {
+        auth_name: true
+      }
+    }
+  }
+}>
+
+export const getProjectsByIdAndOwnerId = async (id: number, userId: number): Promise<Project[]> => {
   return await prismaLegacy.projects.findMany({
     where: {
       id,
@@ -237,6 +274,7 @@ export const getProjectsByIdAndOwnerId = async (id: number, userId: number) => {
     select: {
       id: true,
       name: true,
+      created: true,
     },
   })
 }
@@ -286,7 +324,6 @@ export const getProjectsByOwnerId = async (userId: number) => {
   })
 }
 
-// CHECK: adding a projectVariantId does it really matter? because I already query for a single product/element_component
 export const getDataForMassCalculationByProductId = async (productId: number) => {
   return prismaLegacy.elca_element_components.findUnique({
     where: {
@@ -313,7 +350,6 @@ export const getDataForMassCalculationByProductId = async (productId: number) =>
     },
   })
 }
-
 export const isUserAuthorizedToElementComponent = async (userId: number, elementComponentId: number) => {
   return await prismaLegacy.elca_element_components.findFirst({
     where: {

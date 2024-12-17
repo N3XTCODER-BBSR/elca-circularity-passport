@@ -14,7 +14,8 @@ const customJestConfig: Config = {
   globalSetup: "<rootDir>/lib/db/db-test-setup.ts",
   globalTeardown: "<rootDir>/lib/db/db-test-teardown.ts",
   collectCoverageFrom: [
-    "lib/domain-logic/**/*.{js,jsx,ts,tsx}", // Adjust the pattern based on your directory structure and file types
+    "lib/domain-logic/**/*.{js,jsx,ts,tsx}",
+    "prisma/queries/**/*.{js,jsx,ts,tsx}", // Adjust the pattern based on your directory structure and file types
   ],
 }
 

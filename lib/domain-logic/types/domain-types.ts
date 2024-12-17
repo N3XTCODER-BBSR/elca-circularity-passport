@@ -6,13 +6,6 @@ import {
   UserEnrichedProductData,
 } from "prisma/generated/client"
 
-export type ElcaProjectInfo = {
-  id: number
-  project_name: string
-  created_at?: Date
-  created_by_user_name?: string
-}
-
 export type ElcaProjectComponentLayerEolData = {
   eolUnbuiltRealScenario: TBs_ProductDefinitionEOLCategoryScenario
   eolUnbuiltRealPoints: number
@@ -45,27 +38,28 @@ export type ElcaProjectComponentRow = {
   element_uuid: string
   layer_position: number
   process_name: string
-  process_ref_value: number
-  process_ref_unit: string
-  oekobaudat_process_uuid: string
-  pdb_name: string
-  pdb_version: string
-  oekobaudat_process_db_uuid: string
+  // process_ref_unit: string
+  oekobaudat_process_uuid: string | undefined
+  pdb_name: string | undefined
+  pdb_version: string | undefined | null
+  oekobaudat_process_db_uuid: string | undefined
   element_name: string
   element_type_name: string
-  din_code: number
-  unit: string
+  din_code: number | null
+  unit: string | null
   quantity: number
-  layer_size: number
-  layer_length: number
-  layer_width: number
-  process_config_density: number
+  layer_size: number | null
+  layer_length: number | null
+  layer_width: number | null
+  process_config_density: number | null
   process_config_name: string
   process_category_node_id: number
 }
 
 export type EnrichedElcaElementComponent = ElcaProjectComponentRow & {
-  weight: number
+  mass: number | null
+  volume: number | null
+  isExcluded: boolean
   tBaustoffProductSelectedByUser?: boolean
   tBaustoffProductData?: TBaustoffProductData | null
   dismantlingPotentialClassId?: DismantlingPotentialClassId | null

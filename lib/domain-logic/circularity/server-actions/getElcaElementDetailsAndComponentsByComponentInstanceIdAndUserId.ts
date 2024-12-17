@@ -5,35 +5,35 @@ import {
   TBaustoffProductData,
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
-import { getTBaustoffMappingEntries, getTBaustoffProducts, getUserDefinedTBaustoffData } from "prisma/queries/db"
+import {
+  getExcludedProductIds,
+  getTBaustoffMappingEntries,
+  getTBaustoffProducts,
+  getUserDefinedTBaustoffData,
+} from "prisma/queries/db"
 import { getElcaProjectComponentsByInstanceIdAndUserId } from "prisma/queries/legacyDb"
-import { getWeightByProductId } from "./getWeightByProductId"
+import { calculateVolumeForLayer, getWeightByProductId } from "./getWeightByProductId"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
 
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
   componentInstanceId: string,
   userId: string
-  // <<<<<<< HEAD
-  // ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
-  //   const projectComponents: ElcaProjectComponentRow[] = await getElcaProjectComponentsByInstanceIdAndUserId(
-  //     componentInstanceId,
-  //     userId
-  //   )
-  // =======
 ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
   const projectComponents = await getElcaProjectComponentsByInstanceIdAndUserId(componentInstanceId, Number(userId))
-  // >>>>>>> feat-test-legacy-db-dals
 
   const componentIds = Array.from(new Set(projectComponents.map((c) => c.component_id)))
   const oekobaudatProcessUuids = Array.from(
     new Set(projectComponents.map((c) => c.oekobaudat_process_uuid).filter(Boolean))
   )
 
-  const [userDefinedTBaustoffDataList, tBaustoffMappingEntries] = await Promise.all([
+  const [excludedProductIds, userDefinedTBaustoffDataList, tBaustoffMappingEntries] = await Promise.all([
+    getExcludedProductIds(componentIds),
     getUserDefinedTBaustoffData(componentIds),
     getTBaustoffMappingEntries(oekobaudatProcessUuids),
   ])
+
+  const excludedProductIdsSet = new Set(excludedProductIds.map((entry) => entry.productId))
 
   const userDefinedTBaustoffDataMap = createMap(userDefinedTBaustoffDataList, (entry) => entry.elcaElementComponentId)
   const tBaustoffMappingEntriesMap = createMap(tBaustoffMappingEntries, (entry) => entry.oebd_processUuid)
@@ -42,28 +42,6 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
 
   const tBaustoffProductsList = await getTBaustoffProducts(tBaustoffProductIds)
   const tBaustoffProductMap = createMap(tBaustoffProductsList, (product) => product.id)
-
-  // <<<<<<< HEAD
-  //   //         const { element_name, element_type_name, din_code, unit } = components[0]!
-  // =======
-  // const projectComponentsWithLayers = processProjectComponents(
-  //   projectComponents as ElcaProjectComponentRow[],
-  //   userDefinedTBaustoffDataMap,
-  //   tBaustoffMappingEntriesMap,
-  //   tBaustoffProductMap
-  // )
-  // >>>>>>> feat-test-legacy-db-dals
-
-  //         const layers = processLayers(components, userDefinedMap, mappingEntriesMap, productMap)
-
-  // const projectComponentsWithLayers: ElcaElementWithComponents<EnrichedElcaElementComponent> = processProjectComponents(
-  //   projectComponents,
-  //   userDefinedTBaustoffDataMap,
-  //   tBaustoffMappingEntriesMap,
-  //   tBaustoffProductMap
-  // )
-
-  // return projectComponentsWithLayers
 
   const componentData = projectComponents[0]
 
@@ -74,6 +52,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
     din_code: componentData?.din_code,
     unit: componentData?.unit,
     layers: await processLayers(
+      excludedProductIdsSet,
       projectComponents,
       userDefinedTBaustoffDataMap,
       tBaustoffMappingEntriesMap,
@@ -107,7 +86,7 @@ function getUniqueTBaustoffProductIds(
 
 function getTBaustoffProductData(
   componentId: number,
-  oekobaudatProcessUuid: string | null,
+  oekobaudatProcessUuid: string | null | undefined,
   userDefinedMap: Map<number, UserEnrichedProductData>,
   mappingEntriesMap: Map<string, TBs_OekobaudatMapping>,
   productMap: Map<
@@ -179,6 +158,7 @@ function getTBaustoffProductData(
 // TODO: 'process' doesn't seem to be the best name for this function
 // it's more specifically about mapping/filtering
 const processLayers = async (
+  excludedProductIdsSet: Set<number>,
   components: ElcaProjectComponentRow[],
   userDefinedMap: Map<number, UserEnrichedProductDataWithDisturbingSubstanceSelection>,
   mappingEntriesMap: Map<string, TBs_OekobaudatMapping>,
@@ -201,11 +181,15 @@ const processLayers = async (
       )
 
       const userDefinedComponentData = userDefinedMap.get(component.component_id)
-      const weight = await getWeightByProductId(component.component_id)
+      const mass = await getWeightByProductId(component.component_id)
+
+      const volume = calculateVolumeForLayer(component)
 
       const enrichedElcaElementComponent: EnrichedElcaElementComponent = {
         ...component,
-        weight,
+        mass,
+        volume,
+        isExcluded: excludedProductIdsSet.has(component.component_id),
         tBaustoffProductData: productData,
         dismantlingPotentialClassId: userDefinedComponentData?.dismantlingPotentialClassId,
         tBaustoffProductSelectedByUser: userDefinedComponentData?.tBaustoffProductSelectedByUser,

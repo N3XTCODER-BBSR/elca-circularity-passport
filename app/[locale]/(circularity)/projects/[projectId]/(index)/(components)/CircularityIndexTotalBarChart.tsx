@@ -1,6 +1,6 @@
 import { ResponsiveBar } from "@nivo/bar"
-import CustomTooltip from "app/(components)/generic/CustomToolTip"
-import { eolClassColorsMapper } from "constants/styleConstants"
+import { useFormatter } from "next-intl"
+import { circularityBarCharColorMapping } from "constants/styleConstants"
 
 const CircularityIndexTotalBarChart = ({
   circularityTotalIndexPoints,
@@ -9,6 +9,8 @@ const CircularityIndexTotalBarChart = ({
   circularityTotalIndexPoints: number
   margin: { top: number; right: number; bottom: number; left: number }
 }) => {
+  const format = useFormatter()
+
   return (
     <>
       <ResponsiveBar
@@ -25,14 +27,7 @@ const CircularityIndexTotalBarChart = ({
         indexBy="identifier"
         margin={margin}
         keys={["datum"]}
-        colors={(datum) => {
-          if (datum.data.datum > 60) return "#008000"
-          if (datum.data.datum >= 40) return "#00FF00"
-          if (datum.data.datum >= 20) return "#FFFF00"
-          if (datum.data.datum < 20) return "#FF0000"
-
-          return "#FF0000"
-        }}
+        colors={(datum) => circularityBarCharColorMapping(datum.data.datum)}
         padding={0.2}
         groupMode="grouped"
         layout="horizontal"
@@ -62,6 +57,19 @@ const CircularityIndexTotalBarChart = ({
           legendOffset: -40,
           truncateTickAt: 0,
         }}
+        tooltip={(d) => (
+          <div
+            style={{
+              background: "white",
+              padding: "9px 12px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
+          >
+            <b>{d.data.identifier}</b>:{" "}
+            {format.number(d.data.datum, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}
+          </div>
+        )}
         totalsOffset={9}
         enableGridX={false}
         enableGridY={false}

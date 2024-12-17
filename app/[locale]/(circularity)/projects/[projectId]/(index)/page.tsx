@@ -19,22 +19,8 @@ const Page = async ({ params }: { params: { projectId: string } }) => {
       return <div>Projects with this ID not found for the current user.</div>
     }
 
-    return <BuildingOverview projectName={projectInfo.project_name} projectId={projectInfo.id} />
+    return <BuildingOverview projectName={projectInfo.name} projectId={projectInfo.id} />
   })
 }
-
-// const PageWithLayout = async ({ params }: { params: { projectId: string } }) => {
-//   const projectId = Number(params.projectId)
-//   const page = await Page({ params })
-
-//   const projectLayout = await ProjectLayout({
-//     children: page,
-//     projectId,
-//     showAvatar: true,
-//     showBackButton: true,
-//   })
-
-//   return <>{projectLayout}</>
-// }
 
 export default Page

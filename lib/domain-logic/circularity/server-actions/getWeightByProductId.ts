@@ -1,5 +1,11 @@
 import Decimal from "decimal.js"
+import { ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
 import { getDataForMassCalculationByProductId } from "prisma/queries/legacyDb"
+
+export const calculateVolumeForLayer = (component: ElcaProjectComponentRow): number | null =>
+  component.layer_length != null && component.layer_width != null && component.layer_size != null
+    ? component.layer_length * component.layer_width * component.layer_size
+    : null
 
 export const getWeightByProductId = async (productId: number) => {
   const productData = await getDataForMassCalculationByProductId(productId)
@@ -80,5 +86,7 @@ export const getWeightByProductId = async (productId: number) => {
 
   // Now, calculate the amount in kg
   const amount = volume.mul(density)
+  // TODFO: consider to return both mass/weight AND volume to have single source of truth for both calculations
+  // Also check potential naming inconsistencies regarding mass/weight
   return amount.toNumber()
 }
