@@ -1,5 +1,5 @@
-import Link from "next/link"
 import { twMerge } from "tailwind-merge"
+import { Link } from "i18n/routing"
 import { usePathname } from "i18n/routing"
 
 type NavigationLinksProps = {

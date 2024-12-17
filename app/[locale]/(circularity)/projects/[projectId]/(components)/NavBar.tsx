@@ -2,6 +2,7 @@
 
 import { Disclosure } from "@headlessui/react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { FC } from "react"
 import BackButton from "app/(components)/generic/BackButton"
 import NavBarDropdownMenu from "app/(components)/generic/NavBarMenuDropdown"
@@ -25,6 +26,8 @@ const NavBar: FC<{
   navLinks?: { id: string; name: string; href: string }[]
 }> = ({ projectInfo, showAvatar, backButtonTo, navLinks }) => {
   const router = useRouter()
+
+  const t = useTranslations("Grp.Web.NavBar")
 
   return (
     <Disclosure as="nav" className="bg-white">
@@ -54,9 +57,9 @@ const NavBar: FC<{
                       <ProjectVariantInfo projectName={projectInfo.projectName} variantName={projectInfo.variantName} />
                     }
                     items={[
-                      { text: "Switch Project", href: "/projects" },
+                      { text: t("switchProject"), href: "/projects" },
                       {
-                        text: "Switch Variant",
+                        text: t("switchVariant"),
                         href: `/projects/${projectInfo.projectId}/variants`,
                       },
                     ]}

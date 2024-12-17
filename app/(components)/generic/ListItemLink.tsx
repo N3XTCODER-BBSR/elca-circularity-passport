@@ -22,7 +22,7 @@ const ListItemLink: FC<{ linkTo: string; title: string; description: string; bad
           <p className="text-xs text-gray-500">{description}</p>
         </div>
         {badge}
-        <ChevronRightIcon className="size-5 " />
+        <ChevronRightIcon className="size-5 text-gray-400" />
       </div>
     </Link>
   )

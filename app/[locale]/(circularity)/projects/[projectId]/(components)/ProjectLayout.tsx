@@ -1,11 +1,12 @@
 import "styles/global.css"
+import { getTranslations } from "next-intl/server"
 import errorHandler from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { getProjectDataWithVariants } from "prisma/queries/legacyDb"
 import NavBar from "./NavBar"
 
-const ProjectLayout = ({
+const ProjectLayout = async ({
   children,
   projectId,
   variantId,
@@ -22,7 +23,9 @@ const ProjectLayout = ({
   showMenu?: boolean
   showProjectAndVariantInfo?: boolean
 }) => {
-  return errorHandler(async () => {
+  const t = await getTranslations("Grp.Web.NavBar")
+
+  return await errorHandler(async () => {
     const session = await ensureUserIsAuthenticated()
 
     const userId = Number(session.user.id)
@@ -38,8 +41,8 @@ const ProjectLayout = ({
     }
 
     const navLinks = [
-      { id: "overview", name: "Überblick", href: `/projects/${projectData.id}/variants` },
-      { id: "catalog", name: "Katalog", href: `/projects/${projectData.id}/variants/${variantId}/catalog` },
+      { id: "overview", name: t("overview"), href: `/projects/${projectData.id}/variants/${variantId}` },
+      { id: "catalog", name: t("catalog"), href: `/projects/${projectData.id}/variants/${variantId}/catalog` },
     ]
 
     return (

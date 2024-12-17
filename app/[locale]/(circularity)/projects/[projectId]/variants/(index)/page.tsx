@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server"
 import ListItemLink from "app/(components)/generic/ListItemLink"
 import errorHandler from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
@@ -14,11 +15,13 @@ const Page = async ({ params }: { params: { projectId: string } }) => {
 
     await ensureUserAuthorizationToProject(userId, projectId)
 
+    const t = await getTranslations("Grp.Web.sections.variants")
+
     const projectData = await getProjectDataWithVariants(projectId)
     const variants = projectData?.project_variants_project_variants_project_idToprojects || []
 
     const displayVariants = variants.map((variant) => {
-      const description = `Created on ${variant.created.toLocaleDateString()}`
+      const description = `${t("createdOn")} ${variant.created.toLocaleDateString()}`
 
       return (
         <ListItemLink
@@ -32,7 +35,7 @@ const Page = async ({ params }: { params: { projectId: string } }) => {
 
     return (
       <div>
-        <h4 className="mb-1 text-sm font-semibold uppercase text-bbsr-blue-600">Projekt:</h4>
+        <h4 className="mb-1 text-sm font-semibold uppercase text-bbsr-blue-600">{t("project")}:</h4>
         <h1 className="mb-4 text-2xl font-bold text-gray-900">{projectData?.name || "unnamed"}</h1>
         {displayVariants}
       </div>

@@ -1,6 +1,6 @@
 import { DisclosureButton, DisclosurePanel } from "@headlessui/react"
-import { usePathname } from "i18n/routing"
 import { twMerge } from "tailwind-merge"
+import { usePathname } from "i18n/routing"
 
 type MobileMenuPanelProps = {
   open: boolean

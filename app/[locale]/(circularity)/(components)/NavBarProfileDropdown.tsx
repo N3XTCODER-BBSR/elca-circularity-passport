@@ -18,8 +18,8 @@ const NavBarProfileDropdown: FC = () => {
       <Image
         alt="User avatar"
         src="/user_profile_placeholder.svg"
-        width={100}
-        height={100}
+        width={128}
+        height={129}
         className="size-8 rounded-full"
       />
     </MenuButton>

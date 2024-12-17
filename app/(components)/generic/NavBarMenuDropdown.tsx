@@ -19,7 +19,7 @@ const NavBarDropdownMenu: FC<{ menuButton: React.ReactNode; items: MenuItem[]; c
     <Menu as="div" className={twMerge("relative ml-3", className)}>
       <div>{menuButton}</div>
       <MenuItems
-        className="absolute right-0 z-10 mt-2 min-w-36 origin-top-right scale-95 
+        className="absolute right-0 z-10 mt-2 w-44 origin-top-right scale-95 
                      rounded-md bg-white py-1 opacity-0 shadow-lg ring-1 
                      ring-black ring-opacity-5 transition focus:outline-none data-[open]:scale-100 
                      data-[open]:opacity-100"
@@ -39,7 +39,7 @@ const NavBarDropdownMenu: FC<{ menuButton: React.ReactNode; items: MenuItem[]; c
             </button>
           )
 
-          return <HeadlessUiMenuItem key={item.testId}>{itemContent}</HeadlessUiMenuItem>
+          return <HeadlessUiMenuItem key={item.text}>{itemContent}</HeadlessUiMenuItem>
         })}
       </MenuItems>
     </Menu>

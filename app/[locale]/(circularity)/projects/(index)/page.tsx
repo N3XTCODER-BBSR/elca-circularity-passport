@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server"
 import { FC } from "react"
 import ListItemLink from "app/(components)/generic/ListItemLink"
 import errorHandler from "app/(utils)/errorHandler"
@@ -12,32 +13,41 @@ const Page = async () => {
 
     const projects = await getProjectsByOwnerId(userId)
 
+    const t = await getTranslations("Grp.Web.sections.projects")
+
     if (projects.length === 0) {
       return <>No projects found</>
     }
 
+    const projectList = await ProjectList({ projects })
+
     return (
       <div className="mb-4 flex flex-col">
-        <h3 className="mb-8 text-2xl font-bold">Your projects</h3>
-        <ProjectList projects={projects} />
+        <h3 className="mb-8 text-2xl font-bold">{t("yourProjects")}</h3>
+        {projectList}
       </div>
     )
   })
 }
 
-const ProjectList: FC<{ projects: Awaited<ReturnType<typeof getProjectsByOwnerId>> }> = ({ projects }) => {
+const ProjectList: FC<{ projects: Awaited<ReturnType<typeof getProjectsByOwnerId>> }> = async ({ projects }) => {
+  const t = await getTranslations("Grp.Web.sections.projects")
+
   return (
     <div>
       {projects.map((project) => {
-        const description = `Created on ${project.created.toLocaleDateString()} • Created by ${project.users.auth_name}`
+        const description = `${t("createdOn")} ${project.created.toLocaleDateString()} • ${t("createdBy")} ${
+          project.users.auth_name
+        }`
 
         const variantsCount = project.project_variants_project_variants_project_idToprojects.length
-        const badgeText = variantsCount > 0 ? `${variantsCount} variants` : undefined
+        const badgeText = variantsCount > 0 ? `${variantsCount} ${t("variants")}` : undefined
+        const linkTo = `projects/${project.id}/variants`
 
         return (
           <ListItemLink
             key={project.id}
-            linkTo={`projects/${project.id}/variants`}
+            linkTo={linkTo}
             title={project.name}
             description={description}
             badgeText={badgeText}
