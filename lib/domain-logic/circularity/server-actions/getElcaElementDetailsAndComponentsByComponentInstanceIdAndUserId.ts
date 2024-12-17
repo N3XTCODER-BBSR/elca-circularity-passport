@@ -20,7 +20,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   componentInstanceId: string,
   userId: string
 ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
-  const projectComponents = await getElcaProjectComponentsByInstanceIdAndUserId(componentInstanceId, Number(userId))
+  const projectComponents = await getElcaProjectComponentsByInstanceIdAndUserId(componentInstanceId, Number(userId), 1)
 
   const componentIds = Array.from(new Set(projectComponents.map((c) => c.component_id)))
   const oekobaudatProcessUuids = Array.from(
