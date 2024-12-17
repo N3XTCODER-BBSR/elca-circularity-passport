@@ -38,7 +38,7 @@ describe("legacyDb queries", () => {
   })
   describe("getElcaProjectComponentsByInstanceIdAndUserId", () => {
     it("should return the correct project components for a given instance ID and user ID", async () => {
-      const result = await getElcaProjectComponentsByInstanceIdAndUserId("32af2f0b-d7d8-4fb1-8354-1e9736d4f513", 2)
+      const result = await getElcaProjectComponentsByInstanceIdAndUserId("32af2f0b-d7d8-4fb1-8354-1e9736d4f513", 2, 1)
 
       const want = [
         {

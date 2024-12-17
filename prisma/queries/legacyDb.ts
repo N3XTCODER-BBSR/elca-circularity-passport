@@ -95,7 +95,7 @@ export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number, pr
 export const getElcaProjectComponentsByInstanceIdAndUserId = async (
   componentInstanceId: string,
   userId: number,
-  projectVariantId = 1
+  projectVariantId: number
 ) => {
   const elements = await prismaLegacy.elca_elements.findMany({
     where: {
