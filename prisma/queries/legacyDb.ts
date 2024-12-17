@@ -350,6 +350,7 @@ export const getDataForMassCalculationByProductId = async (productId: number) =>
     },
   })
 }
+
 export const isUserAuthorizedToElementComponent = async (userId: number, elementComponentId: number) => {
   return await prismaLegacy.elca_element_components.findFirst({
     where: {

@@ -13,7 +13,7 @@ import calculateCircularityDataForLayer, {
 // }
 
 export const getProjectCircularityIndexData = async (
-  projectId: number,
+  variantId: number,
   userId: string
   // ): Promise<ProjectCircularityIndexData> => {
 ): Promise<ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]> => {
@@ -24,7 +24,7 @@ export const getProjectCircularityIndexData = async (
   // TODO: only get the elements that are falling into the DIN categories we are considering
 
   // CHECK: have 2 queries here, one project specific and one variant specific?
-  const elements = await getElcaElementsForVariantId(projectId)
+  const elements = await getElcaElementsForVariantId(variantId)
 
   // 2. Call existing function to get all the data for the components
   const componentsWithProducts: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =

@@ -14,6 +14,7 @@ import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
 type BuildingOverviewProps = {
   projectId: number
   projectName: string
+  variantId: number
 }
 
 // TODO: rename and move into domain logic
@@ -61,12 +62,12 @@ export const calculateTotalCircularityIndex = async (
   return totalCircularityIndexForProject
 }
 
-const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProps) => {
+const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingOverviewProps) => {
   const session = await ensureUserIsAuthenticated()
 
   // TODO: move probably most things here into domain logic
   const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
-    await getProjectCircularityIndexData(projectId, session.user.id)
+    await getProjectCircularityIndexData(variantId, session.user.id)
 
   const totalCircularityIndexForProject = await calculateTotalCircularityIndex(circularityData)
 
@@ -75,6 +76,8 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
   const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
     component.layers.some((layer) => layer.circularityIndex == null)
   )
+
+  const catalogPath = `/projects/${projectId}/variants/${variantId}/catalog`
 
   return (
     <>
@@ -100,10 +103,7 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
             To view the circularity index, please ensure that each building product is either complete or excluded from
             calculation. Once this information is updated, your data will be visualized here.
           </div>
-          <Link
-            href={`/projects/${projectId}/catalog/`}
-            className="mt-8 inline-block rounded-md bg-blue-600 px-2 py-1 text-white"
-          >
+          <Link href={catalogPath} className="mt-8 inline-block rounded-md bg-blue-600 px-2 py-1 text-white">
             Update Building Data
           </Link>
         </div>
@@ -115,10 +115,10 @@ const BuildingOverview = async ({ projectId, projectName }: BuildingOverviewProp
           <CircularityIndexBreakdownByDin
             circularityData={circularityData}
             projectName={projectName}
-            projectId={projectId}
+            catalogPath={catalogPath}
           />
           <CircularityIndexBreakdownByMaterialType
-            projectId={projectId}
+            catalogPath={catalogPath}
             projectName={projectName}
             processCategories={processCategories}
             circularityData={circularityData}
