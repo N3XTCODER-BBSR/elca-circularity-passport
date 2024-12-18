@@ -3,6 +3,7 @@ import {
   getComponentsByVariantId,
   getElcaComponentDataByLayerId,
   getElcaVariantComponentsByInstanceId,
+  getProjectDataWithVariants,
   getProjectsByIdAndOwnerId,
   getProjectsByOwnerId,
   isUserAuthorizedToElementComponent,
@@ -129,6 +130,45 @@ describe("legacyDb queries", () => {
 
       expect(result).toHaveLength(want.length)
       expect(result[0]).toMatchObject(want[0]!)
+    })
+  })
+  describe("getProjectDataWithVariants", () => {
+    it("should return the correct project data for a given project ID", async () => {
+      const result = await getProjectDataWithVariants(1)
+
+      const want = {
+        id: 1,
+        name: "Test Project 1",
+        project_variants_project_variants_project_idToprojects: [
+          { id: 1, name: "Vorplanung" },
+          {
+            id: 2,
+            name: "Entwurfsplanung",
+          },
+          {
+            id: 3,
+            name: "Ausführungsplanung",
+          },
+        ],
+      }
+
+      expect(result).toBeDefined()
+      expect(result!.project_variants_project_variants_project_idToprojects).toHaveLength(
+        want.project_variants_project_variants_project_idToprojects.length
+      )
+      expect(result!.name).toBe(want.name)
+
+      result!.project_variants_project_variants_project_idToprojects.forEach((resultVariant, i) => {
+        expect(resultVariant).toMatchObject(want.project_variants_project_variants_project_idToprojects[i]!)
+      })
+    })
+    it("should return null if the project does not exist", async () => {
+      const nonExistingProjectId = 999
+      const result = await getProjectDataWithVariants(nonExistingProjectId)
+
+      const want = null
+
+      expect(result).toBe(want)
     })
   })
   describe("getProjectsByOwnerId", () => {
