@@ -27,8 +27,8 @@ test.describe("Login Page", () => {
     await page.goto("/auth/signin")
 
     // Fill the login form with correct credentials
-    await page.fill('input[name="username"]', "admin_bbsr")
-    await page.fill('input[name="password"]', "changeme")
+    await page.fill('input[name="username"]', "testuser")
+    await page.fill('input[name="password"]', "password1!")
 
     // Submit the form
     await page.click('button[type="submit"]')
