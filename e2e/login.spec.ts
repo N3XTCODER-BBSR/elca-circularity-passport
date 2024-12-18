@@ -38,7 +38,7 @@ test.describe("Login Page", () => {
 
     // Check that the heading 'Your Projects' is visible
     const heading = await page.locator("h3")
-    await expect(heading).toHaveText("Your projects")
+    await expect(heading).toHaveText("Your Projects")
   })
 
   test("should show error message when login fails with incorrect credentials", async ({ browserName, page }) => {
