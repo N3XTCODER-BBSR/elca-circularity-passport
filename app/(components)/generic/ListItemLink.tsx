@@ -15,16 +15,18 @@ const ListItemLink: FC<{ linkTo: string; title: string; description: string; bad
   ) : null
 
   return (
-    <Link href={linkTo} className="block border-b border-gray-100 px-1 py-5 last:border-b-0 hover:bg-gray-50">
-      <div className="flex items-center">
-        <div className="flex flex-1 flex-col justify-between gap-2">
-          <h5 className="text-sm font-semibold text-gray-900">{title}</h5>
-          <p className="text-xs text-gray-500">{description}</p>
+    <li className="block list-none">
+      <Link href={linkTo} className="block border-b border-gray-100 px-1 py-5 last:border-b-0 hover:bg-gray-50">
+        <div className="flex items-center">
+          <div className="flex flex-1 flex-col justify-between gap-2">
+            <h5 className="text-sm font-semibold text-gray-900">{title}</h5>
+            <p className="text-xs text-gray-500">{description}</p>
+          </div>
+          {badge}
+          <ChevronRightIcon className="size-5 text-gray-400" />
         </div>
-        {badge}
-        <ChevronRightIcon className="size-5 text-gray-400" />
-      </div>
-    </Link>
+      </Link>
+    </li>
   )
 }
 

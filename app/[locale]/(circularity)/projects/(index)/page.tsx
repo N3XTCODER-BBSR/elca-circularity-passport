@@ -34,7 +34,7 @@ const ProjectList: FC<{ projects: Awaited<ReturnType<typeof getProjectsByOwnerId
   const t = await getTranslations("Grp.Web.sections.projects")
 
   return (
-    <div>
+    <ul>
       {projects.map((project) => {
         const description = `${t("createdOn")} ${project.created.toLocaleDateString()} • ${t("createdBy")} ${
           project.users.auth_name
@@ -54,7 +54,7 @@ const ProjectList: FC<{ projects: Awaited<ReturnType<typeof getProjectsByOwnerId
           />
         )
       })}
-    </div>
+    </ul>
   )
 }
 

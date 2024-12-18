@@ -2,6 +2,11 @@ import { costGroupyDinNumbersToInclude } from "lib/domain-logic/grp/data-schema/
 import { Prisma } from "prisma/generated/client-legacy"
 import { prismaLegacy } from "prisma/prismaClient"
 
+// HINT: functions that access data that has authorization requirements specific to projects
+// should have as a parameter the projectId and verify in the where clause of the db query
+// that the resource is related to that specific project. Additionally, the ensureUserAuthorizationToProject
+// function should be called before the query to ensure that the user has access to the project.
+
 export const getElcaComponentDataByLayerId = async (layerId: number, variantId: number, projectId: number) => {
   const data = await prismaLegacy.elca_element_components.findFirst({
     where: {
