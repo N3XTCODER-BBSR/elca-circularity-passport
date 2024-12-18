@@ -150,6 +150,16 @@ const translationsGrpPlatformGeneric = {
       },
     },
   },
+  projectsPage: {
+    yourProjects: "Your Projects",
+    createdOn: "Created on",
+    createdBy: "Created by",
+    variants: "variants",
+  },
+  variantsPage: {
+    project: "project",
+    createdOn: "Created on",
+  },
   detailPage: {
     component: {
       back: "Back",
@@ -269,8 +279,12 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
       NavBar: {
         overview: "Overview",
         catalog: "Catalog",
+        switchProject: "Switch Project",
+        switchVariant: "Switch Variant",
       },
       sections: {
+        variants: translationsGrpPlatformGeneric.variantsPage,
+        projects: translationsGrpPlatformGeneric.projectsPage,
         overview: translationsGrpPlatformGeneric.overview,
         detailPage: translationsGrpPlatformGeneric.detailPage,
       },

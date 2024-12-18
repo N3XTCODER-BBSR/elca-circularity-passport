@@ -11,14 +11,14 @@ import { transformCircularityDataAndDinHierachyToChartTree } from "./transformCi
 type CircularityIndexBreakdownByDin = {
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   projectName: string
-  projectId: number
+  catalogPath: string
 }
 
 export default function CircularityIndexBreakdownByDin(props: CircularityIndexBreakdownByDin) {
   const router = useRouter()
 
   function exampleLeafClickHandler(resourceId: string) {
-    const detailLink = `/projects/${props.projectId}/catalog/components/${resourceId}`
+    const detailLink = `${props.catalogPath}/components/${resourceId}`
     if (detailLink) router.push(detailLink)
   }
 

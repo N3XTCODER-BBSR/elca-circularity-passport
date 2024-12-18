@@ -12,7 +12,7 @@ const NavBar: FC = () => {
     <Disclosure as="nav" className="bg-white">
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-0">
+          <div className="mx-auto max-w-7xl">
             <div className="relative flex h-16 justify-end">
               {/* Mobile menu button */}
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">

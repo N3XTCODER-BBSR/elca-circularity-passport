@@ -1,25 +1,61 @@
+import { getTranslations } from "next-intl/server"
+import { FC } from "react"
+import ListItemLink from "app/(components)/generic/ListItemLink"
 import errorHandler from "app/(utils)/errorHandler"
-import getElcaProjectsForUserId from "lib/domain-logic/circularity/server-actions/getElcaProjectsForUserId"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import ProjectLinksList from "./(components)/ProjectsLinkList"
+import { getProjectsByOwnerId } from "prisma/queries/legacyDb"
 
 const Page = async () => {
   return errorHandler(async () => {
     const session = await ensureUserIsAuthenticated()
 
-    const usersProjects = await getElcaProjectsForUserId(session.user.id)
+    const userId = Number(session.user.id)
 
-    if (usersProjects === null) {
+    const projects = await getProjectsByOwnerId(userId)
+
+    const t = await getTranslations("Grp.Web.sections.projects")
+
+    if (projects.length === 0) {
       return <>No projects found</>
     }
 
+    const projectList = await ProjectList({ projects })
+
     return (
       <div className="mb-4 flex flex-col">
-        <h3 className="mb-8 text-2xl font-bold">Your projects</h3>
-        <ProjectLinksList projects={usersProjects} />
+        <h3 className="mb-8 text-2xl font-bold">{t("yourProjects")}</h3>
+        {projectList}
       </div>
     )
   })
+}
+
+const ProjectList: FC<{ projects: Awaited<ReturnType<typeof getProjectsByOwnerId>> }> = async ({ projects }) => {
+  const t = await getTranslations("Grp.Web.sections.projects")
+
+  return (
+    <ul>
+      {projects.map((project) => {
+        const description = `${t("createdOn")} ${project.created.toLocaleDateString()} • ${t("createdBy")} ${
+          project.users.auth_name
+        }`
+
+        const variantsCount = project.project_variants_project_variants_project_idToprojects.length
+        const badgeText = variantsCount > 0 ? `${variantsCount} ${t("variants")}` : undefined
+        const linkTo = `projects/${project.id}/variants`
+
+        return (
+          <ListItemLink
+            key={project.id}
+            linkTo={linkTo}
+            title={project.name}
+            description={description}
+            badgeText={badgeText}
+          />
+        )
+      })}
+    </ul>
+  )
 }
 
 export default Page

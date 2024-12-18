@@ -1,7 +1,7 @@
 import { getProjectsByIdAndOwnerId, Project } from "prisma/queries/legacyDb"
 
-export const getElcaProjectData = async (projectId: string, userId: string): Promise<Project> => {
-  const projects = await getProjectsByIdAndOwnerId(Number(projectId), Number(userId))
+export const getElcaProjectData = async (projectId: number, userId: number): Promise<Project> => {
+  const projects = await getProjectsByIdAndOwnerId(projectId, userId)
 
   if (projects.length < 1) {
     throw new Error(`Project with ID ${projectId} not found for user ${userId}`)

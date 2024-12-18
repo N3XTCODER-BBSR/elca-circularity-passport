@@ -121,9 +121,11 @@ const EolDataSection = ({ layerDatacirculartyEnrichedLayerData }: EolDataSection
 }
 
 type CircularityDetailsProps = {
+  projectId: number
+  variantId: number
   layerData: CalculateCircularityDataForLayerReturnType
 }
-const CircularityDetails = ({ layerData }: CircularityDetailsProps) => {
+const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDetailsProps) => {
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
 
   const queryClient = useQueryClient()
@@ -158,7 +160,12 @@ const CircularityDetails = ({ layerData }: CircularityDetailsProps) => {
     DisturbingSubstanceSelectionWithNullabelId
   >({
     mutationFn: async (disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId) => {
-      const result = await addOrUpdateDisturbingSubstanceSelection(layerData.component_id, disturbingSubstanceSelection)
+      const result = await addOrUpdateDisturbingSubstanceSelection(
+        variantId,
+        projectId,
+        layerData.component_id,
+        disturbingSubstanceSelection
+      )
       return result
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
@@ -170,7 +177,7 @@ const CircularityDetails = ({ layerData }: CircularityDetailsProps) => {
     number
   >({
     mutationFn: async (id: number) => {
-      const result = await removeDisturbingSubstanceSelection(layerData.component_id, id)
+      const result = await removeDisturbingSubstanceSelection(variantId, projectId, layerData.component_id, id)
       return result
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),

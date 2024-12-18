@@ -38,3 +38,5 @@ dbdata
 legacy_db_data
 legacy_db_test_data
 generated
+
+.VSCodeCounter

@@ -2,8 +2,8 @@ import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { twMerge } from "tailwind-merge"
+import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
-import { CalculateCircularityDataForLayerReturnType } from "../../../../../../../../../../../../../lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 
 enum EolScenarioColorCodeTwClassString {
   yellow = "bg-yellow-100 text-yellow-800",

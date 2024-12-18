@@ -11,16 +11,17 @@ import {
   getTBaustoffProducts,
   getUserDefinedTBaustoffData,
 } from "prisma/queries/db"
-import { getElcaProjectComponentsByInstanceIdAndUserId } from "prisma/queries/legacyDb"
+import { getElcaVariantComponentsByInstanceId } from "prisma/queries/legacyDb"
 import { calculateVolumeForLayer, getWeightByProductId } from "./getWeightByProductId"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
 
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
-  componentInstanceId: string,
-  userId: string
+  variantId: number,
+  projectId: number,
+  componentInstanceId: string
 ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
-  const projectComponents = await getElcaProjectComponentsByInstanceIdAndUserId(componentInstanceId, Number(userId))
+  const projectComponents = await getElcaVariantComponentsByInstanceId(componentInstanceId, variantId, projectId)
 
   const componentIds = Array.from(new Set(projectComponents.map((c) => c.component_id)))
   const oekobaudatProcessUuids = Array.from(

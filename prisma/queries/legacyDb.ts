@@ -2,7 +2,12 @@ import { costGroupyDinNumbersToInclude } from "lib/domain-logic/grp/data-schema/
 import { Prisma } from "prisma/generated/client-legacy"
 import { prismaLegacy } from "prisma/prismaClient"
 
-export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number) => {
+// HINT: functions that access data that has authorization requirements specific to projects
+// should have as a parameter the projectId and verify in the where clause of the db query
+// that the resource is related to that specific project. Additionally, the ensureUserAuthorizationToProject
+// function should be called before the query to ensure that the user has access to the project.
+
+export const getElcaComponentDataByLayerId = async (layerId: number, variantId: number, projectId: number) => {
   const data = await prismaLegacy.elca_element_components.findFirst({
     where: {
       id: layerId,
@@ -16,7 +21,12 @@ export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number) =>
           },
         },
       },
-      // TODO: Add user permission check here by relating to project.owner_id if needed
+      elements: {
+        project_variant_id: variantId, // added because element_component.element.project_variant_id can be null
+        project_variants: {
+          project_id: projectId,
+        },
+      },
     },
     include: {
       elements: {
@@ -88,7 +98,11 @@ export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number) =>
   return result
 }
 
-export const getElcaProjectComponentsByInstanceIdAndUserId = async (componentInstanceId: string, userId: number) => {
+export const getElcaVariantComponentsByInstanceId = async (
+  componentInstanceId: string,
+  variantId: number,
+  projectId: number
+) => {
   const elements = await prismaLegacy.elca_elements.findMany({
     where: {
       uuid: componentInstanceId,
@@ -97,7 +111,7 @@ export const getElcaProjectComponentsByInstanceIdAndUserId = async (componentIns
           in: costGroupyDinNumbersToInclude,
         },
       },
-
+      project_variant_id: variantId, // added because element.project_variant_id can be null
       element_components: {
         some: {
           process_configs: {
@@ -114,11 +128,7 @@ export const getElcaProjectComponentsByInstanceIdAndUserId = async (componentIns
         },
       },
       project_variants: {
-        projects_projects_current_variant_idToproject_variants: {
-          some: {
-            owner_id: userId,
-          },
-        },
+        project_id: projectId,
       },
     },
     include: {
@@ -211,7 +221,8 @@ export const findUsersByAuthName = async (authName: string) => {
     },
   })
 }
-export const getElcaProjectElementsByProjectIdAndUserId = async (projectId: number, userId: number) => {
+
+export const getComponentsByVariantId = async (variantId: number, projectId: number) => {
   return await prismaLegacy.elca_elements.findMany({
     where: {
       element_types: {
@@ -219,11 +230,9 @@ export const getElcaProjectElementsByProjectIdAndUserId = async (projectId: numb
           in: costGroupyDinNumbersToInclude,
         },
       },
+      project_variant_id: variantId,
       project_variants: {
-        projects_project_variants_project_idToprojects: {
-          id: projectId,
-          owner_id: userId,
-        },
+        project_id: projectId,
       },
     },
     select: {
@@ -274,8 +283,27 @@ export const getProjectsByIdAndOwnerId = async (id: number, userId: number): Pro
   })
 }
 
-export const getProjectsByOwnerId = async (userId: number): Promise<ProjectWithUserName[] | null> => {
-  const projectsByOwnerId = await prismaLegacy.projects.findMany({
+export const getProjectDataWithVariants = async (projectId: number) => {
+  return await prismaLegacy.projects.findUnique({
+    where: {
+      id: projectId,
+    },
+    select: {
+      id: true,
+      name: true,
+      project_variants_project_variants_project_idToprojects: {
+        select: {
+          id: true,
+          name: true,
+          created: true,
+        },
+      },
+    },
+  })
+}
+
+export const getProjectsByOwnerId = async (userId: number) => {
+  return await prismaLegacy.projects.findMany({
     where: {
       owner_id: userId,
     },
@@ -288,10 +316,15 @@ export const getProjectsByOwnerId = async (userId: number): Promise<ProjectWithU
           auth_name: true,
         },
       },
+      project_variants_project_variants_project_idToprojects: {
+        select: {
+          id: true,
+          name: true,
+          created: true,
+        },
+      },
     },
   })
-
-  return projectsByOwnerId
 }
 
 export const getDataForMassCalculationByProductId = async (productId: number) => {
@@ -320,6 +353,7 @@ export const getDataForMassCalculationByProductId = async (productId: number) =>
     },
   })
 }
+
 export const isUserAuthorizedToElementComponent = async (userId: number, elementComponentId: number) => {
   return await prismaLegacy.elca_element_components.findFirst({
     where: {
@@ -381,4 +415,3 @@ const getProjectAuthorizationConditions = (userId: number) => [
     },
   },
 ]
-// >>>>>>> feat-test-legacy-db-dals

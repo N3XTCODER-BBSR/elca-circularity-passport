@@ -26,7 +26,7 @@ export type MaterialNode = {
 }
 
 type CircularityIndexBreakdownByMaterialTypeProps = {
-  projectId: number
+  catalogPath: string
   projectName: string
   processCategories: ProcessCategory[]
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
@@ -49,7 +49,7 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
   )
 
   function leafClickHandler(resourceId: string) {
-    const detailLink = `/projects/${props.projectId}/catalog/components/${resourceId}`
+    const detailLink = `${props.catalogPath}/components/${resourceId}`
     router.push(detailLink)
   }
 

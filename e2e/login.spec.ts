@@ -27,8 +27,8 @@ test.describe("Login Page", () => {
     await page.goto("/auth/signin")
 
     // Fill the login form with correct credentials
-    await page.fill('input[name="username"]', "admin_bbsr")
-    await page.fill('input[name="password"]', "changeme")
+    await page.fill('input[name="username"]', "testuser")
+    await page.fill('input[name="password"]', "password1!")
 
     // Submit the form
     await page.click('button[type="submit"]')
@@ -38,7 +38,7 @@ test.describe("Login Page", () => {
 
     // Check that the heading 'Your Projects' is visible
     const heading = await page.locator("h3")
-    await expect(heading).toHaveText("Your projects")
+    await expect(heading).toHaveText("Your Projects")
   })
 
   test("should show error message when login fails with incorrect credentials", async ({ browserName, page }) => {

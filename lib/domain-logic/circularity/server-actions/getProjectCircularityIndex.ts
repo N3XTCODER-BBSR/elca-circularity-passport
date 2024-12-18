@@ -1,7 +1,7 @@
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { getExcludedProductIds } from "prisma/queries/db"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
-import { getElcaElementsForProjectId } from "./getElcaElementsForProjectId"
+import { getElcaElementsForVariantId } from "./getElcaElementsForProjectId"
 import calculateCircularityDataForLayer, {
   CalculateCircularityDataForLayerReturnType,
 } from "../utils/calculate-circularity-data-for-layer"
@@ -13,23 +13,26 @@ import calculateCircularityDataForLayer, {
 // }
 
 export const getProjectCircularityIndexData = async (
-  projectId: number,
-  userId: string
+  variantId: number,
+  projectId: number
   // ): Promise<ProjectCircularityIndexData> => {
 ): Promise<ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]> => {
   // TODO: once the merge confusion is resolved (is checked by Niko)
   // add authorization / authentication check here
+
   // 1. Get all components for the project
   // TODO: only get the elements that are falling into the DIN categories we are considering
-  const elements = await getElcaElementsForProjectId(String(projectId), userId)
+
+  const elements = await getElcaElementsForVariantId(variantId, projectId)
 
   // 2. Call existing function to get all the data for the components
   const componentsWithProducts: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
     await Promise.all(
       elements.map(async (element) => {
         const elementDetailsWithProducts = await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(
-          element.element_uuid,
-          userId
+          variantId,
+          projectId,
+          element.element_uuid
         )
 
         const productIds = elementDetailsWithProducts.layers.map((layer) => layer.component_id)

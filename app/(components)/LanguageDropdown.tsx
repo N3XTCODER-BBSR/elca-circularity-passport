@@ -1,5 +1,5 @@
 "use client"
-import { Menu } from "@headlessui/react"
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { twMerge } from "tailwind-merge"
@@ -35,14 +35,14 @@ const LanguageDropdown = () => {
   return (
     <div className="flex items-center">
       <Menu as="div" className="relative">
-        <Menu.Button className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        <MenuButton className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
           {languages.find((lang) => lang.code === currentLocale)?.name || "Select Language"}
-        </Menu.Button>
+        </MenuButton>
 
-        <Menu.Items className="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+        <MenuItems className="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
           <div className="py-1">
             {languages.map((language) => (
-              <Menu.Item key={language.code}>
+              <MenuItem key={language.code}>
                 {({ active }) => (
                   <button
                     onClick={() => updateLocale(language.code)}
@@ -54,10 +54,10 @@ const LanguageDropdown = () => {
                     {language.name}
                   </button>
                 )}
-              </Menu.Item>
+              </MenuItem>
             ))}
           </div>
-        </Menu.Items>
+        </MenuItems>
       </Menu>
     </div>
   )
