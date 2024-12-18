@@ -13,19 +13,28 @@ import { SelectOption } from "lib/domain-logic/types/helper-types"
 import CircularityInfo from "./circularity-info/CircularityInfo"
 
 type ComponentLayerProps = {
+  projectId: number
+  variantId: number
   layerData: EnrichedElcaElementComponent
   layerNumber: number
   unitName: string
   tBaustoffProducts: SelectOption[]
 }
 
-const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }: ComponentLayerProps) => {
+const ComponentLayer = ({
+  projectId,
+  variantId,
+  layerData,
+  layerNumber,
+  unitName,
+  tBaustoffProducts,
+}: ComponentLayerProps) => {
   const [layerDataQuery] = useQueries({
     queries: [
       {
         queryKey: ["layerData", layerData.component_id],
         queryFn: () => {
-          return getElcaComponentDataByLayerId(layerData.component_id)
+          return getElcaComponentDataByLayerId(variantId, projectId, layerData.component_id)
         },
         initialData: layerData,
         staleTime: Infinity,
@@ -98,7 +107,12 @@ const ComponentLayer = ({ layerData, layerNumber, unitName, tBaustoffProducts }:
   ]
 
   const circularityInfo = currentLayerData.isExcluded ? null : (
-    <CircularityInfo layerData={currentLayerData} tBaustoffProducts={tBaustoffProducts} />
+    <CircularityInfo
+      layerData={currentLayerData}
+      tBaustoffProducts={tBaustoffProducts}
+      projectId={projectId}
+      variantId={variantId}
+    />
   )
 
   return (

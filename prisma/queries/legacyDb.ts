@@ -2,8 +2,7 @@ import { costGroupyDinNumbersToInclude } from "lib/domain-logic/grp/data-schema/
 import { Prisma } from "prisma/generated/client-legacy"
 import { prismaLegacy } from "prisma/prismaClient"
 
-// CHECK: adding a projectVariantId does it really matter?
-export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number, projectVariantId = 1) => {
+export const getElcaComponentDataByLayerId = async (layerId: number, variantId: number, projectId: number) => {
   const data = await prismaLegacy.elca_element_components.findFirst({
     where: {
       id: layerId,
@@ -18,7 +17,10 @@ export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number, pr
         },
       },
       elements: {
-        project_variant_id: projectVariantId, // added because element_component.element.project_variant_id can be null
+        project_variant_id: variantId, // added because element_component.element.project_variant_id can be null
+        project_variants: {
+          project_id: projectId,
+        },
       },
     },
     include: {
@@ -91,11 +93,10 @@ export const getElcaComponentDataByLayerIdAndUserId = async (layerId: number, pr
   return result
 }
 
-// CHECK: adding a projectVariantId does it really matter?
-export const getElcaProjectComponentsByInstanceIdAndUserId = async (
+export const getElcaVariantComponentsByInstanceId = async (
   componentInstanceId: string,
-  userId: number,
-  projectVariantId: number
+  variantId: number,
+  projectId: number
 ) => {
   const elements = await prismaLegacy.elca_elements.findMany({
     where: {
@@ -105,7 +106,7 @@ export const getElcaProjectComponentsByInstanceIdAndUserId = async (
           in: costGroupyDinNumbersToInclude,
         },
       },
-      project_variant_id: projectVariantId, // added because element.project_variant_id can be null
+      project_variant_id: variantId, // added because element.project_variant_id can be null
       element_components: {
         some: {
           process_configs: {
@@ -122,11 +123,7 @@ export const getElcaProjectComponentsByInstanceIdAndUserId = async (
         },
       },
       project_variants: {
-        projects_projects_current_variant_idToproject_variants: {
-          some: {
-            owner_id: userId,
-          },
-        },
+        project_id: projectId,
       },
     },
     include: {
@@ -220,8 +217,7 @@ export const findUsersByAuthName = async (authName: string) => {
   })
 }
 
-// CHECK: instead of projectId, just pass in projectVariantId?, because one variant belongs always to one project?
-export const getComponentsByVariantId = async (projectVariantId: number) => {
+export const getComponentsByVariantId = async (variantId: number, projectId: number) => {
   return await prismaLegacy.elca_elements.findMany({
     where: {
       element_types: {
@@ -229,7 +225,10 @@ export const getComponentsByVariantId = async (projectVariantId: number) => {
           in: costGroupyDinNumbersToInclude,
         },
       },
-      project_variant_id: projectVariantId,
+      project_variant_id: variantId,
+      project_variants: {
+        project_id: projectId,
+      },
     },
     select: {
       uuid: true,
@@ -298,7 +297,6 @@ export const getProjectDataWithVariants = async (projectId: number) => {
   })
 }
 
-// CHECK: just leave like it is, because it is still needed?
 export const getProjectsByOwnerId = async (userId: number) => {
   return await prismaLegacy.projects.findMany({
     where: {

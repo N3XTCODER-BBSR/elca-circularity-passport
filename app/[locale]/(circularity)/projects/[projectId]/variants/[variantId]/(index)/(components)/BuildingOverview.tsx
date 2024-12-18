@@ -63,11 +63,11 @@ export const calculateTotalCircularityIndex = async (
 }
 
 const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingOverviewProps) => {
-  const session = await ensureUserIsAuthenticated()
+  await ensureUserIsAuthenticated()
 
   // TODO: move probably most things here into domain logic
   const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
-    await getProjectCircularityIndexData(variantId, session.user.id)
+    await getProjectCircularityIndexData(variantId, projectId)
 
   const totalCircularityIndexForProject = await calculateTotalCircularityIndex(circularityData)
 

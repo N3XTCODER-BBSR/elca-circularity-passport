@@ -17,6 +17,8 @@ import CircularityDetails from "./circularity-details/CircularityDetails"
 import TBaustoffProductNameOrSelectorButton from "./TBaustoffProductNameOrSelectorButton"
 
 type CircularityInfoProps = {
+  projectId: number
+  variantId: number
   layerData: EnrichedElcaElementComponent
   tBaustoffProducts: SelectOption[]
 }
@@ -48,7 +50,13 @@ const CircularityInfo = (props: CircularityInfoProps) => {
         </TwoColGrid>
       </Area>
 
-      {showCircularityDetails && <CircularityDetails layerData={circulartyEnrichedLayerData} />}
+      {showCircularityDetails && (
+        <CircularityDetails
+          layerData={circulartyEnrichedLayerData}
+          variantId={props.variantId}
+          projectId={props.projectId}
+        />
+      )}
     </div>
   )
 }

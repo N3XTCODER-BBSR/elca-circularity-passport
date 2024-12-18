@@ -1,12 +1,14 @@
 "use server"
 
-import { getServerSession } from "next-auth"
-import authOptions from "app/(utils)/authOptions"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
+import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
+import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { deleteDisturbingSubstanceSelectionById } from "prisma/queries/db"
-import { fetchElcaComponentByIdAndUserId } from "../utils/getElcaComponentDataByLayerIdAndUserId"
+import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 
 export async function removeDisturbingSubstanceSelection(
+  variantId: number,
+  projectId: number,
   layerId: number,
   disturbingSubstanceSelectionId: number
 ): Promise<EnrichedElcaElementComponent> {
@@ -14,13 +16,13 @@ export async function removeDisturbingSubstanceSelection(
     throw new Error("Invalid layerId or disturbingSubstanceSelectionId")
   }
 
-  const session = await getServerSession(authOptions)
-  if (!session?.user) {
-    throw new Error("Unauthorized")
-  }
+  const session = await ensureUserIsAuthenticated()
+  const userId = Number(session.user.id)
+
+  await ensureUserAuthorizationToProject(userId, projectId)
 
   await deleteDisturbingSubstanceSelectionById(disturbingSubstanceSelectionId)
 
-  const elcaElementComponentData = await fetchElcaComponentByIdAndUserId(layerId, session.user.id)
+  const elcaElementComponentData = await fetchElcaComponentById(layerId, variantId, projectId)
   return elcaElementComponentData
 }

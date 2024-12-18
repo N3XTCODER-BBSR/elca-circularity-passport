@@ -9,14 +9,21 @@ import { getAvailableTBaustoffProducts } from "prisma/queries/db"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
 
-const Page = async ({ params }: { params: { projectId: string; componentUuid: string; locale: string } }) => {
+const Page = async ({
+  params,
+}: {
+  params: { projectId: string; variantId: string; componentUuid: string; locale: string }
+}) => {
   return errorHandler(async () => {
     const session = await ensureUserIsAuthenticated()
+
+    const projectId = Number(params.projectId)
+    const variantId = Number(params.variantId)
 
     await ensureUserAuthorizationToProject(Number(session.user.id), Number(params.projectId))
 
     const componentData: ElcaElementWithComponents<EnrichedElcaElementComponent> =
-      await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(params.componentUuid, session.user.id)
+      await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(variantId, projectId, params.componentUuid)
 
     // // TODO: check this - probably better to check for array length?
     // if (!projectComponents) {
@@ -83,6 +90,8 @@ const Page = async ({ params }: { params: { projectId: string; componentUuid: st
           {componentData.layers.map((layer, i) => (
             <li key={i}>
               <ComponentLayer
+                projectId={projectId}
+                variantId={variantId}
                 layerData={layer}
                 layerNumber={i + 1}
                 unitName={componentData.unit}

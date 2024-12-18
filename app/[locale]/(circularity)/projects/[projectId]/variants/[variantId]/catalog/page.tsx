@@ -14,7 +14,7 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
 
     await ensureUserAuthorizationToProject(userId, projectId)
 
-    const dataResult = await getElcaElementsForVariantId(variantId)
+    const dataResult = await getElcaElementsForVariantId(variantId, projectId)
 
     if (!dataResult) {
       return <div>Projects with this ID not found for the current user.</div>

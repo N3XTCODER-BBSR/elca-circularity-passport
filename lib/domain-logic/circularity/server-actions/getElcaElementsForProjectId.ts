@@ -6,10 +6,9 @@ export type ElcaProjectElementRow = {
   din_code: string
 }
 
-// TODO: Switch to project-variant here
-export const getElcaElementsForVariantId = async (variantId: number) => {
+export const getElcaElementsForVariantId = async (variantId: number, projectId: number) => {
   // TODO: ideally also add project-variant id/uuid here to ensure correctness
-  const result = await getComponentsByVariantId(variantId)
+  const result = await getComponentsByVariantId(variantId, projectId)
 
   return result.map<ElcaProjectElementRow>((element) => {
     const dinCode = element.element_types?.din_code === null ? "" : String(element.element_types?.din_code)

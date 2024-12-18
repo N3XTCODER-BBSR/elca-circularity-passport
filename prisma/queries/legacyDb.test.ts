@@ -1,8 +1,8 @@
 import {
   findUsersByAuthName,
   getComponentsByVariantId,
-  getElcaComponentDataByLayerIdAndUserId,
-  getElcaProjectComponentsByInstanceIdAndUserId,
+  getElcaComponentDataByLayerId,
+  getElcaVariantComponentsByInstanceId,
   getProjectsByIdAndOwnerId,
   getProjectsByOwnerId,
   isUserAuthorizedToElementComponent,
@@ -11,9 +11,9 @@ import {
 import { createUser, deleteUserIfExists } from "./utils"
 
 describe("legacyDb queries", () => {
-  describe("getElcaComponentDataByLayerIdAndUserId", () => {
+  describe("getElcaComponentDataByLayerId", () => {
     it("should return the correct component data for a given layer ID", async () => {
-      const result = await getElcaComponentDataByLayerIdAndUserId(5)
+      const result = await getElcaComponentDataByLayerId(5, 1, 1)
 
       const want = {
         life_cycle_ident: "A1-3",
@@ -36,9 +36,9 @@ describe("legacyDb queries", () => {
       expect(result).toMatchObject(want)
     })
   })
-  describe("getElcaProjectComponentsByInstanceIdAndUserId", () => {
+  describe("getElcaVariantComponentsByInstanceId", () => {
     it("should return the correct project components for a given instance ID and user ID", async () => {
-      const result = await getElcaProjectComponentsByInstanceIdAndUserId("32af2f0b-d7d8-4fb1-8354-1e9736d4f513", 2, 1)
+      const result = await getElcaVariantComponentsByInstanceId("32af2f0b-d7d8-4fb1-8354-1e9736d4f513", 1, 1)
 
       const want = [
         {
@@ -149,11 +149,11 @@ describe("legacyDb queries", () => {
       expect(result![0]).toMatchObject(want[0]!)
     })
   })
-  describe("getElcaProjectElementsByProjectIdAndUserId", () => {
-    it(`should return the correct project elements for a given project ID and user ID, 
+  describe("getComponentsByVariantId", () => {
+    it(`should return the correct project elements for a given variant ID, 
       but only the ones which fall into the DIN category number pool 
       for the Circularity Tool (const costGroupCategoryNumbersToInclude = [320, 330, 340, 350, 360])`, async () => {
-      const result = await getComponentsByVariantId(1)
+      const result = await getComponentsByVariantId(1, 1)
 
       const want = [
         {
@@ -200,10 +200,10 @@ describe("legacyDb queries", () => {
         },
       ]
 
-      const expectedLength = 4 // because of the DIN category number pool
+      const expectedLength = 3 // because of the DIN category number pool
 
       expect(result).toHaveLength(expectedLength)
-      result.forEach((resultElement, i) => {
+      result.forEach((resultElement) => {
         const matchingElement = want.find((element) => element.uuid === resultElement.uuid)
         expect(resultElement).toMatchObject(matchingElement!)
       })
