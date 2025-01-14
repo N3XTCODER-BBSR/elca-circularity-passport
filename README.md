@@ -35,8 +35,10 @@ The project leverages the most modern tech stack, ensuring cutting-edge performa
 - [eLCA-Passport](#elca-passport)
   - [Features and Used Technology](#features-and-used-technology)
   - [Table of Contents](#table-of-contents)
-  - [Getting Started](#-getting-started)
-  - [Deployment](#-deployment)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installation Steps](#installation-steps)
+    - [Run local development server](#run-local-development-server)
   - [Scripts Overview](#-scripts-overview)
   - [Coupling Graph](#-coupling-graph)
   - [Testing](#-testing)
@@ -50,46 +52,80 @@ The project leverages the most modern tech stack, ensuring cutting-edge performa
   - [Contribution](#-contribution)
   - [License](#-license)
 
-## 🎯 Getting Started
+## Getting Started
 
-To get started with the project, follow these steps:
+### Prerequisites
 
-1. Fork & clone repository:
+- **Docker:**  
+  [Install Docker](https://docs.docker.com/get-docker/) and ensure you're authenticated to Docker Hub.
 
-```bash
-## Don't forget to ⭐ star and fork it first :)
-git clone https://github.com/<your_username)/elca-passport.git
-```
+- **Node.js (version >=20.0.0 and <22.7.0):**
+  [Install Node.js](https://nodejs.org/en/download/) or use [nvm](https://github.com/nvm-sh/nvm) to manage Node versions.
 
-2. Install the dependencies:
+- **eLCA Application:**  
+  The eLCA app and its database must be running locally.  
+  [Set it up here](https://github.com/n3xtcoder/elca-beibob-elca?tab=readme-ov-file#getting-started).
 
-```bash
-yarn install --frozen-lockfile
-```
+### Installation Steps
 
-3. Run the development server:
+1. **Fork & clone the repository:**
 
-```bash
-yarn dev
-```
+   ```bash
+   ## Don't forget to ⭐ star and fork it first :)
+   git clone https://github.com/<your_username>/elca-app.git
+   cd elca-app
+   ```
 
-4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Set up Git Hooks for Conventional Commits (Optional but Recommended):**  
+   We use [git-conventional-commits](https://github.com/qoomon/git-conventional-commits) to maintain a consistent commit history.
 
-5. This project uses a git hook to enforce [conventional commits](https://github.com/qoomon/git-conventional-commits). To install the git hook, run the following command in the root directory of the project:
+   **macOS users:**
 
-```sh
-brew install pre-commit
-pre-commit install -t commit-msg
-```
+   ```sh
+     brew install pre-commit
+     pre-commit install -t commit-msg
+   ```
+
+### Run local development server
+
+1. **Install dependencies:**
+
+   ```bash
+   yarn install --frozen-lockfile
+   ```
+
+2. **Set up environment variables and start the DB:**
+
+   ```bash
+   cp .env.EXAMPLE .env
+   yarn db:dev
+   ```
+
+3. **Generate Prisma client, run migrations and seed data:**
+
+   ```bash
+   yarn prisma:generate
+   yarn prisma:migrate
+   yarn prisma:seed
+   ```
+
+4. **Start the development server:**
+
+   ```bash
+   yarn dev
+   ```
+
+Open [http://localhost:3000](http://localhost:3000) to see the app in action.
 
 ## 📃 Scripts Overview
 
 The following scripts are available in the `package.json`:
 
 - `dev`: Starts the development server
+- `db:dev`: Start the main DB server as Docker container
 - `build`: Builds the app for production
 - `start`: Starts the production server
-- `start:docker`: Build and start docker containers for the app, and the two DBs
+- `start:docker-e2e-test`: Build and start Docker containers for the app, the main DB and the eLCA legacy DB (used for E2E tests in CI mode)
 - `lint`: Lints the code using ESLint
 - `lint:fix`: Automatically fixes linting errors
 - `prettier`: Checks the code for proper formatting
@@ -127,6 +163,7 @@ The project comes with various testing setups to ensure your application's relia
 - **Unit and integration tests**: Run Jest tests using `yarn test`
 - **End-to-end tests (headless mode)**: Run Playwright tests in headless mode with `yarn e2e:headless`
 - **End-to-end tests (UI mode)**: Run Playwright tests with UI using `yarn e2e:ui`
+- TODO: run E2E tests in CI mode
 
 <img width="1392" alt="image" src="https://user-images.githubusercontent.com/28964599/233666655-93b7d08b-2fd8-406a-b43c-44d4d96cf387.png">
 

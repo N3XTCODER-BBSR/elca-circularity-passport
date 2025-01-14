@@ -14,7 +14,9 @@ const elcaDbUsername = "elca"
 const elcaDbReadOnlyUsername = "elca_read_only"
 const elcaDbPassword = "password"
 
-const elcaDbDumpFile = "elca_db_init.sql"
+const sqlScriptsDir = "sql_scripts"
+const elcaDbInitScript = "elca_db_init.sql"
+const createReadOnlyUserScript = "create_read_only_user.sql"
 
 const main = async () => {
   try {
@@ -32,8 +34,12 @@ const main = async () => {
       .withExposedPorts(5432)
       .withBindMounts([
         {
-          source: `${process.cwd()}/${elcaDbDumpFile}`,
-          target: `/tmp/${elcaDbDumpFile}`,
+          source: `${process.cwd()}/${sqlScriptsDir}/${elcaDbInitScript}`,
+          target: `/tmp/${elcaDbInitScript}`,
+        },
+        {
+          source: `${process.cwd()}/${sqlScriptsDir}/${createReadOnlyUserScript}`,
+          target: `/tmp/${createReadOnlyUserScript}`,
         },
       ])
       .start()
@@ -49,7 +55,29 @@ const main = async () => {
     await execAsync(`DATABASE_URL=${passportDbUrl} yarn prisma migrate deploy`)
 
     // run migrations for elca db
-    await elcaDbContainer.exec(["psql", "-U", elcaDbUsername, "-f", `/tmp/${elcaDbDumpFile}`])
+    const runElcaDbInitScriptOutput = await elcaDbContainer.exec([
+      "psql",
+      "-U",
+      elcaDbUsername,
+      "-f",
+      `/tmp/${elcaDbInitScript}`,
+    ])
+    if (runElcaDbInitScriptOutput.exitCode !== 0) {
+      throw new Error(`Failed to run elca db init script: ${runElcaDbInitScriptOutput.output}`)
+    }
+
+    // create read only user
+    const runCreateReadOnlyUserScript = await elcaDbContainer.exec([
+      "psql",
+      "-U",
+      elcaDbUsername,
+      "-f",
+      `/tmp/${createReadOnlyUserScript}`,
+    ])
+
+    if (runCreateReadOnlyUserScript.exitCode !== 0) {
+      throw new Error(`Failed to run create read only user script: ${runCreateReadOnlyUserScript.output}`)
+    }
 
     process.env.DATABASE_URL = passportDbUrl
     process.env.ELCA_LEGACY_DATABASE_URL = elcaDbUrlWithReadOnlyUser

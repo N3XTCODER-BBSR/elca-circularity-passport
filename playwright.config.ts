@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test"
 import * as dotenv from "dotenv"
-dotenv.config({ path: ".env.test" })
+dotenv.config({ path: ".env.e2e_tests" })
 
 /**
  * Read environment variables from file.
@@ -75,7 +75,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: process.env.CI ? "yarn start:docker" : "yarn dev", // TODO: yarn dev only starts the nextjs server, not the database servers
+    command: process.env.CI ? "yarn start:docker-e2e-test" : "yarn dev", // TODO: yarn dev only starts the nextjs server, not the database servers
     url: `http://localhost:${process.env.CI ? "3005" : "3000"}`,
     timeout: process.env.CI ? 600 * 1000 : 60 * 1000,
     reuseExistingServer: !process.env.CI,

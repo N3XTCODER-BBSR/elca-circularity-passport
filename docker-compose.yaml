@@ -1,6 +1,6 @@
 services:
   db:
-    image: 'postgres:16.3'
+    image: 'postgres:16.3-alpine'
     restart: always
     ports:
       - '65432:5432'
@@ -30,7 +30,7 @@ services:
       retries: 5
     volumes:
       - ./legacy_db_data:/var/lib/postgresql/data
-      - ./elca_db_init.sql:/docker-entrypoint-initdb.d/elca_db_init.sql # HINT: scripts in docker-entrypoint-initdb.d will be run on container startup
+      - ./sql_scripts/elca_db_init.sql:/docker-entrypoint-initdb.d/elca_db_init.sql # HINT: scripts in docker-entrypoint-initdb.d will be run on container startup
 
   app-e2e-tests:
     profiles:
@@ -58,12 +58,12 @@ services:
       - e2e-legacy-db
     ports:
       - '3005:3005'
-    env_file: .env.test
+    env_file: .env.e2e_tests
 
   e2e-db:
     profiles:
       - e2e-tests
-    image: 'postgres:16.3'
+    image: 'postgres:16.3-alpine'
     restart: always
     ports:
       - '65434:5432'
@@ -84,4 +84,5 @@ services:
       POSTGRES_USER: elca # HINT: this is the superuser, elca_read_only is the read only user
       POSTGRES_PASSWORD: password
     volumes:
-      - ./elca_db_init.sql:/docker-entrypoint-initdb.d/elca_db_init.sql # HINT: the elca_db_init.sql script runs when the container is created. It only runs if ./legacy_db_data doesn't contain data so that the database has not been initialized before
+      - ./sql_scripts/elca_db_init.sql:/docker-entrypoint-initdb.d/01_elca_db_init.sql # HINT: the elca_db_init.sql script runs when the container is created. It only runs if ./legacy_db_data doesn't contain data so that the database has not been initialized before
+      - ./sql_scripts/create_read_only_user.sql:/docker-entrypoint-initdb.d/02_create_read_only_user.sql

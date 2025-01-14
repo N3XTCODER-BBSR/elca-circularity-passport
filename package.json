@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "cross-env FORCE_COLOR=1 next dev",
+    "db:dev": "docker compose up db",
     "build": "next build",
     "start": "next start -p $PORT",
-    "start:docker": "docker compose --env-file .env.test up app-e2e-tests",
+    "start:docker-e2e-test": "docker compose --env-file .env.e2e_tests up --build app-e2e-tests",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "prettier": "prettier --check \"**/*.{js,jsx,ts,tsx}\"",
