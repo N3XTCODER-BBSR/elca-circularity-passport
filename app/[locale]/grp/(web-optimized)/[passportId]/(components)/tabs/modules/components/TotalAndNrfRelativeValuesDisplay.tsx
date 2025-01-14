@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl"
+import { useFormatter, useTranslations } from "next-intl"
 
 const TotalAndNrfRelativeValuesDisplay = ({
   totalValue,
@@ -10,18 +10,19 @@ const TotalAndNrfRelativeValuesDisplay = ({
   unit: string
 }) => {
   const t = useTranslations("GenericComponents.TotalAndNrfRelativeValuesDisplay")
+  const format = useFormatter()
   return (
     <dl className="mx-auto flex w-full max-w-md justify-between px-4 pb-6 pt-3 sm:px-3">
       <div className="flex w-1/2 flex-col">
         <dt className="text-sm font-semibold leading-6 text-gray-400">{t("areaRelated")}</dt>
         <dd className="mt-1 text-sm">
-          {nrfRelativeValue.toFixed(2)} {unit}/m2 NRF
+          {format.number(nrfRelativeValue, { maximumFractionDigits: 2 })} {unit}/m2 NRF
         </dd>
       </div>
       <div className="flex w-1/2 flex-col">
         <dt className="text-sm font-semibold leading-6 text-gray-400">{t("total")}</dt>
         <dd className="mt-1 text-sm">
-          {totalValue.toFixed(2)} {unit}
+          {format.number(totalValue, { maximumFractionDigits: 2 })} {unit}
         </dd>
       </div>
     </dl>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import { useFormatter, useTranslations } from "next-intl"
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
@@ -13,6 +13,8 @@ type BuildingBaseInformationProps = {
 
 const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passportData, className }) => {
   const t = useTranslations("Grp.Web.sections.overview.buildingBaseInformation")
+  const format = useFormatter()
+
   const buildingBaseInfoKeyValues: KeyValueTuple[] = [
     {
       key: t("buildingId"),
@@ -32,7 +34,7 @@ const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passp
     { key: t("numberOfUndergroundFloors"), value: passportData.buildingBaseData.numberOfBasementFloors },
     {
       key: t("netFloorArea.abbreviation"),
-      value: passportData.buildingBaseData.nrf.toFixed(2),
+      value: format.number(passportData.buildingBaseData.nrf, { maximumFractionDigits: 2 }) + " m2",
       tooltip: {
         id: "nrf",
         content: (
@@ -49,7 +51,7 @@ const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passp
     },
     {
       key: t("grossFloorArea.abbreviation"),
-      value: passportData.buildingBaseData.bgf.toFixed(2),
+      value: format.number(passportData.buildingBaseData.bgf, { maximumFractionDigits: 2 }) + " m2",
       tooltip: {
         id: "bgf",
         content: t("grossFloorArea.description"),
@@ -57,14 +59,20 @@ const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passp
     },
     {
       key: t("grossVolume.abbreviation"),
-      value: passportData.buildingBaseData.bri.toFixed(2),
+      value: format.number(passportData.buildingBaseData.bri, { maximumFractionDigits: 2 }) + " m3",
       tooltip: {
         id: "bri",
         content: t("grossVolume.description"),
       },
     },
-    { key: t("plotArea"), value: passportData.buildingBaseData.plotArea.toFixed(2) },
-    { key: t("totalBuildingMass"), value: passportData.buildingBaseData.totalBuildingMass.toFixed(0) },
+    {
+      key: t("plotArea"),
+      value: format.number(passportData.buildingBaseData.plotArea, { maximumFractionDigits: 2 }) + " m2",
+    },
+    {
+      key: t("totalBuildingMass"),
+      value: format.number(passportData.buildingBaseData.totalBuildingMass, { maximumFractionDigits: 1 }) + " kg",
+    },
   ]
 
   return (

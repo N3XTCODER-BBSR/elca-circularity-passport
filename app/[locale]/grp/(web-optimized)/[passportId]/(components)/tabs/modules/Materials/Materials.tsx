@@ -1,6 +1,6 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import { useFormatter, useTranslations } from "next-intl"
 import { useState } from "react"
 import MaterialsBarChart, {
   MaterialsBarChartDatum,
@@ -33,6 +33,7 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
   const tCostGroups = useTranslations("Common.costGroups")
   const tMaterialClasses = useTranslations("Common.materialClasses")
   const unitsTranslations = useTranslations("Units")
+  const format = useFormatter()
   const [currentNavSectionId, setCurrentNavSectionId] = useState<string>("1")
 
   const aggregatedDataByBuildingComponentCategory = aggregateMaterialsDataByBuildingComponentCategory(
@@ -103,9 +104,10 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
             <MaterialsBarChart
               data={chartDataGroupedByMaterialClass}
               labelFormatter={(data) =>
-                `${data.aggregatedMassPercentage.toFixed(2)}% (${data.aggregatedMass.toFixed(2)} ${unitsTranslations(
-                  "Tons.short"
-                )})`
+                `${format.number(data.aggregatedMassPercentage, { maximumFractionDigits: 2 })}% (${format.number(
+                  data.aggregatedMass,
+                  { maximumFractionDigits: 2 }
+                )} ${unitsTranslations("Tons.short")})`
               }
             />
           )}
@@ -113,9 +115,10 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
             <MaterialsBarChart
               data={chartDataGroupedByComponentCategory}
               labelFormatter={(data) =>
-                `${data.aggregatedMassPercentage.toFixed(2)}% (${data.aggregatedMass.toFixed(2)} ${unitsTranslations(
-                  "Tons.short"
-                )})`
+                `${format.number(data.aggregatedMassPercentage, { maximumFractionDigits: 2 })}% (${format.number(
+                  data.aggregatedMass,
+                  { maximumFractionDigits: 2 }
+                )} ${unitsTranslations("Tons.short")})`
               }
             />
           )}

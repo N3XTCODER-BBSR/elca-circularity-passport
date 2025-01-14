@@ -1,3 +1,4 @@
+import { useFormatter } from "next-intl"
 import React from "react"
 
 export type LegendTableDataItem = {
@@ -33,6 +34,7 @@ const ResourcesChartLegendTable = ({
   isPdf?: boolean
 }) => {
   const shorten = (str: string, length: number) => (str.length > length ? str.slice(0, 13) + ".." : str)
+  const format = useFormatter()
   return (
     <div className={`overflow-x-auto ${isPdf ? "text-[6pt]" : "text-[1rem]"}`}>
       <table className="min-w-full">
@@ -49,10 +51,10 @@ const ResourcesChartLegendTable = ({
                 </div>
               </td>
               <td className="whitespace-nowrap border-b border-gray-300 px-[3mm] py-[1mm] text-gray-900">
-                {`${item.value.toFixed(2)} ${unit}`}
+                {`${format.number(item.value, { maximumFractionDigits: 2 })} ${unit}`}
               </td>
               <td className="whitespace-nowrap border-b  border-gray-300 px-[3mm] py-[1mm] font-bold text-gray-900">
-                {item.percentage != null && `${item.percentage.toFixed(2)}%`}
+                {item.percentage != null && `${format.number(item.percentage, { maximumFractionDigits: 2 })}%`}
               </td>
             </tr>
           ))}
