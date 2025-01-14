@@ -1,11 +1,14 @@
 import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import { Layer } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
+import { Layer, Ressources } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
 import {
   AggregatedGwpOrPenrtDataResult,
   AggregatedRmiData,
   aggregateGwpData,
   aggregatePenrtData,
   aggregateRmiData,
+  calculateGwpABC,
+  calculateQpABC,
+  calculateRmiTotal,
 } from "./resources-data-aggregation"
 
 describe("Aggregation Functions with Complex Data", () => {
@@ -413,6 +416,100 @@ describe("Aggregation Functions with Complex Data", () => {
         aggregatedDataTotal,
         aggregatedDataTotalPerNrf,
         aggregatedDataGrayTotal,
+      })
+    })
+  })
+
+  describe("Resource Calculation Functions", () => {
+    const validResources: Ressources = {
+      rawMaterials: {
+        Mineral: 100,
+        Metallic: 200,
+        Fossil: 50,
+        Forestry: 80,
+        Agrar: 120,
+        Aqua: 30,
+      },
+      embodiedEnergy: {
+        A1A2A3: 500,
+        B1: 100,
+        B4: 50,
+        B6: 200,
+        C3: 30,
+        C4: 20,
+      },
+      embodiedEmissions: {
+        A1A2A3: 300,
+        B1: 80,
+        B4: 40,
+        B6: 150,
+        C3: 20,
+        C4: 10,
+      },
+      carbonContent: 10,
+      recyclingContent: 20,
+    }
+
+    const emptyResources: Ressources = {
+      rawMaterials: {},
+      embodiedEnergy: {},
+      embodiedEmissions: {},
+    }
+
+    describe("calculateRmiTotal", () => {
+      it("should calculate the total raw material intensity correctly", () => {
+        const result = calculateRmiTotal(validResources)
+        const expectedTotal = 100 + 200 + 50 + 80 + 120 + 30 // 580
+        expect(result).toBe(expectedTotal)
+      })
+
+      it("should return 0 when resources are empty", () => {
+        const result = calculateRmiTotal(emptyResources)
+        expect(result).toBe(0)
+      })
+
+      it("should handle undefined rawMaterials gracefully", () => {
+        const resourcesWithUndefinedRawMaterials = { ...validResources, rawMaterials: undefined }
+        const result = calculateRmiTotal(resourcesWithUndefinedRawMaterials as Ressources)
+        expect(result).toBe(0)
+      })
+    })
+
+    describe("calculateQpABC", () => {
+      it("should calculate the total embodied energy across all phases", () => {
+        const result = calculateQpABC(validResources)
+        const expectedTotal = 500 + 100 + 50 + 200 + 30 + 20 // 900
+        expect(result).toBe(expectedTotal)
+      })
+
+      it("should return 0 when embodied energy is empty", () => {
+        const result = calculateQpABC(emptyResources)
+        expect(result).toBe(0)
+      })
+
+      it("should handle undefined embodiedEnergy gracefully", () => {
+        const resourcesWithUndefinedEmbodiedEnergy = { ...validResources, embodiedEnergy: undefined }
+        const result = calculateQpABC(resourcesWithUndefinedEmbodiedEnergy as Ressources)
+        expect(result).toBe(0)
+      })
+    })
+
+    describe("calculateGwpABC", () => {
+      it("should calculate the total embodied emissions across all phases", () => {
+        const result = calculateGwpABC(validResources)
+        const expectedTotal = 300 + 80 + 40 + 150 + 20 + 10 // 600
+        expect(result).toBe(expectedTotal)
+      })
+
+      it("should return 0 when embodied emissions are empty", () => {
+        const result = calculateGwpABC(emptyResources)
+        expect(result).toBe(0)
+      })
+
+      it("should handle undefined embodiedEmissions gracefully", () => {
+        const resourcesWithUndefinedEmbodiedEmissions = { ...validResources, embodiedEmissions: undefined }
+        const result = calculateGwpABC(resourcesWithUndefinedEmbodiedEmissions as Ressources)
+        expect(result).toBe(0)
       })
     })
   })
