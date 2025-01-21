@@ -9,8 +9,14 @@ type ProjectCatalogProps = {
   projectId: number
   projectComponents: ElcaProjectElementRow[]
   variantId: number
+  componentUuiddsWithMissingCircularityIndexForAnyProduct: string[]
 }
-const ProjectCatalog = ({ projectId, variantId, projectComponents }: ProjectCatalogProps) => {
+const ProjectCatalog = ({
+  projectId,
+  variantId,
+  projectComponents,
+  componentUuiddsWithMissingCircularityIndexForAnyProduct,
+}: ProjectCatalogProps) => {
   const componentWithBasicFields: ComponentWithBasicFields[] = projectComponents.map((el) => ({
     dinComponentLevelNumber: parseInt(el.din_code),
     name: el.element_name,
@@ -28,6 +34,10 @@ const ProjectCatalog = ({ projectId, variantId, projectComponents }: ProjectCata
         components={componentWithBasicFieldsUnique}
         costGroupCategoryNumbersToInclude={costGroupCategoryNumbersToInclude}
         generateLinkUrlForComponent={generateLinkUrlForComponent}
+        componentUuiddsWithMissingCircularityIndexForAnyProduct={
+          componentUuiddsWithMissingCircularityIndexForAnyProduct
+        }
+        showIncompleteCompleteLabels={true}
       />
     </div>
   )

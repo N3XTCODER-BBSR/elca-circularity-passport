@@ -52,6 +52,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
     element_type_name: componentData?.element_type_name,
     din_code: componentData?.din_code,
     unit: componentData?.unit,
+    quantity: componentData?.quantity,
     layers: await processLayers(
       excludedProductIdsSet,
       projectComponents,
@@ -182,7 +183,7 @@ const processLayers = async (
       )
 
       const userDefinedComponentData = userDefinedMap.get(component.component_id)
-      const mass = await getWeightByProductId(component.component_id)
+      const { weight: mass } = await getWeightByProductId(component.component_id)
 
       const volume = calculateVolumeForLayer(component)
 

@@ -92,6 +92,7 @@ export const getElcaComponentDataByLayerId = async (layerId: number, variantId: 
     layer_length: data.layer_length ? Number(data.layer_length) : null,
     layer_width: data.layer_width ? Number(data.layer_width) : null,
     process_config_density: data.process_configs.density ? Number(data.process_configs.density) : null,
+    process_config_id: data.process_configs.id,
     process_config_name: data.process_configs.name,
   }
 
@@ -153,7 +154,9 @@ export const getElcaVariantComponentsByInstanceId = async (
             select: {
               name: true,
               density: true,
+              id: true,
               process_category_node_id: true,
+              process_categories: true,
               process_life_cycle_assignments: {
                 include: {
                   processes: {
@@ -197,13 +200,15 @@ export const getElcaVariantComponentsByInstanceId = async (
         din_code: element.element_types.din_code,
         unit: element.ref_unit,
         element_component_id: ec.id,
-        quantity: Number(ec.quantity),
+        quantity: Number(element.quantity),
         layer_size: ec.layer_size ? Number(ec.layer_size) : null,
         layer_length: ec.layer_length ? Number(ec.layer_length) : null,
         layer_width: ec.layer_width ? Number(ec.layer_width) : null,
         process_config_density: pc.density ? Number(pc.density) : null,
+        process_config_id: pc.id ? Number(pc.id) : null,
         process_config_name: pc.name,
         process_category_node_id: pc.process_category_node_id,
+        process_category_ref_num: pc.process_categories.ref_num,
       }
     })
   })
@@ -221,7 +226,6 @@ export const findUsersByAuthName = async (authName: string) => {
     },
   })
 }
-
 export const getComponentsByVariantId = async (variantId: number, projectId: number) => {
   return await prismaLegacy.elca_elements.findMany({
     where: {
@@ -304,6 +308,7 @@ export const getProjectDataWithVariants = async (projectId: number) => {
 
 export const getProjectsByOwnerId = async (userId: number) => {
   return await prismaLegacy.projects.findMany({
+    // >>>>>>> main
     where: {
       owner_id: userId,
     },
@@ -415,3 +420,32 @@ const getProjectAuthorizationConditions = (userId: number) => [
     },
   },
 ]
+export const getPassportRelevantDataForProjectVariantFromLegacyDb = async (projectVariantId: string) => {
+  return await prismaLegacy.elca_project_variants.findUnique({
+    where: {
+      id: Number(projectVariantId),
+    },
+    include: {
+      project_locations: true,
+      projects_project_variants_project_idToprojects: {
+        select: {
+          name: true,
+          project_nr: true,
+          description: true,
+          life_time: true,
+        },
+      },
+      project_constructions: {
+        select: {
+          gross_floor_space: true,
+          net_floor_space: true,
+          floor_space: true,
+          property_size: true,
+          is_extant_building: true,
+          living_space: true,
+          net_room_space_heated: true,
+        },
+      },
+    },
+  })
+}

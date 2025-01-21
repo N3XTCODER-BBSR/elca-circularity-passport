@@ -102,7 +102,7 @@ function buildDinCodeToLeafNodesMap(
   for (const element of data) {
     const { din_code } = element
     for (const layer of element.layers) {
-      const weight = layer.mass
+      const weight = (layer.mass ?? 0) * (element.quantity ?? 0) || 0
       const metricValue = layer.circularityIndex ?? 0 // TODO: probably not valid to fall back to 0; better throw error or ensure on type level beforehand
       // that circularityIndex is never null for any layer before being passed to this function
 

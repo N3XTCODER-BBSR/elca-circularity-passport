@@ -7,6 +7,7 @@ export const calculateVolumeForLayer = (component: ElcaProjectComponentRow): num
     ? component.layer_length * component.layer_width * component.layer_size
     : null
 
+// TODO: rename, since it's also returning other values
 export const getWeightByProductId = async (productId: number) => {
   const productData = await getDataForMassCalculationByProductId(productId)
 
@@ -58,7 +59,7 @@ export const getWeightByProductId = async (productId: number) => {
     throw new Error("Density not specified in the process config, attributes, or conversion factor")
   }
 
-  let adjustedQuantity = quantity
+  let adjustedQuantity: Decimal = quantity
 
   // Adjust the quantity if there is a process conversion (other than density)
   if (processConversion) {
@@ -88,5 +89,10 @@ export const getWeightByProductId = async (productId: number) => {
   const amount = volume.mul(density)
   // TODFO: consider to return both mass/weight AND volume to have single source of truth for both calculations
   // Also check potential naming inconsistencies regarding mass/weight
-  return amount.toNumber()
+  return {
+    weight: amount.toNumber(),
+    volume: volume.toNumber(),
+    adjustedQuantity: adjustedQuantity.toNumber(),
+    density: density.toNumber(),
+  }
 }

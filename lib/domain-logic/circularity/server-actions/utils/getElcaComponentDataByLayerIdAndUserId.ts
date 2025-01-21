@@ -74,7 +74,7 @@ async function processProjectComponent(
   //   }
   // }
 
-  const mass = await getWeightByProductId(componentRow.component_id)
+  const { weight: mass } = await getWeightByProductId(componentRow.component_id)
   const volume = calculateVolumeForLayer(componentRow)
   const isExcluded = await getExcludedProductId(componentRow.component_id)
   const enrichedComponent: EnrichedElcaElementComponent = {

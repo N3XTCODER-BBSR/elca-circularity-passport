@@ -173,7 +173,7 @@ const translationsGrpPlatformGeneric = {
       materialGeometry: "Geometry of Component Layers / Components",
       material: {
         materialDescription: "Material Description",
-        materialClassId: "UUID Material Class",
+        materialClassId: "Material Class Id",
         materialClassDescription: "Material Class Description",
         uuidMaterial: "UUID Material",
         materialDatabase: "Material Database",
@@ -193,7 +193,6 @@ const translationsGrpPlatformGeneric = {
       resources: {
         rawMaterials: "Raw Materials",
         primaryEnergy: "Primary Energy Consumption (non-renewable, total)",
-        carbonContent: "Carbon Content",
         recyclingContent: "Recycling Content",
         globalWarmingPotential: "Global Warming Potential (total)",
         Forestry: "Forestry",
@@ -208,6 +207,15 @@ const translationsGrpPlatformGeneric = {
         general: "General",
         materialCompatibility: "Material Compatibility - Contaminants",
         eolClass: "EOL Class",
+        disturbingSubstanceNameUnspecified: "unspecified",
+        dismantlingClass: "Dismantling Potential Class",
+        dismantlingClassNames: {
+          1: "PLACEHOLDER ENGLISH zerstörungsfrei rückbaubar",
+          2: "PLACEHOLDER ENGLISH zerstörungsarm rückbaubar",
+          3: "PLACEHOLDER ENGLISH zerstörend ohne Fremd-/Störst. rückb.",
+          4: "PLACEHOLDER ENGLISH nur mit Fremd-/Störstoffen rückbaubar",
+        },
+        circularityIndex: "Circularity Index",
         eolPoints: "EOL Points",
         proofReuse: "Proof of Reuse",
         version: "Version",
@@ -313,11 +321,22 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           errorMessage: "Login failed.",
         },
       },
+      passportsForProject: {
+        title: "Generierte Gebäude-Ressourcen-Pässe",
+        passIssueDate: "Passausstellungsdatum",
+        passUuid: "Pass ID",
+        createPassport: "Neuen Pass erstellen",
+        creatingPassport: "Pass creation in progress...",
+      },
     },
   },
   Units: {
     Kwh: {
       short: "kWh",
+    },
+    Kg: {
+      short: "kg",
+      long: "kilogram",
     },
     Tons: {
       short: "t",
@@ -340,13 +359,16 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
   },
   Common: {
     materialClasses: {
-      "1_1_01": "Mineral Construction Products",
-      "4_3_01": "Metals",
-      "2_4_01": "Insulating Materials",
-      "3_2_01": "Wood",
-      "5_1_01": "Covers",
-      "7_2_01": "Components for Windows and Curtain Walls",
-      "8_1_01": "Building Technology",
+      "1": "Mineral building products",
+      "2": "Insulation materials",
+      "3": "Wood",
+      "4": "Metals",
+      "5": "Coverings",
+      "6": "Plastics",
+      "7": "Components for windows and curtain walls",
+      "8": "Building service engineering",
+      "9": "Others",
+      "10": "Composites",
     },
     costGroups: {
       "300": "Building - Structural Works",

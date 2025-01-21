@@ -43,6 +43,11 @@ const ProjectLayout = async ({
     const navLinks = [
       { id: "overview", name: t("overview"), href: `/projects/${projectData.id}/variants/${variantId}` },
       { id: "catalog", name: t("catalog"), href: `/projects/${projectData.id}/variants/${variantId}/catalog` },
+      {
+        id: "catalog",
+        name: "Gebäude-Resourcen-Pass",
+        href: `/projects/${projectData.id}/variants/${variantId}/passports`,
+      },
     ]
 
     return (

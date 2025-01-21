@@ -51,7 +51,7 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
       return {
         groupName: data.materialClassDescription,
         groupId: data.materialClassId,
-        identifier: tMaterialClasses(`${data.materialClassId.replace(/\./g, "_")}`),
+        identifier: tMaterialClasses(`${data.materialClassId}`),
         aggregatedMassPercentage: data.aggregatedMassPercentage,
         aggregatedMass: data.aggregatedMass,
       }
@@ -85,7 +85,7 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
           <TotalAndNrfRelativeValuesDisplay
             totalValue={totalMass}
             nrfRelativeValue={totalMassRelativeToNrf}
-            unit={unitsTranslations("Tons.short")}
+            unit={unitsTranslations("Kg.short")}
           />
           <select
             className="min-w-32 rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -107,7 +107,7 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
                 `${format.number(data.aggregatedMassPercentage, { maximumFractionDigits: 2 })}% (${format.number(
                   data.aggregatedMass,
                   { maximumFractionDigits: 2 }
-                )} ${unitsTranslations("Tons.short")})`
+                )} ${unitsTranslations("Kg.short")})`
               }
             />
           )}
@@ -118,7 +118,7 @@ const Materials: React.FC<MaterialsProps> = ({ dinEnrichedPassportData, classNam
                 `${format.number(data.aggregatedMassPercentage, { maximumFractionDigits: 2 })}% (${format.number(
                   data.aggregatedMass,
                   { maximumFractionDigits: 2 }
-                )} ${unitsTranslations("Tons.short")})`
+                )} ${unitsTranslations("Kg.short")})`
               }
             />
           )}

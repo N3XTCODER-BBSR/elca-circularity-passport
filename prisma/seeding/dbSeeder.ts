@@ -17,6 +17,7 @@ const seedPassport = async () => {
     create: {
       id: "1",
       uuid: passport1PassDataV1.uuid,
+      projectVariantId: "1",
       versionTag: "1",
       passportData: JSON.stringify(passport1PassDataV1),
       issueDate: new Date("2024-04-02"),

@@ -2,6 +2,7 @@
 
 import { useMutation, useQueries } from "@tanstack/react-query"
 import Image from "next/image"
+import { useFormatter, useTranslations } from "next-intl"
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
@@ -17,18 +18,10 @@ type ComponentLayerProps = {
   variantId: number
   layerData: EnrichedElcaElementComponent
   layerNumber: number
-  unitName: string
   tBaustoffProducts: SelectOption[]
 }
 
-const ComponentLayer = ({
-  projectId,
-  variantId,
-  layerData,
-  layerNumber,
-  unitName,
-  tBaustoffProducts,
-}: ComponentLayerProps) => {
+const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustoffProducts }: ComponentLayerProps) => {
   const [layerDataQuery] = useQueries({
     queries: [
       {
@@ -41,6 +34,10 @@ const ComponentLayer = ({
       },
     ],
   })
+
+  const unitsTranslations = useTranslations("Units")
+
+  const format = useFormatter()
 
   const { data: currentLayerData, refetch: refetchLayerData } = layerDataQuery
 
@@ -60,49 +57,40 @@ const ComponentLayer = ({
     : currentLayerData.isExcluded
 
   const layerKeyValues: KeyValueTuple[] = [
+    // {
+    //   key: "Oekobaudat UUID",
+    //   value: currentLayerData.oekobaudat_process_uuid,
+    // },
+    // {
+    //   key: "Verbaute Menge",
+    //   value: currentLayerData.quantity,
+    // },
+    // {
+    //   key: "Verbaute Menge Einheit",
+    //   value: currentLayerData.quantity,
+    // },
     {
-      key: "Schichtposition",
-      value: currentLayerData.layer_position,
+      key: "Masse",
+      value: currentLayerData.mass
+        ? `${format.number(currentLayerData.mass, {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+          })} ${unitsTranslations("Kg.short")}`
+        : "N/A",
     },
+    // {
+    //   key: "Schichtdicke [m]",
+    //   value: currentLayerData.layer_size || "N/A",
+    // },
     {
-      key: "Volumen [m3]",
-      value: currentLayerData.volume?.toFixed(2) || "N/A",
-    },
-    {
-      key: "Oekobaudat UUID",
-      value: currentLayerData.oekobaudat_process_uuid,
-    },
-    {
-      key: "Rohdichte [kg/m3]",
-      value: currentLayerData.process_config_density || "N/A",
-    },
-    {
-      key: "Oekobaudat Baustoff",
-      value: currentLayerData.process_config_name,
-    },
-    {
-      key: "Bezugsmenge ÖkoBau.dat",
-      value: "DUMMY PLACEHOLDER",
-    },
-    {
-      key: "Verbaute Menge",
-      value: currentLayerData.quantity,
-    },
-    {
-      key: "Einheit Bezugsmenge",
-      value: unitName,
-    },
-    {
-      key: "Verbaute Menge Einheit",
-      value: currentLayerData.quantity,
-    },
-    {
-      key: "Masse [kg]",
-      value: currentLayerData.mass?.toFixed(2) || "N/A",
-    },
-    {
-      key: "Schichtdicke [m]",
-      value: currentLayerData.layer_size || "N/A",
+      key: "Volumen",
+      value:
+        currentLayerData.volume != null
+          ? `${format.number(currentLayerData.volume, {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            })} m2`
+          : "N/A",
     },
   ]
 

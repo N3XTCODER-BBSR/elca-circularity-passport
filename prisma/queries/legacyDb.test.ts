@@ -194,7 +194,6 @@ describe("legacyDb queries", () => {
       but only the ones which fall into the DIN category number pool 
       for the Circularity Tool (const costGroupCategoryNumbersToInclude = [320, 330, 340, 350, 360])`, async () => {
       const result = await getComponentsByVariantId(1, 1)
-
       const want = [
         {
           uuid: "cf37aa10-7ff5-4b42-bec5-d6dd3a7814fb",

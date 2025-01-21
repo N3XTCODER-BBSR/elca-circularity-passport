@@ -1,81 +1,83 @@
 // aggregateMaterialsData.test.ts
 
 import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import { Layer, Material } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
+import { Material } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
 import {
   aggregateMaterialsDataByBuildingComponentCategory,
   aggregateMaterialsDataByMaterialClass,
 } from "./materials-data-aggregation"
 
 describe("aggregateMaterialsDataByBuildingComponentCategory", () => {
-  function createMockLayer(mass: number): Layer {
+  function createMockLayer(mass: number): Material {
     return {
-      lnr: 1,
+      layerIndex: 1,
       name: "Layer",
-      mass: mass,
+      massInKg: mass,
+      serviceLifeInYears: 50,
+      serviceLifeTableVersion: "v1",
+      trade: {
+        lbPerformanceRange: "range",
+        trade: "trade",
+        lvNumber: "lvNumber",
+        itemInLv: "item",
+        // area: 100,
+      },
       materialGeometry: {
         unit: "m2",
         amount: 10,
       },
-      material: {
+      specificProduct: {
+        uuid: "product-uuid",
+        technicalServiceLifeInYears: 30,
+        description: "Product Description",
+        manufacturerName: "Manufacturer",
+        versionDate: "2023-01-01",
+        proofDocuments: [],
+      },
+      genericMaterial: {
         uuid: "material-uuid",
-        materialDescription: "Material",
-        materialClassId: "1.1.01",
-        materialClassDescription: "Mineralische Bauprodukte",
-        oekobaudatVersion: "v1",
-        serviceLifeInYears: 50,
-        serviceLifeTableVersion: "v1",
-        trade: {
-          lbPerformanceRange: "range",
-          trade: "trade",
-          lvNumber: "lvNumber",
-          itemInLv: "item",
-          area: 100,
-        },
-        product: {
-          uuid: "product-uuid",
-          technicalServiceLifeInYears: 30,
-          description: "Product Description",
-          manufacturerName: "Manufacturer",
-          versionDate: "2023-01-01",
-          proofDocuments: [],
-        },
-        waste: {
-          wasteCode: "waste-code",
-        },
+        name: "Material",
+        classId: "1.1.01",
+        classDescription: "Mineralische Bauprodukte",
+        oekobaudatDbVersion: "v1",
+        // waste: {
+        //   wasteCode: "waste-code",
+        // },
       },
-      ressources: {
-        rawMaterials: {
-          Mineral: 0,
-          Metallic: 0,
-          Fossil: 0,
-          Forestry: 0,
-          Agrar: 0,
-          Aqua: 0,
-        },
-        embodiedEnergy: {
-          A1A2A3: 0,
-          B1: 0,
-          B4: 0,
-          B6: 0,
-          C3: 0,
-          C4: 0,
-        },
-        embodiedEmissions: {
-          A1A2A3: 0,
-          B1: 0,
-          B4: 0,
-          B6: 0,
-          C3: 0,
-          C4: 0,
-        },
-      },
+      // ressources: {
+      //   rawMaterialsInKg: {
+      //     Mineral: 0,
+      //     Metallic: 0,
+      //     Fossil: 0,
+      //     Forestry: 0,
+      //     Agrar: 0,
+      //     Aqua: 0,
+      //   },
+      //   embodiedEnergyInKwh: {
+      //     A1A2A3: 0,
+      //     B1: 0,
+      //     B4: 0,
+      //     B6: 0,
+      //     C3: 0,
+      //     C4: 0,
+      //   },
+      //   embodiedEmissionsInKgCo2Eq: {
+      //     A1A2A3: 0,
+      //     B1: 0,
+      //     B4: 0,
+      //     B6: 0,
+      //     C3: 0,
+      //     C4: 0,
+      //   },
+      // },
       circularity: {
         eolPoints: 0,
-        version: "1.0",
-        category: "category",
+        methodologyVersion: "1.0",
         proofReuse: "proof",
         interferingSubstances: [],
+        rebuildPoints: 0,
+        dismantlingPotentialClassId: "I",
+        circularityIndex: 0,
       },
       pollutants: {},
     }
@@ -86,12 +88,12 @@ describe("aggregateMaterialsDataByBuildingComponentCategory", () => {
     din276ComponetTypeName: string,
     dinCategoryLevelNumber: number,
     din276CategoryName: string,
-    layers: Layer[]
+    layers: Material[]
   ): DinEnrichedBuildingComponent {
     return {
       uuid: "component-uuid",
       name: "Component",
-      layers: layers,
+      materials: layers,
       dinComponentLevelNumber: dinComponentLevelNumber,
       din276ComponetTypeName: din276ComponetTypeName,
       dinCategoryLevelNumber: dinCategoryLevelNumber,
@@ -120,7 +122,7 @@ describe("aggregateMaterialsDataByBuildingComponentCategory", () => {
     const result = aggregateMaterialsDataByBuildingComponentCategory(components, buildingNrf)
 
     expect(result.totalMass).toBe(500)
-    expect(result.totalMassRelativeToNrf).toBe(50)
+    expect(result.totalMassRelativeToNrf).toBe(0.5)
     expect(result.aggregatedByCategory).toEqual([
       {
         costGroupCategoryId: 320,
@@ -181,7 +183,7 @@ describe("aggregateMaterialsDataByBuildingComponentCategory", () => {
     const result = aggregateMaterialsDataByBuildingComponentCategory(components, buildingNrf)
 
     expect(result.totalMass).toBe(-100)
-    expect(result.totalMassRelativeToNrf).toBe(-10)
+    expect(result.totalMassRelativeToNrf).toBe(-0.1)
     expect(result.aggregatedByCategory).toEqual([
       {
         costGroupCategoryId: 310,
@@ -201,7 +203,7 @@ describe("aggregateMaterialsDataByBuildingComponentCategory", () => {
     const result = aggregateMaterialsDataByBuildingComponentCategory(components, buildingNrf)
 
     expect(result.totalMass).toBe(300)
-    expect(result.totalMassRelativeToNrf).toBe(30)
+    expect(result.totalMassRelativeToNrf).toBe(0.3)
     expect(result.aggregatedByCategory).toEqual([
       {
         costGroupCategoryId: 310,
@@ -233,85 +235,87 @@ describe("aggregateMaterialsDataByBuildingComponentCategory", () => {
 })
 
 describe("aggregateMaterialsDataByMaterialClass", () => {
-  function createMockLayer(mass: number, materialOverrides: Partial<Material> = {}): Layer {
+  function createMockLayer(mass: number, materialOverrides: Partial<Material> = {}): Material {
     return {
-      lnr: 1,
+      layerIndex: 1,
       name: "Layer",
-      mass: mass,
+      massInKg: mass,
+      serviceLifeInYears: 50,
+      serviceLifeTableVersion: "v1",
+      trade: {
+        lbPerformanceRange: "range",
+        trade: "trade",
+        lvNumber: "lvNumber",
+        itemInLv: "item",
+        // area: 100,
+      },
       materialGeometry: {
         unit: "m2",
         amount: 10,
       },
-      material: {
+      specificProduct: {
+        uuid: "product-uuid",
+        technicalServiceLifeInYears: 30,
+        description: "Product Description",
+        manufacturerName: "Manufacturer",
+        versionDate: "2023-01-01",
+        proofDocuments: [],
+      },
+      genericMaterial: {
         uuid: "material-uuid",
-        materialDescription: "Material",
-        materialClassId: "1.1.01",
-        materialClassDescription: "Mineralische Bauprodukte",
-        oekobaudatVersion: "v1",
-        serviceLifeInYears: 50,
-        serviceLifeTableVersion: "v1",
-        trade: {
-          lbPerformanceRange: "range",
-          trade: "trade",
-          lvNumber: "lvNumber",
-          itemInLv: "item",
-          area: 100,
-        },
-        product: {
-          uuid: "product-uuid",
-          technicalServiceLifeInYears: 30,
-          description: "Product Description",
-          manufacturerName: "Manufacturer",
-          versionDate: "2023-01-01",
-          proofDocuments: [],
-        },
-        waste: {
-          wasteCode: "waste-code",
-        },
-        ...materialOverrides,
+        name: "Material",
+        classId: "1.1.01",
+        classDescription: "Mineralische Bauprodukte",
+        oekobaudatDbVersion: "v1",
+        // waste: {
+        //   wasteCode: "waste-code",
+        // },
       },
-      ressources: {
-        rawMaterials: {
-          Mineral: 0,
-          Metallic: 0,
-          Fossil: 0,
-          Forestry: 0,
-          Agrar: 0,
-          Aqua: 0,
-        },
-        embodiedEnergy: {
-          A1A2A3: 0,
-          B1: 0,
-          B4: 0,
-          B6: 0,
-          C3: 0,
-          C4: 0,
-        },
-        embodiedEmissions: {
-          A1A2A3: 0,
-          B1: 0,
-          B4: 0,
-          B6: 0,
-          C3: 0,
-          C4: 0,
-        },
-      },
+      // ressources: {
+      //   rawMaterialsInKg: {
+      //     Mineral: 0,
+      //     Metallic: 0,
+      //     Fossil: 0,
+      //     Forestry: 0,
+      //     Agrar: 0,
+      //     Aqua: 0,
+      //   },
+      //   embodiedEnergyInKwh: {
+      //     A1A2A3: 0,
+      //     B1: 0,
+      //     B4: 0,
+      //     B6: 0,
+      //     C3: 0,
+      //     C4: 0,
+      //   },
+      //   embodiedEmissionsInKgCo2Eq: {
+      //     A1A2A3: 0,
+      //     B1: 0,
+      //     B4: 0,
+      //     B6: 0,
+      //     C3: 0,
+      //     C4: 0,
+      //   },
+      // },
       circularity: {
         eolPoints: 0,
-        version: "1.0",
-        category: "category",
+        methodologyVersion: "1.0",
         proofReuse: "proof",
         interferingSubstances: [],
+        rebuildPoints: 0,
+        dismantlingPotentialClassId: "I",
+        circularityIndex: 0,
       },
       pollutants: {},
+      ...materialOverrides,
     }
   }
 
-  function createMockComponent(layers: Layer[]): DinEnrichedBuildingComponent {
+  function createMockComponent(layers: Material[]): DinEnrichedBuildingComponent {
     return {
       uuid: "component-uuid",
       name: "Component",
-      layers: layers,
+      materials: layers,
       dinComponentLevelNumber: 310,
       din276ComponetTypeName: "Component Type",
       dinCategoryLevelNumber: 310,
@@ -334,18 +338,33 @@ describe("aggregateMaterialsDataByMaterialClass", () => {
     const components: DinEnrichedBuildingComponent[] = [
       createMockComponent([
         createMockLayer(100, {
-          materialClassId: "1.1.01",
-          materialClassDescription: "Mineralische Bauprodukte",
+          genericMaterial: {
+            classId: "1.1.01",
+            classDescription: "Mineralische Bauprodukte",
+            name: "",
+            uuid: "",
+            oekobaudatDbVersion: "",
+          },
         }),
         createMockLayer(200, {
-          materialClassId: "2.4.01",
-          materialClassDescription: "Isoliermaterialien",
+          genericMaterial: {
+            classId: "2.4.01",
+            classDescription: "Isoliermaterialien",
+            name: "",
+            uuid: "",
+            oekobaudatDbVersion: "",
+          },
         }),
       ]),
       createMockComponent([
         createMockLayer(50, {
-          materialClassId: "1.1.01",
-          materialClassDescription: "Mineralische Bauprodukte",
+          genericMaterial: {
+            classId: "1.1.01",
+            classDescription: "Mineralische Bauprodukte",
+            name: "",
+            uuid: "",
+            oekobaudatDbVersion: "",
+          },
         }),
       ]),
     ]
@@ -353,7 +372,7 @@ describe("aggregateMaterialsDataByMaterialClass", () => {
     const result = aggregateMaterialsDataByMaterialClass(components, buildingNrf)
 
     expect(result.totalMass).toBe(350)
-    expect(result.totalMassRelativeToNrf).toBe(35)
+    expect(result.totalMassRelativeToNrf).toBe(0.35)
     expect(result.aggregatedByClassId).toEqual([
       {
         materialClassId: "1.1.01",
@@ -374,8 +393,13 @@ describe("aggregateMaterialsDataByMaterialClass", () => {
     const components: DinEnrichedBuildingComponent[] = [
       createMockComponent([
         createMockLayer(0, {
-          materialClassId: "1.1.01",
-          materialClassDescription: "Mineralische Bauprodukte",
+          genericMaterial: {
+            classId: "1.1.01",
+            classDescription: "Mineralische Bauprodukte",
+            name: "",
+            uuid: "",
+            oekobaudatDbVersion: "",
+          },
         }),
       ]),
     ]
@@ -398,8 +422,13 @@ describe("aggregateMaterialsDataByMaterialClass", () => {
     const components: DinEnrichedBuildingComponent[] = [
       createMockComponent([
         createMockLayer(-50, {
-          materialClassId: "1.1.01",
-          materialClassDescription: "Mineralische Bauprodukte",
+          genericMaterial: {
+            classId: "1.1.01",
+            classDescription: "Mineralische Bauprodukte",
+            name: "",
+            uuid: "",
+            oekobaudatDbVersion: "",
+          },
         }),
       ]),
     ]
@@ -407,7 +436,7 @@ describe("aggregateMaterialsDataByMaterialClass", () => {
     const result = aggregateMaterialsDataByMaterialClass(components, buildingNrf)
 
     expect(result.totalMass).toBe(-50)
-    expect(result.totalMassRelativeToNrf).toBe(-5)
+    expect(result.totalMassRelativeToNrf).toBe(-0.05)
     expect(result.aggregatedByClassId).toEqual([
       {
         materialClassId: "1.1.01",
@@ -422,14 +451,24 @@ describe("aggregateMaterialsDataByMaterialClass", () => {
     const components: DinEnrichedBuildingComponent[] = [
       createMockComponent([
         createMockLayer(100, {
-          materialClassId: "1.1.01",
-          materialClassDescription: "Mineralische Bauprodukte",
+          genericMaterial: {
+            classId: "1.1.01",
+            classDescription: "Mineralische Bauprodukte",
+            name: "",
+            uuid: "",
+            oekobaudatDbVersion: "",
+          },
         }),
       ]),
       createMockComponent([
         createMockLayer(200, {
-          materialClassId: "1.1.01",
-          materialClassDescription: "Mineralische Bauprodukte",
+          genericMaterial: {
+            classId: "1.1.01",
+            classDescription: "Mineralische Bauprodukte",
+            name: "",
+            uuid: "",
+            oekobaudatDbVersion: "",
+          },
         }),
       ]),
     ]
@@ -437,7 +476,7 @@ describe("aggregateMaterialsDataByMaterialClass", () => {
     const result = aggregateMaterialsDataByMaterialClass(components, buildingNrf)
 
     expect(result.totalMass).toBe(300)
-    expect(result.totalMassRelativeToNrf).toBe(30)
+    expect(result.totalMassRelativeToNrf).toBe(0.3)
     expect(result.aggregatedByClassId).toEqual([
       {
         materialClassId: "1.1.01",
@@ -452,8 +491,13 @@ describe("aggregateMaterialsDataByMaterialClass", () => {
     const components: DinEnrichedBuildingComponent[] = [
       createMockComponent([
         createMockLayer(0, {
-          materialClassId: "2.4.01",
-          materialClassDescription: "Isoliermaterialien",
+          genericMaterial: {
+            classId: "2.4.01",
+            classDescription: "Isoliermaterialien",
+            name: "",
+            uuid: "",
+            oekobaudatDbVersion: "",
+          },
         }),
       ]),
     ]

@@ -1,3 +1,5 @@
+import { twMerge } from "tailwind-merge"
+
 interface LayoutElementProps {
   children: React.ReactNode
   className?: string // optional className prop
@@ -19,17 +21,22 @@ export const ThreeColGrid = ({ children }: LayoutElementProps) => {
   return <div className="sm:grid sm:grid-cols-3 sm:gap-4">{children}</div>
 }
 
-export const Badge = ({ children }: LayoutElementProps) => {
+export const Badge = ({ children, color = "orange" }: LayoutElementProps & { color?: "green" | "orange" }) => {
   return (
-    <div className="ml-4 flex h-[20px] items-center rounded-md bg-orange-100 px-4 py-1 text-xs font-medium text-orange-700">
+    <div
+      className={twMerge(
+        `ml-4 flex h-[20px] items-center rounded-md px-4 py-1 text-xs font-medium`,
+        color === "green" ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-700"
+      )}
+    >
       {children}
     </div>
   )
 }
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string // Allow for additional custom classes
-  children: React.ReactNode // Content of the button
+  className?: string
+  children: React.ReactNode
 }
 
 export const EditButton: React.FC<ButtonProps> = ({ className, children, ...props }) => {

@@ -9,17 +9,44 @@ import { twMerge } from "tailwind-merge"
 import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
 import mergeDin276HierarchyWithBuildingComponents from "lib/domain-logic/grp/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents"
 import { ComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
+import { Badge } from "./generic/layout-elements"
+
+const NumberOfChildComponents = ({
+  numberOfComponents,
+  hasAnyCircularityMissingData,
+}: {
+  numberOfComponents: number
+  hasAnyCircularityMissingData: boolean
+}) => {
+  return (
+    <span
+      aria-hidden="true"
+      className={twMerge(
+        "ml-auto w-9 min-w-max whitespace-nowrap rounded-full px-2.5 py-0.5 text-center text-xs font-medium leading-5 ring-1 ring-inset",
+        hasAnyCircularityMissingData
+          ? "bg-rose-200 text-rose-800 ring-rose-800"
+          : "bg-white text-gray-600 ring-gray-200"
+      )}
+    >
+      {numberOfComponents}
+    </span>
+  )
+}
 
 type ComponentsTreeProps<T extends ComponentWithBasicFields> = {
   components: T[]
   costGroupCategoryNumbersToInclude?: number[]
   generateLinkUrlForComponent: (component: string) => string
+  componentUuiddsWithMissingCircularityIndexForAnyProduct?: string[]
+  showIncompleteCompleteLabels: boolean
 }
 
 const ComponentsTree = <T extends ComponentWithBasicFields>({
   components,
   costGroupCategoryNumbersToInclude: categoryNumbersToInclude,
   generateLinkUrlForComponent,
+  componentUuiddsWithMissingCircularityIndexForAnyProduct,
+  showIncompleteCompleteLabels = true,
 }: ComponentsTreeProps<T>) => {
   const tCostGroups = useTranslations("Common.costGroups")
   const router = useRouter()
@@ -94,97 +121,123 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
       <div className="flex">
         <div className="w-1/3 pr-6">
           <ul className="mx-2 space-y-1">
-            {din276WithComponents.map((group) => (
-              <li className="mb-8" key={group.groupNumber}>
-                <h2 className="mb-4 text-sm uppercase">{tCostGroups(group.groupNumber.toString())}</h2>
-                <nav aria-label="Sidebar" className="flex flex-1 flex-col">
-                  <ul className="-mx-2 space-y-1">
-                    {group.categories.map((componentsByCategory) => (
-                      <li key={componentsByCategory.categoryNumber}>
-                        <button
-                          onClick={() => onUpdateCateogryClick(componentsByCategory.categoryNumber)}
-                          type="button"
-                          className={twMerge(
-                            selectedCategoryNumber === componentsByCategory.categoryNumber
-                              ? "bg-gray-50 text-indigo-600"
-                              : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
-                            "group flex w-full gap-x-3 rounded-md p-2 pl-3 text-sm font-semibold leading-6"
-                          )}
-                        >
-                          <div className="flex w-full items-center gap-x-3">
-                            <div className="text-left">
-                              {componentsByCategory.categoryNumber}{" "}
-                              {tCostGroups(componentsByCategory.categoryNumber.toString())}
-                            </div>
+            {din276WithComponents.map((group) => {
+              const hasAnyCircularityMissingData =
+                !!showIncompleteCompleteLabels &&
+                group.categories.some((category) =>
+                  category.componentTypes.some((componentType) =>
+                    componentType.components.some(
+                      (component) => componentUuiddsWithMissingCircularityIndexForAnyProduct?.includes(component.uuid)
+                    )
+                  )
+                )
 
-                            {componentsByCategory.numberOfComponents !== 0 && (
-                              <span
-                                aria-hidden="true"
-                                className="ml-auto w-9 min-w-max whitespace-nowrap rounded-full bg-white px-2.5 py-0.5 text-center text-xs font-medium leading-5 text-gray-600 ring-1 ring-inset ring-gray-200"
-                              >
-                                {componentsByCategory.numberOfComponents}
-                              </span>
+              return (
+                <li className="mb-8" key={group.groupNumber}>
+                  <h2 className="mb-4 text-sm uppercase">{tCostGroups(group.groupNumber.toString())}</h2>
+                  <nav aria-label="Sidebar" className="flex flex-1 flex-col">
+                    <ul className="-mx-2 space-y-1">
+                      {group.categories.map((componentsByCategory) => (
+                        <li key={componentsByCategory.categoryNumber}>
+                          <button
+                            onClick={() => onUpdateCateogryClick(componentsByCategory.categoryNumber)}
+                            type="button"
+                            className={twMerge(
+                              selectedCategoryNumber === componentsByCategory.categoryNumber
+                                ? "bg-gray-50 text-indigo-600"
+                                : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                              "group flex w-full gap-x-3 rounded-md p-2 pl-3 text-sm font-semibold leading-6"
                             )}
-                          </div>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              </li>
-            ))}
+                          >
+                            <div className="flex w-full items-center gap-x-3">
+                              <div className="text-left">
+                                {componentsByCategory.categoryNumber}{" "}
+                                {tCostGroups(componentsByCategory.categoryNumber.toString())}
+                              </div>
+
+                              {componentsByCategory.numberOfComponents !== 0 && (
+                                <NumberOfChildComponents
+                                  numberOfComponents={componentsByCategory.numberOfComponents}
+                                  hasAnyCircularityMissingData={hasAnyCircularityMissingData}
+                                />
+                              )}
+                            </div>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                </li>
+              )
+            })}
           </ul>
         </div>
         <div></div>
         <div className="w-1/3 pl-6">
           <ul className="-mx-2 space-y-1">
-            {selectedCategory?.componentTypes.map((componentsByComponentNumber) => (
-              <li key={componentsByComponentNumber.componentTypeNumber}>
-                <button
-                  type="button"
-                  className={twMerge(
-                    componentsByComponentNumber.componentTypeNumber === selectedComponentsTypeNumber
-                      ? "bg-gray-50 text-indigo-600"
-                      : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
-                    "group flex w-full gap-x-3 rounded-md p-2 pl-3 text-sm font-semibold leading-6"
-                  )}
-                  onClick={() => onUpdateComponentTypeClick(componentsByComponentNumber.componentTypeNumber)}
-                >
-                  <div className="flex w-full items-center gap-x-3">
-                    <div className="text-left">
-                      {componentsByComponentNumber.componentTypeNumber}{" "}
-                      {tCostGroups(componentsByComponentNumber.componentTypeNumber.toString())}
-                    </div>
-                    {componentsByComponentNumber.numberOfComponents !== 0 && (
-                      <span
-                        aria-hidden="true"
-                        className="ml-auto w-9 min-w-max whitespace-nowrap rounded-full bg-white px-2.5 py-0.5 text-center text-xs font-medium leading-5 text-gray-600 ring-1 ring-inset ring-gray-200"
-                      >
-                        {componentsByComponentNumber.numberOfComponents}
-                      </span>
+            {selectedCategory?.componentTypes.map((componentsByComponentNumber) => {
+              const hasAnyCircularityMissingData =
+                !!showIncompleteCompleteLabels &&
+                componentsByComponentNumber.components.some(
+                  (component) => componentUuiddsWithMissingCircularityIndexForAnyProduct?.includes(component.uuid)
+                )
+              return (
+                <li key={componentsByComponentNumber.componentTypeNumber}>
+                  <button
+                    type="button"
+                    className={twMerge(
+                      componentsByComponentNumber.componentTypeNumber === selectedComponentsTypeNumber
+                        ? "bg-gray-50 text-indigo-600"
+                        : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                      "group flex w-full gap-x-3 rounded-md p-2 pl-3 text-sm font-semibold leading-6"
                     )}
-                  </div>
-                </button>
-              </li>
-            ))}
+                    onClick={() => onUpdateComponentTypeClick(componentsByComponentNumber.componentTypeNumber)}
+                  >
+                    <div className="flex w-full items-center gap-x-3">
+                      <div className="text-left">
+                        {componentsByComponentNumber.componentTypeNumber}{" "}
+                        {tCostGroups(componentsByComponentNumber.componentTypeNumber.toString())}
+                      </div>
+                      {componentsByComponentNumber.numberOfComponents !== 0 && (
+                        <NumberOfChildComponents
+                          numberOfComponents={componentsByComponentNumber.numberOfComponents}
+                          hasAnyCircularityMissingData={hasAnyCircularityMissingData}
+                        />
+                      )}
+                    </div>
+                  </button>
+                </li>
+              )
+            })}
           </ul>
         </div>
         <div className="w-1/3 pl-8">
           <ul className="space-y-1">
-            {compontensForSelectedComponentNumber?.components.map((component) => (
-              <li key={component.uuid} className="">
-                <Link href={generateLinkUrlForComponent(component.uuid)}>
-                  <Box className="p-4">
-                    <div className="w-1/3">
-                      <Image src="/component_placeholder_lg.png" alt={component.name} width={200} height={200} />
-                    </div>
-                    <div className="w-2/3">
-                      <h3 className="pl-4 text-[16px] font-semibold">{component.name}</h3>
-                    </div>
-                  </Box>
-                </Link>
-              </li>
-            ))}
+            {compontensForSelectedComponentNumber?.components.map((component) => {
+              const hasAnyCircularityMissingData =
+                !!showIncompleteCompleteLabels &&
+                componentUuiddsWithMissingCircularityIndexForAnyProduct?.includes(component.uuid)
+              return (
+                <li key={component.uuid} className="">
+                  <Link href={generateLinkUrlForComponent(component.uuid)}>
+                    <Box className="p-4">
+                      <div className="w-1/3">
+                        <Image src="/component_placeholder_lg.png" alt={component.name} width={200} height={200} />
+                      </div>
+                      <div className="w-2/3">
+                        <h3 className="pl-4 text-[16px] font-semibold">{component.name}</h3>
+                        {showIncompleteCompleteLabels &&
+                          (hasAnyCircularityMissingData ? (
+                            <Badge>Unvollständig</Badge>
+                          ) : (
+                            <Badge color="green">Vollständig</Badge>
+                          ))}
+                      </div>
+                    </Box>
+                  </Link>
+                </li>
+              )
+            })}
           </ul>
         </div>
       </div>

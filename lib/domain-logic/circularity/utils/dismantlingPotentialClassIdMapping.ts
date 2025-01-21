@@ -1,21 +1,21 @@
 import { DismantlingPotentialClassId } from "prisma/generated/client"
 
 // TODO: Move the labels over into translations
-const dismantlingPotentialClassIdMapping = {
+export const dismantlingPotentialClassIdMapping = {
   [DismantlingPotentialClassId.I]: {
-    label: "zerstörungsfrei rückbaubar",
+    translationKey: 1,
     points: 100,
   },
   [DismantlingPotentialClassId.II]: {
-    label: "zerstörungsarm rückbaubar",
+    translationKey: 2,
     points: 75,
   },
   [DismantlingPotentialClassId.III]: {
-    label: "zerstörend ohne Fremd-/Störst. rückb.",
+    translationKey: 3,
     points: 50,
   },
   [DismantlingPotentialClassId.IV]: {
-    label: "nur mit Fremd-/Störstoffen rückbaubar",
+    translationKey: 4,
     points: 0,
   },
 }

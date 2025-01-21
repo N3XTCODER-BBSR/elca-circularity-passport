@@ -18,7 +18,7 @@ type AggregationMapValue = {
 
 const aggregateCircularityData = (buildingComponents: DinEnrichedBuildingComponent[]) => {
   const allLayers = buildingComponents.flatMap((component) =>
-    component.layers.map((layer) => ({
+    component.materials.map((layer) => ({
       layer,
       dinCategoryLevelNumber: component.dinCategoryLevelNumber,
       din276CategoryName: component.din276CategoryName,
@@ -27,11 +27,11 @@ const aggregateCircularityData = (buildingComponents: DinEnrichedBuildingCompone
 
   const validLayers = allLayers.filter(
     ({ layer }) =>
-      layer.mass != null && layer.mass !== 0 && layer.circularity != null && layer.circularity.eolPoints != null
+      layer.massInKg != null && layer.massInKg !== 0 && layer.circularity != null && layer.circularity.eolPoints != null
   )
 
   const layerData = validLayers.map(({ layer, dinCategoryLevelNumber, din276CategoryName }) => {
-    const mass = layer.mass!
+    const mass = layer.massInKg!
     const eolPoints = layer.circularity!.eolPoints!
     const weightedEolPoints = eolPoints * mass
 

@@ -19,7 +19,6 @@ export const getProjectCircularityIndexData = async (
 ): Promise<ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]> => {
   // TODO: once the merge confusion is resolved (is checked by Niko)
   // add authorization / authentication check here
-
   // 1. Get all components for the project
   // TODO: only get the elements that are falling into the DIN categories we are considering
 

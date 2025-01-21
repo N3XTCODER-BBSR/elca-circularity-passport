@@ -38,6 +38,7 @@ export type ElcaProjectComponentRow = {
   element_uuid: string
   layer_position: number
   process_name: string
+  // lb_nr: number
   // process_ref_unit: string
   oekobaudat_process_uuid: string | undefined
   pdb_name: string | undefined
@@ -52,8 +53,10 @@ export type ElcaProjectComponentRow = {
   layer_length: number | null
   layer_width: number | null
   process_config_density: number | null
+  process_config_id: number | null
   process_config_name: string
   process_category_node_id: number
+  process_category_ref_num: string | null
 }
 
 export type EnrichedElcaElementComponent = ElcaProjectComponentRow & {
@@ -76,6 +79,7 @@ export type ElcaElementWithComponents<T extends EnrichedElcaElementComponent> = 
   din_code: number
   layers: T[]
   unit: string
+  quantity: number
 }
 
 export type DisturbingSubstanceSelectionWithNullabelId = Omit<DisturbingSubstanceSelection, "id"> & {

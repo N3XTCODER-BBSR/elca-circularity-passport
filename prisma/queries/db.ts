@@ -1,3 +1,4 @@
+import { PassportData } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
 import {
   DismantlingPotentialClassId,
   DisturbingSubstanceClassId,
@@ -253,7 +254,7 @@ export const getTBaustoffMappingEntry = async (oekobaudatProcessUuid: string, oe
     where: {
       oebd_processUuid_oebd_versionUuid: {
         oebd_processUuid: oekobaudatProcessUuid,
-        oebd_versionUuid: "448d1096-2017-4901-a560-f652a83c737e",
+        oebd_versionUuid: "448d1096-2017-4901-a560-f652a83c737e", //TODO: this is a hardcoded value, should be changed (could be available in the legacy project table)
       },
     },
   })
@@ -280,4 +281,51 @@ export const getPassportByUuid = async (uuid: string) => {
 
 export const getAllPassports = async () => {
   return await prisma.passport.findMany()
+}
+
+const passportMetaDataSelect: Prisma.PassportSelect = {
+  uuid: true,
+  projectVariantId: true,
+  versionTag: true,
+  issueDate: true,
+  expiryDate: true,
+}
+
+export type PassportMetadata = Prisma.PassportGetPayload<{
+  select: typeof passportMetaDataSelect
+}>
+
+export const getMetaDataForAllPassportsForProjectVariantId = async (
+  projectVariantId: string
+): Promise<PassportMetadata[]> => {
+  return await prisma.passport.findMany({
+    where: {
+      projectVariantId,
+    },
+    orderBy: {
+      issueDate: "desc",
+    },
+    select: passportMetaDataSelect,
+  })
+}
+
+export const createNewPassportForProjectVariantId = async (
+  uuid: string,
+  projectVariantId: string,
+  versionTag: string,
+  passportData: PassportData,
+  issueDate: Date,
+  expiryDate: Date
+): Promise<PassportMetadata> => {
+  return await prisma.passport.create({
+    data: {
+      uuid,
+      projectVariantId,
+      versionTag,
+      passportData: JSON.stringify(passportData),
+      issueDate,
+      expiryDate,
+    },
+    select: passportMetaDataSelect,
+  })
 }

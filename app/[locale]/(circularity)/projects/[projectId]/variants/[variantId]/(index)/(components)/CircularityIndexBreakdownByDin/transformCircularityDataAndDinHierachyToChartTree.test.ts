@@ -29,6 +29,8 @@ function createMockLayer(
     process_config_density: null,
     process_config_name: "mock-config",
     process_category_node_id: 999,
+    process_config_id: null,
+    process_category_ref_num: null,
 
     mass: 100,
     volume: null,
@@ -59,6 +61,7 @@ const circularityData = [
     element_name: "Fundament 1",
     element_type_name: "Baugrundverbesserung",
     din_code: 321,
+    quantity: 2,
     unit: "m2",
     layers: [
       createMockLayer({ element_name: "Fundament Layer A", mass: 100, circularityIndex: 0.75 }),
@@ -71,6 +74,7 @@ const circularityData = [
     element_name: "Aussenwand Test 1",
     element_type_name: "Außenstützen",
     din_code: 333,
+    quantity: 3,
     unit: "m2",
     layers: [
       createMockLayer({ element_name: "Außenstütze Layer A", din_code: 333, mass: 200, circularityIndex: 0.5 }),
@@ -82,6 +86,7 @@ const circularityData = [
     element_name: "Test",
     element_type_name: "Tragende Innenwände",
     din_code: 341,
+    quantity: 4,
     unit: "Stück",
     layers: [createMockLayer({ element_name: "Innenwand Layer A", din_code: 341, mass: 80, circularityIndex: 0.8 })],
   },
@@ -90,6 +95,7 @@ const circularityData = [
     element_name: "Aussenwand Test 2",
     element_type_name: "Außentüren und -fenster",
     din_code: 334,
+    quantity: 5,
     unit: "m2",
     layers: [
       createMockLayer({ element_name: "Außentür Layer A", din_code: 334, mass: 120, circularityIndex: 0.7 }),
@@ -110,7 +116,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
     const leaf = children[0] as ChartDataLeaf
     expect(leaf.label).toBe("340: Innenwände")
     expect(leaf.metricValue).toBe(0.8)
-    expect(leaf.dimensionalValue).toBe(80)
+    expect(leaf.dimensionalValue).toBe(320) // expect 4 * 80 (quantity * mass)
   })
   test("handles scenario with no matching DIN codes (empty after filtering)", () => {
     const noMatchData = circularityData.filter((d) => d.din_code === 9999) // A DIN code that doesn't exist
@@ -155,6 +161,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
     const uniformIndexData = circularityData.map((d) => ({
       ...d,
       layers: d.layers.map((l) => ({ ...l, circularityIndex: 0.7 })),
+      quantity: 2,
     }))
     const root = transformCircularityDataAndDinHierachyToChartTree(uniformIndexData, "Uniform Circularity", false)
     // If all are the same, the metricValue at top should match 0.7

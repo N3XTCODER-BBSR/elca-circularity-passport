@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output = "./generated/client"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -9,12 +9,13 @@ datasource db {
 }
 
 model Passport {
-  id           String   @id @default(cuid())
-  uuid         String   @unique
-  versionTag   String
-  passportData Json
-  issueDate    DateTime
-  expiryDate   DateTime
+  id               String   @id @default(cuid())
+  uuid             String   @unique
+  projectVariantId String
+  versionTag       String
+  passportData     Json
+  issueDate        DateTime
+  expiryDate       DateTime
 }
 
 // TODO: consider to define logic-constraints in this file on prisma schema as well
@@ -60,7 +61,7 @@ enum TBs_ProductDefinitionEOLCategoryScenario {
 
 model TBs_ProductDefinitionEOLCategory {
   id                          Int                                      @id @default(autoincrement())
-  name                        String @unique
+  name                        String                                   @unique
   eolScenarioUnbuiltReal      TBs_ProductDefinitionEOLCategoryScenario
   eolScenarioUnbuiltPotential TBs_ProductDefinitionEOLCategoryScenario
   technologyFactor            Float

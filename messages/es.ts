@@ -2,6 +2,7 @@ import {
   LifeCycleSubPhaseId,
   MaterialResourceTypeNamesSchema,
 } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
+import { TranslationsPlattformGeneric } from "./de"
 
 const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
   A1A2A3: "Módulo A1 - A3",
@@ -12,6 +13,7 @@ const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
   C4: "Módulo C4",
 }
 
+// const translationsGrpPlattformGeneric: TranslationsPlattformGeneric = {
 const translationsGrpPlattformGeneric = {
   overview: {
     buildingBaseInformation: {
@@ -173,7 +175,7 @@ const translationsGrpPlattformGeneric = {
       materialGeometry: "Geometría de las Capas de Componentes / Componentes",
       material: {
         materialDescription: "Descripción del Material",
-        materialClassId: "UUID Clase de Material",
+        materialClassId: "id de categoría",
         materialClassDescription: "Descripción de la Clase de Material",
         uuidMaterial: "UUID Material",
         materialDatabase: "Base de Datos de Materiales",
@@ -193,7 +195,6 @@ const translationsGrpPlattformGeneric = {
       resources: {
         rawMaterials: "Materias Primas",
         primaryEnergy: "Consumo de Energía Primaria (no renovable, total)",
-        carbonContent: "Contenido de Carbono",
         recyclingContent: "Contenido Reciclado",
         globalWarmingPotential: "Potencial de Calentamiento Global (total)",
         Forestry: "Forestal",
@@ -208,6 +209,8 @@ const translationsGrpPlattformGeneric = {
         general: "General",
         materialCompatibility: "Compatibilidad del Material - Contaminantes",
         eolClass: "Clase EOL",
+        circularityIndex: "Índice de Circularidad",
+        dismantlingClass: "Clase de Desmantelamiento",
         eolPoints: "Puntos EOL",
         proofReuse: "Prueba de Reutilización",
         version: "Versión",
@@ -273,6 +276,10 @@ const translationsPlattformGeneric = {
     Kwh: {
       short: "kwH",
     },
+    Kg: {
+      short: "kg",
+      long: "kilogramo",
+    },
     Tons: {
       short: "t",
       long: "toneladas",
@@ -294,13 +301,16 @@ const translationsPlattformGeneric = {
   },
   Common: {
     materialClasses: {
-      "1_1_01": "Productos de Construcción Minerales",
-      "4_3_01": "Metales",
-      "2_4_01": "Materiales Aislantes",
-      "3_2_01": "Madera",
-      "5_1_01": "Cubiertas",
-      "7_2_01": "Componentes para Ventanas y Fachadas Cortina",
-      "8_1_01": "Tecnología de Edificios",
+      "1": "Productos minerales para la construcción",
+      "2": "Materiales aislantes",
+      "3": "Madera",
+      "4": "Metales",
+      "5": "Revestimientos",
+      "6": "Plásticos",
+      "7": "Componentes para ventanas y muros cortina",
+      "8": "Ingeniería de servicios para edificios",
+      "9": "Otros",
+      "10": "Materiales compuestos",
     },
     costGroups: {
       "300": "Edificio - Obras Estructurales",

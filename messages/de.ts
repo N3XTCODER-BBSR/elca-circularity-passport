@@ -172,7 +172,7 @@ const translationsGrpPlattformGeneric = {
       materialGeometry: "Geometrie der Bauteilschichten/ Komponenten",
       material: {
         materialDescription: "Material-Beschreibung",
-        materialClassId: "UUID Materialgruppe",
+        materialClassId: "Materialkategorie-ID",
         materialClassDescription: "Materialgruppenbezeichnung",
         uuidMaterial: "UUID Material",
         materialDatabase: "Baustoffdatenbank",
@@ -192,7 +192,6 @@ const translationsGrpPlattformGeneric = {
       resources: {
         rawMaterials: "Rohstoffe",
         primaryEnergy: "Primärenergie-Aufwand (nicht erneuerbar, gesamt)",
-        carbonContent: "Anteil des gebundenen Kohlenstoffs",
         recyclingContent: "Anteil Sekundärmaterial",
         globalWarmingPotential: "Treibhaus-Potenzial (gesamt)",
         [MaterialResourceTypeNamesSchema.Enum.Forestry]: "Forst",
@@ -207,6 +206,16 @@ const translationsGrpPlattformGeneric = {
         general: "Allgemein",
         materialCompatibility: "Materialverträglichkeit - Störstoffe",
         eolClass: "Klasse EOL",
+        disturbingSubstanceNameUnspecified: "nicht spezifiziert",
+        dismantlingClass: "Rückbau-Potential Klasse",
+        // Grp.Web.Sections.detailPage.componentLayer.circularity.dismantlingClassNames
+        dismantlingClassNames: {
+          1: "zerstörungsfrei rückbaubar",
+          2: "zerstörungsarm rückbaubar",
+          3: "zerstörend ohne Fremd-/Störst. rückb.",
+          4: "nur mit Fremd-/Störstoffen rückbaubar",
+        },
+        circularityIndex: "Zirkularitätsindex",
         eolPoints: "Punkte EOL",
         proofReuse: "Nachweis Wiederverwendung",
         version: "Version",
@@ -297,6 +306,13 @@ const translationsPlattformGeneric = {
   },
   CircularityTool: {
     sections: {
+      passportsForProject: {
+        title: "Generierte Gebäude-Ressourcen-Pässe",
+        passIssueDate: "Passausstellungsdatum",
+        passUuid: "Pass-ID",
+        createPassport: "Neuen Pass erstellen",
+        creatingPassport: "Pass wird erstellt...",
+      },
       signin: {
         title: "eLCA Zirkularitätsindex",
         subTitle: {
@@ -319,6 +335,10 @@ const translationsPlattformGeneric = {
     Kwh: {
       short: "kwH",
     },
+    Kg: {
+      short: "kg",
+      long: "Kilogramm",
+    },
     Tons: {
       short: "t",
       long: "Tonnen",
@@ -340,13 +360,16 @@ const translationsPlattformGeneric = {
   },
   Common: {
     materialClasses: {
-      "1_1_01": "Mineralische Bauprodukte",
-      "4_3_01": "Metalle",
-      "2_4_01": "Isoliermaterialien",
-      "3_2_01": "Holz",
-      "5_1_01": "Abdeckungen",
-      "7_2_01": "Komponenten für Fenster und Vorhangfassaden",
-      "8_1_01": "Gebäudetechnik",
+      "1": "Mineralische Bauprodukte",
+      "2": "Isoliermaterialien",
+      "3": "Holz",
+      "4": "Metalle",
+      "5": "Abdeckungen",
+      "6": "Kunststoffe",
+      "7": "Komponenten für Fenster und Vorhangfassaden",
+      "8": "Gebäudetechnik",
+      "9": "Sonstige",
+      "10": "Komposite",
     },
     costGroups: {
       "300": "Bauwerk - Baukonstruktionen",

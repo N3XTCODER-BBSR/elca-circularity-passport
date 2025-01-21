@@ -1,13 +1,5 @@
 import { fakerDE as faker } from "@faker-js/faker"
-import {
-  BuildingComponent,
-  Layer,
-  MaterialProduct,
-  MaterialResourceTypeNamesSchema,
-  MaterialTradeDetails,
-  MaterialWaste,
-  PassportData,
-} from "./passportSchema"
+import { BuildingComponent, Material, MaterialProduct, MaterialTradeDetails, PassportData } from "./passportSchema"
 
 const components = [
   {
@@ -62,7 +54,7 @@ const materialTradeDetails: MaterialTradeDetails[] = [
     trade: "Maler",
     lvNumber: "02",
     itemInLv: "02.0020",
-    area: 10.24,
+    // surfaceInM2: 10.24,
   },
 ]
 //TODO: update materialClasses according to data structure excel:
@@ -78,39 +70,39 @@ const materialClasses = {
 }
 
 type MaterialClassId = keyof typeof materialClasses
-interface Material {
-  materialDescription: string
+interface ReferenceMaterial {
+  name: string
   materialClassId: MaterialClassId // Only valid keys from materialClasses
 }
 
-const materials: Material[] = [
-  { materialDescription: "Beton C25/30 (Normalgewicht)", materialClassId: "1.1.01" },
-  { materialDescription: "Bewehrungsstahl (B500B)", materialClassId: "4.3.01" },
-  { materialDescription: "Keramikfliesen", materialClassId: "1.1.01" },
-  { materialDescription: "Mineralwolle-Dämmung", materialClassId: "2.4.01" },
-  { materialDescription: "Brettschichtholz (GL24h)", materialClassId: "3.2.01" },
-  { materialDescription: "Aluminiumblech (gewalzt)", materialClassId: "4.3.01" },
-  { materialDescription: "Bitumen-Dachbahn", materialClassId: "5.1.01" },
-  { materialDescription: "PVC-Fensterrahmen", materialClassId: "7.2.01" },
-  { materialDescription: "Gipskartonplatte", materialClassId: "1.1.01" },
-  { materialDescription: "Expandiertes Polystyrol (EPS) Dämmung", materialClassId: "2.4.01" },
-  { materialDescription: "Kupferblech (gewalzt)", materialClassId: "4.3.01" },
-  { materialDescription: "Eichenholz", materialClassId: "3.2.01" },
-  { materialDescription: "Asphalt (Straßenbau)", materialClassId: "1.1.01" },
-  { materialDescription: "Schaumglas-Dämmung", materialClassId: "2.4.01" },
-  { materialDescription: "Zinkblech (gewalzt)", materialClassId: "4.3.01" },
-  { materialDescription: "Melamin-beschichtete Spanplatte", materialClassId: "3.2.01" },
-  { materialDescription: "EPDM-Dachmembran", materialClassId: "5.1.01" },
-  { materialDescription: "Doppelverglasungseinheit", materialClassId: "7.2.01" },
-  { materialDescription: "Kreuzlagenholz (CLT)", materialClassId: "3.2.01" },
-  { materialDescription: "Mechanische Lüftung mit Wärmerückgewinnung (MVHR)", materialClassId: "8.1.01" },
+const referenceMaterials: ReferenceMaterial[] = [
+  { name: "Beton C25/30 (Normalgewicht)", materialClassId: "1.1.01" },
+  { name: "Bewehrungsstahl (B500B)", materialClassId: "4.3.01" },
+  { name: "Keramikfliesen", materialClassId: "1.1.01" },
+  { name: "Mineralwolle-Dämmung", materialClassId: "2.4.01" },
+  { name: "Brettschichtholz (GL24h)", materialClassId: "3.2.01" },
+  { name: "Aluminiumblech (gewalzt)", materialClassId: "4.3.01" },
+  { name: "Bitumen-Dachbahn", materialClassId: "5.1.01" },
+  { name: "PVC-Fensterrahmen", materialClassId: "7.2.01" },
+  { name: "Gipskartonplatte", materialClassId: "1.1.01" },
+  { name: "Expandiertes Polystyrol (EPS) Dämmung", materialClassId: "2.4.01" },
+  { name: "Kupferblech (gewalzt)", materialClassId: "4.3.01" },
+  { name: "Eichenholz", materialClassId: "3.2.01" },
+  { name: "Asphalt (Straßenbau)", materialClassId: "1.1.01" },
+  { name: "Schaumglas-Dämmung", materialClassId: "2.4.01" },
+  { name: "Zinkblech (gewalzt)", materialClassId: "4.3.01" },
+  { name: "Melamin-beschichtete Spanplatte", materialClassId: "3.2.01" },
+  { name: "EPDM-Dachmembran", materialClassId: "5.1.01" },
+  { name: "Doppelverglasungseinheit", materialClassId: "7.2.01" },
+  { name: "Kreuzlagenholz (CLT)", materialClassId: "3.2.01" },
+  { name: "Mechanische Lüftung mit Wärmerückgewinnung (MVHR)", materialClassId: "8.1.01" },
 ]
 
 // Build material details list dynamically
-const materialDetailsWithoutUuidAndServiceLifeList = materials.map((material) => ({
-  materialDescription: material.materialDescription,
-  materialClassId: material.materialClassId,
-  materialClassDescription: materialClasses[material.materialClassId],
+const materialDetailsWithoutUuidAndServiceLifeList = referenceMaterials.map((material) => ({
+  name: material.name,
+  classId: material.materialClassId,
+  classDescription: materialClasses[material.materialClassId],
 }))
 
 export function generateComponents(
@@ -129,7 +121,7 @@ export function generateComponents(
     componentsWithLayers.push({
       uuid: faker.string.uuid(),
       ...component,
-      layers: generateLayers(layerCount),
+      materials: generateMaterials(layerCount),
     })
   }
   return componentsWithLayers
@@ -175,41 +167,36 @@ const generateMaterialProduct = (): MaterialProduct => {
   }
 }
 
-const generateMaterialWaste = (): MaterialWaste => {
-  return {
-    wasteCode: faker.lorem.word(),
-  }
-}
+const generateMaterials = (materialsCount: number) => Array.from({ length: materialsCount }, generateSingleMaterial)
 
-const generateLayers = (layerCount: number) => Array.from({ length: layerCount }, generateSingleLayer)
-
-function generateSingleLayer(): Layer {
+function generateSingleMaterial(): Material {
   const eolPoints = weightedRandomPoints([-60, -20], [-19, 140])
   const rebuildPoints = randomRebuildPoints()
 
-  const layer: Layer = {
+  const material: Material = {
     name: faker.helpers.arrayElement(["Gypsum Plasterboard"]),
-    lnr: faker.number.int({ min: 1, max: 10 }),
-    mass: faker.number.float({ min: 2, max: 500 }),
+    layerIndex: faker.number.int({ min: 1, max: 10 }),
+    massInKg: faker.number.float({ min: 2, max: 500 }),
+    specificProduct: generateMaterialProduct(),
+    serviceLifeTableVersion: "Version 2024",
+    serviceLifeInYears: faker.number.int({ min: 1, max: 100 }),
+    trade: faker.helpers.arrayElement(materialTradeDetails),
     materialGeometry: {
       unit: faker.helpers.arrayElement(["m", "m2", "m3", "pieces"]),
       amount: faker.number.float({ min: 1, max: 500 }),
     },
-    material: {
+    genericMaterial: {
       ...faker.helpers.arrayElement(materialDetailsWithoutUuidAndServiceLifeList),
-      oekobaudatVersion: "OBD_2020_II_A1",
       uuid: faker.string.uuid(),
-      serviceLifeInYears: faker.number.int({ min: 1, max: 100 }),
-      serviceLifeTableVersion: "Version 2024",
-      trade: faker.helpers.arrayElement(materialTradeDetails),
-      product: generateMaterialProduct(),
-      waste: generateMaterialWaste(),
+      oekobaudatDbVersion: "OBD_2020_II_A1",
     },
     circularity: {
       eolPoints: eolPoints,
+      dismantlingPotentialClassId: faker.helpers.arrayElement(["I", "II", "III"]),
       circularityIndex: Math.round(0.7 * eolPoints + 0.3 * rebuildPoints),
-      version: faker.helpers.arrayElement(["KSB BNB 2.0.6", "KSB BNB 4.1.4"]),
-      category: faker.helpers.arrayElement(["Zerstörungsfrei"]),
+      methodologyVersion: faker.helpers.arrayElement(["KSB BNB 2.0.6", "KSB BNB 4.1.4"]),
+      rebuildPoints,
+      // category: faker.helpers.arrayElement(["Zerstörungsfrei"]),
       proofReuse: faker.helpers.arrayElement(["Rücknahmegarantie"]),
       interferingSubstances: [
         {
@@ -221,36 +208,35 @@ function generateSingleLayer(): Layer {
     pollutants: {
       // TODO: Define properties here when they are clear
     },
-    ressources: {
-      rawMaterials: {
-        [MaterialResourceTypeNamesSchema.Enum.Mineral]: faker.number.float({ min: 2, max: 5000 }),
-        [MaterialResourceTypeNamesSchema.Enum.Metallic]: faker.number.float({ min: 2, max: 5000 }),
-        [MaterialResourceTypeNamesSchema.Enum.Fossil]: faker.number.float({ min: 2, max: 5000 }),
-        [MaterialResourceTypeNamesSchema.Enum.Forestry]: faker.number.float({ min: 2, max: 5000 }),
-        [MaterialResourceTypeNamesSchema.Enum.Agrar]: faker.number.float({ min: 2, max: 5000 }),
-        [MaterialResourceTypeNamesSchema.Enum.Aqua]: faker.number.float({ min: 2, max: 5000 }),
-      },
-      embodiedEnergy: {
-        A1A2A3: faker.number.float({ min: 40, max: 15000 }),
-        B1: faker.number.float({ min: 40, max: 15000 }),
-        B4: faker.number.float({ min: 40, max: 15000 }),
-        B6: faker.number.float({ min: 40, max: 15000 }),
-        C3: faker.number.float({ min: 40, max: 15000 }),
-        C4: faker.number.float({ min: 40, max: 15000 }),
-      },
-      embodiedEmissions: {
-        A1A2A3: faker.number.float({ min: 40, max: 8000 }),
-        B1: faker.number.float({ min: 40, max: 8000 }),
-        B4: faker.number.float({ min: 40, max: 8000 }),
-        B6: faker.number.float({ min: 40, max: 8000 }),
-        C3: faker.number.float({ min: 40, max: 8000 }),
-        C4: faker.number.float({ min: 40, max: 8000 }),
-      },
-      carbonContent: faker.number.float({ min: 40, max: 8000 }),
-      recyclingContent: faker.number.float({ min: 40, max: 8000 }),
-    },
+    // ressources: {
+    //   rawMaterialsInKg: {
+    //     [MaterialResourceTypeNamesSchema.Enum.Mineral]: faker.number.float({ min: 2, max: 5000 }),
+    //     [MaterialResourceTypeNamesSchema.Enum.Metallic]: faker.number.float({ min: 2, max: 5000 }),
+    //     [MaterialResourceTypeNamesSchema.Enum.Fossil]: faker.number.float({ min: 2, max: 5000 }),
+    //     [MaterialResourceTypeNamesSchema.Enum.Forestry]: faker.number.float({ min: 2, max: 5000 }),
+    //     [MaterialResourceTypeNamesSchema.Enum.Agrar]: faker.number.float({ min: 2, max: 5000 }),
+    //     [MaterialResourceTypeNamesSchema.Enum.Aqua]: faker.number.float({ min: 2, max: 5000 }),
+    //   },
+    //   embodiedEnergyInKwh: {
+    //     A1A2A3: faker.number.float({ min: 40, max: 15000 }),
+    //     B1: faker.number.float({ min: 40, max: 15000 }),
+    //     B4: faker.number.float({ min: 40, max: 15000 }),
+    //     B6: faker.number.float({ min: 40, max: 15000 }),
+    //     C3: faker.number.float({ min: 40, max: 15000 }),
+    //     C4: faker.number.float({ min: 40, max: 15000 }),
+    //   },
+    //   embodiedEmissionsInKgCo2Eq: {
+    //     A1A2A3: faker.number.float({ min: 40, max: 8000 }),
+    //     B1: faker.number.float({ min: 40, max: 8000 }),
+    //     B4: faker.number.float({ min: 40, max: 8000 }),
+    //     B6: faker.number.float({ min: 40, max: 8000 }),
+    //     C3: faker.number.float({ min: 40, max: 8000 }),
+    //     C4: faker.number.float({ min: 40, max: 8000 }),
+    //   },
+    //   recyclingContentInKg: faker.number.float({ min: 40, max: 8000 }),
+    // },
   }
-  return layer
+  return material
 }
 
 export default function generatePassport(
@@ -272,7 +258,7 @@ export default function generatePassport(
     date: formattedRandomDate,
     authorName: faker.person.fullName(),
     dataSchemaVersion: "v1",
-    versionTag: "1.0.0",
+    // versionTag: "1.0.0",
     elcaProjectId: "",
     projectName: faker.helpers.arrayElement(["Bundesinstitut für Bau-, Stadt- und Raumforschung Berlin"]),
     generatorSoftware: {

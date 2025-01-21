@@ -15,7 +15,7 @@ describe("getWeightByProductId", () => {
     { productId: 13, expectedWeight: 1.5 },
     { productId: 14, expectedWeight: 50.843 },
   ])("should return the correct weight for productId $productId", async ({ productId, expectedWeight }) => {
-    const weight = await getWeightByProductId(productId)
+    const { weight } = await getWeightByProductId(productId)
 
     expect(weight).toBeCloseTo(expectedWeight, 3)
   })
