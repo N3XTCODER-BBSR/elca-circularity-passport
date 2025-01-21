@@ -1,7 +1,7 @@
 import { ArrowPathIcon, ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
 import { useIsMutating, useMutation, useQueryClient } from "@tanstack/react-query"
-import { useTranslations } from "next-intl"
+import { useFormatter, useTranslations } from "next-intl"
 import { useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { AccordionItemFull } from "app/(components)/generic/AccordionItem"
@@ -41,7 +41,9 @@ type EolDataSectionProps = {
   layerDatacirculartyEnrichedLayerData: CalculateCircularityDataForLayerReturnType
 }
 
-const formatEolUnbuiltData = (data: EolUnbuiltData | null) => {
+const useFormatEolUnbuiltData = (data: EolUnbuiltData | null) => {
+  const format = useFormatter()
+
   if (!data) {
     return []
   }
@@ -56,20 +58,21 @@ const formatEolUnbuiltData = (data: EolUnbuiltData | null) => {
     },
     {
       key: `EOL Punkte ${keySuffix}`, // TODO: i18n
-      value: eolPoints,
+      value: format.number(eolPoints, { maximumFractionDigits: 2 }),
     },
   ]
 }
 
 const EolDataSection = ({ layerDatacirculartyEnrichedLayerData }: EolDataSectionProps) => {
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
+  const format = useFormatter()
   const isPending = useIsMutating() > 0
 
   if (layerDatacirculartyEnrichedLayerData.tBaustoffProductData == null) {
     return null
   }
   // TODO: update
-  const eolUnbuiltData = formatEolUnbuiltData(layerDatacirculartyEnrichedLayerData.eolUnbuilt)
+  const eolUnbuiltData = useFormatEolUnbuiltData(layerDatacirculartyEnrichedLayerData.eolUnbuilt)
   const eolUnbuiltDataSecondary = [
     // POTENTIAL
     {
@@ -78,7 +81,12 @@ const EolDataSection = ({ layerDatacirculartyEnrichedLayerData }: EolDataSection
     },
     {
       key: "EOL Punkte (Potenzial)", // TODO: i18n
-      value: layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltPotentialPoints,
+      value:
+        layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltPotentialPoints != null
+          ? format.number(layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData.eolUnbuiltPotentialPoints, {
+              maximumFractionDigits: 2,
+            })
+          : "-",
     },
     // REAL
     {
@@ -87,7 +95,12 @@ const EolDataSection = ({ layerDatacirculartyEnrichedLayerData }: EolDataSection
     },
     {
       key: "EOL Punkte (Real)", // TODO: i18n
-      value: layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltRealPoints,
+      value:
+        layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltRealPoints != null
+          ? format.number(layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltRealPoints, {
+              maximumFractionDigits: 2,
+            })
+          : "-",
     },
   ]
 
@@ -127,7 +140,7 @@ type CircularityDetailsProps = {
 }
 const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDetailsProps) => {
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
-
+  const format = useFormatter()
   const queryClient = useQueryClient()
 
   const updateDismantlingPotentialClassIdMutation = useMutation<void, Error, DismantlingPotentialClassId | null>({
@@ -215,7 +228,9 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
     {
       key: "Punkte Rückbau", //t("..."),
       value: layerData.dismantlingPotentialClassId
-        ? dismantlingPotentialClassIdMapping[layerData.dismantlingPotentialClassId].points
+        ? format.number(dismantlingPotentialClassIdMapping[layerData.dismantlingPotentialClassId].points, {
+            maximumFractionDigits: 2,
+          })
         : "-",
     },
   ]
@@ -238,11 +253,11 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
   const eolBuiltData = [
     {
       key: "EoL Klasse (verbaut)", //t("..."),
-      value: layerData.eolBuilt?.className,
+      value: layerData.eolBuilt?.className ?? "-",
     },
     {
       key: "EoL Punkte (verbaut)", //t("..."),
-      value: layerData.eolBuilt?.points ?? "-",
+      value: layerData.eolBuilt?.points ? format.number(layerData.eolBuilt?.points, { maximumFractionDigits: 2 }) : "-",
     },
   ]
 
@@ -261,7 +276,11 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
             </h4>
           </StyledDt>
           <StyledDd justifyEnd>
-            <b>{layerData.circularityIndex}</b>
+            <b>
+              {layerData.circularityIndex
+                ? format.number(layerData.circularityIndex, { maximumFractionDigits: 2 })
+                : "-"}
+            </b>
           </StyledDd>
         </div>
       </Area>
