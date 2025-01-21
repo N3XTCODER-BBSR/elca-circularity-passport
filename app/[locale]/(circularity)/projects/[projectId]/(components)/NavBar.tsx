@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { FC } from "react"
 import BackButton from "app/(components)/generic/BackButton"
+import LanguageDropdown from "app/(components)/LanguageDropdown"
 import NavBarDropdownMenu from "app/(components)/generic/NavBarMenuDropdown"
 import NavBarProfileDropdown from "app/[locale]/(circularity)/(components)/NavBarProfileDropdown"
 import MobileMenuButton from "./MobileMenuButton"
@@ -50,6 +51,7 @@ const NavBar: FC<{
 
               {/* Right Side: Project Info and Profile */}
               <div className="flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                <LanguageDropdown />
                 {projectInfo && (
                   <NavBarDropdownMenu
                     className="mr-4"
