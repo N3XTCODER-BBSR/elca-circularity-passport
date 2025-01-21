@@ -62,6 +62,9 @@ The project leverages the most modern tech stack, ensuring cutting-edge performa
 - **Node.js (version >=20.0.0 and <22.7.0):**
   [Install Node.js](https://nodejs.org/en/download/) or use [nvm](https://github.com/nvm-sh/nvm) to manage Node versions.
 
+- **Yarn**:
+  Ensure Yarn is installed as the project requires it as the package manager. [Install Yarn](https://classic.yarnpkg.com/lang/en/docs/install) if you don't already have it.
+
 - **eLCA Application:**  
   The eLCA app and its database must be running locally.  
   [Set it up here](https://github.com/n3xtcoder/elca-beibob-elca?tab=readme-ov-file#getting-started).
