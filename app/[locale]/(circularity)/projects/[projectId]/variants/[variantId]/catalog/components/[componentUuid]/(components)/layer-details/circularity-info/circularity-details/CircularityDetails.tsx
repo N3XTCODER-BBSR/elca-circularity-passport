@@ -2,6 +2,7 @@ import { ArrowPathIcon, ExclamationTriangleIcon } from "@heroicons/react/20/soli
 import { Accordion } from "@szhsin/react-accordion"
 import { useIsMutating, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useFormatter, useTranslations } from "next-intl"
+import type { Formatter } from "next-intl"
 import { useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { AccordionItemFull } from "app/(components)/generic/AccordionItem"
@@ -41,9 +42,7 @@ type EolDataSectionProps = {
   layerDatacirculartyEnrichedLayerData: CalculateCircularityDataForLayerReturnType
 }
 
-const useFormatEolUnbuiltData = (data: EolUnbuiltData | null) => {
-  const format = useFormatter()
-
+const formatEolUnbuiltData = (data: EolUnbuiltData | null, format: Formatter) => {
   if (!data) {
     return []
   }
@@ -72,7 +71,7 @@ const EolDataSection = ({ layerDatacirculartyEnrichedLayerData }: EolDataSection
     return null
   }
   // TODO: update
-  const eolUnbuiltData = useFormatEolUnbuiltData(layerDatacirculartyEnrichedLayerData.eolUnbuilt)
+  const eolUnbuiltData = formatEolUnbuiltData(layerDatacirculartyEnrichedLayerData.eolUnbuilt, format)
   const eolUnbuiltDataSecondary = [
     // POTENTIAL
     {
