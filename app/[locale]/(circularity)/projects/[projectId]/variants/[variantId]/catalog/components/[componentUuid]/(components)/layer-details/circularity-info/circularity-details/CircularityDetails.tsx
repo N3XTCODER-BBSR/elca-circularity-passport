@@ -2,7 +2,6 @@ import { ArrowPathIcon, ExclamationTriangleIcon } from "@heroicons/react/20/soli
 import { Accordion } from "@szhsin/react-accordion"
 import { useIsMutating, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useFormatter, useTranslations } from "next-intl"
-import type { Formatter } from "next-intl"
 import { useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { AccordionItemFull } from "app/(components)/generic/AccordionItem"
@@ -40,6 +39,15 @@ import Modal from "../../../Modal"
 
 type EolDataSectionProps = {
   layerDatacirculartyEnrichedLayerData: CalculateCircularityDataForLayerReturnType
+}
+
+type Formatter = {
+  number: (
+    num: number,
+    config: {
+      maximumFractionDigits: number
+    }
+  ) => string
 }
 
 const formatEolUnbuiltData = (data: EolUnbuiltData | null, format: Formatter) => {
