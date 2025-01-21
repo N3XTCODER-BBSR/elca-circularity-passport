@@ -45,7 +45,7 @@ const ProjectLayout = async ({
       { id: "catalog", name: t("catalog"), href: `/projects/${projectData.id}/variants/${variantId}/catalog` },
       {
         id: "catalog",
-        name: "Gebäude-Resourcen-Pass",
+        name: t("buildingPassport"),
         href: `/projects/${projectData.id}/variants/${variantId}/passports`,
       },
     ]

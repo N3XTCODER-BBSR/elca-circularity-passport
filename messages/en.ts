@@ -287,6 +287,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
       NavBar: {
         overview: "Overview",
         catalog: "Catalog",
+        buildingPassport: "Building Resources Passport",
         switchProject: "Switch Project",
         switchVariant: "Switch Variant",
       },
@@ -327,6 +328,28 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
         passUuid: "Pass ID",
         createPassport: "Neuen Pass erstellen",
         creatingPassport: "Pass creation in progress...",
+      },
+      overview: {
+        projectNotFound: "Project with this ID for the current user not found.",
+        emptyState: {
+          title: "Data is needed to display the Circularity Index",
+          body: "To display the Circularity Index, please ensure that every construction product is either complete or part of the calculation. Once this information is updated, your data will be displayed here.",
+          cta: "Update building data",
+        },
+        title: "Circularity Index",
+        moduleTotal: {
+          title: "Total",
+          label: "total",
+          points: "Points",
+        },
+        moduleByCostGroup: {
+          title: "By Cost Group (DIN 276)",
+          totalMass: "Total Mass",
+        },
+        moduleByMaterialCategory: {
+          title: "By Material Category",
+          totalMass: "Total Mass",
+        },
       },
     },
   },

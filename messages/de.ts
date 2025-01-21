@@ -288,6 +288,7 @@ const translationsPlattformGeneric = {
       NavBar: {
         overview: "Überblick",
         catalog: "Katalog",
+        buildingPassport: "Gebäude-Ressourcen-Pass",
         switchProject: "Project wechseln",
         switchVariant: "Variante wechseln",
       },
@@ -306,6 +307,28 @@ const translationsPlattformGeneric = {
   },
   CircularityTool: {
     sections: {
+      overview: {
+        projectNotFound: "Projekt mit dieser ID für den aktuellen Benutzer nicht gefunden.",
+        emptyState: {
+          title: "Für die Anzeige des Zirkularitätsindex werden Daten benötigt",
+          body: "Um den Kreislaufwirtschaftsindex anzuzeigen, stellen Sie bitte sicher, dass jedes Bauprodukt entweder vollständig ist oder von der Berechnung. Sobald diese Informationen aktualisiert sind, werden Ihre Daten hier angezeigt.",
+          cta: "Gebäudedaten aktualisieren",
+        },
+        title: "Zirkularitätsindex",
+        moduleTotal: {
+          title: "Gesamt",
+          label: "gesamt",
+          points: "Punkte",
+        },
+        moduleByCostGroup: {
+          title: "Nach Kostengruppe (DIN 276)",
+          totalMass: "Gesamtmasse",
+        },
+        moduleByMaterialCategory: {
+          title: "Nach Materialkategorie",
+          totalMass: "Gesamtmasse",
+        },
+      },
       passportsForProject: {
         title: "Generierte Gebäude-Ressourcen-Pässe",
         passIssueDate: "Passausstellungsdatum",

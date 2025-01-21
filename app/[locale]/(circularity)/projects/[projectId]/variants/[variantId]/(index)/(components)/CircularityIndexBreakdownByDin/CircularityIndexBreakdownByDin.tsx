@@ -1,6 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import React from "react"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
@@ -16,6 +17,8 @@ type CircularityIndexBreakdownByDin = {
 
 export default function CircularityIndexBreakdownByDin(props: CircularityIndexBreakdownByDin) {
   const router = useRouter()
+  const t = useTranslations("CircularityTool.sections.overview.moduleByCostGroup")
+  const tUnits = useTranslations("Units")
 
   function exampleLeafClickHandler(resourceId: string) {
     const detailLink = `${props.catalogPath}/components/${resourceId}`
@@ -28,9 +31,9 @@ export default function CircularityIndexBreakdownByDin(props: CircularityIndexBr
     <ChartAndBreadCrumbComponent
       rootChartDataNode={chartData}
       leafClickHandler={exampleLeafClickHandler}
-      title="Zirkularitätsindex DIN 276"
-      labelTotalDimensionalValue="Total mass"
-      unitNameTotalDimensionalValue="kg"
+      title={t("title")}
+      labelTotalDimensionalValue={t("totalMass")}
+      unitNameTotalDimensionalValue={tUnits("Kg.short")}
     />
   )
 }

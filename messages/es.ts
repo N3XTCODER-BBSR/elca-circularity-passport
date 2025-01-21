@@ -236,6 +236,7 @@ const translationsPlattformGeneric = {
       NavBar: {
         overview: "Resumen",
         catalog: "Catálogo",
+        buildingPassport: "Pasaporte",
         switchProject: "Cambiar proyecto",
         switchVariant: "Cambiar variante",
       },
@@ -254,6 +255,13 @@ const translationsPlattformGeneric = {
   },
   CircularityTool: {
     sections: {
+      passportsForProject: {
+        title: "Pases de Recursos Generados del Edificio",
+        passIssueDate: "Fecha de emisión del pase",
+        passUuid: "ID del pase",
+        createPassport: "Crear un nuevo pase",
+        creatingPassport: "Creación del pase en progreso...",
+      },
       signin: {
         title: "Índice de Circularidad eLCA",
         subTitle: {
@@ -268,6 +276,28 @@ const translationsPlattformGeneric = {
           passwordPlaceholder: "Contraseña",
           loginButton: "Iniciar sesión",
           errorMessage: "Error en el inicio de sesión.",
+        },
+      },
+      overview: {
+        projectNotFound: "Proyecto con esta ID para el usuario actual no encontrado.",
+        emptyState: {
+          title: "Se necesitan datos para mostrar el Índice de Circularidad",
+          body: "Para mostrar el Índice de Circularidad, asegúrese de que cada producto de construcción esté completo o sea parte del cálculo. Una vez que se actualice esta información, sus datos se mostrarán aquí.",
+          cta: "Actualizar datos del edificio",
+        },
+        title: "Índice de Circularidad",
+        moduleTotal: {
+          title: "Total",
+          label: "total",
+          points: "Puntos",
+        },
+        moduleByCostGroup: {
+          title: "Por Grupo de Costos (DIN 276)",
+          totalMass: "Masa Total",
+        },
+        moduleByMaterialCategory: {
+          title: "Por Categoría de Material",
+          totalMass: "Masa Total",
         },
       },
     },
