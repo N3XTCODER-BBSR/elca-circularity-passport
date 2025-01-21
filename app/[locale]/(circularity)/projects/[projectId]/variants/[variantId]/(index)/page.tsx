@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server"
 import errorHandler from "app/(utils)/errorHandler"
 import { getElcaProjectData } from "lib/domain-logic/circularity/server-actions/getElcaProjectData"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
@@ -11,13 +12,14 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
     const userId = Number(session.user.id)
     const projectId = Number(params.projectId)
     const variantId = Number(params.variantId)
+    const t = await getTranslations("CircularityTool.sections.overview")
 
     await ensureUserAuthorizationToProject(userId, projectId)
 
     const projectInfo = await getElcaProjectData(projectId, userId)
 
     if (!projectInfo) {
-      return <div>Projects with this ID not found for the current user.</div>
+      return <div>{t("projectNotFound")}</div>
     }
 
     return <BuildingOverview projectName={projectInfo.name} projectId={projectInfo.id} variantId={variantId} />

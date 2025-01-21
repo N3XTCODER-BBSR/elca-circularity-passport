@@ -43,7 +43,8 @@ const ComponentLayer = ({ layerData, layerNumber }: ComponentLayerProps) => {
             <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-900">{t("materialGeometry")}</dt>
               <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                {layerData.materialGeometry.amount.toFixed(2)} {layerData.materialGeometry.unit}
+                {format.number(layerData.materialGeometry.amount, { maximumFractionDigits: 2 })}{" "}
+                {layerData.materialGeometry.unit}
               </dd>
             </div>
           </dl>
