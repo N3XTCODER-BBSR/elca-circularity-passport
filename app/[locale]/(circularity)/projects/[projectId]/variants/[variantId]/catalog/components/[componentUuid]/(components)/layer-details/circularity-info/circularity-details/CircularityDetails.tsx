@@ -41,6 +41,7 @@ type EolDataSectionProps = {
   layerDatacirculartyEnrichedLayerData: CalculateCircularityDataForLayerReturnType
 }
 
+// Hint: we defined this custom type here because of tsc complaining about not finding the actual type 'Formatter' from the next-intl library. 
 type Formatter = {
   number: (
     num: number,
