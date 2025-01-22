@@ -7,6 +7,8 @@ import { useState } from "react"
 import { toast } from "react-hot-toast" // or whichever toast lib you prefer
 import { twMerge } from "tailwind-merge"
 
+import { ZodIssue } from "zod"
+import { fromZodIssue } from "zod-validation-error"
 import { createPassportForProjectVariantId } from "lib/domain-logic/circularity/server-actions/passports/createPassportForProjectVariantId"
 import { PassportMetadata } from "prisma/queries/db"
 
@@ -25,14 +27,44 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
 
   const onCreatePassportClick = async () => {
     setIsLoading(true)
-    try {
-      await createPassportForProjectVariantId(projectVariantId, projectId)
+    const generatePassportResponse = await createPassportForProjectVariantId(projectVariantId, projectId)
+    setIsLoading(false)
+    if (!generatePassportResponse.error) {
       router.refresh()
-    } catch (error) {
-      console.error(error)
-      toast.error("There was a failure - please try again")
-    } finally {
-      setIsLoading(false)
+      toast.success("Passport successfully generated!")
+    } else if (generatePassportResponse.errorType === "validation") {
+      toast.custom((t) => (
+        <div
+          className={`${
+            t.visible ? "animate-enter" : "animate-leave"
+          } pointer-events-auto flex w-full max-w-2xl rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5`}
+        >
+          <div className="w-0 flex-1 p-4">
+            <div className="flex items-start">
+              <div className="ml-3 flex-1">
+                <p className="text-sm font-medium text-orange-900">Error: Passport could not be generated!</p>
+                <ul className="mt-1 text-sm text-gray-500">
+                  {(generatePassportResponse.details as ZodIssue[]).map((zodIssue, i) => (
+                    <li className="mb-4" key={i}>
+                      {fromZodIssue(zodIssue).toString()}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div className="flex border-l border-gray-200">
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="flex w-full items-center justify-center rounded-none rounded-r-lg border border-transparent p-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      ))
+    } else {
+      toast.error(`There was an error - Passport creation failed: ${generatePassportResponse.details}`)
     }
   }
 
