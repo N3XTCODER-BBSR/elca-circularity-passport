@@ -1,10 +1,12 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import BackButton from "app/(components)/generic/BackButton"
 
 const HistoryBackButton = () => {
   const [canGoBack, setCanGoBack] = useState(false)
+  const t = useTranslations("CircularityTool.sections.catalog")
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -17,7 +19,7 @@ const HistoryBackButton = () => {
   }
 
   if (canGoBack) {
-    return <BackButton handleOnClick={handleGoBack} text="Zurück" />
+    return <BackButton handleOnClick={handleGoBack} text={t("back")} />
   }
 }
 

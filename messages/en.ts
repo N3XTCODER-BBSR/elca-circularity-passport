@@ -233,7 +233,16 @@ const translationsGrpPlatformGeneric = {
 const translationsPlatformGeneric: TranslationsPlattformGeneric = {
   Circularity: {
     Components: {
+      name: "Component Name",
+      uuid: "UUID",
+      costGroup: "Cost Group DIN 276",
+      numberInstalled: "Number Installed",
+      referenceUnit: "Reference Unit",
+      layersHeading: "Materials relative to 1",
       Layers: {
+        mass: "Mass",
+        volume: "Volume",
+        excludedFromCalculation: "Excluded from calculation",
         CircularityInfo: {
           sections: {
             disturbingSubstances: {
@@ -247,14 +256,16 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
               substanceNameInputPlaceholder: "Name of disturbing substance",
               specificScenarioForS4: {
                 modal: {
-                  title: "EoL Scenario in Case of S4",
-                  warningBox: `An S4 disruptive substance has been selected. EOL points cannot be automatically deducted. Please manually select a new EOL scenario, taking the disruptive substance into account.`,
+                  title: "EOL Scenario in case of S4",
+                  selectEolScenario: "Selection of an EOL scenario",
+                  warningBox:
+                    "An S4 disturbing substance has been selected. EOL points cannot be automatically deducted. Please manually select a new EOL scenario considering the disturbing substance.",
                   ctaHint: "Please select an option from the dropdown menu and use the reference guide below.",
                   referenceInstructionTable: {
                     tableTitle: "Reference Guide",
                     columnHeaders: {
                       tBaustoffProduct: "tBaustoff Product",
-                      eolScenarioSpecific: "EoL Scenario - Built (Specific)",
+                      eolScenarioSpecific: "EOL Scenario - Built (specific)",
                     },
                   },
                 },
@@ -262,16 +273,57 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
             },
           },
           title: "Circularity",
-          CircularityPotential: {
-            title: "Circularity Potential",
+          incomplete: "Incomplete",
+          tBaustoffMaterial: "tBaustoff",
+          tBaustoffSelector: {
+            select: "Select",
+            modalBody: "No match found for this Ökobaudat product. Please select a tBaustoff material from the list.",
+            cancel: "Cancel",
+            save: "Save",
+          },
+          circularityIndex: "Circularity Index",
+          EolDataSection: {
+            title: "Circularity Potential - Unbuilt",
+            details: "Details",
             EolUnbuilt: {
               Class: {
-                title: "EoL Class (unbuilt)",
+                class: "EOL Class",
+                title: "EOL Class (Unbuilt)",
+                specific: "EOL Class (Specific)",
+                real: "EOL Class (Real)",
+                potential: "EOL Class (Potential)",
               },
               Points: {
-                title: "EoL Points (unbuilt)",
+                points: "EOL Points",
+                title: "EOL Points (Unbuilt)",
+                specific: "EOL Points (Specific)",
+                real: "EOL Points (Real)",
+                potential: "EOL Points (Potential)",
+              },
+              Scenario: {
+                real: "EOL Scenario (Real)",
+                potential: "EOL Scenario (Potential)",
+                specific: "EOL Scenario (Specific)",
               },
             },
+          },
+          RebuildSection: {
+            title: "Dismantling Potential",
+            rebuildClass: "Dismantling Class",
+            rebuildPoints: "Dismantling Points",
+          },
+          EolBuiltSection: {
+            title: "Circularity Potential - Built",
+            emptyState:
+              "Please select disturbing substances; if there are none, select 'No disturbing substances - S0'.",
+            eolScenarioS4: "EOL Scenario in case of S4",
+            selectEolScenario: "Please manually select a new EOL scenario",
+            overrideEolScenarioButton: "+ EOL Scenario Built (Specific)",
+            eolScenarioBuiltSpecific: "EOL Scenario Built (Specific)",
+            points: "EOL Points (Built)",
+            class: "EOL Class (Built)",
+            disturbingSubstances: "Contaminants",
+            newSubstance: "New Contaminant",
           },
         },
       },
@@ -350,6 +402,9 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           title: "By Material Category",
           totalMass: "Total Mass",
         },
+      },
+      catalog: {
+        back: "Back",
       },
     },
   },

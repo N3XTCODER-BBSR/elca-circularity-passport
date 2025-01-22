@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { notFound } from "next/navigation"
-import { getFormatter } from "next-intl/server"
+import { getFormatter, getTranslations } from "next-intl/server"
 import { Heading4 } from "app/(components)/generic/layout-elements"
 import errorHandler from "app/(utils)/errorHandler"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
@@ -21,6 +21,7 @@ const Page = async ({
     const format = await getFormatter()
     const projectId = Number(params.projectId)
     const variantId = Number(params.variantId)
+    const t = await getTranslations("Circularity.Components")
 
     await ensureUserAuthorizationToProject(Number(session.user.id), Number(params.projectId))
 
@@ -66,31 +67,31 @@ const Page = async ({
               <div className="border border-gray-200">
                 <dl className="">
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">Komponenten-Name</dt>
+                    <dt className="text-sm font-medium text-gray-900">{t("name")}</dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                       {componentData?.element_name}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">UUID</dt>
+                    <dt className="text-sm font-medium text-gray-900">{t("uuid")}</dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                       {componentData?.element_uuid}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">Kostengruppe DIN276</dt>
+                    <dt className="text-sm font-medium text-gray-900">{t("costGroup")}</dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                       {dinGroupLevelNumber}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">Number installed</dt>
+                    <dt className="text-sm font-medium text-gray-900">{t("numberInstalled")}</dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                       {format.number(componentData.quantity, { maximumFractionDigits: 2 })}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">Reference size</dt>
+                    <dt className="text-sm font-medium text-gray-900">{t("referenceUnit")}</dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{componentData.unit}</dd>
                   </div>
                 </dl>
@@ -98,7 +99,9 @@ const Page = async ({
             </div>
           </div>
         </div>
-        <Heading4>Materials relative to 1 {componentData.unit}:</Heading4>
+        <Heading4>
+          {t("layersHeading")} {componentData.unit}:
+        </Heading4>
         <ul>
           {componentData.layers.map((layer, i) => (
             <li key={i}>

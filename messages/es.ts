@@ -226,6 +226,105 @@ const translationsGrpPlattformGeneric = {
 }
 
 const translationsPlattformGeneric = {
+  Circularity: {
+    Components: {
+      name: "Nombre del Componente",
+      uuid: "UUID",
+      costGroup: "Grupo de Coste DIN 276",
+      numberInstalled: "Número Instalado",
+      referenceUnit: "Unidad de Referencia",
+      layersHeading: "Materiales relativos a 1",
+      Layers: {
+        mass: "Masa",
+        volume: "Volumen",
+        excludedFromCalculation: "Excluido del cálculo",
+        CircularityInfo: {
+          sections: {
+            disturbingSubstances: {
+              classNamesForSelectorButtons: {
+                S0: "S0 - Sin sustancias contaminantes",
+                S1: "S1",
+                S2: "S2",
+                S3: "S3",
+                S4: "S4",
+              },
+              substanceNameInputPlaceholder: "Nombre de la sustancia contaminante",
+              specificScenarioForS4: {
+                modal: {
+                  title: "Escenario EOL en caso de S4",
+                  selectEolScenario: "Selección de un escenario EOL",
+                  warningBox:
+                    "Se ha seleccionado una sustancia contaminante S4. Los puntos EOL no se pueden deducir automáticamente. Seleccione manualmente un nuevo escenario EOL considerando la sustancia contaminante.",
+                  ctaHint: "Seleccione una opción del menú desplegable y use la guía de referencia a continuación.",
+                  referenceInstructionTable: {
+                    tableTitle: "Guía de Referencia",
+                    columnHeaders: {
+                      tBaustoffProduct: "Producto tBaustoff",
+                      eolScenarioSpecific: "Escenario EOL - Construido (específico)",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          title: "Circularidad",
+          incomplete: "Incompleto",
+          tBaustoffMaterial: "tBaustoff",
+          tBaustoffSelector: {
+            select: "Seleccionar",
+            modalBody:
+              "No se encontró coincidencia para este producto Ökobaudat. Seleccione un material tBaustoff de la lista.",
+            cancel: "Cancelar",
+            save: "Guardar",
+          },
+          circularityIndex: "Indice de Circularidad",
+          EolDataSection: {
+            title: "Potencial de Circularidad - No construido",
+            details: "Detalles",
+            EolUnbuilt: {
+              Class: {
+                class: "Clase EOL",
+                title: "Clase EOL (No construido)",
+                specific: "Clase EOL (Específica)",
+                real: "Clase EOL (Real)",
+                potential: "Clase EOL (Potencial)",
+              },
+              Points: {
+                points: "Puntos EOL",
+                title: "Puntos EOL (No construido)",
+                specific: "Puntos EOL (Específicos)",
+                real: "Puntos EOL (Reales)",
+                potential: "Puntos EOL (Potenciales)",
+              },
+              Scenario: {
+                real: "Escenario EOL (Real)",
+                potential: "Escenario EOL (Potencial)",
+                specific: "Escenario EOL (Específico)",
+              },
+            },
+          },
+          RebuildSection: {
+            title: "Potencial de Desmontaje",
+            rebuildClass: "Clase de Desmontaje",
+            rebuildPoints: "Puntos de Desmontaje",
+          },
+          EolBuiltSection: {
+            title: "Potencial de Circularidad - Construido",
+            emptyState:
+              "Seleccione sustancias contaminantes; si no hay ninguna, seleccione 'Sin sustancias contaminantes - S0'.",
+            eolScenarioS4: "Escenario EOL en caso de S4",
+            selectEolScenario: "Seleccione manualmente un nuevo escenario EOL",
+            overrideEolScenarioButton: "+ Escenario EOL Construido (Específico)",
+            eolScenarioBuiltSpecific: "Escenario EOL Construido (Específico)",
+            points: "Puntos EOL (Construido)",
+            class: "Clase EOL (Construido)",
+            disturbingSubstances: "Contaminantes",
+            newSubstance: "Nuevo Contaminante",
+          },
+        },
+      },
+    },
+  },
   Grp: {
     Web: {
       title: "Pasaporte de Recursos para Edificios",
@@ -299,6 +398,9 @@ const translationsPlattformGeneric = {
           title: "Por Categoría de Material",
           totalMass: "Masa Total",
         },
+      },
+      catalog: {
+        back: "Atrás",
       },
     },
   },
