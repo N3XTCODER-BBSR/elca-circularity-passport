@@ -122,49 +122,52 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
         <div className="w-1/3 pr-6">
           <ul className="mx-2 space-y-1">
             {din276WithComponents.map((group) => {
-              const hasAnyCircularityMissingData =
-                !!showIncompleteCompleteLabels &&
-                group.categories.some((category) =>
-                  category.componentTypes.some((componentType) =>
-                    componentType.components.some(
-                      (component) => componentUuiddsWithMissingCircularityIndexForAnyProduct?.includes(component.uuid)
-                    )
-                  )
-                )
-
               return (
                 <li className="mb-8" key={group.groupNumber}>
                   <h2 className="mb-4 text-sm uppercase">{tCostGroups(group.groupNumber.toString())}</h2>
                   <nav aria-label="Sidebar" className="flex flex-1 flex-col">
                     <ul className="-mx-2 space-y-1">
-                      {group.categories.map((componentsByCategory) => (
-                        <li key={componentsByCategory.categoryNumber}>
-                          <button
-                            onClick={() => onUpdateCateogryClick(componentsByCategory.categoryNumber)}
-                            type="button"
-                            className={twMerge(
-                              selectedCategoryNumber === componentsByCategory.categoryNumber
-                                ? "bg-gray-50 text-indigo-600"
-                                : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
-                              "group flex w-full gap-x-3 rounded-md p-2 pl-3 text-sm font-semibold leading-6"
-                            )}
-                          >
-                            <div className="flex w-full items-center gap-x-3">
-                              <div className="text-left">
-                                {componentsByCategory.categoryNumber}{" "}
-                                {tCostGroups(componentsByCategory.categoryNumber.toString())}
-                              </div>
-
-                              {componentsByCategory.numberOfComponents !== 0 && (
-                                <NumberOfChildComponents
-                                  numberOfComponents={componentsByCategory.numberOfComponents}
-                                  hasAnyCircularityMissingData={hasAnyCircularityMissingData}
-                                />
+                      {group.categories.map((componentsByCategory) => {
+                        const hasAnyCircularityMissingData1 =
+                          !!showIncompleteCompleteLabels &&
+                          // group.categories.some((category) =>
+                          componentsByCategory.componentTypes.some(
+                            (componentType) =>
+                              componentType.components.some((component) => {
+                                debugger
+                                return componentUuiddsWithMissingCircularityIndexForAnyProduct?.includes(component.uuid)
+                              })
+                            // )
+                          )
+                        return (
+                          <li key={componentsByCategory.categoryNumber}>
+                            <button
+                              onClick={() => onUpdateCateogryClick(componentsByCategory.categoryNumber)}
+                              type="button"
+                              className={twMerge(
+                                selectedCategoryNumber === componentsByCategory.categoryNumber
+                                  ? "bg-gray-50 text-indigo-600"
+                                  : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                                "group flex w-full gap-x-3 rounded-md p-2 pl-3 text-sm font-semibold leading-6"
                               )}
-                            </div>
-                          </button>
-                        </li>
-                      ))}
+                            >
+                              <div className="flex w-full items-center gap-x-3">
+                                <div className="text-left">
+                                  {componentsByCategory.categoryNumber}{" "}
+                                  {tCostGroups(componentsByCategory.categoryNumber.toString())}
+                                </div>
+
+                                {componentsByCategory.numberOfComponents !== 0 && (
+                                  <NumberOfChildComponents
+                                    numberOfComponents={componentsByCategory.numberOfComponents}
+                                    hasAnyCircularityMissingData={hasAnyCircularityMissingData1}
+                                  />
+                                )}
+                              </div>
+                            </button>
+                          </li>
+                        )
+                      })}
                     </ul>
                   </nav>
                 </li>
@@ -176,7 +179,7 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
         <div className="w-1/3 pl-6">
           <ul className="-mx-2 space-y-1">
             {selectedCategory?.componentTypes.map((componentsByComponentNumber) => {
-              const hasAnyCircularityMissingData =
+              const hasAnyCircularityMissingData2 =
                 !!showIncompleteCompleteLabels &&
                 componentsByComponentNumber.components.some(
                   (component) => componentUuiddsWithMissingCircularityIndexForAnyProduct?.includes(component.uuid)
@@ -201,7 +204,7 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
                       {componentsByComponentNumber.numberOfComponents !== 0 && (
                         <NumberOfChildComponents
                           numberOfComponents={componentsByComponentNumber.numberOfComponents}
-                          hasAnyCircularityMissingData={hasAnyCircularityMissingData}
+                          hasAnyCircularityMissingData={hasAnyCircularityMissingData2}
                         />
                       )}
                     </div>
@@ -214,7 +217,7 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
         <div className="w-1/3 pl-8">
           <ul className="space-y-1">
             {compontensForSelectedComponentNumber?.components.map((component) => {
-              const hasAnyCircularityMissingData =
+              const hasAnyCircularityMissingData3 =
                 !!showIncompleteCompleteLabels &&
                 componentUuiddsWithMissingCircularityIndexForAnyProduct?.includes(component.uuid)
               return (
@@ -227,7 +230,7 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
                       <div className="w-2/3">
                         <h3 className="pl-4 text-[16px] font-semibold">{component.name}</h3>
                         {showIncompleteCompleteLabels &&
-                          (hasAnyCircularityMissingData ? (
+                          (hasAnyCircularityMissingData3 ? (
                             <Badge>Unvollständig</Badge>
                           ) : (
                             <Badge color="green">Vollständig</Badge>
