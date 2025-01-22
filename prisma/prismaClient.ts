@@ -1,4 +1,3 @@
-import { create } from "lodash"
 import { Prisma, PrismaClient } from "./generated/client"
 import { PrismaClient as PrismaLegacyClient } from "./generated/client-legacy"
 
