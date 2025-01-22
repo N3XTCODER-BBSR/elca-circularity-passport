@@ -50,3 +50,42 @@ export const deleteVariantIfExists = async (variantId: number) => {
     await prismaLegacySuperUser.elca_project_variants.delete({ where: { id: variantId } })
   }
 }
+
+/**
+ * create a project with the given id
+ * @returns newly created project
+ */
+export const createProductWithComponent = async (id: number, componentId: number) => {
+  return prismaLegacySuperUser.elca_elements.create({
+    data: {
+      id: componentId,
+      element_type_node_id: 246, // must match a real elca_element_types.node_id
+      name: "My new element",
+      element_components: {
+        create: [
+          {
+            id,
+            process_config_id: 123, // must match a real process_configs.id
+            process_conversion_id: 456, // must match a real process_conversions.id
+            life_time: 50,
+            is_layer: false,
+          },
+        ],
+      },
+    },
+  })
+}
+
+export const deleteProductIfExists = async (id: number) => {
+  const product = await prismaLegacySuperUser.elca_elements.findUnique({ where: { id } })
+  if (product) {
+    await prismaLegacySuperUser.elca_elements.delete({ where: { id } })
+  }
+}
+
+export const deleteComponentIfExists = async (id: number) => {
+  const component = await prismaLegacySuperUser.elca_element_components.findUnique({ where: { id } })
+  if (component) {
+    await prismaLegacySuperUser.elca_element_components.delete({ where: { id } })
+  }
+}

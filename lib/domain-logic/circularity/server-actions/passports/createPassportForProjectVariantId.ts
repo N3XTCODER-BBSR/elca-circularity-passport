@@ -1,10 +1,7 @@
 "use server"
 
+import { SafeParseReturnType } from "zod"
 import {
-  BuildingComponent,
-  Circularity,
-  CircularitySchema,
-  Material,
   MaterialGeometry,
   PassportData,
   PassportDataSchema,
@@ -17,7 +14,6 @@ import { createNewPassportForProjectVariantId } from "prisma/queries/db"
 import { getPassportRelevantDataForProjectVariantFromLegacyDb } from "prisma/queries/legacyDb"
 import { CalculateCircularityDataForLayerReturnType } from "../../utils/calculate-circularity-data-for-layer"
 import { getProjectCircularityIndexData } from "../getProjectCircularityIndex"
-import { SafeParseReturnType, ZodError } from "zod"
 
 const getCircularityForMaterial = (layer: CalculateCircularityDataForLayerReturnType) => {
   const parsedCircularityData = {

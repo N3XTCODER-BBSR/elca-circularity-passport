@@ -1,7 +1,13 @@
 import { createMockSession } from "app/(utils)/testUtils"
 import { UnauthorizedError } from "lib/errors"
-import { createUser, createVariant, deleteUserIfExists, deleteVariantIfExists } from "prisma/queries/utils"
-import getElcaComponentDataByLayerId from "./getElcaComponentDataByLayerId"
+import {
+  createProductWithComponent,
+  createUser,
+  deleteComponentIfExists,
+  deleteProductIfExists,
+  deleteUserIfExists,
+} from "prisma/queries/utils"
+import toggleExcludedProduct from "./toggleExcludedProject"
 import ensureUserIsAuthenticated from "../../../../lib/ensureAuthenticated"
 
 jest.mock("../../../../lib/ensureAuthenticated", () => jest.fn())
@@ -9,31 +15,26 @@ jest.mock("../../../../lib/ensureAuthenticated", () => jest.fn())
 // user ids
 const notExistingUserId = 1000
 const unauthorizedUserId = 1001
+const unauthorizedUsername = "unauthorizedUserName"
 const authorizedUserId = 2
 
-// user names
-const unauthorizedUsername = "unauthorizedUserName"
+// product ids
+const productIdNotInAuthorizedProject = 100
+const productId = 1
 
-// project ids
-const projectId = 1
+// component ids
+const componentIdNotInAuthorizedProject = 100
 
-// variant ids
-const variantId = 1
-const variantIdNotInProject = 1000
-
-// layer ids
-const layerIdNotInProject = 8
-const layerId = 1
-
-describe("getElcaComponentDataByLayerId", () => {
+describe("toggleExcludedProduct", () => {
   describe("authorization", () => {
     beforeAll(async () => {
       await createUser(unauthorizedUserId, unauthorizedUsername)
-      await createVariant(variantIdNotInProject, projectId)
+      await createProductWithComponent(productIdNotInAuthorizedProject, componentIdNotInAuthorizedProject)
     })
     afterAll(async () => {
       await deleteUserIfExists(unauthorizedUserId)
-      await deleteVariantIfExists(variantIdNotInProject)
+      await deleteProductIfExists(productIdNotInAuthorizedProject)
+      await deleteComponentIfExists(componentIdNotInAuthorizedProject)
     })
     beforeEach(() => {
       jest.clearAllMocks()
@@ -42,33 +43,25 @@ describe("getElcaComponentDataByLayerId", () => {
       const mockSession = createMockSession(notExistingUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(getElcaComponentDataByLayerId(variantId, projectId, layerId)).rejects.toThrow(UnauthorizedError)
+      await expect(toggleExcludedProduct(productId)).rejects.toThrow(UnauthorizedError)
     })
     it("should throw Unauthorized error when user is unauthorized to project", async () => {
       const mockSession = createMockSession(unauthorizedUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(getElcaComponentDataByLayerId(variantId, projectId, layerId)).rejects.toThrow(UnauthorizedError)
+      await expect(toggleExcludedProduct(productId)).rejects.toThrow(UnauthorizedError)
     })
-    it("should throw when user is authorized and layer id is not part of project", async () => {
+    it("should throw when user is authorized and product id is not part of project", async () => {
       const mockSession = createMockSession(authorizedUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(getElcaComponentDataByLayerId(variantId, projectId, layerIdNotInProject)).rejects.toThrow()
-    })
-    it("should throw when user is authorized and variant is not part of project", async () => {
-      const mockSession = createMockSession(authorizedUserId)
-      ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
-
-      await expect(getElcaComponentDataByLayerId(variantIdNotInProject, projectId, layerId)).rejects.toThrow()
+      await expect(toggleExcludedProduct(productIdNotInAuthorizedProject)).rejects.toThrow()
     })
     it("should return element component data when user is authorized and element component is part of project", async () => {
       const mockSession = createMockSession(authorizedUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      const result = await getElcaComponentDataByLayerId(variantId, projectId, layerId)
-
-      expect(result).toBeTruthy()
+      await expect(toggleExcludedProduct(productId)).resolves.toBeUndefined()
     })
   })
 })
