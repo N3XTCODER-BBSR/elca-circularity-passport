@@ -17,7 +17,6 @@ const prismaClientSingleton = () => {
     process.env.DATABASE_URL,
     process.env.POOL_MAX_CONN ? parseInt(process.env.POOL_MAX_CONN) : 5
   )
-  console.log(`Connecting to database: ${url}`)
   return new PrismaClient({ ...options, datasourceUrl: url })
 }
 
@@ -26,7 +25,6 @@ const prismaLegacyClientSingleton = () => {
     process.env.ELCA_LEGACY_DATABASE_URL,
     process.env.POOL_MAX_CONN ? parseInt(process.env.POOL_MAX_CONN) : 5
   )
-  console.log(`Connecting to database: ${url}`)
   return new PrismaLegacyClient({ ...options, datasourceUrl: url })
 }
 
