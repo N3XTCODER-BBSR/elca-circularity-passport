@@ -25,3 +25,28 @@ export const createUser = async (userId: number, userName: string) => {
     },
   })
 }
+
+/**
+ * create a project variant with the given id and project id
+ * @returns newly created project variant
+ */
+export const createVariant = async (variantId: number, projectId: number) => {
+  return prismaLegacySuperUser.elca_project_variants.create({
+    data: {
+      phase_id: 9,
+      id: variantId,
+      project_id: projectId,
+      name: "test variant",
+    },
+  })
+}
+
+/**
+ * delete project variant with the given id if it exists
+ */
+export const deleteVariantIfExists = async (variantId: number) => {
+  const variant = await prismaLegacySuperUser.elca_project_variants.findUnique({ where: { id: variantId } })
+  if (variant) {
+    await prismaLegacySuperUser.elca_project_variants.delete({ where: { id: variantId } })
+  }
+}

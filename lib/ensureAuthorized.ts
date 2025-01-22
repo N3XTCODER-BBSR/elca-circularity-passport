@@ -7,7 +7,7 @@ import { UnauthorizedError } from "./errors"
  * @param projectId
  */
 export const ensureUserAuthorizationToProject = async (userId: number, projectId: number) => {
-  const isAuthorized = isUserAuthorizedToProject(userId, projectId)
+  const isAuthorized = await isUserAuthorizedToProject(userId, projectId)
 
   if (!isAuthorized) {
     throw new UnauthorizedError()
