@@ -29,19 +29,16 @@ const options: Prisma.PrismaClientOptions | undefined =
 
 const prismaClientSingleton = () => {
   const url = modifyDatabaseUrl(process.env.DATABASE_URL)
-  console.log("url", url)
   return new PrismaClient({ ...options, datasourceUrl: url })
 }
 
 const prismaLegacyClientSingleton = () => {
   const url = modifyDatabaseUrl(process.env.ELCA_LEGACY_DATABASE_URL)
-  console.log("url", url)
   return new PrismaLegacyClient({ ...options, datasourceUrl: url })
 }
 
 const prismaLegacySuperUserClientSingleton = () => {
   const url = modifyDatabaseUrl(process.env.ELCA_LEGACY_DATABASE_URL_SUPERUSER_FOR_TESTING)
-  console.log("url", url)
   return new PrismaLegacyClient({
     ...options,
     datasourceUrl: url,
