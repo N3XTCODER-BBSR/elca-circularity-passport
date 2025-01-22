@@ -10,10 +10,6 @@ export async function updateSpecificEolScenario(
   specificScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined,
   specificEolUnbuiltTotalScenarioProofText: string
 ) {
-  if (!layerId) {
-    throw new Error("Invalid layerId")
-  }
-
   const session = await ensureUserIsAuthenticated()
 
   await ensureUserAuthorizationToElementComponent(Number(session.user.id), layerId)
