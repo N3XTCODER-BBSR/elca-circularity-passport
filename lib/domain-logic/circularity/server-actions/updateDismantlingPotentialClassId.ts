@@ -9,10 +9,6 @@ export async function updateDismantlingPotentialClassId(
   layerId: number,
   selectedDismantlingPotentialClassId: DismantlingPotentialClassId | null
 ) {
-  if (!layerId) {
-    throw new Error("Invalid layerId")
-  }
-
   const session = await ensureUserIsAuthenticated()
 
   await ensureUserAuthorizationToElementComponent(Number(session.user.id), layerId)
