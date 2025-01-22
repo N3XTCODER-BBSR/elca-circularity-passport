@@ -36,6 +36,7 @@ import DisturbingSubstances from "./DisturbingSubstances"
 import EOLScenarioEditButton from "./EOLScenarioEditButton"
 import EolScenarioInfoBox from "./EolScenarioInfoBox"
 import Modal from "../../../Modal"
+import { useRouter } from "next/navigation"
 
 type EolDataSectionProps = {
   layerDatacirculartyEnrichedLayerData: CalculateCircularityDataForLayerReturnType
@@ -152,6 +153,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
   const format = useFormatter()
   const queryClient = useQueryClient()
+  const router = useRouter()
 
   const updateDismantlingPotentialClassIdMutation = useMutation<void, Error, DismantlingPotentialClassId | null>({
     mutationFn: async (id: DismantlingPotentialClassId | null) => {
@@ -206,22 +208,25 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
   })
 
-  const setDismantlingPotentialClassId = (id: DismantlingPotentialClassId) => {
+  const setDismantlingPotentialClassId = async (id: DismantlingPotentialClassId) => {
     const newIdOrNull = layerData.dismantlingPotentialClassId === id ? null : id
-    updateDismantlingPotentialClassIdMutation.mutate(newIdOrNull)
+    await updateDismantlingPotentialClassIdMutation.mutate(newIdOrNull)
+    router.refresh()
   }
 
-  const handleUpdateDisturbingSubstance = (
+  const handleUpdateDisturbingSubstance = async (
     disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId
   ) => {
-    addOrUpdateDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection)
+    await addOrUpdateDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection)
+    router.refresh()
   }
 
-  const handleRemoveDisturbingSubstanceRow = (
+  const handleRemoveDisturbingSubstanceRow = async (
     disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId
   ) => {
     if (disturbingSubstanceSelection.id != null) {
-      removeDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection.id)
+      await removeDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection.id)
+      router.refresh()
     }
   }
 
@@ -255,8 +260,11 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
     setIsEolScenarioModalOpen(false)
   }
 
-  const handleSaveEolScenario = (selectedEolScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined) => {
-    updateDisturbingEolScenarioForS4Mutation.mutate({ selectedEolScenario })
+  const handleSaveEolScenario = async (
+    selectedEolScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
+  ) => {
+    await updateDisturbingEolScenarioForS4Mutation.mutate({ selectedEolScenario })
+    router.refresh()
     setIsEolScenarioModalOpen(false)
   }
 

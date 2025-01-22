@@ -8,6 +8,7 @@ import { EditButton, ErrorText } from "app/(components)/generic/layout-elements"
 import { updateTBaustoffProduct } from "lib/domain-logic/circularity/server-actions/updateTBaustoffProductOfLayer"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import Modal from "../../Modal"
+import { useRouter } from "next/navigation"
 
 type Option = {
   id: string
@@ -29,6 +30,7 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
   const [selectedIdStr, setSelectedIdStr] = useState<string>("")
   const isPending = useIsMutating() > 0
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
+  const router = useRouter()
 
   const queryClient = useQueryClient()
 
@@ -40,9 +42,10 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
     },
   })
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const selectedId = parseInt(selectedIdStr)
-    updateTBaustoffProductMutation.mutate(selectedId)
+    await updateTBaustoffProductMutation.mutate(selectedId)
+    router.refresh()
     setIsModalOpen(false)
   }
 

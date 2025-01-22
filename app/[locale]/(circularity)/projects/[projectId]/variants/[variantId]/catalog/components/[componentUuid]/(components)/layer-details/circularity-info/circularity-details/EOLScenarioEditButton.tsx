@@ -10,6 +10,7 @@ import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-type
 import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import EolScenarioInfoBox from "./EolScenarioInfoBox"
 import Modal from "../../../Modal"
+import { useRouter } from "next/navigation"
 
 type Option = {
   id: string
@@ -150,16 +151,18 @@ const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ layerData
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalPage, setModalPage] = useState(1)
+  const router = useRouter()
 
   const handleNextModalPage = () => {
     setModalPage(2)
   }
 
-  const handleSave = (
+  const handleSave = async (
     selectedScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined,
     proofText: string
   ) => {
-    updateSpecificEolScenarioMutation.mutate({ selectedEolScenario: selectedScenario, proofText })
+    await updateSpecificEolScenarioMutation.mutate({ selectedEolScenario: selectedScenario, proofText })
+    router.refresh()
 
     setIsModalOpen(false)
     setModalPage(1)

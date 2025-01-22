@@ -12,6 +12,7 @@ import updateExludedProduct from "lib/domain-logic/circularity/server-actions/to
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
 import CircularityInfo from "./circularity-info/CircularityInfo"
+import { useRouter } from "next/navigation"
 
 type ComponentLayerProps = {
   projectId: number
@@ -37,7 +38,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
 
   const unitsTranslations = useTranslations("Units")
   const t = useTranslations("Circularity.Components.Layers")
-
+  const router = useRouter()
   const format = useFormatter()
 
   const { data: currentLayerData, refetch: refetchLayerData } = layerDataQuery
@@ -49,8 +50,9 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     },
   })
 
-  const setProductIsExcluded = () => {
-    updateExcludedProductMutation.mutate(currentLayerData.component_id)
+  const setProductIsExcluded = async () => {
+    await updateExcludedProductMutation.mutate(currentLayerData.component_id)
+    router.refresh()
   }
 
   const optimisticProductIsExcluded = updateExcludedProductMutation.isPending
