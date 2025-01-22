@@ -132,6 +132,7 @@ export const upsertUserEnrichedProductDataWithEolScenario = async (
 }
 
 export const upsertUserEnrichedProductDataWithTBaustoffProduct = async (layerId: number, selectedId: number) => {
+  console.log("layerId, selectedId :>> ", layerId, selectedId)
   return await prisma.userEnrichedProductData.upsert({
     // TODO: add checks here for:
     // 1. user has access to the project and layer

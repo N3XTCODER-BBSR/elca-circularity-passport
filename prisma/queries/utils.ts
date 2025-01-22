@@ -1,4 +1,4 @@
-import { prismaLegacySuperUser } from "prisma/prismaClient"
+import { prisma, prismaLegacySuperUser } from "prisma/prismaClient"
 
 /**
  * delete user with the given id if it exists
@@ -72,6 +72,16 @@ export const createProductWithComponent = async (id: number, componentId: number
           },
         ],
       },
+    },
+  })
+}
+
+export async function createTBsProductDefinition(id: number) {
+  return await prisma.tBs_ProductDefinition.create({
+    data: {
+      id,
+      tBs_version: "2024-Q4",
+      name: "Acetyliertes Holz",
     },
   })
 }
