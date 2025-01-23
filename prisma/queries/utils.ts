@@ -99,6 +99,31 @@ export const createDisturbingSubstanceSelectionWithDependencies = async () => {
   })
 }
 
+export const removeDisturbingSubstanceSelectionWithDependenciesIfExist = async (
+  id: number,
+  elcaElementComponentId: number
+) => {
+  return prisma.$transaction(async (tx) => {
+    const existingDisturbingSubstance = await tx.disturbingSubstanceSelection.findUnique({
+      where: { id },
+    })
+    if (existingDisturbingSubstance) {
+      await tx.disturbingSubstanceSelection.delete({
+        where: { id },
+      })
+    }
+
+    const existingUserEnrichedProductData = await tx.userEnrichedProductData.findUnique({
+      where: { elcaElementComponentId },
+    })
+    if (existingUserEnrichedProductData) {
+      await tx.userEnrichedProductData.delete({
+        where: { elcaElementComponentId },
+      })
+    }
+  })
+}
+
 export async function createUserEnrichedProductData(
   elcaElementComponentId: number,
   tBaustoffProductSelectedByUser: boolean

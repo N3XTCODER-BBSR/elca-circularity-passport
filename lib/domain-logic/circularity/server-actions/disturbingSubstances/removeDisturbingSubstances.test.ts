@@ -1,5 +1,4 @@
 import { createMockSession } from "app/(utils)/testUtils"
-import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/types/domain-types"
 import { UnauthorizedError } from "lib/errors"
 import {
   createDisturbingSubstanceSelectionWithDependencies,
@@ -7,8 +6,9 @@ import {
   createVariant,
   deleteUserIfExists,
   deleteVariantIfExists,
+  removeDisturbingSubstanceSelectionWithDependenciesIfExist,
 } from "prisma/queries/utils"
-import { addOrUpdateDisturbingSubstanceSelection } from "./addOrUpdateDisturbingSubstance"
+import { removeDisturbingSubstanceSelection } from "./removeDisturbingSubstances"
 import ensureUserIsAuthenticated from "../../../../../lib/ensureAuthenticated"
 
 jest.mock("../../../../../lib/ensureAuthenticated", () => jest.fn())
@@ -33,37 +33,40 @@ const productIdNotInAuthorizedProject = 100
 const productId = 13
 
 let disturbingSubstanceSelectionId: number
+let elcaComponentId: number
 
-let disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId = {
-  disturbingSubstanceClassId: "S0",
-  disturbingSubstanceName: null,
-  id: null,
-  userEnrichedProductDataElcaElementComponentId: 6,
-}
+// let disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId = {
+//   disturbingSubstanceClassId: "S0",
+//   disturbingSubstanceName: null,
+//   id: null,
+//   userEnrichedProductDataElcaElementComponentId: 6,
+// }
 
-describe("addOrUpdateDisturbingSubstanceSelection", () => {
+describe("removeDisturbingSubstanceSelection", () => {
   describe("authorization", () => {
     beforeAll(async () => {
       await createUser(unauthorizedUserId, unauthorizedUsername)
       await createVariant(variantIdNotInProject, projectId)
-
-      const result = await createDisturbingSubstanceSelectionWithDependencies()
-      disturbingSubstanceSelectionId = result.id
-      disturbingSubstanceSelection = { ...disturbingSubstanceSelection, id: disturbingSubstanceSelectionId }
     })
     afterAll(async () => {
       await deleteUserIfExists(unauthorizedUserId)
       await deleteVariantIfExists(variantIdNotInProject)
     })
-    beforeEach(() => {
+    beforeEach(async () => {
       jest.clearAllMocks()
+      const result = await createDisturbingSubstanceSelectionWithDependencies()
+      disturbingSubstanceSelectionId = result.id
+      elcaComponentId = result.userEnrichedProductDataElcaElementComponentId
+    })
+    afterEach(async () => {
+      await removeDisturbingSubstanceSelectionWithDependenciesIfExist(disturbingSubstanceSelectionId, elcaComponentId)
     })
     it("should throw Unauthorized error when user is not existing", async () => {
       const mockSession = createMockSession(notExistingUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
-        addOrUpdateDisturbingSubstanceSelection(variantId, projectId, productId, disturbingSubstanceSelection)
+        removeDisturbingSubstanceSelection(variantId, projectId, productId, disturbingSubstanceSelectionId)
       ).rejects.toThrow(UnauthorizedError)
     })
     it("should throw Unauthorized error when user is unauthorized to project", async () => {
@@ -71,8 +74,16 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
-        addOrUpdateDisturbingSubstanceSelection(variantId, projectId, productId, disturbingSubstanceSelection)
+        removeDisturbingSubstanceSelection(variantId, projectId, productId, disturbingSubstanceSelectionId)
       ).rejects.toThrow(UnauthorizedError)
+    })
+    it("should throw when user is project owner and variant is not part of project", async () => {
+      const mockSession = createMockSession(projectOwnerId)
+      ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
+
+      await expect(
+        removeDisturbingSubstanceSelection(variantIdNotInProject, projectId, productId, disturbingSubstanceSelectionId)
+      ).rejects.toThrow()
     })
     it("should throw when product id is missing", async () => {
       const mockSession = createMockSession(projectOwnerId)
@@ -80,25 +91,12 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
 
       await expect(
         // @ts-expect-error test null
-        addOrUpdateDisturbingSubstanceSelection(variantId, projectId, null, disturbingSubstanceSelection)
+        removeDisturbingSubstanceSelection(variantId, projectId, null, disturbingSubstanceSelectionId)
       ).rejects.toThrow()
 
       await expect(
         // @ts-expect-error test undefined
-        addOrUpdateDisturbingSubstanceSelection(variantId, projectId, undefined, disturbingSubstanceSelection)
-      ).rejects.toThrow()
-    })
-    it("should throw when user is project owner and variant is not part of project", async () => {
-      const mockSession = createMockSession(projectOwnerId)
-      ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
-
-      await expect(
-        addOrUpdateDisturbingSubstanceSelection(
-          variantIdNotInProject,
-          projectId,
-          productId,
-          disturbingSubstanceSelection
-        )
+        removeDisturbingSubstanceSelection(variantId, projectId, undefined, disturbingSubstanceSelectionId)
       ).rejects.toThrow()
     })
     it("should thrown when product id is not a number", async () => {
@@ -107,7 +105,7 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
 
       await expect(
         // @ts-expect-error test string
-        addOrUpdateDisturbingSubstanceSelection(variantId, projectId, "invalidProductId", disturbingSubstanceSelection)
+        removeDisturbingSubstanceSelection(variantId, projectId, "invalidProductId", disturbingSubstanceSelectionId)
       ).rejects.toThrow()
     })
     it("should throw when user is project owner and product id is not part of project", async () => {
@@ -115,11 +113,11 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
-        addOrUpdateDisturbingSubstanceSelection(
+        removeDisturbingSubstanceSelection(
           variantId,
           projectId,
           productIdNotInAuthorizedProject,
-          disturbingSubstanceSelection
+          disturbingSubstanceSelectionId
         )
       ).rejects.toThrow()
     })
@@ -128,7 +126,7 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
-        addOrUpdateDisturbingSubstanceSelection(variantId, projectId, productId, disturbingSubstanceSelection)
+        removeDisturbingSubstanceSelection(variantId, projectId, productId, disturbingSubstanceSelectionId)
       ).resolves.toBeTruthy()
     })
   })
