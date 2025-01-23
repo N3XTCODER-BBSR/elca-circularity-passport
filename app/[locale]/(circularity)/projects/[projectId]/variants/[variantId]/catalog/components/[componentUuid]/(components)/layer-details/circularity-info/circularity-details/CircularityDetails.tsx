@@ -332,7 +332,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
                   )}
                   onClick={() => setDismantlingPotentialClassId(key as DismantlingPotentialClassId)}
                 >
-                  {value.translationKey}
+                  {t(`sections.dismantlingPotential.dismantlingClassNames.${value.translationKey}`)}
                 </button>
               )
             })}
