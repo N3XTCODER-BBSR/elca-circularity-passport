@@ -1,18 +1,20 @@
 "use server"
 
+import { z } from "zod"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
+import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import { upsertDisturbingEolScenarioForS4 } from "prisma/queries/db"
 
 export async function updateDisturbingEolScenarioForS4(
-  layerId: number,
+  productId: number,
   specificScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
 ) {
-  if (!layerId) {
-    throw new Error("Invalid layerId")
-  }
+  z.number().parse(productId)
 
-  await ensureUserIsAuthenticated()
+  const session = await ensureUserIsAuthenticated()
+  const userId = Number(session.user.id)
+  await ensureUserAuthorizationToElementComponent(userId, productId)
 
-  await upsertDisturbingEolScenarioForS4(layerId, specificScenario)
+  await upsertDisturbingEolScenarioForS4(productId, specificScenario)
 }
