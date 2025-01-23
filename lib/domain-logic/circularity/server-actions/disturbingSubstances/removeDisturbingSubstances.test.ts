@@ -33,8 +33,8 @@ const variantIdNotInProject = 1000
 const productIdNotInAuthorizedProject = 100
 const productId = 13
 
-let disturbingSubstanceSelectionId: number
-let elcaComponentId: number
+let disturbingSubstanceSelectionId: number | undefined
+let elcaComponentId: number | undefined
 
 describe("removeDisturbingSubstanceSelection", () => {
   describe("authorization", () => {
@@ -49,18 +49,30 @@ describe("removeDisturbingSubstanceSelection", () => {
     beforeEach(async () => {
       jest.clearAllMocks()
       const result = await createDisturbingSubstanceSelectionWithDependencies()
+      if (
+        !result ||
+        typeof result.id !== "number" ||
+        typeof result.userEnrichedProductDataElcaElementComponentId !== "number"
+      ) {
+        throw new Error(`Failed to create DisturbingSubstanceSelection. Received: ${JSON.stringify(result)}`)
+      }
       disturbingSubstanceSelectionId = result.id
       elcaComponentId = result.userEnrichedProductDataElcaElementComponentId
     })
     afterEach(async () => {
-      await removeDisturbingSubstanceSelectionWithDependenciesIfExist(disturbingSubstanceSelectionId, elcaComponentId)
+      if (typeof disturbingSubstanceSelectionId === "number" && typeof elcaComponentId === "number") {
+        await removeDisturbingSubstanceSelectionWithDependenciesIfExist(disturbingSubstanceSelectionId, elcaComponentId)
+      }
+
+      disturbingSubstanceSelectionId = undefined
+      elcaComponentId = undefined
     })
     it("should throw Unauthorized error when user is not existing", async () => {
       const mockSession = createMockSession(notExistingUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
-        removeDisturbingSubstanceSelection(variantId, projectId, productId, disturbingSubstanceSelectionId)
+        removeDisturbingSubstanceSelection(variantId, projectId, productId, disturbingSubstanceSelectionId!)
       ).rejects.toThrow(UnauthorizedError)
     })
     it("should throw Unauthorized error when user is unauthorized to project", async () => {
@@ -68,7 +80,7 @@ describe("removeDisturbingSubstanceSelection", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
-        removeDisturbingSubstanceSelection(variantId, projectId, productId, disturbingSubstanceSelectionId)
+        removeDisturbingSubstanceSelection(variantId, projectId, productId, disturbingSubstanceSelectionId!)
       ).rejects.toThrow(UnauthorizedError)
     })
     it("should throw when user is project owner and variant is not part of project", async () => {
@@ -76,7 +88,7 @@ describe("removeDisturbingSubstanceSelection", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
-        removeDisturbingSubstanceSelection(variantIdNotInProject, projectId, productId, disturbingSubstanceSelectionId)
+        removeDisturbingSubstanceSelection(variantIdNotInProject, projectId, productId, disturbingSubstanceSelectionId!)
       ).rejects.toThrow(expect.objectContaining({ code: "P2025" }))
     })
     it("should throw when product id is missing", async () => {
@@ -85,21 +97,21 @@ describe("removeDisturbingSubstanceSelection", () => {
 
       await expect(
         // @ts-expect-error test null
-        removeDisturbingSubstanceSelection(variantId, projectId, null, disturbingSubstanceSelectionId)
+        removeDisturbingSubstanceSelection(variantId, projectId, null, disturbingSubstanceSelectionId!)
       ).rejects.toThrow(ZodError)
 
       await expect(
         // @ts-expect-error test undefined
-        removeDisturbingSubstanceSelection(variantId, projectId, undefined, disturbingSubstanceSelectionId)
+        removeDisturbingSubstanceSelection(variantId, projectId, undefined, disturbingSubstanceSelectionId!)
       ).rejects.toThrow(ZodError)
     })
-    it("should thrown when product id is not a number", async () => {
+    it("should throw when product id is not a number", async () => {
       const mockSession = createMockSession(projectOwnerId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
         // @ts-expect-error test string
-        removeDisturbingSubstanceSelection(variantId, projectId, "invalidProductId", disturbingSubstanceSelectionId)
+        removeDisturbingSubstanceSelection(variantId, projectId, "invalidProductId", disturbingSubstanceSelectionId!)
       ).rejects.toThrow(ZodError)
     })
     it("should throw when user is project owner and product id is not part of project", async () => {
@@ -111,7 +123,7 @@ describe("removeDisturbingSubstanceSelection", () => {
           variantId,
           projectId,
           productIdNotInAuthorizedProject,
-          disturbingSubstanceSelectionId
+          disturbingSubstanceSelectionId!
         )
       ).rejects.toThrow(UnauthorizedError)
     })
@@ -120,7 +132,7 @@ describe("removeDisturbingSubstanceSelection", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
-        removeDisturbingSubstanceSelection(variantId, projectId, productId, disturbingSubstanceSelectionId)
+        removeDisturbingSubstanceSelection(variantId, projectId, productId, disturbingSubstanceSelectionId!)
       ).resolves.toBeTruthy()
     })
   })
