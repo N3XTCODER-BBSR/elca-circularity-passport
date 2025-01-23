@@ -11,6 +11,4 @@ yarn prisma:generate
 # NOTE: build step in scalingo is not automatically run, when scalingoPostbuild script is used
 yarn build
 
-# TODO: when running in real production, database should only be migrated, not reset and seeded
-# deletes the database, runs the migrations and seeds the database again
-npx prisma migrate reset --force
+npx prisma migrate deploy

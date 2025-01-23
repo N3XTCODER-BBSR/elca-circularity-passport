@@ -1,6 +1,6 @@
 "use server"
 
-import { SafeParseReturnType } from "zod"
+import { SafeParseReturnType, ZodIssue } from "zod"
 import {
   MaterialGeometry,
   PassportData,
@@ -9,6 +9,7 @@ import {
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
+import { InvalidParameterError as InvalidOrMissingParameterError } from "lib/errors"
 import { prismaLegacy } from "prisma/prismaClient"
 import { createNewPassportForProjectVariantId } from "prisma/queries/db"
 import { getPassportRelevantDataForProjectVariantFromLegacyDb } from "prisma/queries/legacyDb"
@@ -75,135 +76,172 @@ const createMaterialForComponent = async (
   }
 }
 
+type PassportGeneratorResponse = {
+  error: boolean
+  errorType?: "validation" | "generic"
+  details?: ZodIssue[] | string
+}
+
 // TODO: split this long function into smaller ones (this function should only be 'workflow orchestration' on high level)
-export async function createPassportForProjectVariantId(projectVariantId: string, projectId: string) {
-  // await new Promise((resolve) => setTimeout(resolve, 4000)) // just for testing the UI loading spinner
-  // throw new Error() // just for testing the UI error messsage implementation
-  if (!projectVariantId) {
-    throw new Error(`Invalid projectVariantId: ${projectVariantId}`)
-  }
+export async function createPassportForProjectVariantId(
+  projectVariantId: string,
+  projectId: string
+): Promise<PassportGeneratorResponse> {
+  try {
+    // await new Promise((resolve) => setTimeout(resolve, 4000)) // just for testing the UI loading spinner
+    // throw new Error() // just for testing the UI error messsage implementation
 
-  if (!projectId) {
-    throw new Error(`Invalid projectId: ${projectId}`)
-  }
+    if (!projectVariantId) {
+      throw new InvalidOrMissingParameterError("ProjectVariantId", projectVariantId)
+    }
 
-  const session = await ensureUserIsAuthenticated()
+    if (!projectId) {
+      throw new InvalidOrMissingParameterError("ProjectId", projectId)
+    }
 
-  await ensureUserAuthorizationToProject(Number(session.user.id), Number(projectVariantId))
+    const session = await ensureUserIsAuthenticated()
 
-  // TODO: move into DAL
-  const project = await prismaLegacy.projects.findUnique({
-    where: { id: Number(projectVariantId) },
-    include: {
-      project_variants_project_variants_project_idToprojects: true,
-      process_dbs: {
-        select: {
-          name: true,
+    await ensureUserAuthorizationToProject(Number(session.user.id), Number(projectVariantId))
+
+    // TODO: move into DAL
+    const project = await prismaLegacy.projects.findUnique({
+      where: { id: Number(projectId) },
+      include: {
+        project_variants_project_variants_project_idToprojects: true,
+        process_dbs: {
+          select: {
+            name: true,
+          },
         },
       },
-    },
-  })
-  if (!project) throw new Error("Project not found!")
-
-  const projectLifeTime = project.life_time
-
-  const uuid = crypto.randomUUID()
-
-  const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
-    await getProjectCircularityIndexData(Number(projectVariantId), Number(projectId))
-
-  const buildingComponents = await Promise.all(
-    circularityData.map(async (component, idx) => {
-      return {
-        uuid: component.element_uuid,
-        name: component.element_name,
-        costGroupDIN276: component.din_code,
-        materials: await Promise.all(
-          component.layers.map((l) =>
-            createMaterialForComponent(l, projectLifeTime, project.process_dbs.name, component.unit, component.quantity)
-          )
-        ),
-      }
     })
-  )
+    if (!project) throw new Error("Project not found!")
 
-  const totalBuildingMass = buildingComponents.reduce((acc, component) => {
-    return (
-      acc +
-      component.materials.reduce((acc2, material) => {
-        return acc2 + material.massInKg
-      }, 0)
+    const projectLifeTime = project.life_time
+
+    const uuid = crypto.randomUUID()
+
+    const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
+      await getProjectCircularityIndexData(Number(projectVariantId), Number(projectId))
+
+    const buildingComponents = await Promise.all(
+      circularityData.map(async (component, idx) => {
+        return {
+          uuid: component.element_uuid,
+          name: component.element_name,
+          costGroupDIN276: component.din_code,
+          materials: await Promise.all(
+            component.layers.map((l) =>
+              createMaterialForComponent(
+                l,
+                projectLifeTime,
+                project.process_dbs.name,
+                component.unit,
+                component.quantity
+              )
+            )
+          ),
+        }
+      })
     )
-  }, 0)
 
-  //   TODO: move version tag to a constant in the verioned schema/function module
-  const now = new Date()
-  const fiftyYearsFromNow = new Date()
-  fiftyYearsFromNow.setFullYear(now.getFullYear() + 50)
-  const nowAsStr = now.toISOString().split("T")[0]!
+    const totalBuildingMass = buildingComponents.reduce((acc, component) => {
+      return (
+        acc +
+        component.materials.reduce((acc2, material) => {
+          return acc2 + material.massInKg
+        }, 0)
+      )
+    }, 0)
 
-  const relevantPassportDataFromLegacyDb = await getPassportRelevantDataForProjectVariantFromLegacyDb(projectVariantId)
+    //   TODO: move version tag to a constant in the verioned schema/function module
+    const now = new Date()
+    const fiftyYearsFromNow = new Date()
+    fiftyYearsFromNow.setFullYear(now.getFullYear() + 50)
+    const nowAsStr = now.toISOString().split("T")[0]!
 
-  const address = `${relevantPassportDataFromLegacyDb?.project_locations?.street}, ${relevantPassportDataFromLegacyDb?.project_locations?.postcode} ${relevantPassportDataFromLegacyDb?.project_locations?.city} (${relevantPassportDataFromLegacyDb?.project_locations?.country})`
+    const relevantPassportDataFromLegacyDb =
+      await getPassportRelevantDataForProjectVariantFromLegacyDb(projectVariantId)
 
-  const passportInputData = {
-    uuid,
-    date: nowAsStr,
-    authorName: "PLACEHOLDER",
-    generatorSoftware: {
-      name: "BuildingPassportGen",
-      //   TODO: move this out into central place (probably most of the to generate fields)
-      version: "0.0.1",
-      url: "bauteileditor.de",
-    },
-    elcaProjectId: String(relevantPassportDataFromLegacyDb?.project_id),
-    projectName: relevantPassportDataFromLegacyDb?.name,
-    dataSchemaVersion: "PLACEHOLDER",
-    buildingBaseData: {
-      buildingStructureId: {
-        "ALKIS-ID": "PLACEHOLDER",
-        Identifikationsnummer: "PLACEHOLDER",
-        Aktenzeichen: "PLACEHOLDER",
-        "Lokale Gebäude-ID": "PLACEHOLDER",
-        "Nationale UUID": "PLACEHOLDER",
+    const address = `${relevantPassportDataFromLegacyDb?.project_locations?.street}, ${relevantPassportDataFromLegacyDb?.project_locations?.postcode} ${relevantPassportDataFromLegacyDb?.project_locations?.city} (${relevantPassportDataFromLegacyDb?.project_locations?.country})`
+
+    const passportInputData = {
+      uuid,
+      date: nowAsStr,
+      authorName: "PLACEHOLDER",
+      generatorSoftware: {
+        name: "BuildingPassportGen",
+        //   TODO: move this out into central place (probably most of the to generate fields)
+        version: "0.0.1",
+        url: "bauteileditor.de",
       },
-      coordinates: {
-        latitude: 1111111111111111,
-        longitude: 1111111111111111,
+      elcaProjectId: String(relevantPassportDataFromLegacyDb?.project_id),
+      projectName: relevantPassportDataFromLegacyDb?.name,
+      dataSchemaVersion: "PLACEHOLDER",
+      buildingBaseData: {
+        buildingStructureId: {
+          "ALKIS-ID": "PLACEHOLDER",
+          Identifikationsnummer: "PLACEHOLDER",
+          Aktenzeichen: "PLACEHOLDER",
+          "Lokale Gebäude-ID": "PLACEHOLDER",
+          "Nationale UUID": "PLACEHOLDER",
+        },
+        coordinates: {
+          latitude: 1111111111111111,
+          longitude: 1111111111111111,
+        },
+        address,
+        buildingPermitYear: 1111111111111111,
+        buildingCompletionYear: relevantPassportDataFromLegacyDb?.created.getFullYear() || 1111111111111111,
+        buildingType: "PLACEHOLDER",
+        numberOfUpperFloors: 1111111111111111,
+        numberOfBasementFloors: 1111111111111111,
+        plotArea: relevantPassportDataFromLegacyDb?.project_constructions?.property_size?.toNumber(),
+        nrf: relevantPassportDataFromLegacyDb?.project_constructions?.net_floor_space?.toNumber(),
+        bgf: Number(relevantPassportDataFromLegacyDb?.project_constructions?.gross_floor_space),
+        bri: 1111111111111111,
+        totalBuildingMass,
       },
-      address,
-      buildingPermitYear: 1111111111111111,
-      buildingCompletionYear: relevantPassportDataFromLegacyDb?.created.getFullYear() || 1111111111111111,
-      buildingType: "PLACEHOLDER",
-      numberOfUpperFloors: 1111111111111111,
-      numberOfBasementFloors: 1111111111111111,
-      plotArea: relevantPassportDataFromLegacyDb?.project_constructions?.property_size?.toNumber(),
-      nrf: relevantPassportDataFromLegacyDb?.project_constructions?.net_floor_space?.toNumber(),
-      bgf: Number(relevantPassportDataFromLegacyDb?.project_constructions?.gross_floor_space),
-      bri: 1111111111111111,
-      totalBuildingMass,
-    },
-    buildingComponents,
+      buildingComponents,
+    }
+
+    // TODO: replace 'any' here with a more specific type to at least cover some basic/obvious type issues (like presence of a field) at compile time already
+    const parsedPassportData: SafeParseReturnType<any, PassportData> = PassportDataSchema.safeParse(passportInputData)
+    if (!parsedPassportData.success) {
+      console.error("Data is invalid:", parsedPassportData.error.errors)
+      return {
+        error: true,
+        errorType: "validation",
+        details: parsedPassportData.error.errors,
+      }
+    }
+
+    await createNewPassportForProjectVariantId(
+      uuid,
+      String(projectVariantId),
+      // TODO: set the version tag in a clean way
+      "v0.0.1",
+      parsedPassportData.data,
+      now,
+      fiftyYearsFromNow
+    )
+
+    return {
+      error: false,
+    }
+  } catch (e) {
+    if (e instanceof InvalidOrMissingParameterError) {
+      return {
+        error: true,
+        errorType: "generic",
+        details: e.message,
+      }
+    } else {
+      return {
+        error: true,
+        errorType: "generic",
+        details: "An unknown error happened",
+      }
+    }
   }
-
-  // TODO: replace 'any' here with a more specific type to at least cover some basic/obvious type issues (like presence of a field) at compile time already
-  const parsedPassportData: SafeParseReturnType<any, PassportData> = PassportDataSchema.safeParse(passportInputData)
-  if (parsedPassportData.success) {
-    console.log("Data is valid:", parsedPassportData.data)
-  } else {
-    console.error("Data is invalid:", parsedPassportData.error.errors)
-    throw new Error("Invalid data for passport")
-  }
-
-  await createNewPassportForProjectVariantId(
-    uuid,
-    String(projectVariantId),
-    // TODO: set the version tag in a clean way
-    "v0.0.1",
-    parsedPassportData.data,
-    now,
-    fiftyYearsFromNow
-  )
-
-  return true
 }

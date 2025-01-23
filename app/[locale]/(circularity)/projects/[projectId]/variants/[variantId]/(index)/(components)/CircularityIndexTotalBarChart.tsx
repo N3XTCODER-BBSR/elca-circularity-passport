@@ -1,5 +1,5 @@
 import { ResponsiveBar } from "@nivo/bar"
-import { useFormatter } from "next-intl"
+import { useFormatter, useTranslations } from "next-intl"
 import { circularityBarCharColorMapping } from "constants/styleConstants"
 
 const CircularityIndexTotalBarChart = ({
@@ -10,6 +10,7 @@ const CircularityIndexTotalBarChart = ({
   margin: { top: number; right: number; bottom: number; left: number }
 }) => {
   const format = useFormatter()
+  const t = useTranslations("CircularityTool.sections.overview.moduleTotal")
 
   return (
     <>

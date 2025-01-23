@@ -1,7 +1,7 @@
 import { ArrowPathIcon, ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
 import { useIsMutating, useMutation, useQueryClient } from "@tanstack/react-query"
-import { useTranslations } from "next-intl"
+import { useFormatter, useTranslations } from "next-intl"
 import { useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { AccordionItemFull } from "app/(components)/generic/AccordionItem"
@@ -36,12 +36,25 @@ import DisturbingSubstances from "./DisturbingSubstances"
 import EOLScenarioEditButton from "./EOLScenarioEditButton"
 import EolScenarioInfoBox from "./EolScenarioInfoBox"
 import Modal from "../../../Modal"
+import { useRouter } from "next/navigation"
 
 type EolDataSectionProps = {
   layerDatacirculartyEnrichedLayerData: CalculateCircularityDataForLayerReturnType
 }
 
-const formatEolUnbuiltData = (data: EolUnbuiltData | null) => {
+// Hint: we defined this custom type here because of tsc complaining about not finding the actual type 'Formatter' from the next-intl library.
+type Formatter = {
+  number: (
+    num: number,
+    config: {
+      maximumFractionDigits: number
+    }
+  ) => string
+}
+
+type Translation = (text: string) => string
+
+const formatEolUnbuiltData = (data: EolUnbuiltData | null, format: Formatter, t: Translation) => {
   if (!data) {
     return []
   }
@@ -51,43 +64,54 @@ const formatEolUnbuiltData = (data: EolUnbuiltData | null) => {
 
   return [
     {
-      key: `EOL Klasse ${keySuffix}`, // TODO: i18n
+      key: `${t("EolUnbuilt.Class.class")} ${keySuffix}`, // TODO: i18n
       value: eolClassName,
     },
     {
-      key: `EOL Punkte ${keySuffix}`, // TODO: i18n
-      value: eolPoints,
+      key: `${t("EolUnbuilt.Points.points")} ${keySuffix}`, // TODO: i18n
+      value: format.number(eolPoints, { maximumFractionDigits: 2 }),
     },
   ]
 }
 
 const EolDataSection = ({ layerDatacirculartyEnrichedLayerData }: EolDataSectionProps) => {
-  const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
+  const t = useTranslations("Circularity.Components.Layers.CircularityInfo.EolDataSection")
+  const format = useFormatter()
   const isPending = useIsMutating() > 0
 
   if (layerDatacirculartyEnrichedLayerData.tBaustoffProductData == null) {
     return null
   }
   // TODO: update
-  const eolUnbuiltData = formatEolUnbuiltData(layerDatacirculartyEnrichedLayerData.eolUnbuilt)
+  const eolUnbuiltData = formatEolUnbuiltData(layerDatacirculartyEnrichedLayerData.eolUnbuilt, format, t)
   const eolUnbuiltDataSecondary = [
     // POTENTIAL
     {
-      key: "EOL Klasse (Potenzial)", // TODO: i18n
+      key: t("EolUnbuilt.Class.potential"),
       value: layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltPotentialClassName,
     },
     {
-      key: "EOL Punkte (Potenzial)", // TODO: i18n
-      value: layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltPotentialPoints,
+      key: t("EolUnbuilt.Points.potential"),
+      value:
+        layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltPotentialPoints != null
+          ? format.number(layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData.eolUnbuiltPotentialPoints, {
+              maximumFractionDigits: 2,
+            })
+          : "-",
     },
     // REAL
     {
-      key: "EOL Klasse (Real)", // TODO: i18n
+      key: t("EolUnbuilt.Class.real"),
       value: layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltRealClassName,
     },
     {
-      key: "EOL Punkte (Real)", // TODO: i18n
-      value: layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltRealPoints,
+      key: t("EolUnbuilt.Points.real"),
+      value:
+        layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltRealPoints != null
+          ? format.number(layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltRealPoints, {
+              maximumFractionDigits: 2,
+            })
+          : "-",
     },
   ]
 
@@ -98,7 +122,7 @@ const EolDataSection = ({ layerDatacirculartyEnrichedLayerData }: EolDataSection
       <div className="flex flex-row justify-between">
         <div className="w-1/3">
           <Heading4>
-            {t("CircularityPotential.title")} - Unverbaut <Required />
+            {t("title")} <Required />
           </Heading4>
         </div>
         <div className="flex w-2/3 flex-row items-center justify-end">
@@ -111,7 +135,7 @@ const EolDataSection = ({ layerDatacirculartyEnrichedLayerData }: EolDataSection
       <SideBySideDescriptionListsWithHeadline justifyEnd data={eolUnbuiltData} className="md:border" />
       {showDetailsAccordion && (
         <Accordion transition transitionTimeout={200}>
-          <AccordionItemFull header={<span className="text-xs">Details</span>}>
+          <AccordionItemFull header={<span className="text-xs">{t("details")}</span>}>
             <SideBySideDescriptionListsWithHeadline justifyEnd data={eolUnbuiltDataSecondary} className="md:border" />
           </AccordionItemFull>
         </Accordion>
@@ -127,8 +151,9 @@ type CircularityDetailsProps = {
 }
 const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDetailsProps) => {
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
-
+  const format = useFormatter()
   const queryClient = useQueryClient()
+  const router = useRouter()
 
   const updateDismantlingPotentialClassIdMutation = useMutation<void, Error, DismantlingPotentialClassId | null>({
     mutationFn: async (id: DismantlingPotentialClassId | null) => {
@@ -183,22 +208,25 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
   })
 
-  const setDismantlingPotentialClassId = (id: DismantlingPotentialClassId) => {
+  const setDismantlingPotentialClassId = async (id: DismantlingPotentialClassId) => {
     const newIdOrNull = layerData.dismantlingPotentialClassId === id ? null : id
-    updateDismantlingPotentialClassIdMutation.mutate(newIdOrNull)
+    await updateDismantlingPotentialClassIdMutation.mutate(newIdOrNull)
+    router.refresh()
   }
 
-  const handleUpdateDisturbingSubstance = (
+  const handleUpdateDisturbingSubstance = async (
     disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId
   ) => {
-    addOrUpdateDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection)
+    await addOrUpdateDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection)
+    router.refresh()
   }
 
-  const handleRemoveDisturbingSubstanceRow = (
+  const handleRemoveDisturbingSubstanceRow = async (
     disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId
   ) => {
     if (disturbingSubstanceSelection.id != null) {
-      removeDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection.id)
+      await removeDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection.id)
+      router.refresh()
     }
   }
 
@@ -209,13 +237,15 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
 
   const eolUnbuiltDataSecondary = [
     {
-      key: "Klasse Rückbau", //t("..."),
+      key: t("RebuildSection.rebuildClass"),
       value: layerData.dismantlingPotentialClassId ?? "-",
     },
     {
-      key: "Punkte Rückbau", //t("..."),
+      key: t("RebuildSection.rebuildPoints"),
       value: layerData.dismantlingPotentialClassId
-        ? dismantlingPotentialClassIdMapping[layerData.dismantlingPotentialClassId].points
+        ? format.number(dismantlingPotentialClassIdMapping[layerData.dismantlingPotentialClassId].points, {
+            maximumFractionDigits: 2,
+          })
         : "-",
     },
   ]
@@ -230,19 +260,22 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
     setIsEolScenarioModalOpen(false)
   }
 
-  const handleSaveEolScenario = (selectedEolScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined) => {
-    updateDisturbingEolScenarioForS4Mutation.mutate({ selectedEolScenario })
+  const handleSaveEolScenario = async (
+    selectedEolScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
+  ) => {
+    await updateDisturbingEolScenarioForS4Mutation.mutate({ selectedEolScenario })
+    router.refresh()
     setIsEolScenarioModalOpen(false)
   }
 
   const eolBuiltData = [
     {
-      key: "EoL Klasse (verbaut)", //t("..."),
-      value: layerData.eolBuilt?.className,
+      key: t("EolBuiltSection.class"), //t("..."),
+      value: layerData.eolBuilt?.className ?? "-",
     },
     {
-      key: "EoL Punkte (verbaut)", //t("..."),
-      value: layerData.eolBuilt?.points ?? "-",
+      key: t("EolBuiltSection.points"), //t("..."),
+      value: layerData.eolBuilt?.points ? format.number(layerData.eolBuilt?.points, { maximumFractionDigits: 2 }) : "-",
     },
   ]
 
@@ -257,18 +290,22 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
                 <ArrowPathIcon className="size-5 text-white" aria-hidden="true" />
               </div>
 
-              <p className="">Zirkularitätsindex</p>
+              <p className="">{t("circularityIndex")}</p>
             </h4>
           </StyledDt>
           <StyledDd justifyEnd>
-            <b>{layerData.circularityIndex}</b>
+            <b>
+              {layerData.circularityIndex
+                ? format.number(layerData.circularityIndex, { maximumFractionDigits: 2 })
+                : "-"}
+            </b>
           </StyledDd>
         </div>
       </Area>
       <Area>
         <div className="flex flex-row justify-between">
           <Heading4>
-            Rückbaupotential <Required />
+            {t("RebuildSection.title")} <Required />
           </Heading4>
           {layerData.dismantlingPotentialClassId === null && (
             <ErrorText className="mr-4">Please select the rebuild potential</ErrorText>
@@ -308,14 +345,12 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
       <Area>
         <div className="flex flex-col justify-between">
           <Heading4>
-            {t("CircularityPotential.title")} - Verbaut <Required />
+            {t("EolBuiltSection.title")} <Required />
           </Heading4>
           {layerData.disturbingSubstances.noDisturbingSubstancesOrOnlyNullClassesSelected && (
             <div className="flex items-center text-red" role="alert">
               <ExclamationTriangleIcon className="mr-2 size-5" aria-hidden="true" />
-              <p className="text-sm">
-                Wählen Sie bitte Störstoffe aus, wenn es keine gibt, wählen Sie &apos;Keine Störstoffe - S0&apos;.
-              </p>
+              <p className="text-sm">{t("EolBuiltSection.emptyState")}</p>
             </div>
           )}
           <div className="flex w-full flex-row items-center justify-between">
@@ -330,14 +365,14 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
         {layerData.disturbingSubstances.hasS4DisturbingSubstance && (
           <Area>
             <Heading4>
-              EOL Scenario in case of S4
+              {t("EolBuiltSection.eolScenarioS4")}
               <Required />
             </Heading4>
             {layerData.disturbingEolScenarioForS4 == null ? (
               <>
                 <div className="flex items-center text-red" role="alert">
                   <ExclamationTriangleIcon className="mr-2 size-5" aria-hidden="true" />
-                  <p className="text-sm">Ein neues EOL-Szenario manuell auswählen</p>
+                  <p className="text-sm">{t("EolBuiltSection.selectEolScenario")}</p>
                 </div>
 
                 <div className="mt-4">
@@ -346,13 +381,13 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
                     className="text-indigo-600 hover:text-indigo-800"
                     onClick={handleOpenEolScenarioModal}
                   >
-                    + EOL Scenario verbaut (specific)
+                    {t("EolBuiltSection.overrideEolScenarioButton")}
                   </button>
                 </div>
               </>
             ) : (
               <div className="flex flex-row justify-between">
-                <div>EoL Scenario Built (Specific)</div>
+                <div>{t("EolBuiltSection.eolScenarioBuiltSpecific")}</div>
                 <div className="flex flex-row justify-between">
                   <div className="mx-4">{EOLScenarioMap[layerData.disturbingEolScenarioForS4]}</div>
                   <div>

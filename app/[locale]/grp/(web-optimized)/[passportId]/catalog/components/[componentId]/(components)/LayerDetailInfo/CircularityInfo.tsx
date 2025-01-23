@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl"
+import { useFormatter, useTranslations } from "next-intl"
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import getEolClassNameByPoints from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
 import { Circularity } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
@@ -6,8 +6,15 @@ import { Circularity } from "lib/domain-logic/grp/data-schema/versions/v1/passpo
 const CircularityInfo = ({ circularity }: { circularity?: Circularity }) => {
   const eolClass = getEolClassNameByPoints(circularity?.eolPoints)
   const t = useTranslations("Grp.Web.sections.detailPage.componentLayer.circularity")
+  const format = useFormatter()
   const resourceInfoKeyValues = [
-    { key: t("circularityIndex"), value: circularity?.circularityIndex },
+    {
+      key: t("circularityIndex"),
+      value:
+        circularity?.circularityIndex != null
+          ? format.number(circularity.circularityIndex, { maximumFractionDigits: 2 })
+          : "-",
+    },
     { key: t("eolClass"), value: eolClass },
     { key: t("dismantlingClass"), value: circularity?.dismantlingPotentialClassId },
     { key: t("version"), value: circularity?.methodologyVersion },

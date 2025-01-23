@@ -227,7 +227,7 @@ const BuiltS4SpecificScenarioModal = ({
           value={selectedScenario || ""}
           onChange={(e) => setSelectedScenario(e.target.value as TBs_ProductDefinitionEOLCategoryScenario)}
         >
-          <option value="">[Select an EOL Scenario]</option>
+          <option value="">[{t("selectEolScenario")}]</option>
           {options.map((option) => (
             <option key={option.id} value={option.id}>
               {option.value}

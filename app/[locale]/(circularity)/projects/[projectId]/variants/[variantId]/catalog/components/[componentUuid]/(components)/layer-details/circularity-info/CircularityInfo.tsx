@@ -37,12 +37,13 @@ const CircularityInfo = (props: CircularityInfoProps) => {
     <div className="p-4">
       <div className="flex flex-row">
         <Heading3>{t("title")}</Heading3>
-        {!circulartyEnrichedLayerData.circularityIndex && <Badge>Unvollständig</Badge>}
+        {!circulartyEnrichedLayerData.circularityIndex && <Badge>{t("incomplete")}</Badge>}
       </div>
       <Area>
         <TwoColGrid>
           <StyledDt>
-            tBaustoff Baustoff <Required />
+            {t("tBaustoffMaterial")}
+            <Required />
           </StyledDt>
           <StyledDd justifyEnd>
             <TBaustoffProductNameOrSelectorButton layerData={circulartyEnrichedLayerData} options={tBaustoffProducts} />

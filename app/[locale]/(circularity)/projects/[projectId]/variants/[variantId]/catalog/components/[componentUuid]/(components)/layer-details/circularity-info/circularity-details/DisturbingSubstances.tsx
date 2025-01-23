@@ -155,6 +155,7 @@ const DisturbingSubstances = ({
   )
 
   const localIdCounter = useRef(0)
+  const t = useTranslations("Circularity.Components.Layers.CircularityInfo.EolBuiltSection")
 
   useEffect(() => {
     let newDisturbingSubstanceRows: DisturbingSubstanceSelectionWithNullabelIdAndLocalId[] = []
@@ -232,7 +233,7 @@ const DisturbingSubstances = ({
   return (
     <Area>
       <Heading4>
-        Verunreinigungen <Required />
+        {t("disturbingSubstances")} <Required />
       </Heading4>
       {disturbingSubstanceRows.map((row, index) => (
         <DisturbingSubstanceRow
@@ -254,7 +255,7 @@ const DisturbingSubstances = ({
           className="text-indigo-600 hover:text-indigo-800"
           onClick={() => setShowNewEmptyRow(true)}
         >
-          + Neue Verunreinigung
+          + {t("newSubstance")}
         </button>
       )}
     </Area>

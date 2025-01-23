@@ -12,6 +12,7 @@ import updateExludedProduct from "lib/domain-logic/circularity/server-actions/to
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
 import CircularityInfo from "./circularity-info/CircularityInfo"
+import { useRouter } from "next/navigation"
 
 type ComponentLayerProps = {
   projectId: number
@@ -36,7 +37,8 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
   })
 
   const unitsTranslations = useTranslations("Units")
-
+  const t = useTranslations("Circularity.Components.Layers")
+  const router = useRouter()
   const format = useFormatter()
 
   const { data: currentLayerData, refetch: refetchLayerData } = layerDataQuery
@@ -48,8 +50,9 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     },
   })
 
-  const setProductIsExcluded = () => {
-    updateExcludedProductMutation.mutate(currentLayerData.component_id)
+  const setProductIsExcluded = async () => {
+    await updateExcludedProductMutation.mutate(currentLayerData.component_id)
+    router.refresh()
   }
 
   const optimisticProductIsExcluded = updateExcludedProductMutation.isPending
@@ -70,7 +73,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     //   value: currentLayerData.quantity,
     // },
     {
-      key: "Masse",
+      key: t("mass"),
       value: currentLayerData.mass
         ? `${format.number(currentLayerData.mass, {
             minimumFractionDigits: 0,
@@ -83,7 +86,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     //   value: currentLayerData.layer_size || "N/A",
     // },
     {
-      key: "Volumen",
+      key: t("volume"),
       value:
         currentLayerData.volume != null
           ? `${format.number(currentLayerData.volume, {
@@ -113,7 +116,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
           </h2>
         </div>
         <div className="flex items-center gap-1 text-sm font-medium leading-5 sm:gap-2">
-          <div>Excluded from calculation</div>
+          <div>{t("excludedFromCalculation")}</div>
           <Toggle
             isEnabled={optimisticProductIsExcluded}
             setEnabled={setProductIsExcluded}

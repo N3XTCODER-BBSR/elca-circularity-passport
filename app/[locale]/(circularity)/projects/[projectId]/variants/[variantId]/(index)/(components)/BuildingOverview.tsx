@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { getTranslations } from "next-intl/server"
 import { Link } from "i18n/routing"
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/server-actions/getProjectCircularityIndex"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
@@ -78,12 +79,12 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
   )
 
   const catalogPath = `/projects/${projectId}/variants/${variantId}/catalog`
-
+  const t = await getTranslations("CircularityTool.sections.overview")
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
-          Zirkularitätsindex
+          {t("title")}
         </h1>
       </div>
       <h2 className="max-w-[50%]">
@@ -98,13 +99,10 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
             className="mb-6 inline-block size-28"
             alt={"missing-circularity-data"}
           />
-          <h3 className="mx-2 mb-8 text-2xl font-semibold">Data Needed to Display Circularity Index</h3>
-          <div>
-            To view the circularity index, please ensure that each building product is either complete or excluded from
-            calculation. Once this information is updated, your data will be visualized here.
-          </div>
+          <h3 className="mx-2 mb-8 text-2xl font-semibold">{t("emptyState.title")}</h3>
+          <div>{t("emptyState.body")}</div>
           <Link href={catalogPath} className="mt-8 inline-block rounded-md bg-blue-600 px-2 py-1 text-white">
-            Update Building Data
+            {t("emptyState.cta")}
           </Link>
         </div>
       ) : (
