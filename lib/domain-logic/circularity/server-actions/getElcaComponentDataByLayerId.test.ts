@@ -22,8 +22,8 @@ const variantId = 1
 const variantIdNotInProject = 1000
 
 // layer ids
-const layerIdNotInProject = 8
-const layerId = 1
+const productIdNotInProject = 8
+const productId = 1
 
 describe("getElcaComponentDataByLayerId", () => {
   describe("authorization", () => {
@@ -42,31 +42,35 @@ describe("getElcaComponentDataByLayerId", () => {
       const mockSession = createMockSession(notExistingUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(getElcaComponentDataByLayerId(variantId, projectId, layerId)).rejects.toThrow(UnauthorizedError)
+      await expect(getElcaComponentDataByLayerId(variantId, projectId, productId)).rejects.toThrow(UnauthorizedError)
     })
     it("should throw Unauthorized error when user is unauthorized to project", async () => {
       const mockSession = createMockSession(unauthorizedUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(getElcaComponentDataByLayerId(variantId, projectId, layerId)).rejects.toThrow(UnauthorizedError)
+      await expect(getElcaComponentDataByLayerId(variantId, projectId, productId)).rejects.toThrow(UnauthorizedError)
     })
     it("should throw when user is authorized and layer id is not part of project", async () => {
       const mockSession = createMockSession(authorizedUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(getElcaComponentDataByLayerId(variantId, projectId, layerIdNotInProject)).rejects.toThrow()
+      await expect(getElcaComponentDataByLayerId(variantId, projectId, productIdNotInProject)).rejects.toThrow(
+        expect.objectContaining({ code: "P2025" })
+      )
     })
-    it("should throw when user is authorized and variant is not part of project", async () => {
+    it("should throw when user is project owner and variant is not part of project", async () => {
       const mockSession = createMockSession(authorizedUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(getElcaComponentDataByLayerId(variantIdNotInProject, projectId, layerId)).rejects.toThrow()
+      await expect(getElcaComponentDataByLayerId(variantIdNotInProject, projectId, productId)).rejects.toThrow(
+        expect.objectContaining({ code: "P2025" })
+      )
     })
     it("should return element component data when user is authorized and element component is part of project", async () => {
       const mockSession = createMockSession(authorizedUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      const result = await getElcaComponentDataByLayerId(variantId, projectId, layerId)
+      const result = await getElcaComponentDataByLayerId(variantId, projectId, productId)
 
       expect(result).toBeTruthy()
     })

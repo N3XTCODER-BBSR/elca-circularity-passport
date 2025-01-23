@@ -1,3 +1,4 @@
+import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
 import { UnauthorizedError } from "lib/errors"
 import {
@@ -58,19 +59,23 @@ describe("updateSpecificEolScenario", () => {
         UnauthorizedError
       )
     })
-    it("should throw when product id is missing", async () => {
+    it("should throw when product id is null", async () => {
       const mockSession = createMockSession(projectOwnerId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
         // @ts-expect-error test null
         updateSpecificEolScenario(null, newSpecificEolScenario, newProofText)
-      ).rejects.toThrow()
+      ).rejects.toThrow(ZodError)
+    })
+    it("should throw when product id is undefined", async () => {
+      const mockSession = createMockSession(projectOwnerId)
+      ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
         // @ts-expect-error test undefined
         updateSpecificEolScenario(undefined, newSpecificEolScenario, newProofText)
-      ).rejects.toThrow()
+      ).rejects.toThrow(ZodError)
     })
     it("should thrown when product id is not a number", async () => {
       const mockSession = createMockSession(projectOwnerId)
@@ -79,7 +84,7 @@ describe("updateSpecificEolScenario", () => {
       await expect(
         // @ts-expect-error test string
         updateSpecificEolScenario("invalidProductId", newSpecificEolScenario, newProofText)
-      ).rejects.toThrow()
+      ).rejects.toThrow(ZodError)
     })
     it("should throw when user is project owner and product id is not part of project", async () => {
       const mockSession = createMockSession(projectOwnerId)
@@ -87,7 +92,7 @@ describe("updateSpecificEolScenario", () => {
 
       await expect(
         updateSpecificEolScenario(productIdNotInAuthorizedProject, newSpecificEolScenario, newProofText)
-      ).rejects.toThrow()
+      ).rejects.toThrow(UnauthorizedError)
     })
     it("should return undefined when the user is owner of the project", async () => {
       const mockSession = createMockSession(projectOwnerId)

@@ -1,5 +1,6 @@
 "use server"
 
+import { z } from "zod"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
 import {
@@ -7,15 +8,14 @@ import {
   upsertUserEnrichedProductDataWithTBaustoffProduct,
 } from "prisma/queries/db"
 
-export async function updateTBaustoffProduct(layerId: number, selectedId: number) {
-  if (!layerId || !selectedId) {
-    throw new Error("Invalid layerId or selectedId")
-  }
+export const updateTBaustoffProduct = async (productId: number, selectedId: number) => {
+  z.number().parse(productId)
+  z.number().parse(selectedId)
 
   const session = await ensureUserIsAuthenticated()
 
-  await ensureUserAuthorizationToElementComponent(Number(session.user.id), layerId)
+  await ensureUserAuthorizationToElementComponent(Number(session.user.id), productId)
 
-  await upsertUserEnrichedProductDataWithTBaustoffProduct(layerId, selectedId)
-  await deleteDisturbingSubstanceSelectionsByLayerId(layerId)
+  await upsertUserEnrichedProductDataWithTBaustoffProduct(productId, selectedId)
+  await deleteDisturbingSubstanceSelectionsByLayerId(productId)
 }

@@ -1,5 +1,6 @@
 "use server"
 
+import { z } from "zod"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
@@ -9,13 +10,17 @@ import { fetchElcaComponentById } from "./utils/getElcaComponentDataByLayerIdAnd
 const getElcaComponentDataByLayerId = async (
   variantId: number,
   projectId: number,
-  layerId: number
+  productId: number
 ): Promise<EnrichedElcaElementComponent> => {
+  z.number().parse(variantId)
+  z.number().parse(productId)
+  z.number().parse(projectId)
+
   const session = await ensureUserIsAuthenticated()
   const userId = Number(session.user.id)
   await ensureUserAuthorizationToProject(userId, projectId)
 
-  const newElcaElementComponentData = await fetchElcaComponentById(layerId, variantId, projectId)
+  const newElcaElementComponentData = await fetchElcaComponentById(productId, variantId, projectId)
   const isExcluded = await getExcludedProductId(newElcaElementComponentData.component_id)
   newElcaElementComponentData.isExcluded = !!isExcluded
 

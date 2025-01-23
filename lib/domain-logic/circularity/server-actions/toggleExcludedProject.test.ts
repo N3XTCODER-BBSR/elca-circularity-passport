@@ -51,13 +51,13 @@ describe("toggleExcludedProduct", () => {
 
       await expect(toggleExcludedProduct(productId)).rejects.toThrow(UnauthorizedError)
     })
-    it("should throw when user is authorized and product id is not part of project", async () => {
+    it("should throw when user is project owner and product id is not part of project nor public", async () => {
       const mockSession = createMockSession(authorizedUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(toggleExcludedProduct(productIdNotInAuthorizedProject)).rejects.toThrow()
+      await expect(toggleExcludedProduct(productIdNotInAuthorizedProject)).rejects.toThrow(UnauthorizedError)
     })
-    it("should return element component data when user is authorized and element component is part of project", async () => {
+    it("should to undefined when user is authorized and product id is part of project", async () => {
       const mockSession = createMockSession(authorizedUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 

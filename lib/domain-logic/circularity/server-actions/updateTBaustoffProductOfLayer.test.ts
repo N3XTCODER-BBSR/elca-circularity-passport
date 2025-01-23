@@ -1,3 +1,4 @@
+import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
 import { UnauthorizedError } from "lib/errors"
 import {
@@ -56,19 +57,23 @@ describe("updateTBaustoffProduct", () => {
 
       await expect(updateTBaustoffProduct(productId, productDefinitionId)).rejects.toThrow(UnauthorizedError)
     })
-    it("should throw when product id is missing", async () => {
+    it("should throw when product id is null", async () => {
       const mockSession = createMockSession(projectOwnerId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
         // @ts-expect-error test null
         updateTBaustoffProduct(null, productDefinitionId)
-      ).rejects.toThrow()
+      ).rejects.toThrow(ZodError)
+    })
+    it("should throw when product id is undefined", async () => {
+      const mockSession = createMockSession(projectOwnerId)
+      ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
         // @ts-expect-error test undefined
         updateTBaustoffProduct(undefined, productDefinitionId)
-      ).rejects.toThrow()
+      ).rejects.toThrow(ZodError)
     })
     it("should thrown when product id is not a number", async () => {
       const mockSession = createMockSession(projectOwnerId)
@@ -77,13 +82,15 @@ describe("updateTBaustoffProduct", () => {
       await expect(
         // @ts-expect-error test string
         updateTBaustoffProduct("invalidProductId", productDefinitionId)
-      ).rejects.toThrow()
+      ).rejects.toThrow(ZodError)
     })
     it("should throw when user is project owner and product id is not part of project", async () => {
       const mockSession = createMockSession(projectOwnerId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateTBaustoffProduct(productIdNotInAuthorizedProject, productDefinitionId)).rejects.toThrow()
+      await expect(updateTBaustoffProduct(productIdNotInAuthorizedProject, productDefinitionId)).rejects.toThrow(
+        UnauthorizedError
+      )
     })
     it("should return undefined when the user is owner of the project", async () => {
       const mockSession = createMockSession(projectOwnerId)
