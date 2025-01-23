@@ -76,12 +76,37 @@ export const createProductWithComponent = async (id: number, componentId: number
   })
 }
 
-export async function createTBsProductDefinition(id: number) {
+export const createTBsProductDefinition = async (id: number) => {
   return await prisma.tBs_ProductDefinition.create({
     data: {
       id,
       tBs_version: "2024-Q4",
       name: "Acetyliertes Holz",
+    },
+  })
+}
+
+export const createDisturbingSubstanceSelectionWithDependencies = async () => {
+  return prisma.disturbingSubstanceSelection.create({
+    data: {
+      userEnrichedProductData: {
+        create: {
+          elcaElementComponentId: 9999,
+          tBaustoffProductSelectedByUser: true,
+        },
+      },
+    },
+  })
+}
+
+export async function createUserEnrichedProductData(
+  elcaElementComponentId: number,
+  tBaustoffProductSelectedByUser: boolean
+) {
+  return prisma.userEnrichedProductData.create({
+    data: {
+      elcaElementComponentId,
+      tBaustoffProductSelectedByUser,
     },
   })
 }
