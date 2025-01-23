@@ -1,11 +1,12 @@
 "use server"
 
+import { z } from "zod"
 import {
   DisturbingSubstanceSelectionWithNullabelId,
   EnrichedElcaElementComponent,
 } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
+import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
 import { DisturbingSubstanceClassId, Prisma } from "prisma/generated/client"
 import {
   createDisturbingSubstanceSelection,
@@ -19,19 +20,20 @@ import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAn
 export async function addOrUpdateDisturbingSubstanceSelection(
   variantId: number,
   projectId: number,
-  layerId: number,
+  productId: number,
   disturbingSubstanceSelectionWithNullableId: DisturbingSubstanceSelectionWithNullabelId
 ): Promise<EnrichedElcaElementComponent> {
-  if (!layerId || !disturbingSubstanceSelectionWithNullableId) {
-    throw new Error("Invalid layerId or disturbingSubstanceId")
-  }
+  z.number().parse(variantId)
+  z.number().parse(productId)
+  z.object({}).passthrough().parse(disturbingSubstanceSelectionWithNullableId)
+  z.number().parse(projectId)
 
   const session = await ensureUserIsAuthenticated()
   const userId = Number(session.user.id)
 
-  await ensureUserAuthorizationToProject(userId, projectId)
+  await ensureUserAuthorizationToElementComponent(userId, productId)
 
-  await upsertUserEnrichedProductData(layerId)
+  await upsertUserEnrichedProductData(productId)
 
   try {
     if (disturbingSubstanceSelectionWithNullableId.id != null) {
@@ -53,7 +55,7 @@ export async function addOrUpdateDisturbingSubstanceSelection(
         disturbingSubstanceName: disturbingSubstanceSelectionWithNullableId.disturbingSubstanceName || null,
         userEnrichedProductData: {
           connect: {
-            elcaElementComponentId: layerId,
+            elcaElementComponentId: productId,
           },
         },
       }
@@ -69,11 +71,14 @@ export async function addOrUpdateDisturbingSubstanceSelection(
   }
 
   // If there are no S4 disturbing substances, remove the disturbingEolScenarioForS4
-  const disturbingSubstances = await findDisturbingSubstancesByLayerIdAndClassId(layerId, DisturbingSubstanceClassId.S4)
+  const disturbingSubstances = await findDisturbingSubstancesByLayerIdAndClassId(
+    productId,
+    DisturbingSubstanceClassId.S4
+  )
   if (disturbingSubstances.length === 0) {
-    await updateUserEnrichedProductDataDisturbingEolScenario(layerId)
+    await updateUserEnrichedProductDataDisturbingEolScenario(productId)
   }
 
-  const elcaElementComponentData = await fetchElcaComponentById(layerId, variantId, projectId)
+  const elcaElementComponentData = await fetchElcaComponentById(productId, variantId, projectId)
   return elcaElementComponentData
 }
