@@ -8,7 +8,6 @@ import {
 } from "prisma/queries/db"
 
 export async function updateTBaustoffProduct(layerId: number, selectedId: number) {
-  console.log("selectedId :>> ", selectedId)
   if (!layerId || !selectedId) {
     throw new Error("Invalid layerId or selectedId")
   }

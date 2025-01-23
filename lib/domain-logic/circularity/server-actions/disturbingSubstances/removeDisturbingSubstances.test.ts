@@ -1,3 +1,4 @@
+import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
 import { UnauthorizedError } from "lib/errors"
 import {
@@ -34,13 +35,6 @@ const productId = 13
 
 let disturbingSubstanceSelectionId: number
 let elcaComponentId: number
-
-// let disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId = {
-//   disturbingSubstanceClassId: "S0",
-//   disturbingSubstanceName: null,
-//   id: null,
-//   userEnrichedProductDataElcaElementComponentId: 6,
-// }
 
 describe("removeDisturbingSubstanceSelection", () => {
   describe("authorization", () => {
@@ -83,7 +77,7 @@ describe("removeDisturbingSubstanceSelection", () => {
 
       await expect(
         removeDisturbingSubstanceSelection(variantIdNotInProject, projectId, productId, disturbingSubstanceSelectionId)
-      ).rejects.toThrow()
+      ).rejects.toThrow(expect.objectContaining({ code: "P2025" }))
     })
     it("should throw when product id is missing", async () => {
       const mockSession = createMockSession(projectOwnerId)
@@ -92,12 +86,12 @@ describe("removeDisturbingSubstanceSelection", () => {
       await expect(
         // @ts-expect-error test null
         removeDisturbingSubstanceSelection(variantId, projectId, null, disturbingSubstanceSelectionId)
-      ).rejects.toThrow()
+      ).rejects.toThrow(ZodError)
 
       await expect(
         // @ts-expect-error test undefined
         removeDisturbingSubstanceSelection(variantId, projectId, undefined, disturbingSubstanceSelectionId)
-      ).rejects.toThrow()
+      ).rejects.toThrow(ZodError)
     })
     it("should thrown when product id is not a number", async () => {
       const mockSession = createMockSession(projectOwnerId)
@@ -106,7 +100,7 @@ describe("removeDisturbingSubstanceSelection", () => {
       await expect(
         // @ts-expect-error test string
         removeDisturbingSubstanceSelection(variantId, projectId, "invalidProductId", disturbingSubstanceSelectionId)
-      ).rejects.toThrow()
+      ).rejects.toThrow(ZodError)
     })
     it("should throw when user is project owner and product id is not part of project", async () => {
       const mockSession = createMockSession(projectOwnerId)
@@ -119,7 +113,7 @@ describe("removeDisturbingSubstanceSelection", () => {
           productIdNotInAuthorizedProject,
           disturbingSubstanceSelectionId
         )
-      ).rejects.toThrow()
+      ).rejects.toThrow(UnauthorizedError)
     })
     it("should return undefined when the user is owner of the project", async () => {
       const mockSession = createMockSession(projectOwnerId)

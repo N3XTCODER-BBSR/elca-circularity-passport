@@ -8,7 +8,7 @@ import { prismaLegacy } from "prisma/prismaClient"
 // function should be called before the query to ensure that the user has access to the project.
 
 export const getElcaComponentDataByLayerId = async (layerId: number, variantId: number, projectId: number) => {
-  const data = await prismaLegacy.elca_element_components.findFirst({
+  const data = await prismaLegacy.elca_element_components.findFirstOrThrow({
     where: {
       id: layerId,
       // Ensure we only get processes with the given life_cycle_ident
@@ -60,10 +60,6 @@ export const getElcaComponentDataByLayerId = async (layerId: number, variantId: 
       },
     },
   })
-
-  if (!data) {
-    throw new Error(`Expected exactly one element, but found 0`)
-  }
 
   // Find the specific process that has life_cycle_ident = 'A1-3'
   const assignment = data.process_configs.process_life_cycle_assignments.find(
