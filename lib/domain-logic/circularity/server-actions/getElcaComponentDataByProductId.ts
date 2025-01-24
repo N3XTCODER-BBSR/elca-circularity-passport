@@ -7,7 +7,7 @@ import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { getExcludedProductId } from "prisma/queries/db"
 import { fetchElcaComponentById } from "./utils/getElcaComponentDataByLayerIdAndUserId"
 
-const getElcaComponentDataByLayerId = async (
+const getElcaComponentDataByProductId = async (
   variantId: number,
   projectId: number,
   productId: number
@@ -27,4 +27,4 @@ const getElcaComponentDataByLayerId = async (
   return newElcaElementComponentData
 }
 
-export default getElcaComponentDataByLayerId
+export default getElcaComponentDataByProductId

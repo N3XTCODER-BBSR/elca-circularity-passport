@@ -7,7 +7,7 @@ import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import Toggle from "app/(components)/generic/Toggle"
-import getElcaComponentDataByLayerId from "lib/domain-logic/circularity/server-actions/getElcaComponentDataByLayerId"
+import getElcaComponentDataByProductId from "lib/domain-logic/circularity/server-actions/getElcaComponentDataByProductId"
 import updateExludedProduct from "lib/domain-logic/circularity/server-actions/toggleExcludedProject"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
@@ -28,7 +28,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
       {
         queryKey: ["layerData", layerData.component_id],
         queryFn: () => {
-          return getElcaComponentDataByLayerId(variantId, projectId, layerData.component_id)
+          return getElcaComponentDataByProductId(variantId, projectId, layerData.component_id)
         },
         initialData: layerData,
         staleTime: Infinity,
