@@ -1,8 +1,9 @@
 import calculateEolBuiltData from "lib/domain-logic/circularity/utils/calculateEolBuiltPoints"
-import dismantlingPotentialClassIdMapping from "lib/domain-logic/circularity/utils/dismantlingPotentialClassIdMapping"
-import getEolClassNameByPoints, {
+import {
+  dismantlingPotentialClassIdMapping,
+  getEolClassNameByPoints,
   getEolPointsByScenario,
-} from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+} from "lib/domain-logic/circularity/utils/circularityMappings"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { DisturbingSubstanceClassId } from "prisma/generated/client"
 

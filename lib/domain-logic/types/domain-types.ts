@@ -1,4 +1,4 @@
-import { EolClasses } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import { EolClasses } from "lib/domain-logic/circularity/utils/circularityMappings"
 import {
   DismantlingPotentialClassId,
   DisturbingSubstanceSelection,

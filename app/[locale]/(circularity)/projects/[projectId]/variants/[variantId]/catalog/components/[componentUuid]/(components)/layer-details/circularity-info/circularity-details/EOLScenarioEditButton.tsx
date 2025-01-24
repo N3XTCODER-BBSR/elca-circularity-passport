@@ -1,16 +1,16 @@
 "use client"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { EditButton } from "app/(components)/generic/layout-elements"
 import { Required, Text } from "app/(components)/generic/layout-elements"
 import { updateSpecificEolScenario } from "lib/domain-logic/circularity/server-actions/updateSpecificScenario"
-import { EOLScenarioMap } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import { EOLScenarioMap } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import EolScenarioInfoBox from "./EolScenarioInfoBox"
 import Modal from "../../../Modal"
-import { useRouter } from "next/navigation"
 
 type Option = {
   id: string

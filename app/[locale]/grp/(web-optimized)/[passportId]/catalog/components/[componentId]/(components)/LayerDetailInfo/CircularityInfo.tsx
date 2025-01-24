@@ -1,6 +1,6 @@
 import { useFormatter, useTranslations } from "next-intl"
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
-import getEolClassNameByPoints from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import { getEolClassNameByPoints } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { Circularity } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
 
 const CircularityInfo = ({ circularity }: { circularity?: Circularity }) => {

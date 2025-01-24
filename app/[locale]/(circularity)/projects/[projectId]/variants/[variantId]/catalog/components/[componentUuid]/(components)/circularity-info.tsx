@@ -18,10 +18,11 @@ import {
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { updateDismantlingPotentialClassId } from "lib/domain-logic/circularity/server-actions/updateDismantlingPotentialClassId"
 import { updateSpecificEolScenario } from "lib/domain-logic/circularity/server-actions/updateSpecificScenario"
-import dismantlingPotentialClassIdMapping from "lib/domain-logic/circularity/utils/dismantlingPotentialClassIdMapping"
-import getEolClassNameByPoints, {
+import {
+  dismantlingPotentialClassIdMapping,
+  getEolClassNameByPoints,
   getEolPointsByScenario,
-} from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+} from "lib/domain-logic/circularity/utils/circularityMappings"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
 import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"

@@ -1,4 +1,5 @@
-import { TBs_ProductDefinitionEOLCategoryScenario } from "../../../../../../prisma/generated/client"
+import { DismantlingPotentialClassId } from "prisma/generated/client"
+import { TBs_ProductDefinitionEOLCategoryScenario } from "../../../../prisma/generated/client"
 
 export enum EolClasses {
   NA = "N/A",
@@ -32,14 +33,7 @@ export const EOLScenarioMap = {
   EB: "EB",
 }
 
-// TODO: reconsider the location of this file
-// reason: the more proper source of truth for this mapping is most likely the circularity tool (not the GRP)
-// then we might want to think though also about versioning of schema and logic for the circularity tool
-// Same goes very likely for other logic/schema aspects like RMI, PENRT, etc. which is currently
-// 'owned' by the GRP schema/logic
-
-// TODO: imeplemnet here scenario to points (bc. user can only select on scenario level, not on class or points)
-
+// TODO: implement here scenario to points (bc. user can only select on scenario level, not on class or points)
 export function getEolPointsByScenario(scenario: TBs_ProductDefinitionEOLCategoryScenario): number {
   switch (scenario) {
     case TBs_ProductDefinitionEOLCategoryScenario.WV:
@@ -90,4 +84,21 @@ export function getEolClassNameByPoints(points?: number): EolClasses {
   return EolClasses.J
 }
 
-export default getEolClassNameByPoints
+export const dismantlingPotentialClassIdMapping = {
+  [DismantlingPotentialClassId.I]: {
+    translationKey: 1,
+    points: 100,
+  },
+  [DismantlingPotentialClassId.II]: {
+    translationKey: 2,
+    points: 75,
+  },
+  [DismantlingPotentialClassId.III]: {
+    translationKey: 3,
+    points: 50,
+  },
+  [DismantlingPotentialClassId.IV]: {
+    translationKey: 4,
+    points: 0,
+  },
+}
