@@ -56,16 +56,16 @@ export const deleteVariantIfExists = async (variantId: number) => {
  * create a project with the given id
  * @returns newly created project
  */
-export const createProductWithComponent = async (id: number, componentId: number) => {
+export const createProductWithComponent = async (productId: number, componentId: number) => {
   return prismaLegacySuperUser.elca_elements.create({
     data: {
-      id: componentId,
+      id: productId,
       element_type_node_id: 246, // must match a real elca_element_types.node_id
       name: "My new element",
       element_components: {
         create: [
           {
-            id,
+            id: componentId,
             process_config_id: 123, // must match a real process_configs.id
             process_conversion_id: 456, // must match a real process_conversions.id
             life_time: 50,
