@@ -1,3 +1,4 @@
+import crypto from "crypto"
 import { prisma, prismaLegacySuperUser } from "prisma/prismaClient"
 
 /**
@@ -148,4 +149,111 @@ export const deleteComponentIfExists = async (id: number) => {
   if (component) {
     await prismaLegacySuperUser.elca_element_components.delete({ where: { id } })
   }
+}
+
+export const createProject = async (projectId: number, accessGroupId: number, ownerId: number) => {
+  return prismaLegacySuperUser.projects.create({
+    data: {
+      id: projectId,
+      process_db_id: 1,
+      access_group_id: accessGroupId,
+      name: "random name",
+      life_time: 50,
+      owner_id: ownerId,
+    },
+  })
+}
+
+export const createAccessGroup = async (groupId: number) => {
+  return prismaLegacySuperUser.groups.create({
+    data: {
+      id: groupId,
+      name: "random name",
+    },
+  })
+}
+
+export const createProjectAccessToken = async (projectId: number, userId: number, canEdit: boolean) => {
+  return prismaLegacySuperUser.project_access_tokens.create({
+    data: {
+      project_id: projectId,
+      user_id: userId,
+      token: crypto.randomUUID(),
+      user_email: "random email",
+      can_edit: canEdit,
+      is_confirmed: true,
+    },
+  })
+}
+
+export const deleteProjectAccessTokenIfExists = async (projectId: number, userId: number) => {
+  const token = await prismaLegacySuperUser.project_access_tokens.findFirst({
+    where: {
+      project_id: projectId,
+      user_id: userId,
+    },
+  })
+
+  if (token) {
+    await prismaLegacySuperUser.project_access_tokens.delete({
+      where: {
+        token: token.token,
+      },
+    })
+  }
+}
+
+export const setProjectAccessTokenToEditTrue = async (projectId: number, userId: number) => {
+  return prismaLegacySuperUser.project_access_tokens.update({
+    where: {
+      project_id_user_id: {
+        project_id: projectId,
+        user_id: userId,
+      },
+    },
+    data: {
+      can_edit: true,
+    },
+  })
+}
+
+export const createGroupMember = async (userId: number, groupId: number) => {
+  return prismaLegacySuperUser.group_members.create({
+    data: {
+      group_id: groupId,
+      user_id: userId,
+    },
+  })
+}
+
+export const deleteGroupMember = async (userId: number, groupId: number) => {
+  return prismaLegacySuperUser.group_members.delete({
+    where: {
+      group_id_user_id: {
+        group_id: groupId,
+        user_id: userId,
+      },
+    },
+  })
+}
+
+export const addElementToAccessGroup = async (componentId: number, groupId: number) => {
+  return prismaLegacySuperUser.elca_elements.update({
+    where: { id: componentId },
+    data: {
+      access_group_id: groupId,
+    },
+  })
+}
+
+export const deleteProject = async (projectId: number) => {
+  return prismaLegacySuperUser.projects.delete({
+    where: { id: projectId },
+  })
+}
+
+export const deleteAccessGroup = async (groupId: number) => {
+  return prismaLegacySuperUser.groups.delete({
+    where: { id: groupId },
+  })
 }
