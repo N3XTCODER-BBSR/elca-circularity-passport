@@ -254,7 +254,7 @@ export const getTBaustoffMappingEntry = async (oekobaudatProcessUuid: string, oe
     where: {
       oebd_processUuid_oebd_versionUuid: {
         oebd_processUuid: oekobaudatProcessUuid,
-        oebd_versionUuid: "448d1096-2017-4901-a560-f652a83c737e", //TODO: this is a hardcoded value, should be changed (could be available in the legacy project table)
+        oebd_versionUuid: "448d1096-2017-4901-a560-f652a83c737e", // TODO (XL): this is a hardcoded value, should be changed (could be available in the legacy project table)
       },
     },
   })
