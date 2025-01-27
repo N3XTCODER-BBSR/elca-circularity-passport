@@ -14,7 +14,7 @@ import {
 } from "prisma/queries/db"
 import { getElcaComponentDataByLayerId } from "prisma/queries/legacyDb"
 import { calculateEolDataByEolCateogryData } from "../../utils/calculateEolDataByEolCateogryData"
-import { calculateVolumeForLayer, getWeightByProductId } from "../getWeightByProductId"
+import { calculateDimensionalValues, calculateVolumeForLayer } from "../getWeightByProductId"
 
 export const fetchElcaComponentById = async (layerId: number, variantId: number, projectId: number) => {
   const projectComponent = await getElcaComponentDataByLayerId(layerId, variantId, projectId)
@@ -32,7 +32,7 @@ export const fetchElcaComponentById = async (layerId: number, variantId: number,
   }
 
   const enrichedComponent = await processProjectComponent(
-    projectComponent as unknown as ElcaProjectComponentRow, // TODO: adapt types so they are compatible to Prisma types
+    projectComponent as unknown as ElcaProjectComponentRow, // TODO (L): adapt types so they are compatible to Prisma types
     userDefinedData,
     mappingEntry,
     product
@@ -74,7 +74,7 @@ async function processProjectComponent(
   //   }
   // }
 
-  const { weight: mass } = await getWeightByProductId(componentRow.component_id)
+  const { weight: mass } = await calculateDimensionalValues(componentRow.component_id)
   const volume = calculateVolumeForLayer(componentRow)
   const isExcluded = await getExcludedProductId(componentRow.component_id)
   const enrichedComponent: EnrichedElcaElementComponent = {
@@ -95,7 +95,6 @@ async function processProjectComponent(
 }
 
 function getTBaustoffProductData(
-  // TODO: check: do we need the underscored params still?
   userDefinedData: UserEnrichedProductDataWithDisturbingSubstanceSelection | null,
   mappingEntry: TBs_OekobaudatMapping | null,
   product: Prisma.TBs_ProductDefinitionGetPayload<{

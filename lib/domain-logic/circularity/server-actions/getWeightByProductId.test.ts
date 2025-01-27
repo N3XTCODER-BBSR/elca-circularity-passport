@@ -1,4 +1,4 @@
-import { getWeightByProductId } from "./getWeightByProductId"
+import { calculateDimensionalValues } from "./getWeightByProductId"
 
 describe("getWeightByProductId", () => {
   it.each([
@@ -15,13 +15,13 @@ describe("getWeightByProductId", () => {
     { productId: 13, expectedWeight: 1.5 },
     { productId: 14, expectedWeight: 50.843 },
   ])("should return the correct weight for productId $productId", async ({ productId, expectedWeight }) => {
-    const { weight } = await getWeightByProductId(productId)
+    const { weight } = await calculateDimensionalValues(productId)
 
     expect(weight).toBeCloseTo(expectedWeight, 3)
   })
 
   it("should throw an error if product is not found", async () => {
     const invalidProductId = 999
-    await expect(getWeightByProductId(invalidProductId)).rejects.toThrow("Product not found")
+    await expect(calculateDimensionalValues(invalidProductId)).rejects.toThrow("Product not found")
   })
 })

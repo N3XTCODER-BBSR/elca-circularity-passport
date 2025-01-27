@@ -33,7 +33,6 @@ export const EOLScenarioMap = {
   EB: "EB",
 }
 
-// TODO: implement here scenario to points (bc. user can only select on scenario level, not on class or points)
 export function getEolPointsByScenario(scenario: TBs_ProductDefinitionEOLCategoryScenario): number {
   switch (scenario) {
     case TBs_ProductDefinitionEOLCategoryScenario.WV:
@@ -62,9 +61,8 @@ export function getEolPointsByScenario(scenario: TBs_ProductDefinitionEOLCategor
       return 0
   }
 }
-// ...
 
-// TODO: add also scenario/category here (because also for category, the source of truth is points)
+// TODO (M): add also scenario/category here (because also for category, the source of truth is points)
 export function getEolClassNameByPoints(points?: number): EolClasses {
   if (points == null || Number.isNaN(points)) return EolClasses.NA
   if (points >= 140) return EolClasses.A
@@ -81,6 +79,7 @@ export function getEolClassNameByPoints(points?: number): EolClasses {
   if (points >= -80) return EolClasses.H
   if (points >= -100) return EolClasses.I
   if (points >= -140) return EolClasses.J
+  // TODO (L): probably better to throw an exception instead of just return J-class as fallback
   return EolClasses.J
 }
 

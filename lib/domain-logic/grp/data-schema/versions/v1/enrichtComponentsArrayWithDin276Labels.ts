@@ -18,7 +18,7 @@ export const enrichComponentsArrayWithDin276Labels = (
   buildingComponents: BuildingComponent[]
 ): DinEnrichedBuildingComponent[] => {
   const dinLabelEnrichedComponents = buildingComponents.map((component) => {
-    // TODO: add error handling for non-existing values
+    // TODO (L): add error handling for non-existing values
     const { costGroupDIN276: dinComponentLevelNumber } = component
 
     const dinCategoryLevelNumber = Math.floor(dinComponentLevelNumber / 10) * 10

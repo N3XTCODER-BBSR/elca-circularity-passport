@@ -18,7 +18,7 @@ model Passport {
   expiryDate       DateTime
 }
 
-// TODO: consider to define logic-constraints in this file on prisma schema as well
+// TODO (M): consider to define logic-constraints in this file on prisma schema as well
 model TBs_OekobaudatMapping {
   oebd_processUuid String                 @map("oekobaudatProcessUuid")
   oebd_versionUuid String                 @map("oekobaudatVersionUuid")
@@ -91,7 +91,7 @@ model DisturbingSubstanceSelection {
 }
 
 // THE "YELLOW TABLE"
-// TODO: improve naming
+// TODO (M): improve naming
 model UserEnrichedProductData {
   // HINT: this is the central cross-database linkin field
   // it is called elcaElementComponentId instead of productId because 

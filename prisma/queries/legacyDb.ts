@@ -187,7 +187,7 @@ export const getElcaVariantComponentsByInstanceId = async (
         access_group_id: element.access_group_id,
         element_uuid: element.uuid,
         component_id: ec.id,
-        // TODO: Check whether this is proper handling of null values in DB
+        // TODO (XL): Check whether this is proper handling of null values in DB
         layer_position: ec.layer_position || -1,
         process_name: pc.name,
         // process_ref_unit: process?.ref_unit,
@@ -451,3 +451,16 @@ export const getPassportRelevantDataForProjectVariantFromLegacyDb = async (proje
 }
 
 export const getAllProcessCategories = async () => await prismaLegacy.process_categories.findMany()
+
+export const getProjectWithVaraitnsAndProcessDbById = (projectId: number) =>
+  prismaLegacy.projects.findUnique({
+    where: { id: projectId },
+    include: {
+      project_variants_project_variants_project_idToprojects: true,
+      process_dbs: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  })

@@ -1,6 +1,7 @@
 import { enrichComponentsArrayWithDin276Labels } from "./enrichtComponentsArrayWithDin276Labels"
 import { BuildingComponent } from "./passportSchema"
 
+// TODO (L): fix the tests in this file
 // Mock Data
 const mockBuildingComponents: BuildingComponent[] = [
   {

@@ -4,7 +4,7 @@ import { CalculateCircularityDataForLayerReturnType } from "./calculate-circular
 export const calculateTotalCircularityIndexForProject = (
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
 ) => {
-  // TODO: ensure to exlude
+  // TODO (XL): ensure to exlude
   // 1. components which don't fall into our selection of DIN categories
   // 2. explicitly excluded components
 

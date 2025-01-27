@@ -12,7 +12,7 @@ import {
   getUserDefinedTBaustoffData,
 } from "prisma/queries/db"
 import { getElcaVariantComponentsByInstanceId } from "prisma/queries/legacyDb"
-import { calculateVolumeForLayer, getWeightByProductId } from "./getWeightByProductId"
+import { calculateDimensionalValues, calculateVolumeForLayer } from "./getWeightByProductId"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
 
@@ -146,7 +146,7 @@ const enrichLayerData = async (
       )
 
       const userDefinedComponentData = userDefinedMap.get(component.component_id)
-      const { weight: mass } = await getWeightByProductId(component.component_id)
+      const { weight: mass } = await calculateDimensionalValues(component.component_id)
 
       const volume = calculateVolumeForLayer(component)
 
