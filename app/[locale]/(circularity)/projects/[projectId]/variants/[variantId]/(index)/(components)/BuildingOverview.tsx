@@ -6,7 +6,7 @@ import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/cir
 import { calculateTotalCircularityIndexForProject } from "lib/domain-logic/circularity/utils/calculateTotalCircularityIndex"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { prismaLegacy } from "prisma/prismaClient"
+import { getAllProcessCategories } from "prisma/queries/legacyDb"
 import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
 import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
@@ -22,13 +22,12 @@ type BuildingOverviewProps = {
 const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingOverviewProps) => {
   await ensureUserIsAuthenticated()
 
-  // TODO: move probably most things here into domain logic
   const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
     await getProjectCircularityIndexData(variantId, projectId)
 
   const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(circularityData)
 
-  const processCategories: ProcessCategory[] = await prismaLegacy.process_categories.findMany()
+  const processCategories: ProcessCategory[] = await getAllProcessCategories()
 
   const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
     component.layers.some((layer) => layer.circularityIndex == null)

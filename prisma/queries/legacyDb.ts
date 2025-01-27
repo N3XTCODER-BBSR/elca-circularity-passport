@@ -449,3 +449,5 @@ export const getPassportRelevantDataForProjectVariantFromLegacyDb = async (proje
     },
   })
 }
+
+export const getAllProcessCategories = async () => await prismaLegacy.process_categories.findMany()
