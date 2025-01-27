@@ -53,7 +53,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
     din_code: componentData?.din_code,
     unit: componentData?.unit,
     quantity: componentData?.quantity,
-    layers: await processLayers(
+    layers: await enrichLayerData(
       excludedProductIdsSet,
       projectComponents,
       userDefinedTBaustoffDataMap,
@@ -122,44 +122,7 @@ function getTBaustoffProductData(
   return undefined
 }
 
-// TODO: 'process' doesn't seem to be the best name for this function
-// it's more specifically about mapping/grouping/filtering
-// function processProjectComponents(
-//   projectComponents: ElcaProjectComponentRow[],
-//   userDefinedMap: Map<number, UserEnrichedProductDataWithDisturbingSubstanceSelection>,
-//   mappingEntriesMap: Map<string, TBs_OekobaudatMapping>,
-//   productMap: Map<
-//     number,
-//     Prisma.TBs_ProductDefinitionGetPayload<{
-//       include: { tBs_ProductDefinitionEOLCategory: true }
-//     }>
-//   >
-// ): ElcaElementWithComponents<EnrichedElcaElementComponent>[] {
-//   return (
-//     _(projectComponents)
-//       // TODO: check why this is needed
-//       .groupBy("element_uuid")
-//       .map((components, elementUuid) => {
-//         const { element_name, element_type_name, din_code, unit } = components[0]!
-
-//         const layers = processLayers(components, userDefinedMap, mappingEntriesMap, productMap)
-
-//         return {
-//           element_uuid: elementUuid,
-//           element_name,
-//           element_type_name,
-//           din_code,
-//           unit,
-//           layers,
-//         } as ElcaElementWithComponents<EnrichedElcaElementComponent>
-//       })
-//       .value()
-//   )
-// }
-
-// TODO: 'process' doesn't seem to be the best name for this function
-// it's more specifically about mapping/filtering
-const processLayers = async (
+const enrichLayerData = async (
   excludedProductIdsSet: Set<number>,
   components: ElcaProjectComponentRow[],
   userDefinedMap: Map<number, UserEnrichedProductDataWithDisturbingSubstanceSelection>,

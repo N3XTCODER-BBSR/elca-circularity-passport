@@ -28,27 +28,14 @@ const Page = async ({
     const componentData: ElcaElementWithComponents<EnrichedElcaElementComponent> =
       await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(variantId, projectId, params.componentUuid)
 
-    // // TODO: check this - probably better to check for array length?
-    // if (!projectComponents) {
-    //   notFound()
-    // }
-
-    // TODO:
-    // 1. check why we do the find. Should be enough to just use projectComponents[0]?
-    // 2. consider to (even if we then discard our db performance optimziation) really fetch data that are on
-    //   a) component level and
-    //   b) product level
-    // in different queries (or at least hide it more upstream; the frontend layer should not have to know that it needs to get
-    // the data from the first element of the array)
-    // const componentData = projectComponents.find((el) => el.element_uuid === params.componentUuid)
-
     if (componentData == null) {
       notFound()
     }
 
     const dinGroupLevelNumber = Math.floor(componentData.din_code / 100) * 100
 
-    const availableTBaustoffProducts = (await getAvailableTBaustoffProducts()).map((el) => ({
+    const availableTBaustoffProducts = await getAvailableTBaustoffProducts()
+    const availableTBaustoffProductIdAndNames = availableTBaustoffProducts.map((el) => ({
       id: `${el.id}`,
       value: el.name,
     }))
@@ -112,7 +99,7 @@ const Page = async ({
                 // TODO: check/update logic here (and other places where laufende nummer is used) once we decided about the semantics of it
                 layerNumber={layer.layer_position}
                 //unitName={componentData.unit}
-                tBaustoffProducts={availableTBaustoffProducts}
+                tBaustoffProducts={availableTBaustoffProductIdAndNames}
               />
             </li>
           ))}

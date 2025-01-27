@@ -17,7 +17,7 @@ test.describe("Login Page", () => {
   }) => {
     // Skip WebKit testing.
     // WebKit renders differently, causing errors. Tested manually.
-    // TODO: fix test for WebKit
+    // TODO (M): fix test for WebKit
     if (browserName === "webkit") {
       // await expect(page).toHaveURL(/\/projects/);
       return
@@ -44,7 +44,7 @@ test.describe("Login Page", () => {
   test("should show error message when login fails with incorrect credentials", async ({ browserName, page }) => {
     // Skip WebKit testing.
     // WebKit renders differently, causing errors. Tested manually.
-    // TODO: fix test for WebKit
+    // TODO (M): fix test for WebKit
     if (browserName === "webkit") {
       return
     }

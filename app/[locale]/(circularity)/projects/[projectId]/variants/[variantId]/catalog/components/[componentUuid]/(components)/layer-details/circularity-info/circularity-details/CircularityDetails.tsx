@@ -1,6 +1,6 @@
 import { ArrowPathIcon, ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
-import { useIsMutating, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { useFormatter, useTranslations } from "next-intl"
 import { useState } from "react"
@@ -79,12 +79,10 @@ const formatEolUnbuiltData = (data: EolUnbuiltData | null, format: Formatter, t:
 const EolDataSection = ({ layerDatacirculartyEnrichedLayerData }: EolDataSectionProps) => {
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo.EolDataSection")
   const format = useFormatter()
-  const isPending = useIsMutating() > 0
 
   if (layerDatacirculartyEnrichedLayerData.tBaustoffProductData == null) {
     return null
   }
-  // TODO: update
   const eolUnbuiltData = formatEolUnbuiltData(layerDatacirculartyEnrichedLayerData.eolUnbuilt, format, t)
   const eolUnbuiltDataSecondary = [
     // POTENTIAL

@@ -7,7 +7,6 @@ export type ElcaProjectElementRow = {
 }
 
 export const getElcaElementsForVariantId = async (variantId: number, projectId: number) => {
-  // TODO: ideally also add project-variant id/uuid here to ensure correctness
   const result = await getComponentsByVariantId(variantId, projectId)
 
   return result.map<ElcaProjectElementRow>((element) => {

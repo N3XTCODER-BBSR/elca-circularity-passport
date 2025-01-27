@@ -103,7 +103,7 @@ function buildDinCodeToLeafNodesMap(
     const { din_code } = element
     for (const layer of element.layers) {
       const weight = (layer.mass ?? 0) * (element.quantity ?? 0) || 0
-      const metricValue = layer.circularityIndex ?? 0 // TODO: probably not valid to fall back to 0; better throw error or ensure on type level beforehand
+      const metricValue = layer.circularityIndex ?? 0 // TODO (L): probably not valid to fall back to 0; better throw error or ensure on type level beforehand
       // that circularityIndex is never null for any layer before being passed to this function
 
       const dimensionalValue = weight
@@ -111,7 +111,7 @@ function buildDinCodeToLeafNodesMap(
       const leaf: ChartDataLeaf = {
         isLeaf: true,
         metricValue,
-        // TODO: check whether this is valid handling or whether we should change the types
+        // TODO (L): check whether this is valid handling or whether we should change the types
         dimensionalValue: dimensionalValue || 0,
         label: layer.element_name,
         resourceId: layer.element_uuid,

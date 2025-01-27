@@ -165,18 +165,16 @@ const CircularityInfo = (props: CircularityInfoProps) => {
     }
   }
 
-  // TODO: Move this over into translations
-
   const showCircularityDetails = props.layerData.tBaustoffProductData
 
   const eolUnbuiltDataSecondary = [
     // POTENTIAL
     {
-      key: "Klasse Rückbau", //t("..."),
+      key: "Klasse Rückbau", //t("..."), // TODO: i18n
       value: props.layerData.dismantlingPotentialClassId ?? "-",
     },
     {
-      key: "Punkte Rückbau", //t("..."),
+      key: "Punkte Rückbau", //t("..."), // TODO: i18n
       value: props.layerData.dismantlingPotentialClassId
         ? dismantlingPotentialClassIdMapping[props.layerData.dismantlingPotentialClassId].points
         : "-",

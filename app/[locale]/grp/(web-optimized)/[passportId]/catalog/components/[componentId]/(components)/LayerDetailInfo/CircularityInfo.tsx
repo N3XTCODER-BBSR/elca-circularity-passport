@@ -25,13 +25,13 @@ const CircularityInfo = ({ circularity }: { circularity?: Circularity }) => {
     circularity?.interferingSubstances
       ?.map((interferingSubstance) => ({
         key: interferingSubstance.className,
-        // TODO: improve the null handling here (comparing to string "NULL" is not ideal)
+        // TODO (XL): improve the null handling here (comparing to string "NULL" is not ideal)
         value:
           interferingSubstance.description === "NULL"
             ? t("disturbingSubstanceNameUnspecified")
             : interferingSubstance.description,
       }))
-      // TODO: improve the null handling here (comparing to string "NULL" is not ideal)
+      // TODO (XL): improve the null handling here (comparing to string "NULL" is not ideal)
       .filter((el) => el.key != null && el.key != "NULL") || []
 
   return (
