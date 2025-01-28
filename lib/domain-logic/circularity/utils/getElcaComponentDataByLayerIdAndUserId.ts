@@ -13,8 +13,8 @@ import {
   getUserDefinedTBaustoffDataForComponentId,
 } from "prisma/queries/db"
 import { getElcaComponentDataByLayerId } from "prisma/queries/legacyDb"
-import { calculateEolDataByEolCateogryData } from "../../utils/calculateEolDataByEolCateogryData"
-import { calculateDimensionalValues, calculateVolumeForLayer } from "../getWeightByProductId"
+import { calculateEolDataByEolCateogryData } from "./calculateEolDataByEolCateogryData"
+import { calculateDimensionalValues, calculateVolumeForLayer } from "./getWeightByProductId"
 
 export const fetchElcaComponentById = async (layerId: number, variantId: number, projectId: number) => {
   const projectComponent = await getElcaComponentDataByLayerId(layerId, variantId, projectId)

@@ -1,9 +1,9 @@
 import { getTranslations } from "next-intl/server"
 import errorHandler from "app/(utils)/errorHandler"
-import { getElcaProjectData } from "lib/domain-logic/circularity/server-actions/getElcaProjectData"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import BuildingOverview from "./(components)/BuildingOverview"
+import { getProjectById } from "prisma/queries/legacyDb"
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
   return errorHandler(async () => {
@@ -16,7 +16,7 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
 
     await ensureUserAuthorizationToProject(userId, projectId)
 
-    const projectInfo = await getElcaProjectData(projectId, userId)
+    const projectInfo = await getProjectById(projectId)
 
     if (!projectInfo) {
       return <div>{t("projectNotFound")}</div>

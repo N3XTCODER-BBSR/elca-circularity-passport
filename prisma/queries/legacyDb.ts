@@ -273,16 +273,10 @@ export type ProjectWithUserName = Prisma.projectsGetPayload<{
   }
 }>
 
-export const getProjectsByIdAndOwnerId = async (id: number, userId: number): Promise<Project[]> => {
-  return await prismaLegacy.projects.findMany({
+export const getProjectById = async (id: number) => {
+  return await prismaLegacy.projects.findUnique({
     where: {
       id,
-      owner_id: userId,
-    },
-    select: {
-      id: true,
-      name: true,
-      created: true,
     },
   })
 }

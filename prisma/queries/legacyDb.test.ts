@@ -3,8 +3,8 @@ import {
   getComponentsByVariantId,
   getElcaComponentDataByLayerId,
   getElcaVariantComponentsByInstanceId,
+  getProjectById,
   getProjectDataWithVariants,
-  getProjectsByIdAndOwnerId,
   getProjectsByOwnerId,
   isUserAuthorizedToElementComponent,
   isUserAuthorizedToProject,
@@ -122,14 +122,13 @@ describe("legacyDb queries", () => {
       })
     })
   })
-  describe("getProjectsByIdAndOwnerId", () => {
+  describe("getProjectsById", () => {
     it("should return the correct project data for a given project ID and owner ID", async () => {
-      const result = await getProjectsByIdAndOwnerId(1, 2)
+      const result = await getProjectById(1)
 
-      const want = [{ id: 1, name: "Test Project 1" }]
+      const want = { id: 1, name: "Test Project 1" }
 
-      expect(result).toHaveLength(want.length)
-      expect(result[0]).toMatchObject(want[0]!)
+      expect(result).toMatchObject(want)
     })
   })
   describe("getProjectDataWithVariants", () => {

@@ -15,8 +15,8 @@ import {
   getPassportRelevantDataForProjectVariantFromLegacyDb,
   getProjectWithVaraitnsAndProcessDbById,
 } from "prisma/queries/legacyDb"
-import { CalculateCircularityDataForLayerReturnType } from "../../utils/calculate-circularity-data-for-layer"
-import { getProjectCircularityIndexData } from "../getProjectCircularityIndex"
+import { CalculateCircularityDataForLayerReturnType } from "../utils/calculate-circularity-data-for-layer"
+import { getProjectCircularityIndexData } from "../misc/getProjectCircularityIndex"
 
 const getCircularityForMaterial = (layer: CalculateCircularityDataForLayerReturnType) => {
   const parsedCircularityData = {

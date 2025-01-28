@@ -1,7 +1,7 @@
 "use client"
 import _ from "lodash"
 import ComponentsTree from "app/(components)/ComponentsTree"
-import { ElcaProjectElementRow } from "lib/domain-logic/circularity/server-actions/getElcaElementsForProjectId"
+import { ElcaProjectElementRow } from "lib/domain-logic/circularity/misc/getElcaElementsForProjectId"
 import { costGroupCategoryNumbersToInclude } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { ComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
 

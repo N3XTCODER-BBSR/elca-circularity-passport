@@ -4,7 +4,7 @@ import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-type
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { getExcludedProductId } from "prisma/queries/db"
-import { fetchElcaComponentById } from "./utils/getElcaComponentDataByLayerIdAndUserId"
+import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 
 const getElcaComponentDataByLayerId = async (
   variantId: number,

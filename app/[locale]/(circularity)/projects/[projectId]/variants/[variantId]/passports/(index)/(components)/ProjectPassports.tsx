@@ -9,7 +9,7 @@ import { twMerge } from "tailwind-merge"
 
 import { ZodIssue } from "zod"
 import { fromZodIssue } from "zod-validation-error"
-import { createPassportForProjectVariantId } from "lib/domain-logic/circularity/server-actions/passports/createPassportForProjectVariantId"
+import { createPassportForProjectVariantId } from "lib/domain-logic/circularity/server-actions/createPassportForProjectVariantId"
 import { PassportMetadata } from "prisma/queries/db"
 
 type ProjectPassportsProps = {

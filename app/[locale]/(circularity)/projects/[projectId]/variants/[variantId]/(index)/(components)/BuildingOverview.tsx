@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { getTranslations } from "next-intl/server"
 import { Link } from "i18n/routing"
-import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/server-actions/getProjectCircularityIndex"
+import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { calculateTotalCircularityIndexForProject } from "lib/domain-logic/circularity/utils/calculateTotalCircularityIndex"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"

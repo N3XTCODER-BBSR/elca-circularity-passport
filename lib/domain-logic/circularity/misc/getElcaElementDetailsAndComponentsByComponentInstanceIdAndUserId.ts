@@ -12,7 +12,7 @@ import {
   getUserDefinedTBaustoffData,
 } from "prisma/queries/db"
 import { getElcaVariantComponentsByInstanceId } from "prisma/queries/legacyDb"
-import { calculateDimensionalValues, calculateVolumeForLayer } from "./getWeightByProductId"
+import { calculateDimensionalValues, calculateVolumeForLayer } from "../utils/getWeightByProductId"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
 
