@@ -209,12 +209,6 @@ const translationsGrpPlatformGeneric = {
         eolClass: "EOL Class",
         disturbingSubstanceNameUnspecified: "unspecified",
         dismantlingClass: "Dismantling Potential Class",
-        dismantlingClassNames: {
-          1: "PLACEHOLDER ENGLISH zerstörungsfrei rückbaubar",
-          2: "PLACEHOLDER ENGLISH zerstörungsarm rückbaubar",
-          3: "PLACEHOLDER ENGLISH zerstörend ohne Fremd-/Störst. rückb.",
-          4: "PLACEHOLDER ENGLISH nur mit Fremd-/Störstoffen rückbaubar",
-        },
         circularityIndex: "Circularity Index",
         eolPoints: "EOL Points",
         proofReuse: "Proof of Reuse",
@@ -269,6 +263,14 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
                     },
                   },
                 },
+              },
+            },
+            dismantlingPotential: {
+              dismantlingClassNames: {
+                1: "(CHECK TRANSLATION) non-destructively dismantled",
+                2: "(CHECK TRANSLATION) can be dismantled with minimal damage",
+                3: "(CHECK TRANSLATION) destructive without external interference",
+                4: "(CHECK TRANSLATION) can only be dismantled with foreign/contaminants",
               },
             },
           },
