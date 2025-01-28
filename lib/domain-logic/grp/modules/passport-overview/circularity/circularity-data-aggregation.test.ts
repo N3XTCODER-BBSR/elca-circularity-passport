@@ -1,4 +1,4 @@
-import { EolClasses } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import { EolClasses } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import { Circularity, Material } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
 import aggregateCircularityData from "./circularity-data-aggregation"

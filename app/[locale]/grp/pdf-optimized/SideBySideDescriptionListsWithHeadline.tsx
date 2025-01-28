@@ -23,7 +23,7 @@ const SingleKeyValueTuple = ({
   const normalizedNumberOfLines = keyValueTuple?.numberOfLines || 1
   const lineClampClass = `line-clamp-${normalizedNumberOfLines}`
   // const height = `h-[${normalizedNumberOfLines * 40}mm]`
-  // TODO: discuss with Daniel. table had one huge row. disable this line as quick
+  // TODO (M): discuss with Daniel. table had one huge row. disable this line as quick
   // fix to continue development of module 2 and 3
   const height = `h-[${1 * 40}mm]`
 
@@ -34,7 +34,7 @@ const SingleKeyValueTuple = ({
         "flex w-full justify-between px-2 leading-[5mm]",
         isLeft ? "border-r-2" : ""
         // lineClampClass
-        // TODO: discuss with Daniel. this broke the pdf layout (causing unneeded line breaks)
+        // TODO (M): discuss with Daniel. this broke the pdf layout (causing unneeded line breaks)
       )}
     >
       <dt className="font-semibold text-gray-700">{keyValueTuple?.key}: &nbsp;</dt>

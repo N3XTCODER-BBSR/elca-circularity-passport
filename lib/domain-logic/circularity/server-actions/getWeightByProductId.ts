@@ -7,8 +7,7 @@ export const calculateVolumeForLayer = (component: ElcaProjectComponentRow): num
     ? component.layer_length * component.layer_width * component.layer_size
     : null
 
-// TODO: rename, since it's also returning other values
-export const getWeightByProductId = async (productId: number) => {
+export const calculateDimensionalValues = async (productId: number) => {
   const productData = await getDataForMassCalculationByProductId(productId)
 
   if (!productData) {
@@ -87,8 +86,7 @@ export const getWeightByProductId = async (productId: number) => {
 
   // Now, calculate the amount in kg
   const amount = volume.mul(density)
-  // TODFO: consider to return both mass/weight AND volume to have single source of truth for both calculations
-  // Also check potential naming inconsistencies regarding mass/weight
+  // TODO (M): check potential naming inconsistencies regarding mass/weight
   return {
     weight: amount.toNumber(),
     volume: volume.toNumber(),

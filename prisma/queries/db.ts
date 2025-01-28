@@ -92,9 +92,9 @@ export const upsertUserEnrichedProductDataByLayerId = async (
   selectedDismantlingPotentialClassId: DismantlingPotentialClassId | null
 ) => {
   return await prisma.userEnrichedProductData.upsert({
-    // TODO: IMPORTANT: add checks here for:
+    // TODO (XL): IMPORTANT: add checks here for:
     // 1. user has access to the project and layer
-    // 2. that there is not already a match found by out OBD-tBaustoff mapping
+    // 2. that there is not already a match found by the OBD-tBaustoff mapping
     // 3. if the layerId exists in the database
     where: { elcaElementComponentId: layerId },
     update: {
@@ -114,7 +114,7 @@ export const upsertUserEnrichedProductDataWithEolScenario = async (
   specificEolUnbuiltTotalScenarioProofText: string
 ) => {
   return await prisma.userEnrichedProductData.upsert({
-    // TODO: add checks here for:
+    // TODO (XL): add checks here for:
     // 1. user has access to the project and layer
     // 2. that there is not already a match found by out OBD-tBaustoff mapping
     // 3. if the layerId exists in the database
@@ -133,7 +133,7 @@ export const upsertUserEnrichedProductDataWithEolScenario = async (
 
 export const upsertUserEnrichedProductDataWithTBaustoffProduct = async (layerId: number, selectedId: number) => {
   return await prisma.userEnrichedProductData.upsert({
-    // TODO: add checks here for:
+    // TODO (XL): add checks here for:
     // 1. user has access to the project and layer
     // 2. that there is not already a match found by out OBD-tBaustoff mapping
     // 3. if the layerId exists in the database
@@ -254,7 +254,7 @@ export const getTBaustoffMappingEntry = async (oekobaudatProcessUuid: string, oe
     where: {
       oebd_processUuid_oebd_versionUuid: {
         oebd_processUuid: oekobaudatProcessUuid,
-        oebd_versionUuid: "448d1096-2017-4901-a560-f652a83c737e", //TODO: this is a hardcoded value, should be changed (could be available in the legacy project table)
+        oebd_versionUuid: "448d1096-2017-4901-a560-f652a83c737e", // TODO (XL): this is a hardcoded value, should be changed (could be available in the legacy project table)
       },
     },
   })

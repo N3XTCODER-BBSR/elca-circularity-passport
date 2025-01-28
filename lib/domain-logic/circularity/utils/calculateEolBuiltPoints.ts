@@ -1,6 +1,4 @@
-import getEolClassNameByPoints, {
-  getEolPointsByScenario,
-} from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import { getEolClassNameByPoints, getEolPointsByScenario } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 
 type DisturbingSubstanceClassIdWithoutS4 = "S0" | "S1" | "S2" | "S3"
@@ -31,8 +29,7 @@ function calculateEolBuiltPoints(
 
   const disturbingClassesWithoudS4 = disturbingClasses as DisturbingSubstanceClassIdWithoutS4[]
 
-  // Define the minus points table based on eolPointsUnbuilt ranges and disturbing substance classes
-  const minusPointsTable = [
+  const eolBuiltMinusPointsTable = [
     {
       from: 120,
       to: 105,
@@ -157,7 +154,9 @@ function calculateEolBuiltPoints(
 
   // Find the applicable minus points based on the eolPointsUnbuilt
   const getMinusPoints = (eolPointsUnbuilt: number, disturbingClass: DisturbingSubstanceClassIdWithoutS4): number => {
-    const entry = minusPointsTable.find((entry) => eolPointsUnbuilt <= entry.from && eolPointsUnbuilt > entry.to)
+    const entry = eolBuiltMinusPointsTable.find(
+      (entry) => eolPointsUnbuilt <= entry.from && eolPointsUnbuilt > entry.to
+    )
     return entry && entry.minusPoints[disturbingClass] !== undefined ? entry.minusPoints[disturbingClass] : 0
   }
 

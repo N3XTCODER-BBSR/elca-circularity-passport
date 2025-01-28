@@ -3,9 +3,10 @@ import { getTranslations } from "next-intl/server"
 import { Link } from "i18n/routing"
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/server-actions/getProjectCircularityIndex"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { calculateTotalCircularityIndexForProject } from "lib/domain-logic/circularity/utils/calculateTotalCircularityIndex"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { prismaLegacy } from "prisma/prismaClient"
+import { getAllProcessCategories } from "prisma/queries/legacyDb"
 import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
 import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
@@ -18,61 +19,15 @@ type BuildingOverviewProps = {
   variantId: number
 }
 
-// TODO: rename and move into domain logic
-export const calculateTotalCircularityIndex = async (
-  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
-) => {
-  // TODO: ensure to exlude
-  // 1. components which don't fall into our selection of DIN categories
-  // 2. explicitly excluded components
-
-  // Calculate the total circularity index for the project by iterating over
-  // all entries in circulartiyData
-  //   and within each entry, summing the
-  //     circularity index of each component
-  //     calculate the mass of each component
-  // At the end, divide the total circularity index by the total mass of the project
-  // to get the total circularity index of the project
-
-  let circularityIndexTimesMassSumOverAllComponentLayers = 0
-  let totalMass = 0
-
-  for (const component of circularityData) {
-    for (const layer of component.layers) {
-      // Await the asynchronous function
-      const { mass } = layer
-      if (mass == null) {
-        continue
-      }
-
-      // Accumulate total mass
-      totalMass += mass
-
-      // Only proceed if circularityIndex is not null
-      if (layer.circularityIndex == null) {
-        continue
-      }
-
-      // Accumulate the product of circularityIndex and mass
-      circularityIndexTimesMassSumOverAllComponentLayers += layer.circularityIndex * mass
-    }
-  }
-  // Calculate the total circularity index for the project
-
-  const totalCircularityIndexForProject = circularityIndexTimesMassSumOverAllComponentLayers / totalMass
-  return totalCircularityIndexForProject
-}
-
 const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingOverviewProps) => {
   await ensureUserIsAuthenticated()
 
-  // TODO: move probably most things here into domain logic
   const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
     await getProjectCircularityIndexData(variantId, projectId)
 
-  const totalCircularityIndexForProject = await calculateTotalCircularityIndex(circularityData)
+  const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(circularityData)
 
-  const processCategories: ProcessCategory[] = await prismaLegacy.process_categories.findMany()
+  const processCategories: ProcessCategory[] = await getAllProcessCategories()
 
   const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
     component.layers.some((layer) => layer.circularityIndex == null)

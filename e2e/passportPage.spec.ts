@@ -9,7 +9,7 @@ test("should display not found message when opening passport page with non-exist
   expect(headerText).toBe("Passport not found")
 })
 
-// TODO: fix test. should use existing uuid, which is randomly set with each db seed
+// TODO (M): fix test. should use existing uuid, which is randomly set with each db seed
 // test("should display central building information when opening passport page with existing passportId", async ({
 //   page,
 // }) => {

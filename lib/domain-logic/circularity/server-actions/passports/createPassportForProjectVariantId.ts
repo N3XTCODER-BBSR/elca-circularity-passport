@@ -10,26 +10,26 @@ import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { InvalidParameterError as InvalidOrMissingParameterError } from "lib/errors"
-import { prismaLegacy } from "prisma/prismaClient"
 import { createNewPassportForProjectVariantId } from "prisma/queries/db"
-import { getPassportRelevantDataForProjectVariantFromLegacyDb } from "prisma/queries/legacyDb"
+import {
+  getPassportRelevantDataForProjectVariantFromLegacyDb,
+  getProjectWithVaraitnsAndProcessDbById,
+} from "prisma/queries/legacyDb"
 import { CalculateCircularityDataForLayerReturnType } from "../../utils/calculate-circularity-data-for-layer"
 import { getProjectCircularityIndexData } from "../getProjectCircularityIndex"
 
 const getCircularityForMaterial = (layer: CalculateCircularityDataForLayerReturnType) => {
   const parsedCircularityData = {
     eolPoints: layer.eolBuilt?.points,
-    // TODO: also clarify naming clash: sometimes we call it rebuiltPoints, sometimes dismantlingPoints
+    // TODO (M): clarify naming clash: sometimes we call it rebuiltPoints, sometimes dismantlingPoints
     rebuildPoints: layer.dismantlingPoints,
     circularityIndex: layer.circularityIndex,
-    // TODO: remove the '!' after dismantlingPotentialClassId (validate also this as everything else via zod)
     dismantlingPotentialClassId: layer.dismantlingPotentialClassId,
     methodologyVersion: "PLACEHOLDER (1.111111111)",
     proofReuse: layer.eolUnbuiltSpecificScenarioProofText,
     interferingSubstances: layer.disturbingSubstanceSelections.map((s) => ({
-      // TODO: check naming clash: className vs classId
+      // TODO (M): check naming clash: className vs classId
       className: s.disturbingSubstanceClassId,
-      // TODO: validate that the mapping is right and how to handle null values
       description: s.disturbingSubstanceName,
     })),
   }
@@ -48,14 +48,14 @@ const createMaterialForComponent = async (
   return {
     layerIndex: layer.layer_position,
     name: layer.process_name,
-    // TODO: needs double check how to handle null values here
+    // TODO (L): needs double check how to handle null values here
     massInKg: (layer.mass != null ? layer.mass : 0) * quantity || 0,
-    // TODO: move this one level up to component?
+    // TODO (M): move this one level up to component?
     materialGeometry: {
       unit: unit as MaterialGeometry["unit"],
       amount: quantity,
     },
-    // TODO:
+    // TODO (XL): get serviceLifeInYears from legacy db
     serviceLifeInYears: 50,
     serviceLifeTableVersion: "1.11111",
     trade: {
@@ -82,19 +82,16 @@ type PassportGeneratorResponse = {
   details?: ZodIssue[] | string
 }
 
-// TODO: split this long function into smaller ones (this function should only be 'workflow orchestration' on high level)
+// TODO (M): split this long function into smaller ones (this function should only be 'workflow orchestration' on high level)
 export async function createPassportForProjectVariantId(
   projectVariantId: string,
   projectId: string
 ): Promise<PassportGeneratorResponse> {
   try {
-    // await new Promise((resolve) => setTimeout(resolve, 4000)) // just for testing the UI loading spinner
-    // throw new Error() // just for testing the UI error messsage implementation
-
+    // TODO (M): review/improve/remove these two falsy checks
     if (!projectVariantId) {
       throw new InvalidOrMissingParameterError("ProjectVariantId", projectVariantId)
     }
-
     if (!projectId) {
       throw new InvalidOrMissingParameterError("ProjectId", projectId)
     }
@@ -103,18 +100,8 @@ export async function createPassportForProjectVariantId(
 
     await ensureUserAuthorizationToProject(Number(session.user.id), Number(projectVariantId))
 
-    // TODO: move into DAL
-    const project = await prismaLegacy.projects.findUnique({
-      where: { id: Number(projectId) },
-      include: {
-        project_variants_project_variants_project_idToprojects: true,
-        process_dbs: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    })
+    const project = await getProjectWithVaraitnsAndProcessDbById(Number(projectId))
+
     if (!project) throw new Error("Project not found!")
 
     const projectLifeTime = project.life_time
@@ -205,7 +192,7 @@ export async function createPassportForProjectVariantId(
       buildingComponents,
     }
 
-    // TODO: replace 'any' here with a more specific type to at least cover some basic/obvious type issues (like presence of a field) at compile time already
+    // TODO (M): replace 'any' here with a more specific type to at least cover some basic/obvious type issues (like presence of a field) at compile time already
     const parsedPassportData: SafeParseReturnType<any, PassportData> = PassportDataSchema.safeParse(passportInputData)
     if (!parsedPassportData.success) {
       console.error("Data is invalid:", parsedPassportData.error.errors)
@@ -219,7 +206,7 @@ export async function createPassportForProjectVariantId(
     await createNewPassportForProjectVariantId(
       uuid,
       String(projectVariantId),
-      // TODO: set the version tag in a clean way
+      // TODO (L): set the version tag in a clean way
       "v0.0.1",
       parsedPassportData.data,
       now,

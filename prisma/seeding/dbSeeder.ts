@@ -156,7 +156,7 @@ async function seedCircularityTool() {
       const tBaustoff = await prisma.tBs_ProductDefinition.create({
         data: {
           name: row.tBaustoffName,
-          tBs_version: "2024-Q4", // TODO: Change version name?
+          tBs_version: "2024-Q4",
           tBs_ProductDefinitionEOLCategoryId: eolCategoryId,
         },
       })

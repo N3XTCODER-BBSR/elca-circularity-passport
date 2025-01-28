@@ -46,7 +46,7 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
       product_id: layer.component_id,
       name: layer.element_name,
       process_category_node_id: layer.process_category_node_id,
-      // TODO: check whether this should actually fall back 'silently' to 0
+      // TODO (L): check whether this should actually fall back 'silently' to 0
       weight: (layer.mass ?? 0) * (layer.quantity ?? 0) || 0, // if weight might be null, default to 0 or handle upstream
       circularityIndex: layer.circularityIndex ?? 0,
     }))
