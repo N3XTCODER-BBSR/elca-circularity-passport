@@ -7,11 +7,11 @@ import {
   createProject,
   createProjectAccessToken,
   createUser,
-  deleteAccessGroup,
+  deleteAccessGroupIfExists,
   deleteComponentIfExists,
-  deleteGroupMember,
+  deleteGroupMemberIfExists,
   deleteProductIfExists,
-  deleteProject,
+  deleteProjectIfExists,
   deleteProjectAccessTokenIfExists,
   deleteUserIfExists,
   setProjectAccessTokenToEditTrue,
@@ -60,11 +60,11 @@ describe("toggleExcludedProduct", () => {
 
     afterAll(async () => {
       // Cleanup USER2's resources
-      await deleteProject(project2Id)
+      await deleteProjectIfExists(project2Id)
       await deleteUserIfExists(user2Id)
       await deleteProductIfExists(product2Id)
       await deleteComponentIfExists(component2Id)
-      await deleteAccessGroup(group2Id)
+      await deleteAccessGroupIfExists(group2Id)
 
       // Cleanup USER3's resources
       await deleteUserIfExists(user3Id)
@@ -140,7 +140,7 @@ describe("toggleExcludedProduct", () => {
       })
 
       afterAll(async () => {
-        await deleteGroupMember(user3Id, group1Id)
+        await deleteGroupMemberIfExists(user3Id, group1Id)
       })
 
       it("resolves if user belongs to an authorized group", async () => {

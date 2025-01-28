@@ -9,11 +9,11 @@ import {
   createProjectAccessToken,
   createTBsProductDefinition,
   createUser,
-  deleteAccessGroup,
+  deleteAccessGroupIfExists,
   deleteComponentIfExists,
-  deleteGroupMember,
+  deleteGroupMemberIfExists,
   deleteProductIfExists,
-  deleteProject,
+  deleteProjectIfExists,
   deleteProjectAccessTokenIfExists,
   deleteUserIfExists,
   setProjectAccessTokenToEditTrue,
@@ -66,11 +66,11 @@ describe("updateTBaustoffProduct", () => {
 
     afterAll(async () => {
       // Cleanup user2’s data
-      await deleteProject(project2Id)
+      await deleteProjectIfExists(project2Id)
       await deleteUserIfExists(user2Id)
       await deleteProductIfExists(product2Id)
       await deleteComponentIfExists(component2Id)
-      await deleteAccessGroup(group2Id)
+      await deleteAccessGroupIfExists(group2Id)
 
       // Cleanup user3’s data
       await deleteUserIfExists(user3Id)
@@ -170,7 +170,7 @@ describe("updateTBaustoffProduct", () => {
       })
 
       afterAll(async () => {
-        await deleteGroupMember(user3Id, group1Id)
+        await deleteGroupMemberIfExists(user3Id, group1Id)
       })
 
       it("resolves if user belongs to an authorized group", async () => {

@@ -134,7 +134,6 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
                           componentsByCategory.componentTypes.some(
                             (componentType) =>
                               componentType.components.some((component) => {
-                                debugger
                                 return componentUuiddsWithMissingCircularityIndexForAnyProduct?.includes(component.uuid)
                               })
                             // )

@@ -7,9 +7,9 @@ import {
   createProjectAccessToken,
   createUser,
   createVariant,
-  deleteAccessGroup,
-  deleteGroupMember,
-  deleteProject,
+  deleteAccessGroupIfExists,
+  deleteGroupMemberIfExists,
+  deleteProjectIfExists,
   deleteProjectAccessTokenIfExists,
   deleteUserIfExists,
   deleteVariantIfExists,
@@ -64,9 +64,9 @@ describe("getElcaComponentDataByLayerId", () => {
 
     afterAll(async () => {
       // Clean up user2 resources
-      await deleteProject(project2Id)
+      await deleteProjectIfExists(project2Id)
       await deleteVariantIfExists(variant2Id)
-      await deleteAccessGroup(group2Id)
+      await deleteAccessGroupIfExists(group2Id)
       await deleteUserIfExists(user2Id)
 
       // Clean up user3
@@ -168,7 +168,7 @@ describe("getElcaComponentDataByLayerId", () => {
       })
 
       afterAll(async () => {
-        await deleteGroupMember(user3Id, group1Id)
+        await deleteGroupMemberIfExists(user3Id, group1Id)
       })
 
       it("resolves and returns data if user belongs to an authorized group", async () => {

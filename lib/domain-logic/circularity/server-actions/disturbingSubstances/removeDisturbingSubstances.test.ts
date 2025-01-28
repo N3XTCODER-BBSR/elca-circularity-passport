@@ -10,11 +10,11 @@ import {
   createProjectAccessToken,
   createUser,
   createVariant,
-  deleteAccessGroup,
+  deleteAccessGroupIfExists,
   deleteComponentIfExists,
-  deleteGroupMember,
+  deleteGroupMemberIfExists,
   deleteProductIfExists,
-  deleteProject,
+  deleteProjectIfExists,
   deleteProjectAccessTokenIfExists,
   deleteUserIfExists,
   deleteVariantIfExists,
@@ -83,8 +83,8 @@ describe("removeDisturbingSubstanceSelection", () => {
 
     afterAll(async () => {
       // Cleanup user2
-      await deleteProject(project2Id)
-      await deleteAccessGroup(group2Id)
+      await deleteProjectIfExists(project2Id)
+      await deleteAccessGroupIfExists(group2Id)
       await deleteVariantIfExists(variant2Id)
       await deleteUserIfExists(user2Id)
       await deleteProductIfExists(product2Id)
@@ -253,7 +253,7 @@ describe("removeDisturbingSubstanceSelection", () => {
       })
 
       afterAll(async () => {
-        await deleteGroupMember(user3Id, group1Id)
+        await deleteGroupMemberIfExists(user3Id, group1Id)
       })
 
       it("resolves if user belongs to an authorized group that controls the project", async () => {

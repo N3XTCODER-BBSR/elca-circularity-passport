@@ -54,7 +54,7 @@ export const deleteVariantIfExists = async (variantId: number) => {
 
 /**
  * create a project with the given id
- * @returns newly created project
+ * @returns newly created product
  */
 export const createProductWithComponent = async (productId: number, componentId: number) => {
   return prismaLegacySuperUser.elca_elements.create({
@@ -226,14 +226,27 @@ export const createGroupMember = async (userId: number, groupId: number) => {
   })
 }
 
-export const deleteGroupMember = async (userId: number, groupId: number) => {
-  return prismaLegacySuperUser.group_members.delete({
-    where: {
-      group_id_user_id: {
-        group_id: groupId,
-        user_id: userId,
+export const deleteGroupMemberIfExists = async (userId: number, groupId: number) => {
+  return prismaLegacySuperUser.$transaction(async (tx) => {
+    const groupMember = await tx.group_members.findUnique({
+      where: {
+        group_id_user_id: {
+          group_id: groupId,
+          user_id: userId,
+        },
       },
-    },
+    })
+
+    if (groupMember) {
+      await tx.group_members.delete({
+        where: {
+          group_id_user_id: {
+            group_id: groupId,
+            user_id: userId,
+          },
+        },
+      })
+    }
   })
 }
 
@@ -246,14 +259,23 @@ export const addElementToAccessGroup = async (componentId: number, groupId: numb
   })
 }
 
-export const deleteProject = async (projectId: number) => {
-  return prismaLegacySuperUser.projects.delete({
-    where: { id: projectId },
+export const deleteProjectIfExists = async (projectId: number) => {
+  return prismaLegacySuperUser.$transaction(async (tx) => {
+    const project = await tx.projects.findUnique({ where: { id: projectId } })
+
+    if (project) {
+      await prismaLegacySuperUser.projects.delete({
+        where: { id: projectId },
+      })
+    }
   })
 }
 
-export const deleteAccessGroup = async (groupId: number) => {
-  return prismaLegacySuperUser.groups.delete({
-    where: { id: groupId },
+export const deleteAccessGroupIfExists = async (groupId: number) => {
+  return prismaLegacySuperUser.$transaction(async (tx) => {
+    const group = await prismaLegacySuperUser.groups.findUnique({ where: { id: groupId } })
+    if (group) {
+      await prismaLegacySuperUser.groups.delete({ where: { id: groupId } })
+    }
   })
 }
