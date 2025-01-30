@@ -1,5 +1,3 @@
-// updateSpecificScenario.test-improved.test.ts
-
 import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
 import { UnauthorizedError } from "lib/errors"

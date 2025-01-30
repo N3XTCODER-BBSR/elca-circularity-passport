@@ -17,6 +17,12 @@ export class InvalidParameterError extends Error {
   }
 }
 
+export class NotFoundError extends Error {
+  constructor(message = "Not Found") {
+    super(message)
+  }
+}
+
 export const getErrorMessage = (error: unknown): string => {
   let message: string
   if (error instanceof Error) {

@@ -84,8 +84,8 @@ type PassportGeneratorResponse = {
 
 // TODO: split this long function into smaller ones (this function should only be 'workflow orchestration' on high level)
 export async function createPassportForProjectVariantId(
-  projectVariantId: string,
-  projectId: string
+  projectVariantId: number,
+  projectId: number
 ): Promise<PassportGeneratorResponse> {
   try {
     // await new Promise((resolve) => setTimeout(resolve, 4000)) // just for testing the UI loading spinner

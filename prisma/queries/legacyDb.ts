@@ -417,10 +417,10 @@ const getProjectAuthorizationConditions = (userId: number) => [
   },
 ]
 
-export const getPassportRelevantDataForProjectVariantFromLegacyDb = async (projectVariantId: string) => {
+export const getPassportRelevantDataForProjectVariantFromLegacyDb = async (projectVariantId: number) => {
   return await prismaLegacy.elca_project_variants.findUnique({
     where: {
-      id: Number(projectVariantId),
+      id: projectVariantId,
     },
     include: {
       project_locations: true,
@@ -443,6 +443,14 @@ export const getPassportRelevantDataForProjectVariantFromLegacyDb = async (proje
           net_room_space_heated: true,
         },
       },
+    },
+  })
+}
+
+export const getVariantById = async (id: number) => {
+  return await prismaLegacy.elca_project_variants.findUnique({
+    where: {
+      id,
     },
   })
 }

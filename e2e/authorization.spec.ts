@@ -98,26 +98,27 @@ test.describe("Authorization", () => {
         test.describe("different parameters", () => {
           const newAccessGroupId = 199
           const newProjectId = 99
-          const { userId, username } = users.unAuthorizedUser
           const newVariantId = 99
 
-          test.use({ storageState: getAuthUserFile(username) })
+          test.use({ storageState: getAuthUserFile(users.unAuthorizedUser.username) })
 
           test.beforeAll(async () => {
             await deleteProjectIfExists(newProjectId)
             await deleteAccessGroupIfExists(newAccessGroupId)
+
             await createAccessGroup(newAccessGroupId)
-            await createProject(newProjectId, newAccessGroupId, userId)
-            await deleteVariantIfExists(variantId)
-            await createVariant(variantId, newProjectId)
+            await createProject(newProjectId, newAccessGroupId, users.unAuthorizedUser.userId)
+
+            await deleteVariantIfExists(newVariantId)
+            await createVariant(newVariantId, newProjectId)
           })
           test.afterAll(async () => {
             await deleteProjectIfExists(newProjectId)
             await deleteAccessGroupIfExists(newAccessGroupId)
-            await deleteVariantIfExists(variantId)
+            await deleteVariantIfExists(newVariantId)
           })
 
-          test("should not be able to access page resource parameter is not part of project", async ({ page }) => {
+          test("should not be able to access page resource parameter that is not part of project", async ({ page }) => {
             let url = route.replace("projectId", newProjectId.toString())
             if (url.includes("componentId")) {
               url = url.replace("componentId", componentId)
