@@ -1,5 +1,5 @@
 import errorHandler from "app/(utils)/errorHandler"
-import { getPassportsForProjectVariantId } from "lib/domain-logic/circularity/server-actions/passports/getPassportsForProjectVariantId"
+import { getPassportsForProjectVariantId } from "lib/domain-logic/circularity/misc/getPassportsForProjectVariantId"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { PassportMetadata } from "prisma/queries/db"

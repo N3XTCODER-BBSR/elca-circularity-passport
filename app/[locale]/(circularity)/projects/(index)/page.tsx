@@ -3,7 +3,7 @@ import { FC } from "react"
 import ListItemLink from "app/(components)/generic/ListItemLink"
 import errorHandler from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { getProjectsByOwnerId } from "prisma/queries/legacyDb"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 
 const Page = async () => {
   return errorHandler(async () => {
@@ -11,7 +11,7 @@ const Page = async () => {
 
     const userId = Number(session.user.id)
 
-    const projects = await getProjectsByOwnerId(userId)
+    const projects = await legacyDbDalInstance.getProjectsByOwnerId(userId)
 
     const t = await getTranslations("Grp.Web.sections.projects")
 
@@ -30,7 +30,9 @@ const Page = async () => {
   })
 }
 
-const ProjectList: FC<{ projects: Awaited<ReturnType<typeof getProjectsByOwnerId>> }> = async ({ projects }) => {
+const ProjectList: FC<{ projects: Awaited<ReturnType<typeof legacyDbDalInstance.getProjectsByOwnerId>> }> = async ({
+  projects,
+}) => {
   const t = await getTranslations("Grp.Web.sections.projects")
 
   return (

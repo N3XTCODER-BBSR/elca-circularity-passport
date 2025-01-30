@@ -16,9 +16,9 @@ import {
   StyledDt,
 } from "app/(components)/generic/layout-elements"
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
-import { addOrUpdateDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/disturbingSubstances/addOrUpdateDisturbingSubstance"
-import { removeDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/disturbingSubstances/removeDisturbingSubstances"
-import { updateDisturbingEolScenarioForS4 } from "lib/domain-logic/circularity/server-actions/disturbingSubstances/updateDisturbingEolScenarioForS4"
+import { addOrUpdateDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/addOrUpdateDisturbingSubstance"
+import { removeDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/removeDisturbingSubstances"
+import { updateDisturbingEolScenarioForS4 } from "lib/domain-logic/circularity/server-actions/updateDisturbingEolScenarioForS4"
 import { updateDismantlingPotentialClassId } from "lib/domain-logic/circularity/server-actions/updateDismantlingPotentialClassId"
 import {
   CalculateCircularityDataForLayerReturnType,

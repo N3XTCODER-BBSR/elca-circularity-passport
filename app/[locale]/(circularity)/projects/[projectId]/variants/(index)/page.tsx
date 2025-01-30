@@ -3,8 +3,8 @@ import ListItemLink from "app/(components)/generic/ListItemLink"
 import errorHandler from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { getProjectDataWithVariants } from "prisma/queries/legacyDb"
 import ProjectLayout from "../../(components)/ProjectLayout"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 
 const Page = async ({ params }: { params: { projectId: string } }) => {
   return errorHandler(async () => {
@@ -17,7 +17,7 @@ const Page = async ({ params }: { params: { projectId: string } }) => {
 
     const t = await getTranslations("Grp.Web.sections.variants")
 
-    const projectData = await getProjectDataWithVariants(projectId)
+    const projectData = await legacyDbDalInstance.getProjectDataWithVariants(projectId)
     const variants = projectData?.project_variants_project_variants_project_idToprojects || []
 
     const displayVariants = variants.map((variant) => {

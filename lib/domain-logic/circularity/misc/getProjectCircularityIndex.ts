@@ -1,10 +1,10 @@
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
-import { getExcludedProductIds } from "prisma/queries/db"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import { getElcaElementsForVariantId } from "./getElcaElementsForProjectId"
 import calculateCircularityDataForLayer, {
   CalculateCircularityDataForLayerReturnType,
 } from "../utils/calculate-circularity-data-for-layer"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 
 // type ProjectCircularityIndexData = {
 //   projectId: string
@@ -37,7 +37,7 @@ export const getProjectCircularityIndexData = async (
         )
 
         const productIds = elementDetailsWithProducts.layers.map((layer) => layer.component_id)
-        const excludedProductIds = await getExcludedProductIds(productIds)
+        const excludedProductIds = await dbDalInstance.getExcludedProductIds(productIds)
         const excludedProductIdsSet = new Set(excludedProductIds.map((entry) => entry.productId))
 
         return {
