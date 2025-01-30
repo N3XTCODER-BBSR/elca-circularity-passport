@@ -7,14 +7,8 @@ import {
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { DisturbingSubstanceClassId, Prisma } from "prisma/generated/client"
-import {
-  createDisturbingSubstanceSelection,
-  findDisturbingSubstancesByLayerIdAndClassId,
-  updateDisturbingSubstanceSelection,
-  updateUserEnrichedProductDataDisturbingEolScenario,
-  upsertUserEnrichedProductData,
-} from "prisma/queries/db"
 import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 
 export async function addOrUpdateDisturbingSubstanceSelection(
   variantId: number,
@@ -31,47 +25,46 @@ export async function addOrUpdateDisturbingSubstanceSelection(
 
   await ensureUserAuthorizationToProject(userId, projectId)
 
-  await upsertUserEnrichedProductData(layerId)
+  await dbDalInstance.upsertUserEnrichedProductData(layerId)
 
-  try {
-    if (disturbingSubstanceSelectionWithNullableId.id != null) {
-      const { disturbingSubstanceClassId, disturbingSubstanceName } = disturbingSubstanceSelectionWithNullableId
+  if (disturbingSubstanceSelectionWithNullableId.id != null) {
+    const { disturbingSubstanceClassId, disturbingSubstanceName } = disturbingSubstanceSelectionWithNullableId
 
-      const updateData: Prisma.DisturbingSubstanceSelectionUpdateInput = {
-        disturbingSubstanceClassId,
-        disturbingSubstanceName,
-      }
-
-      if (disturbingSubstanceClassId === DisturbingSubstanceClassId.S0) {
-        updateData.disturbingSubstanceName = null
-      }
-
-      await updateDisturbingSubstanceSelection(disturbingSubstanceSelectionWithNullableId.id, updateData)
-    } else {
-      const createData: Prisma.DisturbingSubstanceSelectionCreateInput = {
-        disturbingSubstanceClassId: disturbingSubstanceSelectionWithNullableId.disturbingSubstanceClassId || null,
-        disturbingSubstanceName: disturbingSubstanceSelectionWithNullableId.disturbingSubstanceName || null,
-        userEnrichedProductData: {
-          connect: {
-            elcaElementComponentId: layerId,
-          },
-        },
-      }
-
-      if (disturbingSubstanceSelectionWithNullableId.disturbingSubstanceClassId === DisturbingSubstanceClassId.S0) {
-        createData.disturbingSubstanceName = null
-      }
-
-      await createDisturbingSubstanceSelection(createData)
+    const updateData: Prisma.DisturbingSubstanceSelectionUpdateInput = {
+      disturbingSubstanceClassId,
+      disturbingSubstanceName,
     }
-  } catch (error: any) {
-    throw error
+
+    if (disturbingSubstanceClassId === DisturbingSubstanceClassId.S0) {
+      updateData.disturbingSubstanceName = null
+    }
+
+    await dbDalInstance.updateDisturbingSubstanceSelection(disturbingSubstanceSelectionWithNullableId.id, updateData)
+  } else {
+    const createData: Prisma.DisturbingSubstanceSelectionCreateInput = {
+      disturbingSubstanceClassId: disturbingSubstanceSelectionWithNullableId.disturbingSubstanceClassId || null,
+      disturbingSubstanceName: disturbingSubstanceSelectionWithNullableId.disturbingSubstanceName || null,
+      userEnrichedProductData: {
+        connect: {
+          elcaElementComponentId: layerId,
+        },
+      },
+    }
+
+    if (disturbingSubstanceSelectionWithNullableId.disturbingSubstanceClassId === DisturbingSubstanceClassId.S0) {
+      createData.disturbingSubstanceName = null
+    }
+
+    await dbDalInstance.createDisturbingSubstanceSelection(createData)
   }
 
   // If there are no S4 disturbing substances, remove the disturbingEolScenarioForS4
-  const disturbingSubstances = await findDisturbingSubstancesByLayerIdAndClassId(layerId, DisturbingSubstanceClassId.S4)
+  const disturbingSubstances = await dbDalInstance.findDisturbingSubstancesByLayerIdAndClassId(
+    layerId,
+    DisturbingSubstanceClassId.S4
+  )
   if (disturbingSubstances.length === 0) {
-    await updateUserEnrichedProductDataDisturbingEolScenario(layerId)
+    await dbDalInstance.updateUserEnrichedProductDataDisturbingEolScenario(layerId)
   }
 
   const elcaElementComponentData = await fetchElcaComponentById(layerId, variantId, projectId)

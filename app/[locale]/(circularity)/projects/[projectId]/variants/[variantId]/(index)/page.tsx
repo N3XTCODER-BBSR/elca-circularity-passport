@@ -3,7 +3,7 @@ import errorHandler from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import BuildingOverview from "./(components)/BuildingOverview"
-import { getProjectById } from "prisma/queries/legacyDb"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
   return errorHandler(async () => {
@@ -16,7 +16,7 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
 
     await ensureUserAuthorizationToProject(userId, projectId)
 
-    const projectInfo = await getProjectById(projectId)
+    const projectInfo = await legacyDbDalInstance.getProjectById(projectId)
 
     if (!projectInfo) {
       return <div>{t("projectNotFound")}</div>

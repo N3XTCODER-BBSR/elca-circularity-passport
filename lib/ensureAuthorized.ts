@@ -1,4 +1,4 @@
-import { isUserAuthorizedToElementComponent, isUserAuthorizedToProject } from "prisma/queries/legacyDb"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { UnauthorizedError } from "./errors"
 
 /**
@@ -7,7 +7,7 @@ import { UnauthorizedError } from "./errors"
  * @param projectId
  */
 export const ensureUserAuthorizationToProject = async (userId: number, projectId: number) => {
-  const isAuthorized = isUserAuthorizedToProject(userId, projectId)
+  const isAuthorized = await legacyDbDalInstance.isUserAuthorizedToProject(userId, projectId)
 
   if (!isAuthorized) {
     throw new UnauthorizedError()
@@ -20,7 +20,7 @@ export const ensureUserAuthorizationToProject = async (userId: number, projectId
  * @param elementId
  */
 export const ensureUserAuthorizationToElementComponent = async (userId: number, elementComponentId: number) => {
-  const isAuthorized = await isUserAuthorizedToElementComponent(userId, elementComponentId)
+  const isAuthorized = await legacyDbDalInstance.isUserAuthorizedToElementComponent(userId, elementComponentId)
 
   if (!isAuthorized) {
     throw new UnauthorizedError()

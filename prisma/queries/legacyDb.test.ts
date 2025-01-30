@@ -1,20 +1,10 @@
-import {
-  findUsersByAuthName,
-  getComponentsByVariantId,
-  getElcaComponentDataByLayerId,
-  getElcaVariantComponentsByInstanceId,
-  getProjectById,
-  getProjectDataWithVariants,
-  getProjectsByOwnerId,
-  isUserAuthorizedToElementComponent,
-  isUserAuthorizedToProject,
-} from "./legacyDb"
-import { createUser, deleteUserIfExists } from "./utils"
+import { createUser, deleteUserIfExists } from "./testUtils"
+import { legacyDbDalInstance } from "./dalSingletons"
 
 describe("legacyDb queries", () => {
   describe("getElcaComponentDataByLayerId", () => {
     it("should return the correct component data for a given layer ID", async () => {
-      const result = await getElcaComponentDataByLayerId(5, 1, 1)
+      const result = await legacyDbDalInstance.getElcaComponentDataByLayerId(5, 1, 1)
 
       const want = {
         life_cycle_ident: "A1-3",
@@ -39,7 +29,11 @@ describe("legacyDb queries", () => {
   })
   describe("getElcaVariantComponentsByInstanceId", () => {
     it("should return the correct project components for a given instance ID and user ID", async () => {
-      const result = await getElcaVariantComponentsByInstanceId("32af2f0b-d7d8-4fb1-8354-1e9736d4f513", 1, 1)
+      const result = await legacyDbDalInstance.getElcaVariantComponentsByInstanceId(
+        "32af2f0b-d7d8-4fb1-8354-1e9736d4f513",
+        1,
+        1
+      )
 
       const want = [
         {
@@ -124,7 +118,7 @@ describe("legacyDb queries", () => {
   })
   describe("getProjectsById", () => {
     it("should return the correct project data for a given project ID and owner ID", async () => {
-      const result = await getProjectById(1)
+      const result = await legacyDbDalInstance.getProjectById(1)
 
       const want = { id: 1, name: "Test Project 1" }
 
@@ -133,7 +127,7 @@ describe("legacyDb queries", () => {
   })
   describe("getProjectDataWithVariants", () => {
     it("should return the correct project data for a given project ID", async () => {
-      const result = await getProjectDataWithVariants(1)
+      const result = await legacyDbDalInstance.getProjectDataWithVariants(1)
 
       const want = {
         id: 1,
@@ -163,7 +157,7 @@ describe("legacyDb queries", () => {
     })
     it("should return null if the project does not exist", async () => {
       const nonExistingProjectId = 999
-      const result = await getProjectDataWithVariants(nonExistingProjectId)
+      const result = await legacyDbDalInstance.getProjectDataWithVariants(nonExistingProjectId)
 
       const want = null
 
@@ -172,7 +166,7 @@ describe("legacyDb queries", () => {
   })
   describe("getProjectsByOwnerId", () => {
     it("should return the correct project data for a given owner ID", async () => {
-      const result = await getProjectsByOwnerId(2)
+      const result = await legacyDbDalInstance.getProjectsByOwnerId(2)
 
       const want = [
         {
@@ -192,7 +186,7 @@ describe("legacyDb queries", () => {
     it(`should return the correct project elements for a given variant ID, 
       but only the ones which fall into the DIN category number pool 
       for the Circularity Tool (const costGroupCategoryNumbersToInclude = [320, 330, 340, 350, 360])`, async () => {
-      const result = await getComponentsByVariantId(1, 1)
+      const result = await legacyDbDalInstance.getComponentsByVariantId(1, 1)
       const want = [
         {
           uuid: "cf37aa10-7ff5-4b42-bec5-d6dd3a7814fb",
@@ -249,7 +243,7 @@ describe("legacyDb queries", () => {
   })
   describe("findUsersByAuthName", () => {
     it("should return the correct user data for a given auth name", async () => {
-      const result = await findUsersByAuthName("testuser")
+      const result = await legacyDbDalInstance.findUsersByAuthName("testuser")
 
       const want = [
         {
@@ -267,14 +261,14 @@ describe("legacyDb queries", () => {
     beforeEach(() => {})
 
     it("should return the project id if the user is authorized to the project", async () => {
-      const result = await isUserAuthorizedToProject(2, 1)
+      const result = await legacyDbDalInstance.isUserAuthorizedToProject(2, 1)
 
       const want = { id: 1 }
 
       expect(result).toMatchObject(want)
     })
     it("should return null if the user is does not exist", async () => {
-      const result = await isUserAuthorizedToProject(3, 1)
+      const result = await legacyDbDalInstance.isUserAuthorizedToProject(3, 1)
 
       const want = null
 
@@ -284,7 +278,7 @@ describe("legacyDb queries", () => {
       const userId = 3
       await createUser(userId, "testuser2")
 
-      const result = await isUserAuthorizedToProject(userId, 2)
+      const result = await legacyDbDalInstance.isUserAuthorizedToProject(userId, 2)
 
       const want = null
 
@@ -295,14 +289,14 @@ describe("legacyDb queries", () => {
   })
   describe("isUserAuthorizedToElementComponent", () => {
     it("should return the element component id if the user is authorized to the element component", async () => {
-      const result = await isUserAuthorizedToElementComponent(2, 5)
+      const result = await legacyDbDalInstance.isUserAuthorizedToElementComponent(2, 5)
 
       const want = { id: 5 }
 
       expect(result).toMatchObject(want)
     })
     it("should return null if the user does not exist", async () => {
-      const result = await isUserAuthorizedToElementComponent(3, 5)
+      const result = await legacyDbDalInstance.isUserAuthorizedToElementComponent(3, 5)
 
       const want = null
 
@@ -312,7 +306,7 @@ describe("legacyDb queries", () => {
       const userId = 3
       await createUser(userId, "testuser2")
 
-      const result = await isUserAuthorizedToElementComponent(userId, 5)
+      const result = await legacyDbDalInstance.isUserAuthorizedToElementComponent(userId, 5)
 
       const want = null
 

@@ -30,3 +30,10 @@ export const getErrorMessage = (error: unknown): string => {
   }
   return message
 }
+
+// TODO: implement more advanced error handling
+export class DalError extends Error {
+  constructor(message = "Dal Error") {
+    super(message)
+  }
+}

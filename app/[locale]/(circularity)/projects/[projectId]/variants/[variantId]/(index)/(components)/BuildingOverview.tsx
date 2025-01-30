@@ -6,12 +6,12 @@ import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/cir
 import { calculateTotalCircularityIndexForProject } from "lib/domain-logic/circularity/utils/calculateTotalCircularityIndex"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { getAllProcessCategories } from "prisma/queries/legacyDb"
 import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
 import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
 } from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
 import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 
 type BuildingOverviewProps = {
   projectId: number
@@ -27,7 +27,7 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
 
   const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(circularityData)
 
-  const processCategories: ProcessCategory[] = await getAllProcessCategories()
+  const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
 
   const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
     component.layers.some((layer) => layer.circularityIndex == null)

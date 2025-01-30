@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { createUser, deleteUserIfExists } from "prisma/queries/utils"
+import { createUser, deleteUserIfExists } from "prisma/queries/testUtils"
 
 const username = "testuser2"
 const password = "password1!"

@@ -3,7 +3,7 @@
 import { getServerSession } from "next-auth"
 import authOptions from "app/(utils)/authOptions"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
-import { upsertDisturbingEolScenarioForS4 } from "prisma/queries/db"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 
 export async function updateDisturbingEolScenarioForS4(
   layerId: number,
@@ -18,5 +18,5 @@ export async function updateDisturbingEolScenarioForS4(
     throw new Error("Unauthorized")
   }
 
-  await upsertDisturbingEolScenarioForS4(layerId, specificScenario)
+  await dbDalInstance.upsertDisturbingEolScenarioForS4(layerId, specificScenario)
 }

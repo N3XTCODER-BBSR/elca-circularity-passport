@@ -10,13 +10,9 @@ import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { InvalidParameterError as InvalidOrMissingParameterError } from "lib/errors"
-import { createNewPassportForProjectVariantId } from "prisma/queries/db"
-import {
-  getPassportRelevantDataForProjectVariantFromLegacyDb,
-  getProjectWithVaraitnsAndProcessDbById,
-} from "prisma/queries/legacyDb"
 import { CalculateCircularityDataForLayerReturnType } from "../utils/calculate-circularity-data-for-layer"
 import { getProjectCircularityIndexData } from "../misc/getProjectCircularityIndex"
+import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 
 const getCircularityForMaterial = (layer: CalculateCircularityDataForLayerReturnType) => {
   const parsedCircularityData = {
@@ -100,7 +96,7 @@ export async function createPassportForProjectVariantId(
 
     await ensureUserAuthorizationToProject(Number(session.user.id), Number(projectVariantId))
 
-    const project = await getProjectWithVaraitnsAndProcessDbById(Number(projectId))
+    const project = await legacyDbDalInstance.getProjectWithVaraitnsAndProcessDbById(Number(projectId))
 
     if (!project) throw new Error("Project not found!")
 
@@ -148,7 +144,7 @@ export async function createPassportForProjectVariantId(
     const nowAsStr = now.toISOString().split("T")[0]!
 
     const relevantPassportDataFromLegacyDb =
-      await getPassportRelevantDataForProjectVariantFromLegacyDb(projectVariantId)
+      await legacyDbDalInstance.getPassportRelevantDataForProjectVariantFromLegacyDb(projectVariantId)
 
     const address = `${relevantPassportDataFromLegacyDb?.project_locations?.street}, ${relevantPassportDataFromLegacyDb?.project_locations?.postcode} ${relevantPassportDataFromLegacyDb?.project_locations?.city} (${relevantPassportDataFromLegacyDb?.project_locations?.country})`
 
@@ -203,7 +199,7 @@ export async function createPassportForProjectVariantId(
       }
     }
 
-    await createNewPassportForProjectVariantId(
+    await dbDalInstance.createNewPassportForProjectVariantId(
       uuid,
       String(projectVariantId),
       // TODO (L): set the version tag in a clean way

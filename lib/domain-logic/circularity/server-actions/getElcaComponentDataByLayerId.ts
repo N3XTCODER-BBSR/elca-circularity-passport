@@ -3,8 +3,8 @@
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { getExcludedProductId } from "prisma/queries/db"
 import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 
 const getElcaComponentDataByLayerId = async (
   variantId: number,
@@ -16,7 +16,7 @@ const getElcaComponentDataByLayerId = async (
   await ensureUserAuthorizationToProject(userId, projectId)
 
   const newElcaElementComponentData = await fetchElcaComponentById(layerId, variantId, projectId)
-  const isExcluded = await getExcludedProductId(newElcaElementComponentData.component_id)
+  const isExcluded = await dbDalInstance.getExcludedProductId(newElcaElementComponentData.component_id)
   newElcaElementComponentData.isExcluded = !!isExcluded
 
   return newElcaElementComponentData
