@@ -86,7 +86,6 @@ const main = async () => {
     process.env.DATABASE_POOL_TIMEOUT = "20000"
     process.env.LEGACY_DATABASE_POOL_MAX_CONN = "2"
     process.env.LEGACY_DATABASE_POOL_TIMEOUT = "20000"
-
     ;(globalThis as unknown as { [key: string]: StartedTestContainer }).__PASSPORT_DB_CONTAINER__ = passportDbContainer
     ;(globalThis as unknown as { [key: string]: StartedTestContainer }).__ELCA_DB_CONTAINER__ = elcaDbContainer
   } catch (error) {
