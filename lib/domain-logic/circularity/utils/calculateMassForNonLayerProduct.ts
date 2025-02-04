@@ -1,5 +1,5 @@
 import Decimal from "decimal.js"
-import { prismaLegacy } from "prisma/prismaClient"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 
 export class UnsupportedUnitError extends Error {
   constructor(unit: string) {
@@ -19,20 +19,7 @@ export class UnsupportedUnitError extends Error {
  */
 export const calculateMassForNonLayerProduct = async (elementComponentId: number): Promise<number> => {
   // Load the element component and include its process conversion and process config.
-  const elementComponent = await prismaLegacy.elca_element_components.findUnique({
-    where: { id: elementComponentId },
-    include: {
-      process_conversions: {
-        include: {
-          process_conversion_versions: {
-            orderBy: { created: "desc" },
-            take: 1,
-          },
-        },
-      },
-      process_configs: true,
-    },
-  })
+  const elementComponent = await legacyDbDalInstance.getElementComponentWithDetails(elementComponentId)
 
   if (!elementComponent) {
     throw new Error("Element component not found.")
@@ -102,14 +89,7 @@ export const calculateMassForNonLayerProduct = async (elementComponentId: number
  */
 const findDensityFactor = async (processConfigId: number, inUnit: string, outUnit: string): Promise<Decimal> => {
   // Query the audit table for matching records.
-  const auditRecords = await prismaLegacy.process_conversion_audit.findMany({
-    where: {
-      process_config_id: processConfigId,
-      in_unit: inUnit,
-      out_unit: outUnit,
-    },
-    orderBy: { modified: "desc" },
-  })
+  const auditRecords = await legacyDbDalInstance.getProcessConversionAuditRecords(processConfigId, inUnit, outUnit)
 
   for (const record of auditRecords) {
     if (record.factor && new Decimal(record.factor).gt(1)) {

@@ -455,4 +455,38 @@ export class LegacyDbDal {
         },
       },
     })
+
+  getProcessConversionAuditRecords = (processConfigId: number, inUnit: string, outUnit: string) => {
+    return prismaLegacy.process_conversion_audit.findMany({
+      where: {
+        process_config_id: processConfigId,
+        in_unit: inUnit,
+        out_unit: outUnit,
+      },
+      orderBy: { modified: "desc" },
+    })
+  }
+
+  getElementComponentWithDetails = (elementComponentId: number) => {
+    return prismaLegacy.elca_element_components.findUnique({
+      where: { id: elementComponentId },
+      include: {
+        process_conversions: {
+          include: {
+            process_conversion_versions: {
+              orderBy: { created: "desc" },
+              take: 1,
+            },
+          },
+        },
+        process_configs: true,
+      },
+    })
+  }
+
+  getProductById = (productId: number) => {
+    return prismaLegacy.elca_element_components.findUnique({
+      where: { id: productId },
+    })
+  }
 }
