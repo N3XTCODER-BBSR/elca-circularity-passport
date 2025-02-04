@@ -268,10 +268,10 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
             },
             dismantlingPotential: {
               dismantlingClassNames: {
-                1: "(CHECK TRANSLATION) non-destructively dismantled",
-                2: "(CHECK TRANSLATION) can be dismantled with minimal damage",
-                3: "(CHECK TRANSLATION) destructive without external interference",
-                4: "(CHECK TRANSLATION) can only be dismantled with foreign/contaminants",
+                1: "Non-destructively dismantled",
+                2: "Can be dismantled with minimal damage",
+                3: "Destructively dismantlable without impurities",
+                4: "Can only be dismantled with impurities",
               },
             },
           },
