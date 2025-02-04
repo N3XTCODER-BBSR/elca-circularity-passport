@@ -13,6 +13,10 @@ import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-type
 import { SelectOption } from "lib/domain-logic/types/helper-types"
 import CircularityInfo from "./circularity-info/CircularityInfo"
 import { useRouter } from "next/navigation"
+import { Accordion } from "@szhsin/react-accordion"
+import { AccordionItemFullSimple } from "app/(components)/generic/AccordionItem"
+import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { Badge } from "app/(components)/generic/layout-elements"
 
 type ComponentLayerProps = {
   projectId: number
@@ -59,6 +63,10 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     ? !currentLayerData.isExcluded
     : currentLayerData.isExcluded
 
+  // TODO: consider to do this calucation on the server side
+  // (or at least be consistent with the other calculation in the conext of the overview page / project circularity index)
+  const circulartyEnrichedLayerData = calculateCircularityDataForLayer(currentLayerData)
+
   const layerKeyValues: KeyValueTuple[] = [
     // {
     //   key: "Oekobaudat UUID",
@@ -99,7 +107,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
 
   const circularityInfo = currentLayerData.isExcluded ? null : (
     <CircularityInfo
-      layerData={currentLayerData}
+      layerData={circulartyEnrichedLayerData}
       tBaustoffProducts={tBaustoffProducts}
       projectId={projectId}
       variantId={variantId}
@@ -124,12 +132,24 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
           />
         </div>
       </div>
-      <div className="mt-8 overflow-hidden">
-        <div className="">
-          <SideBySideDescriptionListsWithHeadline data={layerKeyValues} />
-          {circularityInfo}
-        </div>
-      </div>
+      <Accordion transition transitionTimeout={200}>
+        <AccordionItemFullSimple
+          header={
+            !circulartyEnrichedLayerData.circularityIndex && (
+              <div className="flex">
+                <Badge>{t("incomplete")}</Badge>
+              </div>
+            )
+          }
+        >
+          <div className="mt-8 overflow-hidden">
+            <div className="">
+              <SideBySideDescriptionListsWithHeadline data={layerKeyValues} />
+              {circularityInfo}
+            </div>
+          </div>
+        </AccordionItemFullSimple>
+      </Accordion>
     </div>
   )
 }
