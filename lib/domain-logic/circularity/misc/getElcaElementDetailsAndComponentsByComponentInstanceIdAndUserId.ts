@@ -5,10 +5,10 @@ import {
   TBaustoffProductData,
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
-import { calculateDimensionalValues, calculateVolumeForLayer } from "../utils/getWeightByProductId"
+import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
-import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import { calculateDimensionalValues, calculateVolumeForLayer } from "../utils/getWeightByProductId"
 
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
   variantId: number,

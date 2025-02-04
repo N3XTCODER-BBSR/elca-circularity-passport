@@ -1,10 +1,10 @@
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import { getElcaElementsForVariantId } from "./getElcaElementsForProjectId"
 import calculateCircularityDataForLayer, {
   CalculateCircularityDataForLayerReturnType,
 } from "../utils/calculate-circularity-data-for-layer"
-import { dbDalInstance } from "prisma/queries/dalSingletons"
 
 // type ProjectCircularityIndexData = {
 //   projectId: string

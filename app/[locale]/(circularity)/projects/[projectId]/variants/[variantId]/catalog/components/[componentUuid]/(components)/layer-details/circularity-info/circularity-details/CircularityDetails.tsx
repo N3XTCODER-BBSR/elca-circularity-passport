@@ -18,8 +18,8 @@ import {
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { addOrUpdateDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/addOrUpdateDisturbingSubstance"
 import { removeDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/removeDisturbingSubstances"
-import { updateDisturbingEolScenarioForS4 } from "lib/domain-logic/circularity/server-actions/updateDisturbingEolScenarioForS4"
 import { updateDismantlingPotentialClassId } from "lib/domain-logic/circularity/server-actions/updateDismantlingPotentialClassId"
+import { updateDisturbingEolScenarioForS4 } from "lib/domain-logic/circularity/server-actions/updateDisturbingEolScenarioForS4"
 import {
   CalculateCircularityDataForLayerReturnType,
   EolUnbuiltData,

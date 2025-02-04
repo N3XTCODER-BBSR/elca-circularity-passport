@@ -7,8 +7,8 @@ import {
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { DisturbingSubstanceClassId, Prisma } from "prisma/generated/client"
-import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
+import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 
 export async function addOrUpdateDisturbingSubstanceSelection(
   variantId: number,
