@@ -14,7 +14,7 @@ import {
 } from "prisma/queries/db"
 import { getElcaComponentDataByLayerId } from "prisma/queries/legacyDb"
 import { calculateEolDataByEolCateogryData } from "../../utils/calculateEolDataByEolCateogryData"
-import { calculateDimensionalValues, calculateVolumeForLayer } from "../getWeightByProductId"
+import { calculateMassForProduct, calculateVolumeForLayer } from "../calculateMassForProduct"
 
 export const fetchElcaComponentById = async (layerId: number, variantId: number, projectId: number) => {
   const projectComponent = await getElcaComponentDataByLayerId(layerId, variantId, projectId)
@@ -74,7 +74,7 @@ async function processProjectComponent(
   //   }
   // }
 
-  const { weight: mass } = await calculateDimensionalValues(componentRow.component_id)
+  const mass = await calculateMassForProduct(componentRow.component_id)
   const volume = calculateVolumeForLayer(componentRow)
   const isExcluded = await getExcludedProductId(componentRow.component_id)
   const enrichedComponent: EnrichedElcaElementComponent = {
