@@ -3,8 +3,8 @@
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { deleteDisturbingSubstanceSelectionById } from "prisma/queries/db"
 import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 
 export async function removeDisturbingSubstanceSelection(
   variantId: number,
@@ -21,7 +21,7 @@ export async function removeDisturbingSubstanceSelection(
 
   await ensureUserAuthorizationToProject(userId, projectId)
 
-  await deleteDisturbingSubstanceSelectionById(disturbingSubstanceSelectionId)
+  await dbDalInstance.deleteDisturbingSubstanceSelectionById(disturbingSubstanceSelectionId)
 
   const elcaElementComponentData = await fetchElcaComponentById(layerId, variantId, projectId)
   return elcaElementComponentData

@@ -3,13 +3,13 @@ import { notFound } from "next/navigation"
 import { getFormatter, getTranslations } from "next-intl/server"
 import { Heading4 } from "app/(components)/generic/layout-elements"
 import errorHandler from "app/(utils)/errorHandler"
-import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
+import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/misc/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { getAvailableTBaustoffProducts } from "prisma/queries/db"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 
 const Page = async ({
   params,
@@ -34,7 +34,7 @@ const Page = async ({
 
     const dinGroupLevelNumber = Math.floor(componentData.din_code / 100) * 100
 
-    const availableTBaustoffProducts = await getAvailableTBaustoffProducts()
+    const availableTBaustoffProducts = await dbDalInstance.getAvailableTBaustoffProducts()
     const availableTBaustoffProductIdAndNames = availableTBaustoffProducts.map((el) => ({
       id: `${el.id}`,
       value: el.name,

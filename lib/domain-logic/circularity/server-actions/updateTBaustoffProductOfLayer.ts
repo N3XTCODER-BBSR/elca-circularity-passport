@@ -2,10 +2,7 @@
 
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
-import {
-  deleteDisturbingSubstanceSelectionsByLayerId,
-  upsertUserEnrichedProductDataWithTBaustoffProduct,
-} from "prisma/queries/db"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 
 export async function updateTBaustoffProduct(layerId: number, selectedId: number) {
   if (!layerId || !selectedId) {
@@ -16,6 +13,6 @@ export async function updateTBaustoffProduct(layerId: number, selectedId: number
 
   await ensureUserAuthorizationToElementComponent(Number(session.user.id), layerId)
 
-  await upsertUserEnrichedProductDataWithTBaustoffProduct(layerId, selectedId)
-  await deleteDisturbingSubstanceSelectionsByLayerId(layerId)
+  await dbDalInstance.upsertUserEnrichedProductDataWithTBaustoffProduct(layerId, selectedId)
+  await dbDalInstance.deleteDisturbingSubstanceSelectionsByLayerId(layerId)
 }

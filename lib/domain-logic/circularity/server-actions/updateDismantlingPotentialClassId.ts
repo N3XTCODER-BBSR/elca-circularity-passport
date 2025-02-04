@@ -2,8 +2,8 @@
 
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
-import { upsertUserEnrichedProductDataByLayerId } from "prisma/queries/db"
 import { DismantlingPotentialClassId } from "../../../../prisma/generated/client"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 
 export async function updateDismantlingPotentialClassId(
   layerId: number,
@@ -16,5 +16,5 @@ export async function updateDismantlingPotentialClassId(
   const session = await ensureUserIsAuthenticated()
 
   await ensureUserAuthorizationToElementComponent(Number(session.user.id), layerId)
-  await upsertUserEnrichedProductDataByLayerId(layerId, selectedDismantlingPotentialClassId)
+  await dbDalInstance.upsertUserEnrichedProductDataByLayerId(layerId, selectedDismantlingPotentialClassId)
 }

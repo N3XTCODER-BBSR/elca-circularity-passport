@@ -1,8 +1,14 @@
 import Decimal from "decimal.js"
-import { getDataForMassCalculationByProductId } from "prisma/queries/legacyDb"
+import { ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
+
+export const calculateVolumeForLayer = (component: ElcaProjectComponentRow): number | null =>
+  component.layer_length !== null && component.layer_width !== null && component.layer_size !== null
+    ? component.layer_length * component.layer_width * component.layer_size
+    : null
 
 export const calculateMassForLayer = async (productId: number) => {
-  const productData = await getDataForMassCalculationByProductId(productId)
+  const productData = await legacyDbDalInstance.getDataForMassCalculationByProductId(productId)
 
   if (!productData) {
     throw new Error("Product not found")

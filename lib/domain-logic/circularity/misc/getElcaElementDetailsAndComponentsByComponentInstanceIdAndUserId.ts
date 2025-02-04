@@ -5,23 +5,22 @@ import {
   TBaustoffProductData,
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
-import {
-  getExcludedProductIds,
-  getTBaustoffMappingEntries,
-  getTBaustoffProducts,
-  getUserDefinedTBaustoffData,
-} from "prisma/queries/db"
-import { getElcaVariantComponentsByInstanceId } from "prisma/queries/legacyDb"
-import { calculateMassForProduct, calculateVolumeForLayer } from "./calculateMassForProduct"
+import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
+import { calculateMassForProduct } from "../server-actions/calculateMassForProduct"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
+import { calculateVolumeForLayer } from "../utils/calculateMassForLayer"
 
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
   variantId: number,
   projectId: number,
   componentInstanceId: string
 ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
-  const projectComponents = await getElcaVariantComponentsByInstanceId(componentInstanceId, variantId, projectId)
+  const projectComponents = await legacyDbDalInstance.getElcaVariantComponentsByInstanceId(
+    componentInstanceId,
+    variantId,
+    projectId
+  )
 
   const componentIds = Array.from(new Set(projectComponents.map((c) => c.component_id)))
   const oekobaudatProcessUuids = Array.from(
@@ -29,9 +28,9 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   )
 
   const [excludedProductIds, userDefinedTBaustoffDataList, tBaustoffMappingEntries] = await Promise.all([
-    getExcludedProductIds(componentIds),
-    getUserDefinedTBaustoffData(componentIds),
-    getTBaustoffMappingEntries(oekobaudatProcessUuids),
+    dbDalInstance.getExcludedProductIds(componentIds),
+    dbDalInstance.getUserDefinedTBaustoffData(componentIds),
+    dbDalInstance.getTBaustoffMappingEntries(oekobaudatProcessUuids),
   ])
 
   const excludedProductIdsSet = new Set(excludedProductIds.map((entry) => entry.productId))
@@ -41,7 +40,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
 
   const tBaustoffProductIds = getUniqueTBaustoffProductIds(userDefinedTBaustoffDataList, tBaustoffMappingEntries)
 
-  const tBaustoffProductsList = await getTBaustoffProducts(tBaustoffProductIds)
+  const tBaustoffProductsList = await dbDalInstance.getTBaustoffProducts(tBaustoffProductIds)
   const tBaustoffProductMap = createMap(tBaustoffProductsList, (product) => product.id)
 
   const componentData = projectComponents[0]

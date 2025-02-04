@@ -1,5 +1,5 @@
 import { calculateMassForProduct } from "./calculateMassForProduct"
-import { UnsupportedUnitError } from "./utils/calculateMassForNonLayerProduct"
+import { UnsupportedUnitError } from "../utils/calculateMassForNonLayerProduct"
 
 describe("calculateMassForProduct", () => {
   describe("layers", () => {
