@@ -14,20 +14,19 @@ const LEGACY_DATABASE_UPERUSER_FOR_TESTING_TIMEOUT = 20000
 const LEGACY_DATABASE_SUPERUSER_FOR_TESTING_URL =
   process.env.ELCA_LEGACY_DATABASE_URL_SUPERUSER_FOR_TESTING || "postgres://elca:password@localhost:65433/elca"
 
-const modifyDatabaseUrl = (urlString: string, maxConnection: int, timeOut: int): string => {
+const modifyDatabaseUrl = (urlString: string, maxConnection: number, timeOut: number): string => {
   try {
     const url = new URL(urlString)
     const searchParams = url.searchParams
 
-    searchParams.set("connection_limit", maxConnection)
-    searchParams.set("pool_timeout", timeOut)
+    searchParams.set("connection_limit", maxConnection.toString())
+    searchParams.set("pool_timeout", timeOut.toString())
 
     url.search = searchParams.toString()
 
     return url.toString()
   } catch (error) {
-    console.error("Error modifying database URL:", error)
-    return undefined
+    throw new Error(`Error modifying database URL: ${urlString}\n${error}`)
   }
 }
 
@@ -46,7 +45,7 @@ const prismaLegacyClientSingleton = () => {
 
 const prismaLegacySuperUserClientSingleton = () => {
   const url = modifyDatabaseUrl(
-    process.env.LEGACY_DATABASE_URL_SUPERUSER_FOR_TESTING,
+    LEGACY_DATABASE_SUPERUSER_FOR_TESTING_URL,
     LEGACY_DATABASE_SUPERUSER_FOR_TESTING_POOL_MAX_CONN,
     LEGACY_DATABASE_UPERUSER_FOR_TESTING_TIMEOUT
   )
