@@ -100,7 +100,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
           ? `${format.number(currentLayerData.volume, {
               minimumFractionDigits: 0,
               maximumFractionDigits: 2,
-            })} m2`
+            })} m3`
           : "N/A",
     },
   ]
