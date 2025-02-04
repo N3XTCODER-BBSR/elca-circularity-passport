@@ -135,6 +135,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
       <Accordion transition transitionTimeout={200}>
         <AccordionItemFullSimple
           header={
+            !currentLayerData.isExcluded &&
             !circulartyEnrichedLayerData.circularityIndex && (
               <div className="flex">
                 <Badge>{t("incomplete")}</Badge>
