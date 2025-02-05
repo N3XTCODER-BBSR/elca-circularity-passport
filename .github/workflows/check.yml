@@ -19,6 +19,7 @@ jobs:
       DATABASE_POOL_TIMEOUT: 20000
       LEGACY_DATABASE_POOL_MAX_CONN: 2
       LEGACY_DATABASE_POOL_TIMEOUT: 20000
+      NEXTAUTH_URL: http://localhost:3000
       DOPPIO_API_KEY: FOO_TESTING # ${{ secrets.DOPPIO_API_KEY }}
       NEXTAUTH_SECRET: FOO_TESTING # ${{ secrets.NEXTAUTH_SECRET }}
       NEXT_PUBLIC_PASSPORT_BASE_URL: http://foo.testing.com # ${{ vars.NEXT_PUBLIC_PASSPORT_BASE_URL }}
@@ -39,10 +40,3 @@ jobs:
         run: yarn prisma:generate
       - name: Unit & Integration tests
         run: yarn test
-    #   - name: Smoke & Acceptance tests
-    #     run: |
-    #       yarn build-storybook --quiet
-    #       yarn playwright install
-    #       npx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
-    #         "npx http-server storybook-static --port 6006 --silent" \
-    #         "npx wait-on tcp:127.0.0.1:6006 && yarn test-storybook"
