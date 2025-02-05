@@ -7,8 +7,9 @@ import {
 } from "lib/domain-logic/types/domain-types"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
+import { calculateMassForProduct } from "../server-actions/calculateMassForProduct"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
-import { calculateDimensionalValues, calculateVolumeForLayer } from "../utils/getWeightByProductId"
+import { calculateVolumeForLayer } from "../utils/calculateMassForLayer"
 
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
   variantId: number,
@@ -144,7 +145,13 @@ const enrichLayerData = async (
       )
 
       const userDefinedComponentData = userDefinedMap.get(component.component_id)
-      const { weight: mass } = await calculateDimensionalValues(component.component_id)
+      let mass: number | null = null
+      try {
+        mass = await calculateMassForProduct(component.component_id)
+      } catch (error) {
+        // TODO before merge: handle error
+        console.error(error)
+      }
 
       const volume = calculateVolumeForLayer(component)
 

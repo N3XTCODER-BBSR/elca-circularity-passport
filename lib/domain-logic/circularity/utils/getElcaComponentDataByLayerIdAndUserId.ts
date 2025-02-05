@@ -8,7 +8,8 @@ import { Prisma, TBs_OekobaudatMapping } from "prisma/generated/client"
 
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { calculateEolDataByEolCateogryData } from "./calculateEolDataByEolCateogryData"
-import { calculateDimensionalValues, calculateVolumeForLayer } from "./getWeightByProductId"
+import { calculateVolumeForLayer } from "./calculateMassForLayer"
+import { calculateMassForProduct } from "../server-actions/calculateMassForProduct"
 
 export const fetchElcaComponentById = async (layerId: number, variantId: number, projectId: number) => {
   const projectComponent = await legacyDbDalInstance.getElcaComponentDataByLayerId(layerId, variantId, projectId)
@@ -71,7 +72,7 @@ async function processProjectComponent(
   //   }
   // }
 
-  const { weight: mass } = await calculateDimensionalValues(componentRow.component_id)
+  const mass = await calculateMassForProduct(componentRow.component_id)
   const volume = calculateVolumeForLayer(componentRow)
   const isExcluded = await dbDalInstance.getExcludedProductId(componentRow.component_id)
   const enrichedComponent: EnrichedElcaElementComponent = {

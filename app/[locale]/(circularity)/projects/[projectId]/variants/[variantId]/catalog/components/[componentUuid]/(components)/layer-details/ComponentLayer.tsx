@@ -31,8 +31,14 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     queries: [
       {
         queryKey: ["layerData", layerData.component_id],
-        queryFn: () => {
-          return getElcaComponentDataByLayerId(variantId, projectId, layerData.component_id)
+        queryFn: async () => {
+          const result = await getElcaComponentDataByLayerId(variantId, projectId, layerData.component_id)
+
+          if (result.success) {
+            return result.data!
+          }
+
+          throw new Error(result.error)
         },
         initialData: layerData,
         staleTime: Infinity,

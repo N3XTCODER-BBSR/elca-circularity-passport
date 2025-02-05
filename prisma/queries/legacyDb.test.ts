@@ -1,5 +1,5 @@
-import { createUser, deleteUserIfExists } from "./testUtils"
 import { legacyDbDalInstance } from "./dalSingletons"
+import { createUser, deleteUserIfExists } from "./testUtils"
 
 describe("legacyDb queries", () => {
   describe("getElcaComponentDataByLayerId", () => {
@@ -230,10 +230,33 @@ describe("legacyDb queries", () => {
           project_variant_id: 1,
           element_types: { din_code: 333 },
         },
+        {
+          uuid: "d34f62e8-cfa9-42b5-9944-583652aecf34",
+          name: "test non-layer products",
+          project_variant_id: 1,
+          element_types: { din_code: 341 },
+        },
+        {
+          uuid: "c74c2dc0-04b9-4f68-af43-5450ba04ea1e",
+          name: "test component with ref_unit m2",
+          project_variant_id: 1,
+          element_types: { din_code: 342 },
+        },
+        {
+          uuid: "e05939a3-370a-4d8a-b8e5-a0633055806d",
+          name: "test component with ref_unit m",
+          project_variant_id: 1,
+          element_types: { din_code: 342 },
+        },
+        {
+          uuid: "6568c2fd-9105-4bfa-a85c-a5f8d19aff7b",
+          name: "test component with ref_unit piece",
+          project_variant_id: 1,
+          element_types: { din_code: 342 },
+        },
       ]
 
-      const expectedLength = 3 // because of the DIN category number pool
-
+      const expectedLength = 7 // because of the DIN category number pool
       expect(result).toHaveLength(expectedLength)
       result.forEach((resultElement) => {
         const matchingElement = want.find((element) => element.uuid === resultElement.uuid)
