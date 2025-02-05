@@ -38,18 +38,9 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile.e2e
-      args:
-        DATABASE_URL: ${DATABASE_URL}
-        ELCA_LEGACY_DATABASE_URL: ${ELCA_LEGACY_DATABASE_URL}
-        ELCA_LEGACY_DATABASE_HAS_SSL: ${ELCA_LEGACY_DATABASE_HAS_SSL}
-        DOPPIO_API_KEY: ${DOPPIO_API_KEY}
-        HTTP_BASIC_AUTH: ${HTTP_BASIC_AUTH}
-        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-        NEXT_PUBLIC_PASSPORT_BASE_URL: ${NEXT_PUBLIC_PASSPORT_BASE_URL}
-        NEXT_TELEMETRY_DISABLED: ${NEXT_TELEMETRY_DISABLED}
-        PRISMA_TELEMETRY_DISABLED: ${PRISMA_TELEMETRY_DISABLED}
     command: sh -c "yarn prisma:generate && npx prisma migrate deploy && PORT=3005 yarn start"
     environment:
+      # HINT: The DATABASE values here override the ones from the .env.e2e_tests file because the host name and port are different, when accessing databases through docker networking
       DATABASE_URL: postgres://building_passport:password@e2e-db:5432/building_passport
       ELCA_LEGACY_DATABASE_URL: postgres://elca_read_only:password@e2e-legacy-db:5432/elca
       NEXTAUTH_URL: http://localhost:3005
@@ -86,3 +77,4 @@ services:
     volumes:
       - ./sql_scripts/elca_db_init.sql:/docker-entrypoint-initdb.d/01_elca_db_init.sql # HINT: the elca_db_init.sql script runs when the container is created. It only runs if ./legacy_db_data doesn't contain data so that the database has not been initialized before
       - ./sql_scripts/create_read_only_user.sql:/docker-entrypoint-initdb.d/02_create_read_only_user.sql
+
