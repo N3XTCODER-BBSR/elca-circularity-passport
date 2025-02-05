@@ -7,9 +7,9 @@ import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from
 import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
-import { dbDalInstance } from "prisma/queries/dalSingletons"
 
 const Page = async ({
   params,

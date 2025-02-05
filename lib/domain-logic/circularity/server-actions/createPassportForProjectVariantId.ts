@@ -10,9 +10,9 @@ import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { InvalidParameterError as InvalidOrMissingParameterError } from "lib/errors"
-import { CalculateCircularityDataForLayerReturnType } from "../utils/calculate-circularity-data-for-layer"
-import { getProjectCircularityIndexData } from "../misc/getProjectCircularityIndex"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import { getProjectCircularityIndexData } from "../misc/getProjectCircularityIndex"
+import { CalculateCircularityDataForLayerReturnType } from "../utils/calculate-circularity-data-for-layer"
 
 const getCircularityForMaterial = (layer: CalculateCircularityDataForLayerReturnType) => {
   const parsedCircularityData = {

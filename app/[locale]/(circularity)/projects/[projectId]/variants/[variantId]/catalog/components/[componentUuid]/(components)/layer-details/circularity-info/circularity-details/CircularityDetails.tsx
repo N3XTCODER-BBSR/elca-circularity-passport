@@ -18,8 +18,8 @@ import {
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { addOrUpdateDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/addOrUpdateDisturbingSubstance"
 import { removeDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/removeDisturbingSubstances"
-import { updateDisturbingEolScenarioForS4 } from "lib/domain-logic/circularity/server-actions/updateDisturbingEolScenarioForS4"
 import { updateDismantlingPotentialClassId } from "lib/domain-logic/circularity/server-actions/updateDismantlingPotentialClassId"
+import { updateDisturbingEolScenarioForS4 } from "lib/domain-logic/circularity/server-actions/updateDisturbingEolScenarioForS4"
 import {
   CalculateCircularityDataForLayerReturnType,
   EolUnbuiltData,
@@ -29,10 +29,7 @@ import {
   dismantlingPotentialClassIdMapping,
   EOLScenarioMap,
 } from "lib/domain-logic/circularity/utils/circularityMappings"
-import {
-  DisturbingSubstanceSelectionWithNullabelId,
-  EnrichedElcaElementComponent,
-} from "lib/domain-logic/types/domain-types"
+import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/types/domain-types"
 import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import BuiltS4SpecificScenarioModal from "./disturbing-substances/BuiltS4SpecificScenarioModal"
 import DisturbingSubstances from "./DisturbingSubstances"
@@ -159,7 +156,10 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
     mutationFn: async (id: DismantlingPotentialClassId | null) => {
       updateDismantlingPotentialClassId(layerData.component_id, id)
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] })
+      router.refresh()
+    },
   })
 
   const updateDisturbingEolScenarioForS4Mutation = useMutation<
@@ -180,53 +180,50 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
   })
 
   const addOrUpdateDisturbingSubstanceMutation = useMutation<
-    EnrichedElcaElementComponent,
+    undefined,
     Error,
     DisturbingSubstanceSelectionWithNullabelId
   >({
     mutationFn: async (disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId) => {
-      const result = await addOrUpdateDisturbingSubstanceSelection(
+      await addOrUpdateDisturbingSubstanceSelection(
         variantId,
         projectId,
         layerData.component_id,
         disturbingSubstanceSelection
       )
-      return result
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] })
+      router.refresh()
+    },
   })
 
-  const removeDisturbingSubstanceMutation = useMutation<
-    EnrichedElcaElementComponent, // TData
-    Error,
-    number
-  >({
+  const removeDisturbingSubstanceMutation = useMutation<undefined, Error, number>({
     mutationFn: async (id: number) => {
-      const result = await removeDisturbingSubstanceSelection(variantId, projectId, layerData.component_id, id)
-      return result
+      await removeDisturbingSubstanceSelection(variantId, projectId, layerData.component_id, id)
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] })
+      router.refresh()
+    },
   })
 
   const setDismantlingPotentialClassId = async (id: DismantlingPotentialClassId) => {
     const newIdOrNull = layerData.dismantlingPotentialClassId === id ? null : id
-    await updateDismantlingPotentialClassIdMutation.mutate(newIdOrNull)
-    router.refresh()
+    updateDismantlingPotentialClassIdMutation.mutate(newIdOrNull)
   }
 
   const handleUpdateDisturbingSubstance = async (
     disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId
   ) => {
-    await addOrUpdateDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection)
-    router.refresh()
+    addOrUpdateDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection)
   }
 
-  const handleRemoveDisturbingSubstanceRow = async (
+  const handleRemoveDisturbingSubstanceRow = (
     disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId
   ) => {
-    if (disturbingSubstanceSelection.id != null) {
-      await removeDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection.id)
-      router.refresh()
+    if (disturbingSubstanceSelection.id !== null) {
+      removeDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection.id)
     }
   }
 

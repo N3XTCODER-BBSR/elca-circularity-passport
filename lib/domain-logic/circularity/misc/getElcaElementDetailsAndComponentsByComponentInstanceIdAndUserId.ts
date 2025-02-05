@@ -145,7 +145,13 @@ const enrichLayerData = async (
       )
 
       const userDefinedComponentData = userDefinedMap.get(component.component_id)
-      const mass = await calculateMassForProduct(component.component_id)
+      let mass: number | null = null
+      try {
+        mass = await calculateMassForProduct(component.component_id)
+      } catch (error) {
+        // TODO before merge: handle error
+        console.error(error)
+      }
 
       const volume = calculateVolumeForLayer(component)
 
