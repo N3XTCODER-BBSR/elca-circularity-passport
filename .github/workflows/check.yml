@@ -12,9 +12,7 @@ jobs:
     name: Check
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
       HTTP_BASIC_AUTH: ${{ secrets.HTTP_BASIC_AUTH }}
-      ELCA_LEGACY_DATABASE_URL: http://foo.testing.com # ${{ secrets.ELCA_LEGACY_DATABASE_URL }}
       DATABASE_POOL_MAX_CONN: 2
       DATABASE_POOL_TIMEOUT: 20000
       LEGACY_DATABASE_POOL_MAX_CONN: 2
