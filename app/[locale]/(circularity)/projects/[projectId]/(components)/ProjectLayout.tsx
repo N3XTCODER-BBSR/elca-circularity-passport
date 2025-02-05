@@ -3,8 +3,8 @@ import { getTranslations } from "next-intl/server"
 import errorHandler from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import NavBar from "./NavBar"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import NavBar from "./NavBar"
 
 const ProjectLayout = async ({
   children,

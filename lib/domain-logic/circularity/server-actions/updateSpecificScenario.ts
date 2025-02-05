@@ -2,8 +2,8 @@
 
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
-import { TBs_ProductDefinitionEOLCategoryScenario } from "../../../../prisma/generated/client"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
+import { TBs_ProductDefinitionEOLCategoryScenario } from "../../../../prisma/generated/client"
 
 export async function updateSpecificEolScenario(
   layerId: number,

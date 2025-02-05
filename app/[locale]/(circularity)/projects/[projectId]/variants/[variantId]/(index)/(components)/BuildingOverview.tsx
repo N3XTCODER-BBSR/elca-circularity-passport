@@ -6,12 +6,12 @@ import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/cir
 import { calculateTotalCircularityIndexForProject } from "lib/domain-logic/circularity/utils/calculateTotalCircularityIndex"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
 import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
 } from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
 import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
-import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 
 type BuildingOverviewProps = {
   projectId: number

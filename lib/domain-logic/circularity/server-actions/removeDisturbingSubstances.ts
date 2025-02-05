@@ -3,6 +3,7 @@
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
+import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 
 export async function removeDisturbingSubstanceSelection(
   variantId: number,

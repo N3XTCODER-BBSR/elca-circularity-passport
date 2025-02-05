@@ -236,6 +236,7 @@ const translationsPlattformGeneric = {
       Layers: {
         mass: "Masse",
         volume: "Volumen",
+        incomplete: "Unvollständig",
         excludedFromCalculation: "Von der Berechnung ausgeschlossen",
         CircularityInfo: {
           sections: {
@@ -275,7 +276,6 @@ const translationsPlattformGeneric = {
             },
           },
           title: "Zirkularität",
-          incomplete: "Unvollständig",
           tBaustoffMaterial: "tBaustoff",
           tBaustoffSelector: {
             select: "Auswählen",

@@ -237,6 +237,7 @@ const translationsPlattformGeneric = {
       Layers: {
         mass: "Masa",
         volume: "Volumen",
+        incomplete: "Incompleto",
         excludedFromCalculation: "Excluido del cálculo",
         CircularityInfo: {
           sections: {
@@ -266,9 +267,16 @@ const translationsPlattformGeneric = {
                 },
               },
             },
+            dismantlingPotential: {
+              dismantlingClassNames: {
+                1: "Non-destructively dismantled",
+                2: "Can be dismantled with minimal damage",
+                3: "Destructively dismantlable without impurities",
+                4: "Can only be dismantled with impurities",
+              },
+            },
           },
           title: "Circularidad",
-          incomplete: "Incompleto",
           tBaustoffMaterial: "tBaustoff",
           tBaustoffSelector: {
             select: "Seleccionar",
