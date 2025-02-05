@@ -1,4 +1,4 @@
-import { EolClasses, getEolClassNameByPoints } from "./circularityDataUtils"
+import { EolClasses, getEolClassNameByPoints } from "./circularityMappings"
 
 describe("getEolClassNameByPoints", () => {
   it("should return NA for null or undefined points", () => {

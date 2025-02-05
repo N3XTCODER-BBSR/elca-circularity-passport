@@ -1,19 +1,11 @@
 "use server"
 
-import {
-  DisturbingSubstanceSelectionWithNullabelId,
-  EnrichedElcaElementComponent,
-} from "lib/domain-logic/types/domain-types"
+import { serverActionErrorHandler } from "app/(utils)/errorHandler"
+import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { DisturbingSubstanceClassId, Prisma } from "prisma/generated/client"
-import {
-  createDisturbingSubstanceSelection,
-  findDisturbingSubstancesByLayerIdAndClassId,
-  updateDisturbingSubstanceSelection,
-  updateUserEnrichedProductDataDisturbingEolScenario,
-  upsertUserEnrichedProductData,
-} from "prisma/queries/db"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 
 export async function addOrUpdateDisturbingSubstanceSelection(
@@ -21,19 +13,19 @@ export async function addOrUpdateDisturbingSubstanceSelection(
   projectId: number,
   layerId: number,
   disturbingSubstanceSelectionWithNullableId: DisturbingSubstanceSelectionWithNullabelId
-): Promise<EnrichedElcaElementComponent> {
-  if (!layerId || !disturbingSubstanceSelectionWithNullableId) {
-    throw new Error("Invalid layerId or disturbingSubstanceId")
-  }
+) {
+  return serverActionErrorHandler(async () => {
+    if (!layerId || !disturbingSubstanceSelectionWithNullableId) {
+      throw new Error("Invalid layerId or disturbingSubstanceId")
+    }
 
-  const session = await ensureUserIsAuthenticated()
-  const userId = Number(session.user.id)
+    const session = await ensureUserIsAuthenticated()
+    const userId = Number(session.user.id)
 
-  await ensureUserAuthorizationToProject(userId, projectId)
+    await ensureUserAuthorizationToProject(userId, projectId)
 
-  await upsertUserEnrichedProductData(layerId)
+    await dbDalInstance.upsertUserEnrichedProductData(layerId)
 
-  try {
     if (disturbingSubstanceSelectionWithNullableId.id != null) {
       const { disturbingSubstanceClassId, disturbingSubstanceName } = disturbingSubstanceSelectionWithNullableId
 
@@ -46,7 +38,7 @@ export async function addOrUpdateDisturbingSubstanceSelection(
         updateData.disturbingSubstanceName = null
       }
 
-      await updateDisturbingSubstanceSelection(disturbingSubstanceSelectionWithNullableId.id, updateData)
+      await dbDalInstance.updateDisturbingSubstanceSelection(disturbingSubstanceSelectionWithNullableId.id, updateData)
     } else {
       const createData: Prisma.DisturbingSubstanceSelectionCreateInput = {
         disturbingSubstanceClassId: disturbingSubstanceSelectionWithNullableId.disturbingSubstanceClassId || null,
@@ -62,18 +54,19 @@ export async function addOrUpdateDisturbingSubstanceSelection(
         createData.disturbingSubstanceName = null
       }
 
-      await createDisturbingSubstanceSelection(createData)
+      await dbDalInstance.createDisturbingSubstanceSelection(createData)
     }
-  } catch (error: any) {
-    throw error
-  }
 
-  // If there are no S4 disturbing substances, remove the disturbingEolScenarioForS4
-  const disturbingSubstances = await findDisturbingSubstancesByLayerIdAndClassId(layerId, DisturbingSubstanceClassId.S4)
-  if (disturbingSubstances.length === 0) {
-    await updateUserEnrichedProductDataDisturbingEolScenario(layerId)
-  }
+    // If there are no S4 disturbing substances, remove the disturbingEolScenarioForS4
+    const disturbingSubstances = await dbDalInstance.findDisturbingSubstancesByLayerIdAndClassId(
+      layerId,
+      DisturbingSubstanceClassId.S4
+    )
+    if (disturbingSubstances.length === 0) {
+      await dbDalInstance.updateUserEnrichedProductDataDisturbingEolScenario(layerId)
+    }
 
-  const elcaElementComponentData = await fetchElcaComponentById(layerId, variantId, projectId)
-  return elcaElementComponentData
+    const elcaElementComponentData = await fetchElcaComponentById(layerId, variantId, projectId)
+    return elcaElementComponentData
+  })
 }

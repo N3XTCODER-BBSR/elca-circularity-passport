@@ -1,5 +1,8 @@
 import errorHandler from "app/(utils)/errorHandler"
-import { getElcaElementsForVariantId } from "lib/domain-logic/circularity/server-actions/getElcaElementsForProjectId"
+import { getElcaElementsForVariantId } from "lib/domain-logic/circularity/misc/getElcaElementsForProjectId"
+import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
+import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import ProjectCatalog from "./(components)/ProjectCatalog"
@@ -20,7 +23,23 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
       return <div>Projects with this ID not found for the current user.</div>
     }
 
-    return <ProjectCatalog projectId={projectId} variantId={variantId} projectComponents={dataResult} />
+    const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
+      await getProjectCircularityIndexData(variantId, projectId)
+
+    const componentUuiddsWithMissingCircularityIndexForAnyProduct: string[] = circularityData
+      .filter((component) => component.layers.some((layer) => layer.circularityIndex == null))
+      .map((component) => component.element_uuid)
+
+    return (
+      <ProjectCatalog
+        projectId={projectId}
+        variantId={variantId}
+        projectComponents={dataResult}
+        componentUuiddsWithMissingCircularityIndexForAnyProduct={
+          componentUuiddsWithMissingCircularityIndexForAnyProduct
+        }
+      />
+    )
   })
 }
 

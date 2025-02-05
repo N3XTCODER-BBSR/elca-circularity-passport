@@ -172,7 +172,7 @@ const translationsGrpPlattformGeneric = {
       materialGeometry: "Geometrie der Bauteilschichten/ Komponenten",
       material: {
         materialDescription: "Material-Beschreibung",
-        materialClassId: "UUID Materialgruppe",
+        materialClassId: "Materialkategorie-ID",
         materialClassDescription: "Materialgruppenbezeichnung",
         uuidMaterial: "UUID Material",
         materialDatabase: "Baustoffdatenbank",
@@ -192,7 +192,6 @@ const translationsGrpPlattformGeneric = {
       resources: {
         rawMaterials: "Rohstoffe",
         primaryEnergy: "Primärenergie-Aufwand (nicht erneuerbar, gesamt)",
-        carbonContent: "Anteil des gebundenen Kohlenstoffs",
         recyclingContent: "Anteil Sekundärmaterial",
         globalWarmingPotential: "Treibhaus-Potenzial (gesamt)",
         [MaterialResourceTypeNamesSchema.Enum.Forestry]: "Forst",
@@ -207,6 +206,10 @@ const translationsGrpPlattformGeneric = {
         general: "Allgemein",
         materialCompatibility: "Materialverträglichkeit - Störstoffe",
         eolClass: "Klasse EOL",
+        disturbingSubstanceNameUnspecified: "nicht spezifiziert",
+        dismantlingClass: "Rückbau-Potential Klasse",
+        // Grp.Web.Sections.detailPage.componentLayer.circularity.dismantlingClassNames
+        circularityIndex: "Zirkularitätsindex",
         eolPoints: "Punkte EOL",
         proofReuse: "Nachweis Wiederverwendung",
         version: "Version",
@@ -224,7 +227,17 @@ const translationsGrpPlattformGeneric = {
 const translationsPlattformGeneric = {
   Circularity: {
     Components: {
+      name: "Komponenten-Name",
+      uuid: "UUID",
+      costGroup: "Kostengruppe DIN 276",
+      numberInstalled: "Installierte Anzahl",
+      referenceUnit: "Referenzeinheit",
+      layersHeading: "Materialien relativ zu 1",
       Layers: {
+        mass: "Masse",
+        volume: "Volumen",
+        incomplete: "Unvollständig",
+        excludedFromCalculation: "Von der Berechnung ausgeschlossen",
         CircularityInfo: {
           sections: {
             disturbingSubstances: {
@@ -239,6 +252,7 @@ const translationsPlattformGeneric = {
               specificScenarioForS4: {
                 modal: {
                   title: "EoL-Szenario im Falle von S4",
+                  selectEolScenario: "Wahl eines EOL-Szenarios",
                   warningBox: `Es wurde ein S4 Störstoff ausgewählt. EOL-Punkte können nicht automatisch abgezogen werden. Bitte wählen Sie manuell ein neues EOL-Szenario unter Berücksichtigung des Störstoffes aus.`,
                   ctaHint:
                     "Bitte wählen Sie eine Option aus dem Dropdown-Menü aus und verwenden Sie dazu die unten stehende Referenzanleitung.",
@@ -252,18 +266,66 @@ const translationsPlattformGeneric = {
                 },
               },
             },
-          },
-          title: "Zirkularität",
-          CircularityPotential: {
-            title: "Zirkularitätspotenzial",
-            EolUnbuilt: {
-              Class: {
-                title: "EoL (unverbaut) Klasse",
-              },
-              Points: {
-                title: "EoL (unverbaut) Punkte",
+            dismantlingPotential: {
+              dismantlingClassNames: {
+                1: "zerstörungsfrei rückbaubar",
+                2: "zerstörungsarm rückbaubar",
+                3: "zerstörend ohne Fremd-/Störst. rückb.",
+                4: "nur mit Fremd-/Störstoffen rückbaubar",
               },
             },
+          },
+          title: "Zirkularität",
+          tBaustoffMaterial: "tBaustoff",
+          tBaustoffSelector: {
+            select: "Auswählen",
+            modalBody:
+              "Kein Treffer für dieses Ökobaudat-Produkt gefunden. Bitte wählen Sie einen tBaustoff Baustoff aus der Liste aus.",
+            cancel: "Abbrechen",
+            save: "Speichern",
+          },
+          circularityIndex: "Zirkularitätsindex",
+          EolDataSection: {
+            title: "Zirkularitätspotenzial - Unverbaut",
+            details: "Details",
+            EolUnbuilt: {
+              Class: {
+                class: "Klasse EOL",
+                title: "Klasse EOL (Unverbaut)",
+                specific: "Klasse EOL (Spezifisch)",
+                real: "Klasse EOL (Real)",
+                potential: "Klasse EOL (Potenzial)",
+              },
+              Points: {
+                points: "Punkte EOL",
+                title: "Punkte EOL (Unverbaut)",
+                specific: "Punkte EOL (Spezifisch)",
+                real: "Punkte EOL (Real)",
+                potential: "Punkte EOL (Potenzial)",
+              },
+              Scenario: {
+                real: "EOL Scenario (Real)",
+                potential: "EOL Scenario (Potenzial)",
+                specific: "EOL Scenario (Spezifisch)",
+              },
+            },
+          },
+          RebuildSection: {
+            title: "Rückbaupotential",
+            rebuildClass: "Klasse Rückbau",
+            rebuildPoints: "Punkte Rückbau",
+          },
+          EolBuiltSection: {
+            title: "Zirkularitätspotenzial - Verbaut",
+            emptyState: "Wählen Sie bitte Störstoffe aus, wenn es keine gibt, wählen Sie 'Keine Störstoffe - S0'.",
+            eolScenarioS4: "EOL-Szenario im Falle von S4",
+            selectEolScenario: "Bitte ein neues EOL Szenario manuell auswählen",
+            overrideEolScenarioButton: "+ EOL Szenario verbaut (spezifisch)",
+            eolScenarioBuiltSpecific: "EoL Szenario Verbaut (spezifisch)",
+            points: "Punkte EOL (verbaut)",
+            class: "Klasse EOL (verbaut)",
+            disturbingSubstances: "Verunreinigungen",
+            newSubstance: "Neue Verunreinigung",
           },
         },
       },
@@ -279,6 +341,7 @@ const translationsPlattformGeneric = {
       NavBar: {
         overview: "Überblick",
         catalog: "Katalog",
+        buildingPassport: "Gebäude-Ressourcen-Pass",
         switchProject: "Project wechseln",
         switchVariant: "Variante wechseln",
       },
@@ -297,6 +360,38 @@ const translationsPlattformGeneric = {
   },
   CircularityTool: {
     sections: {
+      overview: {
+        projectNotFound: "Projekt mit dieser ID für den aktuellen Benutzer nicht gefunden.",
+        emptyState: {
+          title: "Für die Anzeige des Zirkularitätsindex werden Daten benötigt",
+          body: "Um den Kreislaufwirtschaftsindex anzuzeigen, stellen Sie bitte sicher, dass jedes Bauprodukt entweder vollständig ist oder von der Berechnung. Sobald diese Informationen aktualisiert sind, werden Ihre Daten hier angezeigt.",
+          cta: "Gebäudedaten aktualisieren",
+        },
+        title: "Zirkularitätsindex",
+        moduleTotal: {
+          title: "Gesamt",
+          label: "gesamt",
+          points: "Punkte",
+        },
+        moduleByCostGroup: {
+          title: "Nach Kostengruppe (DIN 276)",
+          totalMass: "Gesamtmasse",
+        },
+        moduleByMaterialCategory: {
+          title: "Nach Materialkategorie",
+          totalMass: "Gesamtmasse",
+        },
+      },
+      catalog: {
+        back: "Zurück",
+      },
+      passportsForProject: {
+        title: "Generierte Gebäude-Ressourcen-Pässe",
+        passIssueDate: "Passausstellungsdatum",
+        passUuid: "Pass-ID",
+        createPassport: "Neuen Pass erstellen",
+        creatingPassport: "Pass wird erstellt...",
+      },
       signin: {
         title: "eLCA Zirkularitätsindex",
         subTitle: {
@@ -319,6 +414,10 @@ const translationsPlattformGeneric = {
     Kwh: {
       short: "kwH",
     },
+    Kg: {
+      short: "kg",
+      long: "Kilogramm",
+    },
     Tons: {
       short: "t",
       long: "Tonnen",
@@ -340,13 +439,16 @@ const translationsPlattformGeneric = {
   },
   Common: {
     materialClasses: {
-      "1_1_01": "Mineralische Bauprodukte",
-      "4_3_01": "Metalle",
-      "2_4_01": "Isoliermaterialien",
-      "3_2_01": "Holz",
-      "5_1_01": "Abdeckungen",
-      "7_2_01": "Komponenten für Fenster und Vorhangfassaden",
-      "8_1_01": "Gebäudetechnik",
+      "1": "Mineralische Bauprodukte",
+      "2": "Isoliermaterialien",
+      "3": "Holz",
+      "4": "Metalle",
+      "5": "Abdeckungen",
+      "6": "Kunststoffe",
+      "7": "Komponenten für Fenster und Vorhangfassaden",
+      "8": "Gebäudetechnik",
+      "9": "Sonstige",
+      "10": "Komposite",
     },
     costGroups: {
       "300": "Bauwerk - Baukonstruktionen",

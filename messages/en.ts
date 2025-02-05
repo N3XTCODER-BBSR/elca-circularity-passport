@@ -173,7 +173,7 @@ const translationsGrpPlatformGeneric = {
       materialGeometry: "Geometry of Component Layers / Components",
       material: {
         materialDescription: "Material Description",
-        materialClassId: "UUID Material Class",
+        materialClassId: "Material Class Id",
         materialClassDescription: "Material Class Description",
         uuidMaterial: "UUID Material",
         materialDatabase: "Material Database",
@@ -193,7 +193,6 @@ const translationsGrpPlatformGeneric = {
       resources: {
         rawMaterials: "Raw Materials",
         primaryEnergy: "Primary Energy Consumption (non-renewable, total)",
-        carbonContent: "Carbon Content",
         recyclingContent: "Recycling Content",
         globalWarmingPotential: "Global Warming Potential (total)",
         Forestry: "Forestry",
@@ -208,6 +207,9 @@ const translationsGrpPlatformGeneric = {
         general: "General",
         materialCompatibility: "Material Compatibility - Contaminants",
         eolClass: "EOL Class",
+        disturbingSubstanceNameUnspecified: "unspecified",
+        dismantlingClass: "Dismantling Potential Class",
+        circularityIndex: "Circularity Index",
         eolPoints: "EOL Points",
         proofReuse: "Proof of Reuse",
         version: "Version",
@@ -225,7 +227,17 @@ const translationsGrpPlatformGeneric = {
 const translationsPlatformGeneric: TranslationsPlattformGeneric = {
   Circularity: {
     Components: {
+      name: "Component Name",
+      uuid: "UUID",
+      costGroup: "Cost Group DIN 276",
+      numberInstalled: "Number Installed",
+      referenceUnit: "Reference Unit",
+      layersHeading: "Materials relative to 1",
       Layers: {
+        mass: "Mass",
+        volume: "Volume",
+        incomplete: "Incomplete",
+        excludedFromCalculation: "Excluded from calculation",
         CircularityInfo: {
           sections: {
             disturbingSubstances: {
@@ -239,31 +251,81 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
               substanceNameInputPlaceholder: "Name of disturbing substance",
               specificScenarioForS4: {
                 modal: {
-                  title: "EoL Scenario in Case of S4",
-                  warningBox: `An S4 disruptive substance has been selected. EOL points cannot be automatically deducted. Please manually select a new EOL scenario, taking the disruptive substance into account.`,
+                  title: "EOL Scenario in case of S4",
+                  selectEolScenario: "Selection of an EOL scenario",
+                  warningBox:
+                    "An S4 disturbing substance has been selected. EOL points cannot be automatically deducted. Please manually select a new EOL scenario considering the disturbing substance.",
                   ctaHint: "Please select an option from the dropdown menu and use the reference guide below.",
                   referenceInstructionTable: {
                     tableTitle: "Reference Guide",
                     columnHeaders: {
                       tBaustoffProduct: "tBaustoff Product",
-                      eolScenarioSpecific: "EoL Scenario - Built (Specific)",
+                      eolScenarioSpecific: "EOL Scenario - Built (specific)",
                     },
                   },
                 },
               },
             },
-          },
-          title: "Circularity",
-          CircularityPotential: {
-            title: "Circularity Potential",
-            EolUnbuilt: {
-              Class: {
-                title: "EoL Class (unbuilt)",
-              },
-              Points: {
-                title: "EoL Points (unbuilt)",
+            dismantlingPotential: {
+              dismantlingClassNames: {
+                1: "Non-destructively dismantled",
+                2: "Can be dismantled with minimal damage",
+                3: "Destructively dismantlable without impurities",
+                4: "Can only be dismantled with impurities",
               },
             },
+          },
+          title: "Circularity",
+          tBaustoffMaterial: "tBaustoff",
+          tBaustoffSelector: {
+            select: "Select",
+            modalBody: "No match found for this Ökobaudat product. Please select a tBaustoff material from the list.",
+            cancel: "Cancel",
+            save: "Save",
+          },
+          circularityIndex: "Circularity Index",
+          EolDataSection: {
+            title: "Circularity Potential - Unbuilt",
+            details: "Details",
+            EolUnbuilt: {
+              Class: {
+                class: "EOL Class",
+                title: "EOL Class (Unbuilt)",
+                specific: "EOL Class (Specific)",
+                real: "EOL Class (Real)",
+                potential: "EOL Class (Potential)",
+              },
+              Points: {
+                points: "EOL Points",
+                title: "EOL Points (Unbuilt)",
+                specific: "EOL Points (Specific)",
+                real: "EOL Points (Real)",
+                potential: "EOL Points (Potential)",
+              },
+              Scenario: {
+                real: "EOL Scenario (Real)",
+                potential: "EOL Scenario (Potential)",
+                specific: "EOL Scenario (Specific)",
+              },
+            },
+          },
+          RebuildSection: {
+            title: "Dismantling Potential",
+            rebuildClass: "Dismantling Class",
+            rebuildPoints: "Dismantling Points",
+          },
+          EolBuiltSection: {
+            title: "Circularity Potential - Built",
+            emptyState:
+              "Please select disturbing substances; if there are none, select 'No disturbing substances - S0'.",
+            eolScenarioS4: "EOL Scenario in case of S4",
+            selectEolScenario: "Please manually select a new EOL scenario",
+            overrideEolScenarioButton: "+ EOL Scenario Built (Specific)",
+            eolScenarioBuiltSpecific: "EOL Scenario Built (Specific)",
+            points: "EOL Points (Built)",
+            class: "EOL Class (Built)",
+            disturbingSubstances: "Contaminants",
+            newSubstance: "New Contaminant",
           },
         },
       },
@@ -279,6 +341,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
       NavBar: {
         overview: "Overview",
         catalog: "Catalog",
+        buildingPassport: "Building Resources Passport",
         switchProject: "Switch Project",
         switchVariant: "Switch Variant",
       },
@@ -313,11 +376,47 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           errorMessage: "Login failed.",
         },
       },
+      passportsForProject: {
+        title: "Generierte Gebäude-Ressourcen-Pässe",
+        passIssueDate: "Passausstellungsdatum",
+        passUuid: "Pass ID",
+        createPassport: "Neuen Pass erstellen",
+        creatingPassport: "Pass creation in progress...",
+      },
+      overview: {
+        projectNotFound: "Project with this ID for the current user not found.",
+        emptyState: {
+          title: "Data is needed to display the Circularity Index",
+          body: "To display the Circularity Index, please ensure that every construction product is either complete or part of the calculation. Once this information is updated, your data will be displayed here.",
+          cta: "Update building data",
+        },
+        title: "Circularity Index",
+        moduleTotal: {
+          title: "Total",
+          label: "total",
+          points: "Points",
+        },
+        moduleByCostGroup: {
+          title: "By Cost Group (DIN 276)",
+          totalMass: "Total Mass",
+        },
+        moduleByMaterialCategory: {
+          title: "By Material Category",
+          totalMass: "Total Mass",
+        },
+      },
+      catalog: {
+        back: "Back",
+      },
     },
   },
   Units: {
     Kwh: {
       short: "kWh",
+    },
+    Kg: {
+      short: "kg",
+      long: "kilogram",
     },
     Tons: {
       short: "t",
@@ -340,13 +439,16 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
   },
   Common: {
     materialClasses: {
-      "1_1_01": "Mineral Construction Products",
-      "4_3_01": "Metals",
-      "2_4_01": "Insulating Materials",
-      "3_2_01": "Wood",
-      "5_1_01": "Covers",
-      "7_2_01": "Components for Windows and Curtain Walls",
-      "8_1_01": "Building Technology",
+      "1": "Mineral building products",
+      "2": "Insulation materials",
+      "3": "Wood",
+      "4": "Metals",
+      "5": "Coverings",
+      "6": "Plastics",
+      "7": "Components for windows and curtain walls",
+      "8": "Building service engineering",
+      "9": "Others",
+      "10": "Composites",
     },
     costGroups: {
       "300": "Building - Structural Works",

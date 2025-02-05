@@ -27,7 +27,7 @@ export const costGroupyDinNumbersToInclude = // for each entry in costGroupCateg
     return Array.from({ length: 10 }, (_, i) => parseInt(`${decimalRange}${i}`))
   })
 
-// TODO: Use use i18n here!
+// TODO (i18n): Use use i18n here!
 export const din276Hierarchy: Din276Hierarchy = [
   {
     number: 300,

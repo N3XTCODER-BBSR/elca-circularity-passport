@@ -17,6 +17,7 @@ const seedPassport = async () => {
     create: {
       id: "1",
       uuid: passport1PassDataV1.uuid,
+      projectVariantId: "1",
       versionTag: "1",
       passportData: JSON.stringify(passport1PassDataV1),
       issueDate: new Date("2024-04-02"),
@@ -155,7 +156,7 @@ async function seedCircularityTool() {
       const tBaustoff = await prisma.tBs_ProductDefinition.create({
         data: {
           name: row.tBaustoffName,
-          tBs_version: "2024-Q4", // TODO: Change version name?
+          tBs_version: "2024-Q4",
           tBs_ProductDefinitionEOLCategoryId: eolCategoryId,
         },
       })

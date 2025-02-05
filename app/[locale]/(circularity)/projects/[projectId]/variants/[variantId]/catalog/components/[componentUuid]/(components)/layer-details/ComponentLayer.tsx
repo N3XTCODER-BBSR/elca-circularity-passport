@@ -1,13 +1,19 @@
 "use client"
 
+import { Accordion } from "@szhsin/react-accordion"
 import { useMutation, useQueries } from "@tanstack/react-query"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { useFormatter, useTranslations } from "next-intl"
+import { AccordionItemFullSimple } from "app/(components)/generic/AccordionItem"
+import { Badge } from "app/(components)/generic/layout-elements"
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import Toggle from "app/(components)/generic/Toggle"
 import getElcaComponentDataByLayerId from "lib/domain-logic/circularity/server-actions/getElcaComponentDataByLayerId"
 import updateExludedProduct from "lib/domain-logic/circularity/server-actions/toggleExcludedProject"
+import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
 import CircularityInfo from "./circularity-info/CircularityInfo"
@@ -17,30 +23,33 @@ type ComponentLayerProps = {
   variantId: number
   layerData: EnrichedElcaElementComponent
   layerNumber: number
-  unitName: string
   tBaustoffProducts: SelectOption[]
 }
 
-const ComponentLayer = ({
-  projectId,
-  variantId,
-  layerData,
-  layerNumber,
-  unitName,
-  tBaustoffProducts,
-}: ComponentLayerProps) => {
+const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustoffProducts }: ComponentLayerProps) => {
   const [layerDataQuery] = useQueries({
     queries: [
       {
         queryKey: ["layerData", layerData.component_id],
-        queryFn: () => {
-          return getElcaComponentDataByLayerId(variantId, projectId, layerData.component_id)
+        queryFn: async () => {
+          const result = await getElcaComponentDataByLayerId(variantId, projectId, layerData.component_id)
+
+          if (result.success) {
+            return result.data!
+          }
+
+          throw new Error(result.error)
         },
         initialData: layerData,
         staleTime: Infinity,
       },
     ],
   })
+
+  const unitsTranslations = useTranslations("Units")
+  const t = useTranslations("Circularity.Components.Layers")
+  const router = useRouter()
+  const format = useFormatter()
 
   const { data: currentLayerData, refetch: refetchLayerData } = layerDataQuery
 
@@ -51,64 +60,60 @@ const ComponentLayer = ({
     },
   })
 
-  const setProductIsExcluded = () => {
-    updateExcludedProductMutation.mutate(currentLayerData.component_id)
+  const setProductIsExcluded = async () => {
+    await updateExcludedProductMutation.mutate(currentLayerData.component_id)
+    router.refresh()
   }
 
   const optimisticProductIsExcluded = updateExcludedProductMutation.isPending
     ? !currentLayerData.isExcluded
     : currentLayerData.isExcluded
 
+  // TODO: consider to do this calucation on the server side
+  // (or at least be consistent with the other calculation in the conext of the overview page / project circularity index)
+  const circulartyEnrichedLayerData = calculateCircularityDataForLayer(currentLayerData)
+
   const layerKeyValues: KeyValueTuple[] = [
+    // {
+    //   key: "Oekobaudat UUID",
+    //   value: currentLayerData.oekobaudat_process_uuid,
+    // },
+    // {
+    //   key: "Verbaute Menge",
+    //   value: currentLayerData.quantity,
+    // },
+    // {
+    //   key: "Verbaute Menge Einheit",
+    //   value: currentLayerData.quantity,
+    // },
     {
-      key: "Schichtposition",
-      value: currentLayerData.layer_position,
+      key: t("mass"),
+      value: currentLayerData.mass
+        ? `${format.number(currentLayerData.mass, {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+          })} ${unitsTranslations("Kg.short")}`
+        : "N/A",
     },
+    // {
+    //   key: "Schichtdicke [m]",
+    //   value: currentLayerData.layer_size || "N/A",
+    // },
     {
-      key: "Volumen [m3]",
-      value: currentLayerData.volume?.toFixed(2) || "N/A",
-    },
-    {
-      key: "Oekobaudat UUID",
-      value: currentLayerData.oekobaudat_process_uuid,
-    },
-    {
-      key: "Rohdichte [kg/m3]",
-      value: currentLayerData.process_config_density || "N/A",
-    },
-    {
-      key: "Oekobaudat Baustoff",
-      value: currentLayerData.process_config_name,
-    },
-    {
-      key: "Bezugsmenge ÖkoBau.dat",
-      value: "DUMMY PLACEHOLDER",
-    },
-    {
-      key: "Verbaute Menge",
-      value: currentLayerData.quantity,
-    },
-    {
-      key: "Einheit Bezugsmenge",
-      value: unitName,
-    },
-    {
-      key: "Verbaute Menge Einheit",
-      value: currentLayerData.quantity,
-    },
-    {
-      key: "Masse [kg]",
-      value: currentLayerData.mass?.toFixed(2) || "N/A",
-    },
-    {
-      key: "Schichtdicke [m]",
-      value: currentLayerData.layer_size || "N/A",
+      key: t("volume"),
+      value:
+        currentLayerData.volume != null
+          ? `${format.number(currentLayerData.volume, {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            })} m3`
+          : "N/A",
     },
   ]
 
   const circularityInfo = currentLayerData.isExcluded ? null : (
     <CircularityInfo
-      layerData={currentLayerData}
+      layerData={circulartyEnrichedLayerData}
       tBaustoffProducts={tBaustoffProducts}
       projectId={projectId}
       variantId={variantId}
@@ -125,7 +130,7 @@ const ComponentLayer = ({
           </h2>
         </div>
         <div className="flex items-center gap-1 text-sm font-medium leading-5 sm:gap-2">
-          <div>Excluded from calculation</div>
+          <div>{t("excludedFromCalculation")}</div>
           <Toggle
             isEnabled={optimisticProductIsExcluded}
             setEnabled={setProductIsExcluded}
@@ -133,12 +138,25 @@ const ComponentLayer = ({
           />
         </div>
       </div>
-      <div className="mt-8 overflow-hidden">
-        <div className="">
-          <SideBySideDescriptionListsWithHeadline data={layerKeyValues} />
-          {circularityInfo}
-        </div>
-      </div>
+      <Accordion transition transitionTimeout={200}>
+        <AccordionItemFullSimple
+          header={
+            !currentLayerData.isExcluded &&
+            !circulartyEnrichedLayerData.circularityIndex && (
+              <div className="flex">
+                <Badge>{t("incomplete")}</Badge>
+              </div>
+            )
+          }
+        >
+          <div className="mt-8 overflow-hidden">
+            <div className="">
+              <SideBySideDescriptionListsWithHeadline data={layerKeyValues} />
+              {circularityInfo}
+            </div>
+          </div>
+        </AccordionItemFullSimple>
+      </Accordion>
     </div>
   )
 }

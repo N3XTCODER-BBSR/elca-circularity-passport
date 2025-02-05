@@ -57,9 +57,9 @@ const Page = async ({ params }: { params: { passportId: string; componentId: str
         </div>
       </div>
       <ul>
-        {component.layers.map((layer, i) => (
+        {component.materials.map((layer, i) => (
           <li key={i}>
-            <ComponentLayer layerData={layer} layerNumber={i + 1} />
+            <ComponentLayer layerData={layer} layerNumber={layer.layerIndex} />
           </li>
         ))}
       </ul>

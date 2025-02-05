@@ -2,6 +2,8 @@
 
 import { useIsMutating, useMutation } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { EditButton, ErrorText } from "app/(components)/generic/layout-elements"
 import { updateTBaustoffProduct } from "lib/domain-logic/circularity/server-actions/updateTBaustoffProductOfLayer"
@@ -27,6 +29,8 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedIdStr, setSelectedIdStr] = useState<string>("")
   const isPending = useIsMutating() > 0
+  const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
+  const router = useRouter()
 
   const queryClient = useQueryClient()
 
@@ -38,9 +42,10 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
     },
   })
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const selectedId = parseInt(selectedIdStr)
-    updateTBaustoffProductMutation.mutate(selectedId)
+    await updateTBaustoffProductMutation.mutate(selectedId)
+    router.refresh()
     setIsModalOpen(false)
   }
 
@@ -52,15 +57,15 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
     <>
       <div>
         <EditButton onClick={() => setIsModalOpen(true)} disabled={isPending}>
-          Select
+          {t("tBaustoffSelector.select")}
         </EditButton>
       </div>
 
       <Modal
         isOpen={isModalOpen}
         onClose={handleCancel}
-        title="TBaustoff Baustoff"
-        description="Kein Treffer für dieses Ökobaudat-Produkt gefunden. Bitte wählen Sie einen tBaustoff Baustoff aus der Liste aus."
+        title={t("tBaustoffMaterial")}
+        description={t("tBaustoffSelector.modalBody")}
       >
         <div className="mt-4">
           <select
@@ -83,7 +88,7 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
         </div>
         <div className="mt-6 flex justify-end space-x-4">
           <button type="button" className="rounded bg-gray-200 px-4 py-2" onClick={handleCancel} disabled={isPending}>
-            Cancel
+            {t("tBaustoffSelector.cancel")}
           </button>
           <button
             type="button"
@@ -93,7 +98,7 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
             onClick={handleSave}
             disabled={!selectedIdStr || isPending}
           >
-            Save
+            {t("tBaustoffSelector.save")}
           </button>
         </div>
       </Modal>

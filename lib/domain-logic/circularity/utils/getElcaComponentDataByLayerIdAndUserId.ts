@@ -6,33 +6,31 @@ import {
 } from "lib/domain-logic/types/domain-types"
 import { Prisma, TBs_OekobaudatMapping } from "prisma/generated/client"
 
-import {
-  getExcludedProductId,
-  getTBaustoffMappingEntry,
-  getTBaustoffProduct,
-  getUserDefinedTBaustoffDataForComponentId,
-} from "prisma/queries/db"
-import { getElcaComponentDataByLayerId } from "prisma/queries/legacyDb"
-import { calculateEolDataByEolCateogryData } from "../../utils/calculateEolDataByEolCateogryData"
-import { calculateVolumeForLayer, getWeightByProductId } from "../getWeightByProductId"
+import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import { calculateEolDataByEolCateogryData } from "./calculateEolDataByEolCateogryData"
+import { calculateVolumeForLayer } from "./calculateMassForLayer"
+import { calculateMassForProduct } from "../server-actions/calculateMassForProduct"
 
 export const fetchElcaComponentById = async (layerId: number, variantId: number, projectId: number) => {
-  const projectComponent = await getElcaComponentDataByLayerId(layerId, variantId, projectId)
+  const projectComponent = await legacyDbDalInstance.getElcaComponentDataByLayerId(layerId, variantId, projectId)
 
   const [userDefinedData, mappingEntry] = await Promise.all([
-    getUserDefinedTBaustoffDataForComponentId(layerId),
-    getTBaustoffMappingEntry(projectComponent.oekobaudat_process_uuid, projectComponent.oekobaudat_process_db_uuid!),
+    dbDalInstance.getUserDefinedTBaustoffDataForComponentId(layerId),
+    dbDalInstance.getTBaustoffMappingEntry(
+      projectComponent.oekobaudat_process_uuid,
+      projectComponent.oekobaudat_process_db_uuid!
+    ),
   ])
 
   const productId = userDefinedData?.tBaustoffProductDefinitionId ?? mappingEntry?.tBs_productId
 
   let product = null
   if (productId != null) {
-    product = await getTBaustoffProduct(productId)
+    product = await dbDalInstance.getTBaustoffProduct(productId)
   }
 
   const enrichedComponent = await processProjectComponent(
-    projectComponent as unknown as ElcaProjectComponentRow, // TODO: adapt types so they are compatible to Prisma types
+    projectComponent as unknown as ElcaProjectComponentRow, // TODO (L): adapt types so they are compatible to Prisma types
     userDefinedData,
     mappingEntry,
     product
@@ -74,9 +72,9 @@ async function processProjectComponent(
   //   }
   // }
 
-  const mass = await getWeightByProductId(componentRow.component_id)
+  const mass = await calculateMassForProduct(componentRow.component_id)
   const volume = calculateVolumeForLayer(componentRow)
-  const isExcluded = await getExcludedProductId(componentRow.component_id)
+  const isExcluded = await dbDalInstance.getExcludedProductId(componentRow.component_id)
   const enrichedComponent: EnrichedElcaElementComponent = {
     ...componentRow,
     mass,
@@ -95,7 +93,6 @@ async function processProjectComponent(
 }
 
 function getTBaustoffProductData(
-  // TODO: check: do we need the underscored params still?
   userDefinedData: UserEnrichedProductDataWithDisturbingSubstanceSelection | null,
   mappingEntry: TBs_OekobaudatMapping | null,
   product: Prisma.TBs_ProductDefinitionGetPayload<{

@@ -3,10 +3,10 @@ import enrichComponentsArrayWithDin276Labels, {
 } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import passportParser from "lib/domain-logic/grp/data-schema/versions/v1/passportParser"
 import { PassportData } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
-import { getAllPassports, getPassportByUuid } from "prisma/queries/db"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 
 const getPassportDataByPassportUuid = async (passportUuid: string): Promise<PassportData | null> => {
-  const passportDbRow = await getPassportByUuid(passportUuid)
+  const passportDbRow = await dbDalInstance.getPassportByUuid(passportUuid)
 
   if (!passportDbRow) {
     return null
@@ -33,7 +33,7 @@ export const getDinEnrichedPassportDataByPassportUuid = async (
 }
 
 export const getAllPassportsData = async (): Promise<PassportData[]> => {
-  const passports = await getAllPassports()
+  const passports = await dbDalInstance.getAllPassports()
 
   const passportsData = passports.map((passport) => passportParser(passport.passportData))
   return passportsData

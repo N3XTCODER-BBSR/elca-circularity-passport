@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { createUser, deleteUserIfExists } from "prisma/queries/utils"
+import { createUser, deleteUserIfExists } from "prisma/queries/testUtils"
 
 const username = "testuser2"
 const password = "password1!"
@@ -50,5 +50,5 @@ test.describe("Authorization", () => {
     expect(page.locator("text=Unauthorized")).toBeTruthy()
   })
 
-  // TODO: create project programmatically (database function) that user is owner of and test access to it
+  // TODO (L): create project programmatically (database function) that user is owner of and test access to it
 })

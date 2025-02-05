@@ -1,5 +1,6 @@
+import { useTranslations } from "next-intl"
 import { StyledDd, StyledDt } from "app/(components)/generic/layout-elements"
-import { EOLScenarioMap } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import { EOLScenarioMap } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 
 const EolScenarioInfoBox = ({ layerData }: { layerData: EnrichedElcaElementComponent }) => {
@@ -7,6 +8,7 @@ const EolScenarioInfoBox = ({ layerData }: { layerData: EnrichedElcaElementCompo
   // const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
 
   const isSpecific = layerData.eolUnbuiltSpecificScenario != null
+  const t = useTranslations("Circularity.Components.Layers.CircularityInfo.EolDataSection.EolUnbuilt")
 
   if (!isSpecific) {
     const eolUnbuiltRealScenarioLabel = layerData.tBaustoffProductData?.eolData?.eolUnbuiltRealScenario
@@ -19,11 +21,11 @@ const EolScenarioInfoBox = ({ layerData }: { layerData: EnrichedElcaElementCompo
     return (
       <>
         <div className="mr-4 border px-4 py-2">
-          <StyledDt>EOL Scenario (Real)</StyledDt>
+          <StyledDt>{t("Scenario.real")}</StyledDt>
           <StyledDd>{eolUnbuiltRealScenarioLabel}</StyledDd>
         </div>
         <div className="mr-4 border px-4 py-2">
-          <StyledDt>EOL Scenario (Potenzial)</StyledDt>
+          <StyledDt>{t("Scenario.potential")}</StyledDt>
           <StyledDd>{eolUnbuiltPotentialScenarioLabel}</StyledDd>
         </div>
       </>
@@ -31,7 +33,7 @@ const EolScenarioInfoBox = ({ layerData }: { layerData: EnrichedElcaElementCompo
   } else {
     return (
       <div className="mr-4 border px-4 py-2">
-        <StyledDt>EOL Scenario (Spezifisch)</StyledDt>
+        <StyledDt>{t("Scenario.specific")}</StyledDt>
         <StyledDd>
           {layerData.eolUnbuiltSpecificScenario ? EOLScenarioMap[layerData.eolUnbuiltSpecificScenario] : "-"}
         </StyledDd>

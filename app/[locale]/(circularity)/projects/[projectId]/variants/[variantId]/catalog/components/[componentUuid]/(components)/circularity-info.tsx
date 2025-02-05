@@ -18,9 +18,11 @@ import {
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { updateDismantlingPotentialClassId } from "lib/domain-logic/circularity/server-actions/updateDismantlingPotentialClassId"
 import { updateSpecificEolScenario } from "lib/domain-logic/circularity/server-actions/updateSpecificScenario"
-import getEolClassNameByPoints, {
+import {
+  dismantlingPotentialClassIdMapping,
+  getEolClassNameByPoints,
   getEolPointsByScenario,
-} from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+} from "lib/domain-logic/circularity/utils/circularityMappings"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
 import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
@@ -127,6 +129,9 @@ type CircularityInfoProps = { layerData: EnrichedElcaElementComponent; tBaustoff
 const CircularityInfo = (props: CircularityInfoProps) => {
   const { tBaustoffProducts } = props
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
+  const tDismantlingPotentialClassNames = useTranslations(
+    "Grp.Web.Sections.detailPage.componentLayer.circularity.dismantlingClassNames"
+  )
   const [isUpdating, setIsUpdating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -160,36 +165,16 @@ const CircularityInfo = (props: CircularityInfoProps) => {
     }
   }
 
-  // TODO: Move this over into translations
-  const dismantlingPotentialClassIdMapping = {
-    [DismantlingPotentialClassId.I]: {
-      label: "zerstörungsfrei rückbaubar",
-      points: 100,
-    },
-    [DismantlingPotentialClassId.II]: {
-      label: "zerstörungsarm rückbaubar",
-      points: 75,
-    },
-    [DismantlingPotentialClassId.III]: {
-      label: "zerstörend ohne Fremd-/Störst. rückb.",
-      points: 50,
-    },
-    [DismantlingPotentialClassId.IV]: {
-      label: "nur mit Fremd-/Störstoffen rückbaubar",
-      points: 0,
-    },
-  }
-
   const showCircularityDetails = props.layerData.tBaustoffProductData
 
   const eolUnbuiltDataSecondary = [
     // POTENTIAL
     {
-      key: "Klasse Rückbau", //t("..."),
+      key: "Klasse Rückbau", //t("..."), // TODO: i18n
       value: props.layerData.dismantlingPotentialClassId ?? "-",
     },
     {
-      key: "Punkte Rückbau", //t("..."),
+      key: "Punkte Rückbau", //t("..."), // TODO: i18n
       value: props.layerData.dismantlingPotentialClassId
         ? dismantlingPotentialClassIdMapping[props.layerData.dismantlingPotentialClassId].points
         : "-",
@@ -261,7 +246,7 @@ const CircularityInfo = (props: CircularityInfoProps) => {
                     )}
                     onClick={() => setDismantlingPotentialClassId(key as DismantlingPotentialClassId)}
                   >
-                    {value.label}
+                    {tDismantlingPotentialClassNames(value.translationKey)}
                   </button>
                 )
               })}

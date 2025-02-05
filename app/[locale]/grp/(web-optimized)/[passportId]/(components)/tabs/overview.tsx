@@ -5,7 +5,7 @@ import { DinEnrichedPassportData } from "lib/domain-logic/grp/data-schema/versio
 import BuildingBaseInformation from "./modules/BuildingBaseInformation"
 import Circularity from "./modules/Circularity/Circularity"
 import Materials from "./modules/Materials/Materials"
-import Resources from "./modules/Resources/Resources"
+// import Resources from "./modules/Resources/Resources"
 
 const Overview = ({ dinEnrichedPassportData }: { dinEnrichedPassportData: DinEnrichedPassportData }) => {
   const translations = useTranslations("Grp.Web")
@@ -51,11 +51,20 @@ const Overview = ({ dinEnrichedPassportData }: { dinEnrichedPassportData: DinEnr
       <div className="mt-6 border-gray-100">
         <BuildingBaseInformation passportData={dinEnrichedPassportData} className="mt-16" />
         <Materials dinEnrichedPassportData={dinEnrichedPassportData} className="my-24 flex flex-col" />
-        <Resources
+        <div>
+          <h2 className="text-l max-w-xl font-extrabold leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
+            Module 2
+          </h2>
+          <h3 className="text-l mb-4 max-w-xl leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
+            Resources
+          </h3>
+          <i>Under Construction: This module will be available in future releases</i>
+        </div>
+        {/* <Resources
           dinEnrichedBuildingComponents={dinEnrichedPassportData.dinEnrichedBuildingComponents}
           nrf={dinEnrichedPassportData.buildingBaseData.nrf}
           className="mt-16"
-        />
+        /> */}
         <Circularity
           dinEnrichedBuildingComponents={dinEnrichedPassportData.dinEnrichedBuildingComponents}
           className="mt-16"

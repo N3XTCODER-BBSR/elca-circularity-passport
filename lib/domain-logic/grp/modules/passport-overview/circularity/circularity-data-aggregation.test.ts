@@ -1,14 +1,14 @@
-import { EolClasses } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import { EolClasses } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
-import { Circularity, Layer } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
+import { Circularity, Material } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
 import aggregateCircularityData from "./circularity-data-aggregation"
 
 describe("aggregateCircularityData", () => {
-  function createMockLayer(mass: number | undefined, circularityOverrides?: Partial<Circularity>): Layer {
+  function createMockLayer(mass: number | undefined, circularityOverrides?: Partial<Circularity>): Material {
     return {
-      lnr: 1,
+      layerIndex: 1,
       name: "Layer",
-      mass: mass as any,
+      massInKg: mass as any,
       materialGeometry: {
         unit: "m2",
         amount: 10,
@@ -28,7 +28,7 @@ describe("aggregateCircularityData", () => {
           itemInLv: "item",
           area: 100,
         },
-        product: {
+        specificProduct: {
           uuid: "product-uuid",
           technicalServiceLifeInYears: 30,
           description: "Product Description",
@@ -36,12 +36,9 @@ describe("aggregateCircularityData", () => {
           versionDate: "2023-01-01",
           proofDocuments: [],
         },
-        waste: {
-          wasteCode: "waste-code",
-        },
       },
       ressources: {
-        rawMaterials: {
+        rawMaterialsInKg: {
           Mineral: 0,
           Metallic: 0,
           Fossil: 0,
@@ -49,7 +46,7 @@ describe("aggregateCircularityData", () => {
           Agrar: 0,
           Aqua: 0,
         },
-        embodiedEnergy: {
+        embodiedEnergyInKwh: {
           A1A2A3: 0,
           B1: 0,
           B4: 0,
@@ -57,7 +54,7 @@ describe("aggregateCircularityData", () => {
           C3: 0,
           C4: 0,
         },
-        embodiedEmissions: {
+        embodiedEmissionsInKgCo2Eq: {
           A1A2A3: 0,
           B1: 0,
           B4: 0,
@@ -65,11 +62,10 @@ describe("aggregateCircularityData", () => {
           C3: 0,
           C4: 0,
         },
-        carbonContent: 0,
-        recyclingContent: 0,
+        recyclingContentInKg: 0,
       },
       circularity: {
-        version: "1.0",
+        methodologyVersion: "1.0",
         category: "category",
         proofReuse: "proof",
         interferingSubstances: [],
@@ -82,12 +78,12 @@ describe("aggregateCircularityData", () => {
   function createMockComponent(
     dinCategoryLevelNumber: number,
     din276CategoryName: string,
-    layers: Layer[]
+    layers: Material[]
   ): DinEnrichedBuildingComponent {
     return {
       uuid: "component-uuid",
       name: "Component",
-      layers: layers,
+      materials: layers,
       dinComponentLevelNumber: dinCategoryLevelNumber,
       din276ComponetTypeName: "Component Type",
       dinCategoryLevelNumber: dinCategoryLevelNumber,

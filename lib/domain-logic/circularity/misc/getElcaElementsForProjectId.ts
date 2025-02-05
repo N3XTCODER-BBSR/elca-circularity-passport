@@ -1,4 +1,4 @@
-import { getComponentsByVariantId } from "prisma/queries/legacyDb"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 
 export type ElcaProjectElementRow = {
   element_uuid: string
@@ -7,8 +7,7 @@ export type ElcaProjectElementRow = {
 }
 
 export const getElcaElementsForVariantId = async (variantId: number, projectId: number) => {
-  // TODO: ideally also add project-variant id/uuid here to ensure correctness
-  const result = await getComponentsByVariantId(variantId, projectId)
+  const result = await legacyDbDalInstance.getComponentsByVariantId(variantId, projectId)
 
   return result.map<ElcaProjectElementRow>((element) => {
     const dinCode = element.element_types?.din_code === null ? "" : String(element.element_types?.din_code)

@@ -73,7 +73,7 @@ function aggregateMasses(
 
   const aggregatedData = aggregatedDataArrWithPercentage.sort((a, b) => a.aggregatedMass - b.aggregatedMass)
 
-  const totalMassRelativeToNrf = Math.round((totalMass / buildingNrf) * 100)
+  const totalMassRelativeToNrf = totalMass / buildingNrf
 
   return {
     aggregatedData,
@@ -86,11 +86,13 @@ export const aggregateMaterialsDataByBuildingComponentCategory = (
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[],
   buildingNrf: number
 ): AggregatedMaterialsData => {
-  const entries = dinEnrichedBuildingComponents.map(({ dinCategoryLevelNumber, din276CategoryName, layers }) => ({
-    mass: layers.reduce((sum, layer) => sum + layer.mass, 0),
-    groupingKey: dinCategoryLevelNumber.toString(),
-    groupingName: din276CategoryName,
-  }))
+  const entries = dinEnrichedBuildingComponents.map(
+    ({ dinCategoryLevelNumber, din276CategoryName, materials: layers }) => ({
+      mass: layers.reduce((sum, layer) => sum + layer.massInKg, 0),
+      groupingKey: dinCategoryLevelNumber.toString(),
+      groupingName: din276CategoryName,
+    })
+  )
 
   const { aggregatedData, totalMass, totalMassRelativeToNrf } = aggregateMasses(entries, buildingNrf)
 
@@ -114,11 +116,11 @@ export const aggregateMaterialsDataByMaterialClass = (
   dinEnrichedBuildingComponents: DinEnrichedBuildingComponent[],
   buildingNrf: number
 ): AggregatedMaterialsDataByMaterial => {
-  const entries = dinEnrichedBuildingComponents.flatMap(({ layers }) =>
-    layers.map(({ mass, material }) => ({
-      mass,
-      groupingKey: material.materialClassId,
-      groupingName: material.materialClassDescription,
+  const entries = dinEnrichedBuildingComponents.flatMap(({ materials }) =>
+    materials.map(({ massInKg, genericMaterial }) => ({
+      mass: massInKg,
+      groupingKey: genericMaterial.classId,
+      groupingName: genericMaterial.classDescription,
     }))
   )
 

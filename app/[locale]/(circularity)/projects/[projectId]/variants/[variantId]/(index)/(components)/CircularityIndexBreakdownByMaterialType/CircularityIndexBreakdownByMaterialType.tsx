@@ -1,6 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import React from "react"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
@@ -35,6 +36,8 @@ type CircularityIndexBreakdownByMaterialTypeProps = {
 
 export default function CircularityIndexBreakdownByMaterialType(props: CircularityIndexBreakdownByMaterialTypeProps) {
   const router = useRouter()
+  const t = useTranslations("CircularityTool.sections.overview.moduleByMaterialCategory")
+  const tUnits = useTranslations("Units")
 
   // Map layers to MaterialNodes
   const products: MaterialNode[] = props.circularityData.flatMap((el) =>
@@ -43,7 +46,8 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
       product_id: layer.component_id,
       name: layer.element_name,
       process_category_node_id: layer.process_category_node_id,
-      weight: layer.mass ?? 0, // if weight might be null, default to 0 or handle upstream
+      // TODO (L): check whether this should actually fall back 'silently' to 0
+      weight: (layer.mass ?? 0) * (layer.quantity ?? 0) || 0, // if weight might be null, default to 0 or handle upstream
       circularityIndex: layer.circularityIndex ?? 0,
     }))
   )
@@ -64,9 +68,9 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
     <ChartAndBreadCrumbComponent
       rootChartDataNode={chartData}
       leafClickHandler={leafClickHandler}
-      title="Zirkularitätsindex nach Materialtyp"
-      labelTotalDimensionalValue="Total mass"
-      unitNameTotalDimensionalValue="kg"
+      title={t("title")}
+      labelTotalDimensionalValue={t("totalMass")}
+      unitNameTotalDimensionalValue={tUnits("Kg.short")}
     />
   )
 }

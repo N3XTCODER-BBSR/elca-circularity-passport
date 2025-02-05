@@ -2,6 +2,7 @@ import {
   LifeCycleSubPhaseId,
   MaterialResourceTypeNamesSchema,
 } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
+import { TranslationsPlattformGeneric } from "./de"
 
 const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
   A1A2A3: "Módulo A1 - A3",
@@ -12,6 +13,7 @@ const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
   C4: "Módulo C4",
 }
 
+// const translationsGrpPlattformGeneric: TranslationsPlattformGeneric = {
 const translationsGrpPlattformGeneric = {
   overview: {
     buildingBaseInformation: {
@@ -173,7 +175,7 @@ const translationsGrpPlattformGeneric = {
       materialGeometry: "Geometría de las Capas de Componentes / Componentes",
       material: {
         materialDescription: "Descripción del Material",
-        materialClassId: "UUID Clase de Material",
+        materialClassId: "id de categoría",
         materialClassDescription: "Descripción de la Clase de Material",
         uuidMaterial: "UUID Material",
         materialDatabase: "Base de Datos de Materiales",
@@ -193,7 +195,6 @@ const translationsGrpPlattformGeneric = {
       resources: {
         rawMaterials: "Materias Primas",
         primaryEnergy: "Consumo de Energía Primaria (no renovable, total)",
-        carbonContent: "Contenido de Carbono",
         recyclingContent: "Contenido Reciclado",
         globalWarmingPotential: "Potencial de Calentamiento Global (total)",
         Forestry: "Forestal",
@@ -208,6 +209,8 @@ const translationsGrpPlattformGeneric = {
         general: "General",
         materialCompatibility: "Compatibilidad del Material - Contaminantes",
         eolClass: "Clase EOL",
+        circularityIndex: "Índice de Circularidad",
+        dismantlingClass: "Clase de Desmantelamiento",
         eolPoints: "Puntos EOL",
         proofReuse: "Prueba de Reutilización",
         version: "Versión",
@@ -223,6 +226,113 @@ const translationsGrpPlattformGeneric = {
 }
 
 const translationsPlattformGeneric = {
+  Circularity: {
+    Components: {
+      name: "Nombre del Componente",
+      uuid: "UUID",
+      costGroup: "Grupo de Coste DIN 276",
+      numberInstalled: "Número Instalado",
+      referenceUnit: "Unidad de Referencia",
+      layersHeading: "Materiales relativos a 1",
+      Layers: {
+        mass: "Masa",
+        volume: "Volumen",
+        incomplete: "Incompleto",
+        excludedFromCalculation: "Excluido del cálculo",
+        CircularityInfo: {
+          sections: {
+            disturbingSubstances: {
+              classNamesForSelectorButtons: {
+                S0: "S0 - Sin sustancias contaminantes",
+                S1: "S1",
+                S2: "S2",
+                S3: "S3",
+                S4: "S4",
+              },
+              substanceNameInputPlaceholder: "Nombre de la sustancia contaminante",
+              specificScenarioForS4: {
+                modal: {
+                  title: "Escenario EOL en caso de S4",
+                  selectEolScenario: "Selección de un escenario EOL",
+                  warningBox:
+                    "Se ha seleccionado una sustancia contaminante S4. Los puntos EOL no se pueden deducir automáticamente. Seleccione manualmente un nuevo escenario EOL considerando la sustancia contaminante.",
+                  ctaHint: "Seleccione una opción del menú desplegable y use la guía de referencia a continuación.",
+                  referenceInstructionTable: {
+                    tableTitle: "Guía de Referencia",
+                    columnHeaders: {
+                      tBaustoffProduct: "Producto tBaustoff",
+                      eolScenarioSpecific: "Escenario EOL - Construido (específico)",
+                    },
+                  },
+                },
+              },
+            },
+            dismantlingPotential: {
+              dismantlingClassNames: {
+                1: "Non-destructively dismantled",
+                2: "Can be dismantled with minimal damage",
+                3: "Destructively dismantlable without impurities",
+                4: "Can only be dismantled with impurities",
+              },
+            },
+          },
+          title: "Circularidad",
+          tBaustoffMaterial: "tBaustoff",
+          tBaustoffSelector: {
+            select: "Seleccionar",
+            modalBody:
+              "No se encontró coincidencia para este producto Ökobaudat. Seleccione un material tBaustoff de la lista.",
+            cancel: "Cancelar",
+            save: "Guardar",
+          },
+          circularityIndex: "Indice de Circularidad",
+          EolDataSection: {
+            title: "Potencial de Circularidad - No construido",
+            details: "Detalles",
+            EolUnbuilt: {
+              Class: {
+                class: "Clase EOL",
+                title: "Clase EOL (No construido)",
+                specific: "Clase EOL (Específica)",
+                real: "Clase EOL (Real)",
+                potential: "Clase EOL (Potencial)",
+              },
+              Points: {
+                points: "Puntos EOL",
+                title: "Puntos EOL (No construido)",
+                specific: "Puntos EOL (Específicos)",
+                real: "Puntos EOL (Reales)",
+                potential: "Puntos EOL (Potenciales)",
+              },
+              Scenario: {
+                real: "Escenario EOL (Real)",
+                potential: "Escenario EOL (Potencial)",
+                specific: "Escenario EOL (Específico)",
+              },
+            },
+          },
+          RebuildSection: {
+            title: "Potencial de Desmontaje",
+            rebuildClass: "Clase de Desmontaje",
+            rebuildPoints: "Puntos de Desmontaje",
+          },
+          EolBuiltSection: {
+            title: "Potencial de Circularidad - Construido",
+            emptyState:
+              "Seleccione sustancias contaminantes; si no hay ninguna, seleccione 'Sin sustancias contaminantes - S0'.",
+            eolScenarioS4: "Escenario EOL en caso de S4",
+            selectEolScenario: "Seleccione manualmente un nuevo escenario EOL",
+            overrideEolScenarioButton: "+ Escenario EOL Construido (Específico)",
+            eolScenarioBuiltSpecific: "Escenario EOL Construido (Específico)",
+            points: "Puntos EOL (Construido)",
+            class: "Clase EOL (Construido)",
+            disturbingSubstances: "Contaminantes",
+            newSubstance: "Nuevo Contaminante",
+          },
+        },
+      },
+    },
+  },
   Grp: {
     Web: {
       title: "Pasaporte de Recursos para Edificios",
@@ -233,6 +343,7 @@ const translationsPlattformGeneric = {
       NavBar: {
         overview: "Resumen",
         catalog: "Catálogo",
+        buildingPassport: "Pasaporte",
         switchProject: "Cambiar proyecto",
         switchVariant: "Cambiar variante",
       },
@@ -251,6 +362,13 @@ const translationsPlattformGeneric = {
   },
   CircularityTool: {
     sections: {
+      passportsForProject: {
+        title: "Pases de Recursos Generados del Edificio",
+        passIssueDate: "Fecha de emisión del pase",
+        passUuid: "ID del pase",
+        createPassport: "Crear un nuevo pase",
+        creatingPassport: "Creación del pase en progreso...",
+      },
       signin: {
         title: "Índice de Circularidad eLCA",
         subTitle: {
@@ -267,11 +385,40 @@ const translationsPlattformGeneric = {
           errorMessage: "Error en el inicio de sesión.",
         },
       },
+      overview: {
+        projectNotFound: "Proyecto con esta ID para el usuario actual no encontrado.",
+        emptyState: {
+          title: "Se necesitan datos para mostrar el Índice de Circularidad",
+          body: "Para mostrar el Índice de Circularidad, asegúrese de que cada producto de construcción esté completo o sea parte del cálculo. Una vez que se actualice esta información, sus datos se mostrarán aquí.",
+          cta: "Actualizar datos del edificio",
+        },
+        title: "Índice de Circularidad",
+        moduleTotal: {
+          title: "Total",
+          label: "total",
+          points: "Puntos",
+        },
+        moduleByCostGroup: {
+          title: "Por Grupo de Costos (DIN 276)",
+          totalMass: "Masa Total",
+        },
+        moduleByMaterialCategory: {
+          title: "Por Categoría de Material",
+          totalMass: "Masa Total",
+        },
+      },
+      catalog: {
+        back: "Atrás",
+      },
     },
   },
   Units: {
     Kwh: {
       short: "kwH",
+    },
+    Kg: {
+      short: "kg",
+      long: "kilogramo",
     },
     Tons: {
       short: "t",
@@ -294,13 +441,16 @@ const translationsPlattformGeneric = {
   },
   Common: {
     materialClasses: {
-      "1_1_01": "Productos de Construcción Minerales",
-      "4_3_01": "Metales",
-      "2_4_01": "Materiales Aislantes",
-      "3_2_01": "Madera",
-      "5_1_01": "Cubiertas",
-      "7_2_01": "Componentes para Ventanas y Fachadas Cortina",
-      "8_1_01": "Tecnología de Edificios",
+      "1": "Productos minerales para la construcción",
+      "2": "Materiales aislantes",
+      "3": "Madera",
+      "4": "Metales",
+      "5": "Revestimientos",
+      "6": "Plásticos",
+      "7": "Componentes para ventanas y muros cortina",
+      "8": "Ingeniería de servicios para edificios",
+      "9": "Otros",
+      "10": "Materiales compuestos",
     },
     costGroups: {
       "300": "Edificio - Obras Estructurales",

@@ -20,7 +20,6 @@ const Footer = ({ passportData }: { passportData: DinEnrichedPassportData }) => 
       <div className="flex space-x-8">
         <FooterItem title="Date" value={passportData.date} />
         <FooterItem title="Author" value={passportData.authorName} />
-        <FooterItem title="Version" value={passportData.versionTag} />
         <FooterItem title="UUID" value={passportData.uuid} />
         <div className="">
           <QRCode value={qrCodeValue} size={40} />

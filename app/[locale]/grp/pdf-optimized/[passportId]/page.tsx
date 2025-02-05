@@ -5,7 +5,14 @@ import BuildingInformation from "./BuildingInformation"
 import CircularityModule from "./CircularityModule"
 import Footer from "./Footer"
 import MaterialsModule from "./MaterialsModule/MaterialsModule"
-import ResourcesModule from "./ResourcesModule"
+// import ResourcesModule from "./ResourcesModule"
+import {
+  ModuleContainer,
+  ModuleMain,
+  ModuleSectionContainer,
+  ModuleSectionTitle,
+  ModuleTitle,
+} from "../(components)/layout-elements"
 import { getDinEnrichedPassportDataByPassportUuid } from "../../../../../lib/domain-logic/grp/getPassportData"
 
 const Page = async ({ params }: { params: { passportId: string } }) => {
@@ -26,10 +33,19 @@ const Page = async ({ params }: { params: { passportId: string } }) => {
       <div className="content mx-[5mm] box-border flex-1 overflow-hidden px-[2mm]">
         <BuildingInformation dinEnrichedPassportData={dinEnrichedPassportData} />
         <MaterialsModule dinEnrichedPassportData={dinEnrichedPassportData} />
-        <ResourcesModule
+        <ModuleContainer>
+          <ModuleTitle title="Modul 2: Ressourcen" />
+
+          <ModuleMain>
+            <ModuleSectionContainer>
+              <ModuleSectionTitle title="Under Construction: This module will be available in future releases" />
+            </ModuleSectionContainer>
+          </ModuleMain>
+        </ModuleContainer>
+        {/* <ResourcesModule
           dinEnrichedBuildingComponents={dinEnrichedPassportData.dinEnrichedBuildingComponents}
           nrf={dinEnrichedPassportData.buildingBaseData.nrf}
-        />
+        /> */}
         <CircularityModule
           dinEnrichedBuildingComponents={dinEnrichedPassportData.dinEnrichedBuildingComponents}
           className="mt-16"

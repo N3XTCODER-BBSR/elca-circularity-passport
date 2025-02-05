@@ -4,7 +4,7 @@ import Tooltip from "./Tooltip"
 
 export type KeyValueTuple = {
   key: string
-  value?: string | number
+  value?: string | number | null
   tooltip?: {
     content: React.ReactNode | string
     id: string

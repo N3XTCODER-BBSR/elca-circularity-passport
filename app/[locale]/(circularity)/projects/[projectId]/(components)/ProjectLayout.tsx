@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server"
 import errorHandler from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { getProjectDataWithVariants } from "prisma/queries/legacyDb"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import NavBar from "./NavBar"
 
 const ProjectLayout = async ({
@@ -32,7 +32,7 @@ const ProjectLayout = async ({
 
     await ensureUserAuthorizationToProject(userId, projectId)
 
-    const projectData = await getProjectDataWithVariants(projectId)
+    const projectData = await legacyDbDalInstance.getProjectDataWithVariants(projectId)
     const variantName =
       projectData?.project_variants_project_variants_project_idToprojects.find((v) => v.id === variantId)?.name || ""
 
@@ -43,6 +43,11 @@ const ProjectLayout = async ({
     const navLinks = [
       { id: "overview", name: t("overview"), href: `/projects/${projectData.id}/variants/${variantId}` },
       { id: "catalog", name: t("catalog"), href: `/projects/${projectData.id}/variants/${variantId}/catalog` },
+      {
+        id: "catalog",
+        name: t("buildingPassport"),
+        href: `/projects/${projectData.id}/variants/${variantId}/passports`,
+      },
     ]
 
     return (

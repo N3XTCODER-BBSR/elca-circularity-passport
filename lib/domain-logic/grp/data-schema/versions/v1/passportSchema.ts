@@ -1,33 +1,19 @@
 import { z } from "zod"
+import { DismantlingPotentialClassId } from "prisma/generated/client"
 
 const dateStringYYYYMMDDCheck = (val: string): boolean => {
-  // Check if the string matches the YYYY-MM-DD format using a regex
   const isValidFormat = /^\d{4}-\d{2}-\d{2}$/.test(val)
   if (!isValidFormat) return false
 
-  // Check if the string is a valid date
   const date = new Date(val)
   return !isNaN(date.getTime()) && val === date.toISOString().split("T")[0]
 }
 
-// Define nested schemas first for better organization and readability
-// const MaterialReferenceDatabaseSchema = z.object({
-//   name: z.string(),
-//   version: z.string(),
-//   url: z.string().optional(),
-// })
-
-// { key: "LB Performance Range", value: material. },
-// { key: "Trade", value: "FOO" },
-// { key: "LV Number", value: "FOO" },
-// { key: "Item In LV", value: "FOO" },
-// { key: "Area", value: "FOO" },
 export const MaterialTradeSchema = z.object({
-  lbPerformanceRange: z.string().optional(),
-  trade: z.string().optional(),
-  lvNumber: z.string().optional(),
-  itemInLv: z.string().optional(),
-  area: z.number().optional(),
+  lbPerformanceRange: z.string().nullish(),
+  trade: z.string().nullish(),
+  lvNumber: z.string().nullish(),
+  itemInLv: z.string().nullish(),
 })
 
 const ProofDocument = z.object({
@@ -37,24 +23,18 @@ const ProofDocument = z.object({
   }),
 })
 
-export const MaterialProductSchema = z.object({
-  uuid: z.string().uuid().optional(),
-  technicalServiceLifeInYears: z.number().min(0).optional(),
-  description: z.string().optional(),
-  manufacturerName: z.string().optional(),
-  versionDate: z.string().optional(),
+export const MaterialSpecificProductSchema = z.object({
+  uuid: z.string().uuid().nullish(),
+  technicalServiceLifeInYears: z.number().min(0).nullish(),
+  description: z.string().nullish(),
+  manufacturerName: z.string().nullish(),
+  versionDate: z.string().nullish(),
   proofDocuments: z.array(ProofDocument),
 })
 
-export type MaterialProduct = z.infer<typeof MaterialProductSchema>
+export type MaterialProduct = z.infer<typeof MaterialSpecificProductSchema>
 
 export type MaterialTradeDetails = z.infer<typeof MaterialTradeSchema>
-
-export const MaterialWasteSchema = z.object({
-  wasteCode: z.string(),
-})
-
-export type MaterialWaste = z.infer<typeof MaterialWasteSchema>
 
 const MaterialGeometrySchema = z.object({
   unit: z.enum(["m", "m2", "m3", "pieces"]),
@@ -63,41 +43,19 @@ const MaterialGeometrySchema = z.object({
 
 export type MaterialGeometry = z.infer<typeof MaterialGeometrySchema>
 
-export const MaterialSchema = z.object({
-  // TODO: let's introduce a Oekobaudat-Wrapper here for the following fields:
-  // uuid
-  // materialDescription
-  // materialClassId
-  // materialClassDescription
-  // oekobaudatVersion
-  uuid: z.string(),
-  materialDescription: z.string(),
-  materialClassId: z.string(),
-  materialClassDescription: z.string(),
-  oekobaudatVersion: z.string(),
-  serviceLifeInYears: z.number().nonnegative(),
-  serviceLifeTableVersion: z.string().describe('Version number of the service life table ("Nutzungsdauer-Tabelle")'),
-  trade: MaterialTradeSchema,
-  product: MaterialProductSchema,
-  waste: MaterialWasteSchema,
-})
-
-export type Material = z.infer<typeof MaterialSchema>
-
 const InterferingSubstancesSchema = z.object({
   className: z.string(),
-  description: z.string().optional(),
-
-  // Define properties here when they are clear
+  description: z.string().nullish(),
 })
 
-const CircularitySchema = z.object({
-  eolPoints: z.number().optional(),
-  circularityIndex: z.number().optional(), //TODO: could technically be calculated from the 2 fields above. consider normalization vs separate responsibilies (circularity tool is for calculation, the passport is a timestamped document)
-  version: z.string().optional(),
-  category: z.string().optional(),
-  proofReuse: z.string().optional(),
-  interferingSubstances: z.array(InterferingSubstancesSchema),
+export const CircularitySchema = z.object({
+  rebuildPoints: z.number(),
+  eolPoints: z.number(),
+  dismantlingPotentialClassId: z.nativeEnum(DismantlingPotentialClassId),
+  circularityIndex: z.number(),
+  methodologyVersion: z.string().describe("e.g. 'BNB 07 Kreislauffähigkeit'"),
+  proofReuse: z.string().nullish(),
+  interferingSubstances: z.array(InterferingSubstancesSchema).optional(),
 })
 
 export type Circularity = z.infer<typeof CircularitySchema>
@@ -125,73 +83,123 @@ export const LifeCycleSubPhaseIdSchema = z.enum(["A1A2A3", "B1", "B4", "B6", "C3
 
 export type LifeCycleSubPhaseId = z.infer<typeof LifeCycleSubPhaseIdSchema>
 
+// PENRT
 export const ResourcesEmbodiedEnergySchema = z.object({
-  [LifeCycleSubPhaseIdSchema.Enum.A1A2A3]: z.number().describe("Primary Energy (non-renewable) in kWh"),
-  [LifeCycleSubPhaseIdSchema.Enum.B1]: z.number().describe("Primary Energy (non-renewable) in kWh"),
-  [LifeCycleSubPhaseIdSchema.Enum.B4]: z.number().describe("Primary Energy (non-renewable) in kWh"),
-  [LifeCycleSubPhaseIdSchema.Enum.B6]: z.number().describe("Primary Energy (non-renewable) in kWh"),
-  [LifeCycleSubPhaseIdSchema.Enum.C3]: z.number().describe("Primary Energy (non-renewable) in kWh"),
-  [LifeCycleSubPhaseIdSchema.Enum.C4]: z.number().describe("Primary Energy (non-renewable) in kWh"),
+  [LifeCycleSubPhaseIdSchema.Enum.A1A2A3]: z
+    .number()
+    .describe("Primary Energy (non-renewable) in kWh for phases A1-A3")
+    .nullable(),
+  [LifeCycleSubPhaseIdSchema.Enum.B1]: z
+    .number()
+    .describe("Primary Energy (non-renewable) in kWh for phase B1")
+    .nullable(),
+  [LifeCycleSubPhaseIdSchema.Enum.B4]: z
+    .number()
+    .describe("Primary Energy (non-renewable) in kWh for phase B4")
+    .nullable(),
+  [LifeCycleSubPhaseIdSchema.Enum.B6]: z
+    .number()
+    .describe("Primary Energy (non-renewable) in kWh for phase B6")
+    .nullable(),
+  [LifeCycleSubPhaseIdSchema.Enum.C3]: z
+    .number()
+    .describe("Primary Energy (non-renewable) in kWh for phase C3")
+    .nullable(),
+  [LifeCycleSubPhaseIdSchema.Enum.C4]: z
+    .number()
+    .describe("Primary Energy (non-renewable) in kWh for phase C4")
+    .nullable(),
 })
 export type ResourcesEmbodiedEnergy = z.infer<typeof ResourcesEmbodiedEnergySchema>
 
+// GWP
 export const ResourcesEmbodiedEmissionsSchema = z.object({
-  [LifeCycleSubPhaseIdSchema.Values.A1A2A3]: z.number().describe("Global Warming Potential in kg CO2 eq"),
-  [LifeCycleSubPhaseIdSchema.Values.B1]: z.number().describe("Global Warming Potential in kg CO2 eq"),
-  [LifeCycleSubPhaseIdSchema.Values.B4]: z.number().describe("Global Warming Potential in kg CO2 eq"),
-  [LifeCycleSubPhaseIdSchema.Values.B6]: z.number().describe("Global Warming Potential in kg CO2 eq"),
-  [LifeCycleSubPhaseIdSchema.Values.C3]: z.number().describe("Global Warming Potential in kg CO2 eq"),
-  [LifeCycleSubPhaseIdSchema.Values.C4]: z.number().describe("Global Warming Potential in kg CO2 eq"),
+  [LifeCycleSubPhaseIdSchema.Values.A1A2A3]: z
+    .number()
+    .describe("Global Warming Potential in kg CO2 eq for phases A1-A3")
+    .nullable(),
+  [LifeCycleSubPhaseIdSchema.Values.B1]: z
+    .number()
+    .describe("Global Warming Potential in kg CO2 eq for phase B1")
+    .nullable(),
+  [LifeCycleSubPhaseIdSchema.Values.B4]: z
+    .number()
+    .describe("Global Warming Potential in kg CO2 eq for phase B4")
+    .nullable(),
+  [LifeCycleSubPhaseIdSchema.Values.B6]: z
+    .number()
+    .describe("Global Warming Potential in kg CO2 eq for phase B6")
+    .nullable(),
+  [LifeCycleSubPhaseIdSchema.Values.C3]: z
+    .number()
+    .describe("Global Warming Potential in kg CO2 eq for phase C3")
+    .nullable(),
+  [LifeCycleSubPhaseIdSchema.Values.C4]: z
+    .number()
+    .describe("Global Warming Potential in kg CO2 eq for phase C4")
+    .nullable(),
 })
 export type ResourcesEmbodiedEmissions = z.infer<typeof ResourcesEmbodiedEmissionsSchema>
 
 export const RessourcesSchema = z.object({
-  rawMaterials: ResourcesRawMaterialsSchema,
-  embodiedEnergy: ResourcesEmbodiedEnergySchema,
-  embodiedEmissions: ResourcesEmbodiedEmissionsSchema,
-  carbonContent: z.number().optional(),
-  recyclingContent: z.number().optional(),
+  rawMaterialsInKg: ResourcesRawMaterialsSchema,
+  embodiedEnergyInKwh: ResourcesEmbodiedEnergySchema,
+  embodiedEmissionsInKgCo2Eq: ResourcesEmbodiedEmissionsSchema,
+  recyclingContentInKg: z.number().nullish(),
 })
 
 export type Ressources = z.infer<typeof RessourcesSchema>
 
-export const LayerSchema = z.object({
-  // buildingId: z.string(),
-  lnr: z.number(),
+export const MaterialSchema = z.object({
+  serviceLifeInYears: z.number().nonnegative(),
+  serviceLifeTableVersion: z.string().describe('Version number of the service life table ("Nutzungsdauer-Tabelle")'),
+  trade: MaterialTradeSchema,
+  genericMaterial: z
+    .object({
+      uuid: z.string(),
+      name: z.string(),
+      classId: z.string(),
+      classDescription: z.string(),
+      oekobaudatDbVersion: z.string(),
+    })
+    .describe("Generic material data from the Oekobaudat database"),
+  specificProduct: MaterialSpecificProductSchema.optional(),
+
+  layerIndex: z.number(),
   name: z.string(),
-  mass: z.number().nonnegative(),
+  massInKg: z.number().nonnegative(),
   materialGeometry: MaterialGeometrySchema,
-  material: MaterialSchema,
-  ressources: RessourcesSchema,
-  circularity: CircularitySchema,
-  pollutants: PollutantsSchema,
+  // ressources: RessourcesSchema.optional(),
+  circularity: CircularitySchema.optional(),
+  pollutants: PollutantsSchema.optional(),
 })
 
-export type Layer = z.infer<typeof LayerSchema>
+export type Material = z.infer<typeof MaterialSchema>
 
 export const BuildingComponentSchema = z.object({
-  // TODO: clarify with BSR team if id is needed
+  // TODO (M): clarify with BSR team if id is needed
   // id: z.string(),
   uuid: z.string(),
   name: z.string(),
   costGroupDIN276: z.number(),
-  layers: z.array(LayerSchema),
+  materials: z.array(MaterialSchema),
 })
 
 export type BuildingComponent = z.infer<typeof BuildingComponentSchema>
 
 export const GeneratorSoftwareSchema = z.object({
+  // TODO (L): take over default values from the github gist
   name: z.string(),
   version: z.string(),
   url: z.string(),
 })
 
 export const BuildingStructureIdSchema = z.object({
-  "ALKIS-ID": z.string().optional(),
-  Identifikationsnummer: z.string().optional(),
-  Aktenzeichen: z.string().optional(),
-  "Lokale Gebäude-ID": z.string().optional(),
-  "Nationale UUID": z.string().optional(),
+  "ALKIS-ID": z.string().nullish(),
+  Identifikationsnummer: z.string().nullish(),
+  Aktenzeichen: z.string().nullish(),
+  "Lokale Gebäude-ID": z.string().nullish(),
+  "Nationale UUID": z.string().nullish(),
 })
 
 export const BuildingBaseDataSchema = z.object({
@@ -213,7 +221,6 @@ export const BuildingBaseDataSchema = z.object({
   totalBuildingMass: z.number(),
 })
 
-// Define the main schema
 export const PassportDataSchema = z.object({
   uuid: z.string(),
   date: z
@@ -223,7 +230,6 @@ export const PassportDataSchema = z.object({
     })
     .describe("Date of creation of the passport"),
   authorName: z.string().describe("Name of the person responsible for validating the passport"),
-  versionTag: z.string(),
   generatorSoftware: GeneratorSoftwareSchema,
   elcaProjectId: z.string(),
   projectName: z.string(),
@@ -232,11 +238,4 @@ export const PassportDataSchema = z.object({
   buildingComponents: z.array(BuildingComponentSchema),
 })
 
-// export const SchemaVersionDetailsSchema = z.object({
-//   schemaVersion: z.string(),
-//   schemaVersionDate: z.string(),
-//   schemaVersionDescription: z.string(),
-// })
-
-// Type inference for TypeScript
 export type PassportData = z.infer<typeof PassportDataSchema>

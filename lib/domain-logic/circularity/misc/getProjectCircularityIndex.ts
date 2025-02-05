@@ -1,5 +1,5 @@
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
-import { getExcludedProductIds } from "prisma/queries/db"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import { getElcaElementsForVariantId } from "./getElcaElementsForProjectId"
 import calculateCircularityDataForLayer, {
@@ -17,15 +17,16 @@ export const getProjectCircularityIndexData = async (
   projectId: number
   // ): Promise<ProjectCircularityIndexData> => {
 ): Promise<ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]> => {
-  // TODO: once the merge confusion is resolved (is checked by Niko)
+  // TODO (XL): once the merge confusion is resolved (is checked by Niko)
   // add authorization / authentication check here
-
   // 1. Get all components for the project
-  // TODO: only get the elements that are falling into the DIN categories we are considering
+  // TODO (XL): only get the elements that are falling into the DIN categories we are considering
 
   const elements = await getElcaElementsForVariantId(variantId, projectId)
 
-  // 2. Call existing function to get all the data for the components
+  // 2. Call existing function to get all the data for the components.
+  // TODO (M): consider to refactor so that all data is fetched by only one query;
+  // currently there are 1+n queries: 1 for the project and n for the components
   const componentsWithProducts: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
     await Promise.all(
       elements.map(async (element) => {
@@ -36,10 +37,9 @@ export const getProjectCircularityIndexData = async (
         )
 
         const productIds = elementDetailsWithProducts.layers.map((layer) => layer.component_id)
-        const excludedProductIds = await getExcludedProductIds(productIds)
+        const excludedProductIds = await dbDalInstance.getExcludedProductIds(productIds)
         const excludedProductIdsSet = new Set(excludedProductIds.map((entry) => entry.productId))
 
-        // return elementDetailsWithProducts
         return {
           ...elementDetailsWithProducts,
           layers: elementDetailsWithProducts.layers
@@ -48,15 +48,6 @@ export const getProjectCircularityIndexData = async (
         } as ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>
       })
     )
-
-  // make TODO note: refactor so that all data is fetched by only one query;
-  // currently there are 1+n queries: 1 for the project and n for the components
-
-  // return {
-  //   projectId,
-  //   projectName: ,
-  //   components: componentsWithProducts,
-  // }
 
   return componentsWithProducts
 }

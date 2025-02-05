@@ -1,5 +1,5 @@
 export type ComponentWithBasicFields = {
-  // TODO: revise naming here
+  // TODO (M): revise naming here
   dinComponentLevelNumber: number
   uuid: string
   name: string
