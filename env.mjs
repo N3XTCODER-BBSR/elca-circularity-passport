@@ -24,7 +24,6 @@ export const env = createEnv({
     DATABASE_POOL_TIMEOUT: z.string(),
     LEGACY_DATABASE_POOL_MAX_CONN: z.string(),
     LEGACY_DATABASE_POOL_TIMEOUT: z.string(),
-    NEXTAUTH_URL: z.string().url(),
   },
   client: {
     NEXT_PUBLIC_PASSPORT_BASE_URL: z.string().url(),
