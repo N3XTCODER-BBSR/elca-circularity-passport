@@ -2,13 +2,13 @@
 
 import { useIsMutating, useMutation } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { EditButton, ErrorText } from "app/(components)/generic/layout-elements"
 import { updateTBaustoffProduct } from "lib/domain-logic/circularity/server-actions/updateTBaustoffProductOfLayer"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import Modal from "../../Modal"
-import { useRouter } from "next/navigation"
 
 type Option = {
   id: string

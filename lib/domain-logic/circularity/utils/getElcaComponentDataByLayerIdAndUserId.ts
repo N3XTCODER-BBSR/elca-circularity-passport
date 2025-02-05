@@ -6,9 +6,9 @@ import {
 } from "lib/domain-logic/types/domain-types"
 import { Prisma, TBs_OekobaudatMapping } from "prisma/generated/client"
 
+import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { calculateEolDataByEolCateogryData } from "./calculateEolDataByEolCateogryData"
 import { calculateDimensionalValues, calculateVolumeForLayer } from "./getWeightByProductId"
-import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 
 export const fetchElcaComponentById = async (layerId: number, variantId: number, projectId: number) => {
   const projectComponent = await legacyDbDalInstance.getElcaComponentDataByLayerId(layerId, variantId, projectId)

@@ -3,8 +3,8 @@ import ListItemLink from "app/(components)/generic/ListItemLink"
 import errorHandler from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import ProjectLayout from "../../(components)/ProjectLayout"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import ProjectLayout from "../../(components)/ProjectLayout"
 
 const Page = async ({ params }: { params: { projectId: string } }) => {
   return errorHandler(async () => {

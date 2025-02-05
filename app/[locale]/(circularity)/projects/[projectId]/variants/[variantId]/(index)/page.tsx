@@ -2,8 +2,8 @@ import { getTranslations } from "next-intl/server"
 import errorHandler from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import BuildingOverview from "./(components)/BuildingOverview"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import BuildingOverview from "./(components)/BuildingOverview"
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
   return errorHandler(async () => {
