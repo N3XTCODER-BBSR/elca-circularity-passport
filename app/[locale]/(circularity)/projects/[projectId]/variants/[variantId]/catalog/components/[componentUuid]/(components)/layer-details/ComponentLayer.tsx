@@ -2,6 +2,7 @@
 
 import { useMutation, useQueries } from "@tanstack/react-query"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { useFormatter, useTranslations } from "next-intl"
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
@@ -12,7 +13,6 @@ import updateExludedProduct from "lib/domain-logic/circularity/server-actions/to
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
 import CircularityInfo from "./circularity-info/CircularityInfo"
-import { useRouter } from "next/navigation"
 
 type ComponentLayerProps = {
   projectId: number
@@ -27,8 +27,14 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     queries: [
       {
         queryKey: ["layerData", layerData.component_id],
-        queryFn: () => {
-          return getElcaComponentDataByLayerId(variantId, projectId, layerData.component_id)
+        queryFn: async () => {
+          const result = await getElcaComponentDataByLayerId(variantId, projectId, layerData.component_id)
+
+          if (result.success) {
+            return result.data!
+          }
+
+          throw new Error(result.error)
         },
         initialData: layerData,
         staleTime: Infinity,
