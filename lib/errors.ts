@@ -40,3 +40,10 @@ export class CallServerActionError extends Error {
 
   i18nErrorKey: string
 }
+
+// TODO: implement more advanced error handling
+export class DalError extends Error {
+  constructor(message = "Dal Error") {
+    super(message)
+  }
+}

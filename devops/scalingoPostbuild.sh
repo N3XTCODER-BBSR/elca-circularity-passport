@@ -11,4 +11,6 @@ yarn prisma:generate
 # NOTE: build step in scalingo is not automatically run, when scalingoPostbuild script is used
 yarn build
 
-npx prisma migrate deploy
+yarn prisma migrate deploy
+yarn prisma db seed
+yarn seed:demo-data

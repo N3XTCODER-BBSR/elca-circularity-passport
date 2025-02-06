@@ -29,10 +29,11 @@
     "prisma:migrate": "prisma migrate dev --schema prisma/schema.prisma",
     "prisma:migrate-legacy": "prisma migrate dev --schema prisma/schemaLegacy.prisma",
     "prisma:seed": "prisma db seed",
-    "tbaustoff-mapping-csv-to-json-transformer": "npx ts-node prisma/seeding/tBaustoffMappingCsvToJsonTransformer.mts"
+    "tbaustoff-mapping-csv-to-json-transformer": "npx ts-node prisma/seeding/tBaustoffMappingCsvToJsonTransformer.mts",
+    "seed:demo-data": "ts-node --project prisma/seeding/tsconfig.json prisma/seeding/dbDemoDataSeeder.ts"
   },
   "prisma": {
-    "seed": "ts-node --project prisma/seeding/tsconfig.json prisma/seeding/dbSeeder.ts"
+    "seed": "ts-node --project prisma/seeding/tsconfig.json prisma/seeding/dbInitDataSeeder.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.1",

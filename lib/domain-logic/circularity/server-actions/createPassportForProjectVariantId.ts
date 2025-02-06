@@ -214,6 +214,7 @@ export async function createPassportForProjectVariantId(
       error: false,
     }
   } catch (e) {
+    console.error("Error in createPassportForProjectVariantId:", e)
     if (e instanceof InvalidOrMissingParameterError) {
       return {
         error: true,

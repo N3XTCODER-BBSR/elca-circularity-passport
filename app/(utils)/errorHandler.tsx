@@ -24,4 +24,30 @@ const errorHandler = async (fn: () => Promise<React.ReactNode>) => {
   }
 }
 
+export interface ActionResponse<T = unknown> {
+  success: boolean
+  data?: T
+  error?: string
+  level?: "info" | "warning" | "error"
+  message?: string // i18n key
+}
+
+export const serverActionErrorHandler = async <TData = unknown,>(
+  fn: () => Promise<TData>
+): Promise<ActionResponse<TData>> => {
+  try {
+    const result = await fn()
+    return { success: true, data: result }
+  } catch (error: unknown) {
+    if (error instanceof UnauthorizedError) {
+      return { success: false, message: error.message, level: "error" }
+    }
+    if (error instanceof Error) {
+      return { success: false, message: error.message, level: "error" }
+    }
+
+    return { success: false, message: "An unknown error occurred" } // TODO before merge: define generic i18n error message key
+  }
+}
+
 export default errorHandler
