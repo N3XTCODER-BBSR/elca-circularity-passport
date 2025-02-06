@@ -2,34 +2,16 @@ import csv from "csv-parser"
 import fs from "fs"
 import path from "path"
 
-import generatePassport from "../../lib/domain-logic/grp/data-schema/versions/v1/passportJsonSeeder"
-import { TBs_ProductDefinitionEOLCategoryScenario } from "../../prisma/generated/client"
+import { TBs_ProductDefinitionEOLCategoryScenario } from "../generated/client"
 import { prisma } from "../prismaClient" // needs to be relative path
 
 const csvFilePath = path.resolve(__dirname, "./obd_tbaustoff_mapping.csv")
-
-const seedPassport = async () => {
-  const passport1PassDataV1 = generatePassport(20, 7)
-
-  await prisma.passport.upsert({
-    where: { id: "1" },
-    update: {},
-    create: {
-      id: "1",
-      uuid: passport1PassDataV1.uuid,
-      projectVariantId: "1",
-      versionTag: "1",
-      passportData: JSON.stringify(passport1PassDataV1),
-      issueDate: new Date("2024-04-02"),
-      expiryDate: new Date("2029-04-02"),
-    },
-  })
-}
 
 type CsvRow = {
   oekobaudatName: string
   oekobaudatUuid____448d1096_2017_4901_a560_f652a83c737e____2020_II: string
   oekobaudatUuid____22885a6e_1765_4ade_a35e_ae668bd07256____2023_I: string
+  // TODO (L): Open leftover question from alignment with Austrian team
   oekobaudatUuid____XXXXXXXXXXXX____2024_I: string
   tBaustoffName: string
   eolCategoryName: string
@@ -195,12 +177,16 @@ async function seedCircularityTool() {
 }
 
 async function main() {
+  if (process.env.SEED_INITIAL_DATA !== "true") {
+    console.log('env variable "SEED_INITIAL_DATA" not set to "true" - will abort seeding...')
+    return
+  }
+
   try {
-    await seedPassport()
     await seedCircularityTool()
-    console.log("Seeding completed successfully.")
+    console.log("Init data seeding completed successfully.")
   } catch (error) {
-    console.error("Error during seeding:", error)
+    console.error("Error during init data seeding:", error)
     process.exit(1)
   } finally {
     await prisma.$disconnect()

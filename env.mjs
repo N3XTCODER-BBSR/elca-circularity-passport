@@ -14,7 +14,11 @@ export const env = createEnv({
     HTTP_BASIC_AUTH: z.string().regex(/^.+:.+$/),
     // RUN_SEEDERS_ON_DEPLOY: a stirng, that is either TRUE or FALSE and will be mapped to a boolean ts type
     DOPPIO_API_KEY: z.string(),
-    RUN_SEEDERS_ON_DEPLOY: z
+    SEED_INITIAL_DATA: z
+      .enum(["true", "false"])
+      .optional()
+      .transform((value) => value === "true"),
+    SEED_DEMO_DATA: z
       .enum(["true", "false"])
       .optional()
       .transform((value) => value === "true"),
