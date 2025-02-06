@@ -1,3 +1,4 @@
+import { ensureVariantAccessible } from "app/(utils)/ensureAccessible"
 import errorHandler from "app/(utils)/errorHandler"
 import { getElcaElementsForVariantId } from "lib/domain-logic/circularity/misc/getElcaElementsForProjectId"
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
@@ -16,6 +17,8 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
     const variantId = Number(params.variantId)
 
     await ensureUserAuthorizationToProject(userId, projectId)
+
+    await ensureVariantAccessible(variantId, projectId)
 
     const dataResult = await getElcaElementsForVariantId(variantId, projectId)
 

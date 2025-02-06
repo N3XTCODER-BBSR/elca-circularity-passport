@@ -613,6 +613,29 @@ export class LegacyDbDal {
     })
   }
 
+  isUserAuthorizedToElementByUuid = async (userId: number, elementUuid: string) => {
+    return await prismaLegacy.elca_elements.findFirst({
+      where: {
+        uuid: elementUuid,
+        OR: [
+          // Element is public
+          {
+            is_public: true,
+          },
+          // User is authorized via project
+          {
+            project_variants: {
+              projects_project_variants_project_idToprojects: {
+                OR: this.getProjectAuthorizationConditions(userId),
+              },
+            },
+          },
+        ],
+      },
+      select: { id: true },
+    })
+  }
+
   isUserAuthorizedToProject = async (userId: number, projectId: number) => {
     return await prismaLegacy.projects.findFirst({
       where: {

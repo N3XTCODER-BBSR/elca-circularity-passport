@@ -30,7 +30,7 @@ test.describe("Authorization", () => {
 
           await page.waitForURL(url, { timeout: 5000 })
 
-          await expect(page.locator("text=Unauthorized")).toBeVisible()
+          await expect(page.locator("[data-testid=unauthorized-heading]")).toBeVisible()
         })
       })
       test.describe("Read only token user to project", () => {
@@ -43,41 +43,41 @@ test.describe("Authorization", () => {
 
           await page.waitForURL(url, { timeout: 5000 })
 
-          await expect(page.locator("text=Unauthorized")).toBeVisible()
+          await expect(page.locator("[data-testid=unauthorized-heading]")).toBeVisible()
         })
       })
-      // TODO: this should work and not be skipped
-      if (route !== routes.componentPage && route !== routes.variantPage) {
-        test.describe("Edit token user to project", () => {
-          test.use({ storageState: getAuthUserFile(users.editTokenUser.username) })
+      test.describe("Edit token user to project", () => {
+        test.use({ storageState: getAuthUserFile(users.editTokenUser.username) })
 
-          test("should be able to access page", async ({ page }) => {
-            const url = route.replace("projectId", projectId.toString()).replace("variantId", variantId.toString())
+        test("should be able to access page", async ({ page }) => {
+          const url = route
+            .replace("projectId", projectId.toString())
+            .replace("variantId", variantId.toString())
+            .replace("componentId", componentId.toString())
 
-            await page.goto(url)
+          await page.goto(url)
 
-            await page.waitForURL(url, { timeout: 5000 })
-
-            await expect(page.locator("[data-testid=root-layout]")).toBeVisible()
-          })
+          await page.waitForURL(url, { timeout: 5000 })
+          await expect(page.locator("[data-testid=root-layout]")).toBeVisible()
         })
-      }
-      // TODO: this should work and not be skipped
-      if (route !== routes.componentPage && route !== routes.variantPage) {
-        test.describe("Group member user to project", () => {
-          test.use({ storageState: getAuthUserFile(users.groupMemberUser.username) })
+      })
+      test.describe("Group member user to project", () => {
+        test.use({ storageState: getAuthUserFile(users.groupMemberUser.username) })
 
-          test("should not be able to access page", async ({ page }) => {
-            const url = route.replace("projectId", projectId.toString()).replace("variantId", variantId.toString())
+        test("should not be able to access page", async ({ page }) => {
+          const url = route
+            .replace("projectId", projectId.toString())
+            .replace("variantId", variantId.toString())
+            .replace("componentId", componentId.toString())
 
-            await page.goto(url)
+          await page.goto(url)
 
-            await page.waitForURL(url, { timeout: 5000 })
+          await page.waitForURL(url, { timeout: 5000 })
 
-            await expect(page.locator("[data-testid=root-layout]")).toBeVisible()
-          })
+          await expect(page.locator("[data-testid=root-layout]")).toBeVisible()
         })
-      }
+      })
+
       test.describe("Project owner user to project", () => {
         test.use({ storageState: getAuthUserFile(users.projectOwnerUser.username) })
 
@@ -130,9 +130,7 @@ test.describe("Authorization", () => {
             await page.goto(url)
 
             await page.waitForURL(url, { timeout: 5000 })
-
-            // TODO: this should assert to true
-            await expect(page.locator("text=Unauthorized")).toBeVisible()
+            await expect(page.locator("[data-testid=unauthorized-heading]")).toBeVisible()
           })
         })
       }

@@ -1,10 +1,9 @@
+import { ensureVariantAccessible } from "app/(utils)/ensureAccessible"
 import errorHandler from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { NotFoundError, UnauthorizedError } from "lib/errors"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
 import { PassportMetadata } from "prisma/queries/db"
-import { getVariantById } from "prisma/queries/legacyDb"
 import ProjectPassports from "./(components)/ProjectPassports"
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
@@ -17,13 +16,7 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
 
     await ensureUserAuthorizationToProject(userId, projectId)
 
-    const variant = await getVariantById(variantId)
-    if (!variant) {
-      throw new NotFoundError()
-    }
-    if (variant.project_id !== projectId) {
-      throw new UnauthorizedError()
-    }
+    await ensureVariantAccessible(variantId, projectId)
 
     const passportsMetadataForProjectVariant: PassportMetadata[] =
       await dbDalInstance.getMetaDataForAllPassportsForProjectVariantId(variantId)

@@ -6,7 +6,7 @@ import errorHandler from "app/(utils)/errorHandler"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/misc/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
+import { ensureUserAuthorizationToElementByUuid } from "lib/ensureAuthorized"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
@@ -21,9 +21,10 @@ const Page = async ({
     const format = await getFormatter()
     const projectId = Number(params.projectId)
     const variantId = Number(params.variantId)
+    const userId = Number(session.user.id)
     const t = await getTranslations("Circularity.Components")
 
-    await ensureUserAuthorizationToProject(Number(session.user.id), Number(params.projectId))
+    await ensureUserAuthorizationToElementByUuid(userId, params.componentUuid)
 
     const componentData: ElcaElementWithComponents<EnrichedElcaElementComponent> =
       await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(variantId, projectId, params.componentUuid)

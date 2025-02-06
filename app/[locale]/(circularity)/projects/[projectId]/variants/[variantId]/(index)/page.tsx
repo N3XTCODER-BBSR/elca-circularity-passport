@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server"
+import { ensureVariantAccessible } from "app/(utils)/ensureAccessible"
 import errorHandler from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
@@ -15,6 +16,8 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
     const t = await getTranslations("CircularityTool.sections.overview")
 
     await ensureUserAuthorizationToProject(userId, projectId)
+
+    await ensureVariantAccessible(variantId, projectId)
 
     const projectInfo = await legacyDbDalInstance.getProjectById(projectId)
 

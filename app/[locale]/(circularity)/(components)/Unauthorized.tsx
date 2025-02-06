@@ -6,7 +6,7 @@ const Unauthorized = () => {
 
   return (
     <div>
-      <h2>{t("errors.unauthorized")}</h2>
+      <h2 data-testid="unauthorized-heading">{t("errors.unauthorized")}</h2>
       <p>
         go to <Link href="/projects">my projects</Link>
       </p>
