@@ -60,3 +60,31 @@ export const AccordionItemFull: React.FC<CustomAccordionItemProps> = ({ header, 
     panelProps={{ className: "mt-4" }}
   />
 )
+
+export const AccordionItemFullSimple: React.FC<CustomAccordionItemProps> = ({ header, ...rest }) => (
+  <Item
+    {...rest}
+    header={({ state: { isEnter } }) => (
+      <>
+        {header}
+        <Image
+          src="/chevron-down.svg"
+          width={24}
+          height={24}
+          className={`ml-auto transition-transform duration-200 ease-out ${isEnter && "rotate-180"}`}
+          alt="Chevron"
+        />
+      </>
+    )}
+    buttonProps={{
+      className: ({ isEnter }) =>
+        `flex w-full mt-4 min-height-8 max-height-8 font-semibold text-left text-lg leading-6 text-gray-900 hover:bg-slate-100 ${
+          isEnter && ""
+        }`,
+    }}
+    contentProps={{
+      className: "transition-height duration-200 ease-out",
+    }}
+    panelProps={{ className: "mt-4" }}
+  />
+)

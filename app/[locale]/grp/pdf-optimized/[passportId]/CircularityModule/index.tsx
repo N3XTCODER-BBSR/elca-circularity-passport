@@ -36,7 +36,7 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
   const chartDataForAvgEolPoints: CircularityBarChartDatum[] = [
     {
       eolPoints: aggregatedData.totalAvgEolPoints,
-      // TODO: use i18n here
+      // TODO: i18n
       identifier: "Gesamt",
       eolClass: aggregatedData.totalEolClass,
       overlayText: `${aggregatedData.totalEolClass} (${Math.round(aggregatedData.totalAvgEolPoints)})`,

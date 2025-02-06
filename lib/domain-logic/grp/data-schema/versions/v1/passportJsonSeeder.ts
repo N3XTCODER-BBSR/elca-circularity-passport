@@ -57,7 +57,7 @@ const materialTradeDetails: MaterialTradeDetails[] = [
     // surfaceInM2: 10.24,
   },
 ]
-//TODO: update materialClasses according to data structure excel:
+// TODO (S): update materialClasses according to data structure excel:
 //docs.google.com/spreadsheets/d/1jumm46MoBhc9N_fzn3alHKczoUH2FrWCL880lmoE-js/edit?gid=1863730613#gid=1863730613
 const materialClasses = {
   "1.1.01": "Mineralische Bauprodukte",

@@ -1,20 +1,19 @@
 import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
 import { UnauthorizedError } from "lib/errors"
+import { createUser, deleteUserIfExists } from "prisma/queries/testUtils"
 import {
   createAccessGroup,
   createGroupMember,
   createProductWithComponent,
   createProject,
   createProjectAccessToken,
-  createUser,
   deleteAccessGroupIfExists,
   deleteComponentIfExists,
   deleteGroupMemberIfExists,
   deleteProductIfExists,
-  deleteProjectIfExists,
   deleteProjectAccessTokenIfExists,
-  deleteUserIfExists,
+  deleteProjectIfExists,
   setProjectAccessTokenToEditTrue,
 } from "prisma/queries/utils"
 import { updateDismantlingPotentialClassId } from "./updateDismantlingPotentialClassId"

@@ -1,6 +1,7 @@
 import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
 import { UnauthorizedError } from "lib/errors"
+import { createUser, deleteUserIfExists } from "prisma/queries/testUtils"
 import {
   createAccessGroup,
   createGroupMember,
@@ -8,14 +9,12 @@ import {
   createProject,
   createProjectAccessToken,
   createTBsProductDefinition,
-  createUser,
   deleteAccessGroupIfExists,
   deleteComponentIfExists,
   deleteGroupMemberIfExists,
   deleteProductIfExists,
-  deleteProjectIfExists,
   deleteProjectAccessTokenIfExists,
-  deleteUserIfExists,
+  deleteProjectIfExists,
   setProjectAccessTokenToEditTrue,
 } from "prisma/queries/utils"
 import { updateTBaustoffProduct } from "./updateTBaustoffProductOfLayer"

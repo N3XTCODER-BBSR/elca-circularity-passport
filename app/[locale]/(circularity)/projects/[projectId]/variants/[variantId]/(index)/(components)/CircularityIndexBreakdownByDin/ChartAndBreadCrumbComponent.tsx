@@ -71,7 +71,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
   const [path, setPath] = useState<ChartDataNode[]>([rootChartDataNode])
   const format = useFormatter()
 
-  // TODO: consider to add proper logic checks so that this
+  // TODO (M): consider to add proper logic checks so that this
   // exclamation mark is actually safe to use
   // e.g. by ensuring that the path is never empty
   const currentNode = path[path.length - 1]!

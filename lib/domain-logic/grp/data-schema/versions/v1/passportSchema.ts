@@ -26,7 +26,6 @@ const ProofDocument = z.object({
 export const MaterialSpecificProductSchema = z.object({
   uuid: z.string().uuid().nullish(),
   technicalServiceLifeInYears: z.number().min(0).nullish(),
-  // TODO: PM asked to leave it out for now
   description: z.string().nullish(),
   manufacturerName: z.string().nullish(),
   versionDate: z.string().nullish(),
@@ -178,7 +177,7 @@ export const MaterialSchema = z.object({
 export type Material = z.infer<typeof MaterialSchema>
 
 export const BuildingComponentSchema = z.object({
-  // TODO: clarify with BSR team if id is needed
+  // TODO (M): clarify with BSR team if id is needed
   // id: z.string(),
   uuid: z.string(),
   name: z.string(),
@@ -189,7 +188,7 @@ export const BuildingComponentSchema = z.object({
 export type BuildingComponent = z.infer<typeof BuildingComponentSchema>
 
 export const GeneratorSoftwareSchema = z.object({
-  // TODO: take over default values from the github gist
+  // TODO (L): take over default values from the github gist
   name: z.string(),
   version: z.string(),
   url: z.string(),

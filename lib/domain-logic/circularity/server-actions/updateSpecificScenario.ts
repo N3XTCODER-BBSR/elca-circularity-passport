@@ -3,7 +3,7 @@
 import { z } from "zod"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
-import { upsertUserEnrichedProductDataWithEolScenario } from "prisma/queries/db"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "../../../../prisma/generated/client"
 
 export async function updateSpecificEolScenario(
@@ -13,9 +13,11 @@ export async function updateSpecificEolScenario(
 ) {
   z.number().parse(productId)
   const session = await ensureUserIsAuthenticated()
+  const userId = Number(session.user.id)
 
-  await ensureUserAuthorizationToElementComponent(Number(session.user.id), productId)
-  await upsertUserEnrichedProductDataWithEolScenario(
+  await ensureUserAuthorizationToElementComponent(userId, productId)
+
+  await dbDalInstance.upsertUserEnrichedProductDataWithEolScenario(
     productId,
     specificScenario,
     specificEolUnbuiltTotalScenarioProofText

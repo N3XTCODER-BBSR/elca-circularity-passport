@@ -3,11 +3,11 @@ import { notFound } from "next/navigation"
 import { getFormatter, getTranslations } from "next-intl/server"
 import { Heading4 } from "app/(components)/generic/layout-elements"
 import errorHandler from "app/(utils)/errorHandler"
-import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/server-actions/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
+import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/misc/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { getAvailableTBaustoffProducts } from "prisma/queries/db"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
 
@@ -28,27 +28,14 @@ const Page = async ({
     const componentData: ElcaElementWithComponents<EnrichedElcaElementComponent> =
       await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(variantId, projectId, params.componentUuid)
 
-    // // TODO: check this - probably better to check for array length?
-    // if (!projectComponents) {
-    //   notFound()
-    // }
-
-    // TODO:
-    // 1. check why we do the find. Should be enough to just use projectComponents[0]?
-    // 2. consider to (even if we then discard our db performance optimziation) really fetch data that are on
-    //   a) component level and
-    //   b) product level
-    // in different queries (or at least hide it more upstream; the frontend layer should not have to know that it needs to get
-    // the data from the first element of the array)
-    // const componentData = projectComponents.find((el) => el.element_uuid === params.componentUuid)
-
     if (componentData == null) {
       notFound()
     }
 
     const dinGroupLevelNumber = Math.floor(componentData.din_code / 100) * 100
 
-    const availableTBaustoffProducts = (await getAvailableTBaustoffProducts()).map((el) => ({
+    const availableTBaustoffProducts = await dbDalInstance.getAvailableTBaustoffProducts()
+    const availableTBaustoffProductIdAndNames = availableTBaustoffProducts.map((el) => ({
       id: `${el.id}`,
       value: el.name,
     }))
@@ -112,7 +99,7 @@ const Page = async ({
                 // TODO: check/update logic here (and other places where laufende nummer is used) once we decided about the semantics of it
                 layerNumber={layer.layer_position}
                 //unitName={componentData.unit}
-                tBaustoffProducts={availableTBaustoffProducts}
+                tBaustoffProducts={availableTBaustoffProductIdAndNames}
               />
             </li>
           ))}

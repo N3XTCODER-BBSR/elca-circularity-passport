@@ -1,4 +1,4 @@
-import { EolClasses } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import { EolClasses } from "lib/domain-logic/circularity/utils/circularityMappings"
 import {
   DismantlingPotentialClassId,
   DisturbingSubstanceSelection,
@@ -13,7 +13,7 @@ export type ElcaProjectComponentLayerEolData = {
   eolUnbuiltPotentialScenario: TBs_ProductDefinitionEOLCategoryScenario
   eolUnbuiltPotentialPoints: number
   eolUnbuiltPotentialClassName: EolClasses
-  // TODO: Check if this is actually needed at this point (maybe better calculated on the fly?)
+  // TODO (M): Check if this is actually needed at this point (maybe better calculated on the fly?)
   eolUnbuiltTotalPoints: number
   eolUnbuiltTotalClassName: EolClasses
 }
@@ -21,7 +21,7 @@ export type ElcaProjectComponentLayerEolData = {
 export type TBaustoffProductData = {
   tBaustoffProductId: number
   name: string
-  // TODO: can this actually be optional/nullabel at this point?
+  // TODO (L): can this actually be optional/nullable at this point?
   eolData?: ElcaProjectComponentLayerEolData
 }
 
@@ -29,7 +29,7 @@ export type UserEnrichedProductDataWithDisturbingSubstanceSelection = UserEnrich
   selectedDisturbingSubstances: DisturbingSubstanceSelection[]
 }
 
-// TODO: rename this to product
+// TODO (M): rename this to product
 // and use our namings also for the properites.
 // Old ecla legacy names should only be used within the SQL queries and they should already
 // on query level be mapped/renamed to our namings.

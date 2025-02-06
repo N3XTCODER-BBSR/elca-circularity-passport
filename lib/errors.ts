@@ -23,6 +23,14 @@ export class NotFoundError extends Error {
   }
 }
 
+// TODO: implement more advanced error handling
+export class DalError extends Error {
+  constructor(error: unknown) {
+    const message = `Error in DAL: ${getErrorMessage(error)}`
+    super(message)
+  }
+}
+
 export const getErrorMessage = (error: unknown): string => {
   let message: string
   if (error instanceof Error) {

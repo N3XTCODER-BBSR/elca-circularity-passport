@@ -130,13 +130,10 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
                       {group.categories.map((componentsByCategory) => {
                         const hasAnyCircularityMissingData1 =
                           !!showIncompleteCompleteLabels &&
-                          // group.categories.some((category) =>
-                          componentsByCategory.componentTypes.some(
-                            (componentType) =>
-                              componentType.components.some((component) => {
-                                return componentUuiddsWithMissingCircularityIndexForAnyProduct?.includes(component.uuid)
-                              })
-                            // )
+                          componentsByCategory.componentTypes.some((componentType) =>
+                            componentType.components.some((component) => {
+                              return componentUuiddsWithMissingCircularityIndexForAnyProduct?.includes(component.uuid)
+                            })
                           )
                         return (
                           <li key={componentsByCategory.categoryNumber}>

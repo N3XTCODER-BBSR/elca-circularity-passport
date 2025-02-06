@@ -1,4 +1,3 @@
-// TODO: make DRY -> pdf-optimized components
 export const Box = ({
   children,
   height,

@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test"
-import { componentId, getAuthUserFile, projectId, users, variantId } from "./utils"
 import {
   createAccessGroup,
   createProject,
@@ -8,6 +7,7 @@ import {
   deleteProjectIfExists,
   deleteVariantIfExists,
 } from "prisma/queries/utils"
+import { componentId, getAuthUserFile, projectId, users, variantId } from "./utils"
 
 test.describe("Authorization", () => {
   const routes = {

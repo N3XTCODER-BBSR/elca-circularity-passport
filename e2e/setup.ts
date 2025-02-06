@@ -1,11 +1,10 @@
 import { chromium, FullConfig } from "@playwright/test"
+import { createUser, deleteUserIfExists } from "prisma/queries/testUtils"
 import {
   createGroupMember,
   createProjectAccessToken,
-  createUser,
   deleteGroupMemberIfExists,
   deleteProjectAccessTokenIfExists,
-  deleteUserIfExists,
 } from "prisma/queries/utils"
 import { accessGroupId, getAuthUserFile, projectId, users } from "./utils"
 

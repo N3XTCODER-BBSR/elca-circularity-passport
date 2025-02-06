@@ -1,18 +1,22 @@
 "use client"
 
+import { Accordion } from "@szhsin/react-accordion"
 import { useMutation, useQueries } from "@tanstack/react-query"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { useFormatter, useTranslations } from "next-intl"
+import { AccordionItemFullSimple } from "app/(components)/generic/AccordionItem"
+import { Badge } from "app/(components)/generic/layout-elements"
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import Toggle from "app/(components)/generic/Toggle"
 import getElcaComponentDataByProductId from "lib/domain-logic/circularity/server-actions/getElcaComponentDataByProductId"
 import updateExludedProduct from "lib/domain-logic/circularity/server-actions/toggleExcludedProject"
+import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
 import CircularityInfo from "./circularity-info/CircularityInfo"
-import { useRouter } from "next/navigation"
 
 type ComponentLayerProps = {
   projectId: number
@@ -27,8 +31,14 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     queries: [
       {
         queryKey: ["layerData", layerData.component_id],
-        queryFn: () => {
-          return getElcaComponentDataByProductId(variantId, projectId, layerData.component_id)
+        queryFn: async () => {
+          const result = await getElcaComponentDataByProductId(variantId, projectId, layerData.component_id)
+
+          if (result.success) {
+            return result.data!
+          }
+
+          throw new Error(result.error)
         },
         initialData: layerData,
         staleTime: Infinity,
@@ -58,6 +68,10 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
   const optimisticProductIsExcluded = updateExcludedProductMutation.isPending
     ? !currentLayerData.isExcluded
     : currentLayerData.isExcluded
+
+  // TODO: consider to do this calucation on the server side
+  // (or at least be consistent with the other calculation in the conext of the overview page / project circularity index)
+  const circulartyEnrichedLayerData = calculateCircularityDataForLayer(currentLayerData)
 
   const layerKeyValues: KeyValueTuple[] = [
     // {
@@ -92,14 +106,14 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
           ? `${format.number(currentLayerData.volume, {
               minimumFractionDigits: 0,
               maximumFractionDigits: 2,
-            })} m2`
+            })} m3`
           : "N/A",
     },
   ]
 
   const circularityInfo = currentLayerData.isExcluded ? null : (
     <CircularityInfo
-      layerData={currentLayerData}
+      layerData={circulartyEnrichedLayerData}
       tBaustoffProducts={tBaustoffProducts}
       projectId={projectId}
       variantId={variantId}
@@ -124,12 +138,25 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
           />
         </div>
       </div>
-      <div className="mt-8 overflow-hidden">
-        <div className="">
-          <SideBySideDescriptionListsWithHeadline data={layerKeyValues} />
-          {circularityInfo}
-        </div>
-      </div>
+      <Accordion transition transitionTimeout={200}>
+        <AccordionItemFullSimple
+          header={
+            !currentLayerData.isExcluded &&
+            !circulartyEnrichedLayerData.circularityIndex && (
+              <div className="flex">
+                <Badge>{t("incomplete")}</Badge>
+              </div>
+            )
+          }
+        >
+          <div className="mt-8 overflow-hidden">
+            <div className="">
+              <SideBySideDescriptionListsWithHeadline data={layerKeyValues} />
+              {circularityInfo}
+            </div>
+          </div>
+        </AccordionItemFullSimple>
+      </Accordion>
     </div>
   )
 }

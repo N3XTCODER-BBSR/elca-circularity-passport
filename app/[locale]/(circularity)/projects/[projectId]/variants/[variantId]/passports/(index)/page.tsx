@@ -1,11 +1,11 @@
 import errorHandler from "app/(utils)/errorHandler"
-import { getPassportsForProjectVariantId } from "lib/domain-logic/circularity/server-actions/passports/getPassportsForProjectVariantId"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { PassportMetadata } from "prisma/queries/db"
-import ProjectPassports from "./(components)/ProjectPassports"
-import { getVariantById } from "prisma/queries/legacyDb"
 import { NotFoundError, UnauthorizedError } from "lib/errors"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
+import { PassportMetadata } from "prisma/queries/db"
+import { getVariantById } from "prisma/queries/legacyDb"
+import ProjectPassports from "./(components)/ProjectPassports"
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
   return errorHandler(async () => {
@@ -25,7 +25,8 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
       throw new UnauthorizedError()
     }
 
-    const passportsMetadataForProjectVariant: PassportMetadata[] = await getPassportsForProjectVariantId(variantId)
+    const passportsMetadataForProjectVariant: PassportMetadata[] =
+      await dbDalInstance.getMetaDataForAllPassportsForProjectVariantId(variantId)
 
     return (
       <ProjectPassports

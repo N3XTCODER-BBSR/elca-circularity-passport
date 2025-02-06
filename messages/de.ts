@@ -209,12 +209,6 @@ const translationsGrpPlattformGeneric = {
         disturbingSubstanceNameUnspecified: "nicht spezifiziert",
         dismantlingClass: "Rückbau-Potential Klasse",
         // Grp.Web.Sections.detailPage.componentLayer.circularity.dismantlingClassNames
-        dismantlingClassNames: {
-          1: "zerstörungsfrei rückbaubar",
-          2: "zerstörungsarm rückbaubar",
-          3: "zerstörend ohne Fremd-/Störst. rückb.",
-          4: "nur mit Fremd-/Störstoffen rückbaubar",
-        },
         circularityIndex: "Zirkularitätsindex",
         eolPoints: "Punkte EOL",
         proofReuse: "Nachweis Wiederverwendung",
@@ -242,6 +236,7 @@ const translationsPlattformGeneric = {
       Layers: {
         mass: "Masse",
         volume: "Volumen",
+        incomplete: "Unvollständig",
         excludedFromCalculation: "Von der Berechnung ausgeschlossen",
         CircularityInfo: {
           sections: {
@@ -271,9 +266,16 @@ const translationsPlattformGeneric = {
                 },
               },
             },
+            dismantlingPotential: {
+              dismantlingClassNames: {
+                1: "zerstörungsfrei rückbaubar",
+                2: "zerstörungsarm rückbaubar",
+                3: "zerstörend ohne Fremd-/Störst. rückb.",
+                4: "nur mit Fremd-/Störstoffen rückbaubar",
+              },
+            },
           },
           title: "Zirkularität",
-          incomplete: "Unvollständig",
           tBaustoffMaterial: "tBaustoff",
           tBaustoffSelector: {
             select: "Auswählen",

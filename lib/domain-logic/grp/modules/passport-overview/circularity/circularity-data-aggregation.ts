@@ -1,4 +1,4 @@
-import getEolClassNameByPoints from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import { getEolClassNameByPoints } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 
 export type CircularityDataItem = {

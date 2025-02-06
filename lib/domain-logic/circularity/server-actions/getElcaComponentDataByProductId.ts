@@ -1,30 +1,28 @@
 "use server"
 
 import { z } from "zod"
-import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
+import { serverActionErrorHandler } from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { getExcludedProductId } from "prisma/queries/db"
-import { fetchElcaComponentById } from "./utils/getElcaComponentDataByLayerIdAndUserId"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
+import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 
-const getElcaComponentDataByProductId = async (
-  variantId: number,
-  projectId: number,
-  productId: number
-): Promise<EnrichedElcaElementComponent> => {
+const getElcaComponentDataByProductId = async (variantId: number, projectId: number, productId: number) => {
   z.number().parse(variantId)
   z.number().parse(productId)
   z.number().parse(projectId)
 
-  const session = await ensureUserIsAuthenticated()
-  const userId = Number(session.user.id)
-  await ensureUserAuthorizationToProject(userId, projectId)
+  return serverActionErrorHandler(async () => {
+    const session = await ensureUserIsAuthenticated()
+    const userId = Number(session.user.id)
+    await ensureUserAuthorizationToProject(userId, projectId)
 
-  const newElcaElementComponentData = await fetchElcaComponentById(productId, variantId, projectId)
-  const isExcluded = await getExcludedProductId(newElcaElementComponentData.component_id)
-  newElcaElementComponentData.isExcluded = !!isExcluded
+    const newElcaElementComponentData = await fetchElcaComponentById(productId, variantId, projectId)
+    const isExcluded = await dbDalInstance.getExcludedProductId(newElcaElementComponentData.component_id)
+    newElcaElementComponentData.isExcluded = !!isExcluded
 
-  return newElcaElementComponentData
+    return newElcaElementComponentData
+  })
 }
 
 export default getElcaComponentDataByProductId

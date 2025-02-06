@@ -1,7 +1,7 @@
 import md5 from "apache-md5"
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { findUsersByAuthName } from "prisma/queries/legacyDb"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 
 const validatePassword = (plainPassword: string, hashedPassword: string) =>
   md5(plainPassword, hashedPassword) === hashedPassword
@@ -20,7 +20,7 @@ const authOptions: NextAuthOptions = {
           return null
         }
 
-        const usersFromDb = await findUsersByAuthName(credentials.username)
+        const usersFromDb = await legacyDbDalInstance.findUsersByAuthName(credentials.username)
 
         if (usersFromDb.length === 0) {
           console.error("No user found.")

@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl"
 import { StyledDd, StyledDt } from "app/(components)/generic/layout-elements"
-import { EOLScenarioMap } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
+import { EOLScenarioMap } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 
 const EolScenarioInfoBox = ({ layerData }: { layerData: EnrichedElcaElementComponent }) => {

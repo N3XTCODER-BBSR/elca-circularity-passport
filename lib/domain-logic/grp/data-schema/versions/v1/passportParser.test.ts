@@ -1,6 +1,9 @@
 import { passportParser } from "./passportParser"
 import { Prisma } from "../../../../../../prisma/generated/client"
 
+// TODO (M): Review this whole test file
+// Probably it's not really meaningful since it is testing mainly
+// correctness of the zod library
 describe("passportParser", () => {
   const validBuildingComponents = [
     {

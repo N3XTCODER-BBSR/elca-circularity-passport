@@ -1,6 +1,7 @@
 import { ArrowPathIcon, ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
-import { useIsMutating, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
 import { useFormatter, useTranslations } from "next-intl"
 import { useState } from "react"
 import { twMerge } from "tailwind-merge"
@@ -15,28 +16,26 @@ import {
   StyledDt,
 } from "app/(components)/generic/layout-elements"
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
-import { addOrUpdateDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/disturbingSubstances/addOrUpdateDisturbingSubstance"
-import { removeDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/disturbingSubstances/removeDisturbingSubstances"
-import { updateDisturbingEolScenarioForS4 } from "lib/domain-logic/circularity/server-actions/disturbingSubstances/updateDisturbingEolScenarioForS4"
+import { addOrUpdateDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/addOrUpdateDisturbingSubstance"
+import { removeDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/removeDisturbingSubstances"
 import { updateDismantlingPotentialClassId } from "lib/domain-logic/circularity/server-actions/updateDismantlingPotentialClassId"
+import { updateDisturbingEolScenarioForS4 } from "lib/domain-logic/circularity/server-actions/updateDisturbingEolScenarioForS4"
 import {
   CalculateCircularityDataForLayerReturnType,
   EolUnbuiltData,
   SpecificOrTotal,
 } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import dismantlingPotentialClassIdMapping from "lib/domain-logic/circularity/utils/dismantlingPotentialClassIdMapping"
-import { EOLScenarioMap } from "lib/domain-logic/grp/data-schema/versions/v1/circularityDataUtils"
 import {
-  DisturbingSubstanceSelectionWithNullabelId,
-  EnrichedElcaElementComponent,
-} from "lib/domain-logic/types/domain-types"
+  dismantlingPotentialClassIdMapping,
+  EOLScenarioMap,
+} from "lib/domain-logic/circularity/utils/circularityMappings"
+import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/types/domain-types"
 import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import BuiltS4SpecificScenarioModal from "./disturbing-substances/BuiltS4SpecificScenarioModal"
 import DisturbingSubstances from "./DisturbingSubstances"
 import EOLScenarioEditButton from "./EOLScenarioEditButton"
 import EolScenarioInfoBox from "./EolScenarioInfoBox"
 import Modal from "../../../Modal"
-import { useRouter } from "next/navigation"
 
 type EolDataSectionProps = {
   layerDatacirculartyEnrichedLayerData: CalculateCircularityDataForLayerReturnType
@@ -77,12 +76,10 @@ const formatEolUnbuiltData = (data: EolUnbuiltData | null, format: Formatter, t:
 const EolDataSection = ({ layerDatacirculartyEnrichedLayerData }: EolDataSectionProps) => {
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo.EolDataSection")
   const format = useFormatter()
-  const isPending = useIsMutating() > 0
 
   if (layerDatacirculartyEnrichedLayerData.tBaustoffProductData == null) {
     return null
   }
-  // TODO: update
   const eolUnbuiltData = formatEolUnbuiltData(layerDatacirculartyEnrichedLayerData.eolUnbuilt, format, t)
   const eolUnbuiltDataSecondary = [
     // POTENTIAL
@@ -159,7 +156,10 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
     mutationFn: async (id: DismantlingPotentialClassId | null) => {
       updateDismantlingPotentialClassId(layerData.component_id, id)
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] })
+      router.refresh()
+    },
   })
 
   const updateDisturbingEolScenarioForS4Mutation = useMutation<
@@ -180,53 +180,50 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
   })
 
   const addOrUpdateDisturbingSubstanceMutation = useMutation<
-    EnrichedElcaElementComponent,
+    undefined,
     Error,
     DisturbingSubstanceSelectionWithNullabelId
   >({
     mutationFn: async (disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId) => {
-      const result = await addOrUpdateDisturbingSubstanceSelection(
+      await addOrUpdateDisturbingSubstanceSelection(
         variantId,
         projectId,
         layerData.component_id,
         disturbingSubstanceSelection
       )
-      return result
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] })
+      router.refresh()
+    },
   })
 
-  const removeDisturbingSubstanceMutation = useMutation<
-    EnrichedElcaElementComponent, // TData
-    Error,
-    number
-  >({
+  const removeDisturbingSubstanceMutation = useMutation<undefined, Error, number>({
     mutationFn: async (id: number) => {
-      const result = await removeDisturbingSubstanceSelection(variantId, projectId, layerData.component_id, id)
-      return result
+      await removeDisturbingSubstanceSelection(layerData.component_id, id)
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] })
+      router.refresh()
+    },
   })
 
   const setDismantlingPotentialClassId = async (id: DismantlingPotentialClassId) => {
     const newIdOrNull = layerData.dismantlingPotentialClassId === id ? null : id
-    await updateDismantlingPotentialClassIdMutation.mutate(newIdOrNull)
-    router.refresh()
+    updateDismantlingPotentialClassIdMutation.mutate(newIdOrNull)
   }
 
   const handleUpdateDisturbingSubstance = async (
     disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId
   ) => {
-    await addOrUpdateDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection)
-    router.refresh()
+    addOrUpdateDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection)
   }
 
-  const handleRemoveDisturbingSubstanceRow = async (
+  const handleRemoveDisturbingSubstanceRow = (
     disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId
   ) => {
-    if (disturbingSubstanceSelection.id != null) {
-      await removeDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection.id)
-      router.refresh()
+    if (disturbingSubstanceSelection.id !== null) {
+      removeDisturbingSubstanceMutation.mutate(disturbingSubstanceSelection.id)
     }
   }
 
@@ -332,7 +329,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
                   )}
                   onClick={() => setDismantlingPotentialClassId(key as DismantlingPotentialClassId)}
                 >
-                  {value.translationKey}
+                  {t(`sections.dismantlingPotential.dismantlingClassNames.${value.translationKey}`)}
                 </button>
               )
             })}

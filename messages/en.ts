@@ -209,12 +209,6 @@ const translationsGrpPlatformGeneric = {
         eolClass: "EOL Class",
         disturbingSubstanceNameUnspecified: "unspecified",
         dismantlingClass: "Dismantling Potential Class",
-        dismantlingClassNames: {
-          1: "PLACEHOLDER ENGLISH zerstörungsfrei rückbaubar",
-          2: "PLACEHOLDER ENGLISH zerstörungsarm rückbaubar",
-          3: "PLACEHOLDER ENGLISH zerstörend ohne Fremd-/Störst. rückb.",
-          4: "PLACEHOLDER ENGLISH nur mit Fremd-/Störstoffen rückbaubar",
-        },
         circularityIndex: "Circularity Index",
         eolPoints: "EOL Points",
         proofReuse: "Proof of Reuse",
@@ -242,6 +236,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
       Layers: {
         mass: "Mass",
         volume: "Volume",
+        incomplete: "Incomplete",
         excludedFromCalculation: "Excluded from calculation",
         CircularityInfo: {
           sections: {
@@ -271,9 +266,16 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
                 },
               },
             },
+            dismantlingPotential: {
+              dismantlingClassNames: {
+                1: "Non-destructively dismantled",
+                2: "Can be dismantled with minimal damage",
+                3: "Destructively dismantlable without impurities",
+                4: "Can only be dismantled with impurities",
+              },
+            },
           },
           title: "Circularity",
-          incomplete: "Incomplete",
           tBaustoffMaterial: "tBaustoff",
           tBaustoffSelector: {
             select: "Select",
