@@ -2,7 +2,6 @@ import {
   LifeCycleSubPhaseId,
   MaterialResourceTypeNamesSchema,
 } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
-import { TranslationsPlattformGeneric } from "./de"
 
 const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
   A1A2A3: "Módulo A1 - A3",
@@ -572,6 +571,12 @@ const translationsPlattformGeneric = {
       "598": "Instalaciones Exteriores Temporales",
       "599": "Otras Medidas para Instalaciones Exteriores, Misceláneo",
     },
+  },
+  errors: {
+    unauthorized: "No autorizado",
+    unauthenticated: "No autenticado",
+    db: "Error de base de datos",
+    unknown: "Error desconocido",
   },
 }
 

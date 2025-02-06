@@ -1,13 +1,13 @@
 "use server"
 
 import { z } from "zod"
-import { serverActionErrorHandler } from "app/(utils)/errorHandler"
 import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
 import { DisturbingSubstanceClassId, Prisma } from "prisma/generated/client"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
 import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
+import { serverActionErrorHandler } from "../utils/serverActionHandler"
 
 export async function addOrUpdateDisturbingSubstanceSelection(
   variantId: number,

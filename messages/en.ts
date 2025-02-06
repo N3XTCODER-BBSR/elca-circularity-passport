@@ -571,6 +571,12 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
       "599": "Other Measures for Outdoor Facilities, Miscellaneous",
     },
   },
+  errors: {
+    unauthorized: "Unauthorized",
+    unauthenticated: "Unauthenticated",
+    unknown: "An unknown error occurred",
+    db: "Database error occured",
+  },
 }
 
 export default translationsPlatformGeneric

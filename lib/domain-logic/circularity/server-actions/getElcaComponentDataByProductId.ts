@@ -1,11 +1,11 @@
 "use server"
 
 import { z } from "zod"
-import { serverActionErrorHandler } from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
 import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
+import { serverActionErrorHandler } from "../utils/serverActionHandler"
 
 const getElcaComponentDataByProductId = async (variantId: number, projectId: number, productId: number) => {
   z.number().parse(variantId)

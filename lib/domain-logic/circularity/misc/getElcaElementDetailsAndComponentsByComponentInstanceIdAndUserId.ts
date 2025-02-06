@@ -6,8 +6,8 @@ import {
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
-import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
 import { calculateMassForProduct } from "./calculateMassForProduct"
+import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
 import { calculateVolumeForLayer } from "../utils/calculateMassForLayer"
 
@@ -149,7 +149,6 @@ const enrichLayerData = async (
       try {
         mass = await calculateMassForProduct(component.component_id)
       } catch (error) {
-        // TODO before merge: handle error
         console.error(error)
       }
 

@@ -1,5 +1,5 @@
 import crypto from "crypto"
-import { DalError } from "lib/errors"
+import { DatabaseError } from "lib/errors"
 import { prisma, prismaLegacySuperUser } from "prisma/prismaClient"
 import { DbDal } from "./db"
 import { LegacyDbDal } from "./legacyDb"
@@ -13,8 +13,8 @@ export const buildDalProxyInstance = <T extends LegacyDbDal | DbDal>(dal: T) => 
         return async (...args: unknown[]) => {
           try {
             return await originalProperty.apply(target, args)
-          } catch (error: any) {
-            throw new DalError(error)
+          } catch (error: unknown) {
+            throw new DatabaseError(error)
           }
         }
       }

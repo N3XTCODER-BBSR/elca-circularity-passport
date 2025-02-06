@@ -1,3 +1,5 @@
+import { getErrorMessage } from "app/(utils)/getErrorMessage"
+
 export class UnauthorizedError extends Error {
   constructor(message = "Unauthorized") {
     super(message)
@@ -23,24 +25,18 @@ export class NotFoundError extends Error {
   }
 }
 
-// TODO: implement more advanced error handling
-export class DalError extends Error {
+export class DatabaseError extends Error {
   constructor(error: unknown) {
-    const message = `Error in DAL: ${getErrorMessage(error)}`
+    const message = `Error in DAL function: ${getErrorMessage(error)}`
     super(message)
   }
 }
 
-export const getErrorMessage = (error: unknown): string => {
-  let message: string
-  if (error instanceof Error) {
-    message = error.message
-  } else if (error && typeof error === "object" && "message" in error) {
-    message = String(error.message)
-  } else if (typeof error == "string") {
-    message = error
-  } else {
-    message = "Something went wrong"
+export class CallServerActionError extends Error {
+  constructor(i18nErrorKey = "errors.unknown") {
+    super("CallServerActionError")
+    this.i18nErrorKey = i18nErrorKey
   }
-  return message
+
+  i18nErrorKey: string
 }

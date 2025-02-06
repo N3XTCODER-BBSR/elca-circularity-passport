@@ -111,32 +111,32 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
       jest.clearAllMocks()
     })
 
-    it("it returns Unauthorized error message if user does not exist", async () => {
+    it("it returns unauthorized errorI18nKey if user does not exist", async () => {
       const mockSession = createMockSession(notExistingUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
         addOrUpdateDisturbingSubstanceSelection(variant1Id, project1Id, product1Id, disturbingSubstanceSelection)
-      ).resolves.toMatchObject({ message: "Unauthorized", success: false })
+      ).resolves.toMatchObject({ errorI18nKey: "errors.unauthorized", success: false })
     })
 
-    it("it returns Unauthorized error message if user lacks project access", async () => {
+    it("it returns unauthorized errorI18nKey if user lacks project access", async () => {
       // user2 only has project2
       const mockSession = createMockSession(user2Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
         addOrUpdateDisturbingSubstanceSelection(variant1Id, project1Id, product1Id, disturbingSubstanceSelection)
-      ).resolves.toMatchObject({ message: "Unauthorized", success: false })
+      ).resolves.toMatchObject({ errorI18nKey: "errors.unauthorized", success: false })
     })
 
-    it("it returns Unauthorized error message if user is not part of the project (unauthorized user)", async () => {
+    it("it returns unauthorized errorI18nKey if user is not part of the project (unauthorized user)", async () => {
       const mockSession = createMockSession(unauthorizedUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       await expect(
         addOrUpdateDisturbingSubstanceSelection(variant1Id, project1Id, product1Id, disturbingSubstanceSelection)
-      ).resolves.toMatchObject({ message: "Unauthorized", success: false })
+      ).resolves.toMatchObject({ errorI18nKey: "errors.unauthorized", success: false })
     })
 
     describe("Zod validations for productId", () => {
@@ -173,7 +173,7 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
       })
     })
 
-    it("returns DAL error message if user is project owner but variant is not part of project", async () => {
+    it("returns DB error errorI18nKey user is project owner but variant is not part of project", async () => {
       const mockSession = createMockSession(user1Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
@@ -185,10 +185,10 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
           product1Id,
           disturbingSubstanceSelection
         )
-      ).resolves.toMatchObject({ message: expect.stringContaining("Error in DAL"), success: false })
+      ).resolves.toMatchObject({ errorI18nKey: "errors.db", success: false })
     })
 
-    it("it returns Unauthorized error message if user is project owner but product id is not part of project", async () => {
+    it("it returns unauthorized errorI18nKey if user is project owner but product id is not part of project", async () => {
       const mockSession = createMockSession(user1Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
@@ -200,7 +200,7 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
           productIdNotInAuthorizedProject,
           disturbingSubstanceSelection
         )
-      ).resolves.toMatchObject({ message: "Unauthorized", success: false })
+      ).resolves.toMatchObject({ errorI18nKey: "errors.unauthorized", success: false })
     })
 
     describe("access tokens", () => {
@@ -213,13 +213,13 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
         await deleteProjectAccessTokenIfExists(project1Id, user3Id)
       })
 
-      it("it returns Unauthorized error message if user only holds a read-only token", async () => {
+      it("it returns unauthorized errorI18nKey if user only holds a read-only token", async () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
         await expect(
           addOrUpdateDisturbingSubstanceSelection(variant1Id, project1Id, product1Id, disturbingSubstanceSelection)
-        ).resolves.toMatchObject({ message: "Unauthorized", success: false })
+        ).resolves.toMatchObject({ errorI18nKey: "errors.unauthorized", success: false })
       })
 
       it("resolves if user holds an edit-access token", async () => {
