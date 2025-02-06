@@ -26,7 +26,7 @@ import withBundleAnalyzer from "@next/bundle-analyzer"
 import withPlugins from "next-compose-plugins"
 import createNextIntlPlugin from 'next-intl/plugin';
 import { env } from "./env.mjs"
-
+import appsignal from "./appsignal.cjs"
 
 const withNextIntl = createNextIntlPlugin();
  
@@ -40,7 +40,10 @@ const config = withPlugins([[withBundleAnalyzer({ enabled: env.ANALYZE })]], {
       fullUrl: true,
     },
   },
-  experimental: { instrumentationHook: true },
+  experimental: { 
+    instrumentationHook: true,
+    serverComponentsExternalPackages: ["@appsignal/nodejs"],
+  },
   rewrites() {
     return [
       { source: "/healthz", destination: "/api/health" },
