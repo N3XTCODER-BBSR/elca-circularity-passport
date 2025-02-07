@@ -1,7 +1,6 @@
 import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
 import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/types/domain-types"
-import { createUser, deleteUserIfExists } from "prisma/queries/testUtils"
 import {
   createAccessGroup,
   createDisturbingSubstanceSelectionWithDependencies,
@@ -9,17 +8,20 @@ import {
   createProductWithComponent,
   createProject,
   createProjectAccessToken,
+  createUser,
   createVariant,
   deleteAccessGroupIfExists,
+  deleteDisturbingSubstanceSelectionWithDependenciesIfExist,
   deleteGroupMemberIfExists,
   deleteProductIfExists,
   deleteProjectAccessTokenIfExists,
   deleteProjectIfExists,
+  deleteUserIfExists,
   deleteVariantIfExists,
   setProjectAccessTokenToEditTrue,
-} from "prisma/queries/utils"
+} from "prisma/queries/testUtils"
 import { addOrUpdateDisturbingSubstanceSelection } from "./addOrUpdateDisturbingSubstance"
-import ensureUserIsAuthenticated from "../../../../lib/ensureAuthenticated"
+import ensureUserIsAuthenticated from "../../../ensureAuthenticated"
 
 jest.mock("../../../../lib/ensureAuthenticated", () => jest.fn())
 
@@ -60,6 +62,7 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
     id: null,
     userEnrichedProductDataElcaElementComponentId: 6,
   }
+  let elcaComponentId: number | undefined
 
   describe("authorization", () => {
     beforeAll(async () => {
@@ -82,6 +85,7 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
       // 5) Create a DisturbingSubstanceSelection with dependencies
       const result = await createDisturbingSubstanceSelectionWithDependencies()
       disturbingSubstanceSelectionId = result.id
+      elcaComponentId = result.userEnrichedProductDataElcaElementComponentId
       // Make sure the test object has the correct ID
       disturbingSubstanceSelection = {
         ...disturbingSubstanceSelection,
@@ -105,6 +109,9 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
 
       // Cleanup variant not in project1
       await deleteVariantIfExists(variantIdNotInProject)
+      if (typeof disturbingSubstanceSelectionId === "number" && typeof elcaComponentId === "number") {
+        await deleteDisturbingSubstanceSelectionWithDependenciesIfExist(disturbingSubstanceSelectionId, elcaComponentId)
+      }
     })
 
     beforeEach(() => {

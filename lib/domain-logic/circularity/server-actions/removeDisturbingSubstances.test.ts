@@ -1,7 +1,6 @@
 import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
 import { UnauthorizedError } from "lib/errors"
-import { createUser, deleteUserIfExists } from "prisma/queries/testUtils"
 import {
   createAccessGroup,
   createDisturbingSubstanceSelectionWithDependencies,
@@ -9,19 +8,21 @@ import {
   createProductWithComponent,
   createProject,
   createProjectAccessToken,
+  createUser,
   createVariant,
   deleteAccessGroupIfExists,
   deleteComponentIfExists,
+  deleteDisturbingSubstanceSelectionWithDependenciesIfExist,
   deleteGroupMemberIfExists,
   deleteProductIfExists,
   deleteProjectAccessTokenIfExists,
   deleteProjectIfExists,
+  deleteUserIfExists,
   deleteVariantIfExists,
-  removeDisturbingSubstanceSelectionWithDependenciesIfExist,
   setProjectAccessTokenToEditTrue,
-} from "prisma/queries/utils"
+} from "prisma/queries/testUtils"
 import { removeDisturbingSubstanceSelection } from "./removeDisturbingSubstances"
-import ensureUserIsAuthenticated from "../../../../lib/ensureAuthenticated"
+import ensureUserIsAuthenticated from "../../../ensureAuthenticated"
 
 jest.mock("../../../../lib/ensureAuthenticated", () => jest.fn())
 
@@ -103,20 +104,14 @@ describe("removeDisturbingSubstanceSelection", () => {
 
       // Create disturbingSubstanceSelection & its dependencies fresh for each test
       const result = await createDisturbingSubstanceSelectionWithDependencies()
-      if (
-        !result ||
-        typeof result.id !== "number" ||
-        typeof result.userEnrichedProductDataElcaElementComponentId !== "number"
-      ) {
-        throw new Error(`Failed to create DisturbingSubstanceSelection. Received: ${JSON.stringify(result)}`)
-      }
+
       disturbingSubstanceSelectionId = result.id
       elcaComponentId = result.userEnrichedProductDataElcaElementComponentId
     })
 
     afterEach(async () => {
       if (typeof disturbingSubstanceSelectionId === "number" && typeof elcaComponentId === "number") {
-        await removeDisturbingSubstanceSelectionWithDependenciesIfExist(disturbingSubstanceSelectionId, elcaComponentId)
+        await deleteDisturbingSubstanceSelectionWithDependenciesIfExist(disturbingSubstanceSelectionId, elcaComponentId)
       }
       disturbingSubstanceSelectionId = undefined
       elcaComponentId = undefined

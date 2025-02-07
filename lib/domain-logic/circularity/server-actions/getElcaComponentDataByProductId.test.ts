@@ -1,18 +1,19 @@
 import { createMockSession } from "app/(utils)/testUtils"
-import { createUser, deleteUserIfExists } from "prisma/queries/testUtils"
 import {
   createAccessGroup,
   createGroupMember,
   createProject,
   createProjectAccessToken,
+  createUser,
   createVariant,
   deleteAccessGroupIfExists,
   deleteGroupMemberIfExists,
   deleteProjectAccessTokenIfExists,
   deleteProjectIfExists,
+  deleteUserIfExists,
   deleteVariantIfExists,
   setProjectAccessTokenToEditTrue,
-} from "prisma/queries/utils"
+} from "prisma/queries/testUtils"
 import getElcaComponentDataByProductId from "./getElcaComponentDataByProductId"
 import ensureUserIsAuthenticated from "../../../ensureAuthenticated"
 

@@ -6,7 +6,7 @@ import {
   deleteAccessGroupIfExists,
   deleteProjectIfExists,
   deleteVariantIfExists,
-} from "prisma/queries/utils"
+} from "prisma/queries/testUtils"
 import { componentId, getAuthUserFile, projectId, users, variantId } from "./utils"
 
 test.describe("Authorization", () => {

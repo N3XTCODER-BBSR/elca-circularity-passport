@@ -1,11 +1,12 @@
 import { chromium, FullConfig } from "@playwright/test"
-import { createUser, deleteUserIfExists } from "prisma/queries/testUtils"
 import {
   createGroupMember,
   createProjectAccessToken,
+  createUser,
   deleteGroupMemberIfExists,
   deleteProjectAccessTokenIfExists,
-} from "prisma/queries/utils"
+  deleteUserIfExists,
+} from "prisma/queries/testUtils"
 import { accessGroupId, getAuthUserFile, projectId, users } from "./utils"
 
 const authenticateAs = async (config: FullConfig, username: string, password: string) => {

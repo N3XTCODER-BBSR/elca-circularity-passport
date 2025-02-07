@@ -1,21 +1,22 @@
 import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
 import { UnauthorizedError } from "lib/errors"
-import { createUser, deleteUserIfExists } from "prisma/queries/testUtils"
 import {
   createAccessGroup,
   createGroupMember,
   createProductWithComponent,
   createProject,
   createProjectAccessToken,
+  createUser,
   deleteAccessGroupIfExists,
   deleteComponentIfExists,
   deleteGroupMemberIfExists,
   deleteProductIfExists,
   deleteProjectAccessTokenIfExists,
   deleteProjectIfExists,
+  deleteUserIfExists,
   setProjectAccessTokenToEditTrue,
-} from "prisma/queries/utils"
+} from "prisma/queries/testUtils"
 import { updateDisturbingEolScenarioForS4 } from "./updateDisturbingEolScenarioForS4"
 import ensureUserIsAuthenticated from "../../../../lib/ensureAuthenticated"
 
