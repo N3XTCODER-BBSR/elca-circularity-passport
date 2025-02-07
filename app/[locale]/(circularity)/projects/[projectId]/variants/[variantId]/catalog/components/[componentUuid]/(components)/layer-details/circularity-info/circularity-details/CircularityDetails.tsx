@@ -200,7 +200,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
 
   const removeDisturbingSubstanceMutation = useMutation<undefined, Error, number>({
     mutationFn: async (id: number) => {
-      await removeDisturbingSubstanceSelection(variantId, projectId, layerData.component_id, id)
+      await removeDisturbingSubstanceSelection(layerData.component_id, id)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] })

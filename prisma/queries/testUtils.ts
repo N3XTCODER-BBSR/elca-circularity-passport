@@ -1,4 +1,8 @@
-import { prismaLegacySuperUser } from "prisma/prismaClient"
+import crypto from "crypto"
+import { DatabaseError } from "lib/errors"
+import { prisma, prismaLegacySuperUser } from "prisma/prismaClient"
+import { DbDal } from "./db"
+import { LegacyDbDal } from "./legacyDb"
 
 /**
  * delete user with the given id if it exists
@@ -23,5 +27,281 @@ export const createUser = async (userId: number, userName: string) => {
       auth_method: 3,
       group_id: 1,
     },
+  })
+}
+
+export const buildDalProxyInstance = <T extends LegacyDbDal | DbDal>(dal: T) => {
+  return new Proxy<T>(dal, {
+    get(target, propKey, receiver) {
+      const originalProperty = Reflect.get(target, propKey, receiver)
+
+      if (typeof originalProperty === "function") {
+        return async (...args: unknown[]) => {
+          try {
+            return await originalProperty.apply(target, args)
+          } catch (error: unknown) {
+            throw new DatabaseError(error)
+          }
+        }
+      }
+
+      return originalProperty
+    },
+  })
+}
+
+/**
+ * create a project variant with the given id and project id
+ * @returns newly created project variant
+ */
+export const createVariant = async (variantId: number, projectId: number) => {
+  return prismaLegacySuperUser.elca_project_variants.create({
+    data: {
+      phase_id: 9,
+      id: variantId,
+      project_id: projectId,
+      name: "test variant",
+    },
+  })
+}
+
+/**
+ * delete project variant with the given id if it exists
+ */
+export const deleteVariantIfExists = async (variantId: number) => {
+  const variant = await prismaLegacySuperUser.elca_project_variants.findUnique({ where: { id: variantId } })
+  if (variant) {
+    await prismaLegacySuperUser.elca_project_variants.delete({ where: { id: variantId } })
+  }
+}
+
+/**
+ * create a project with the given id
+ * @returns newly created product
+ */
+export const createProductWithComponent = async (productId: number, componentId: number) => {
+  return prismaLegacySuperUser.elca_elements.create({
+    data: {
+      id: productId,
+      element_type_node_id: 246, // must match a real elca_element_types.node_id
+      name: "My new element",
+      element_components: {
+        create: [
+          {
+            id: componentId,
+            process_config_id: 123, // must match a real process_configs.id
+            process_conversion_id: 456, // must match a real process_conversions.id
+            life_time: 50,
+            is_layer: false,
+          },
+        ],
+      },
+    },
+  })
+}
+
+export const createTBsProductDefinition = async (id: number) => {
+  return await prisma.tBs_ProductDefinition.create({
+    data: {
+      id,
+      tBs_version: "2024-Q4",
+      name: "Acetyliertes Holz",
+    },
+  })
+}
+
+export const createDisturbingSubstanceSelectionWithDependencies = async () => {
+  // create random number from 1000 to 2000
+  const elcaElementComponentId = Math.floor(Math.random() * 1000) + 1000
+
+  return prisma.disturbingSubstanceSelection.create({
+    data: {
+      userEnrichedProductData: {
+        create: {
+          elcaElementComponentId: elcaElementComponentId,
+          tBaustoffProductSelectedByUser: true,
+        },
+      },
+    },
+  })
+}
+
+export const deleteDisturbingSubstanceSelectionWithDependenciesIfExist = async (
+  id: number,
+  elcaElementComponentId: number
+) => {
+  return prisma.$transaction(async (tx) => {
+    const existingDisturbingSubstance = await tx.disturbingSubstanceSelection.findUnique({
+      where: { id },
+    })
+    if (existingDisturbingSubstance) {
+      await tx.disturbingSubstanceSelection.delete({
+        where: { id },
+      })
+    }
+
+    const existingUserEnrichedProductData = await tx.userEnrichedProductData.findUnique({
+      where: { elcaElementComponentId },
+    })
+    if (existingUserEnrichedProductData) {
+      await tx.userEnrichedProductData.delete({
+        where: { elcaElementComponentId },
+      })
+    }
+  })
+}
+
+export async function createUserEnrichedProductData(
+  elcaElementComponentId: number,
+  tBaustoffProductSelectedByUser: boolean
+) {
+  return prisma.userEnrichedProductData.create({
+    data: {
+      elcaElementComponentId,
+      tBaustoffProductSelectedByUser,
+    },
+  })
+}
+
+export const deleteProductIfExists = async (id: number) => {
+  const product = await prismaLegacySuperUser.elca_elements.findUnique({ where: { id } })
+  if (product) {
+    await prismaLegacySuperUser.elca_elements.delete({ where: { id } })
+  }
+}
+
+export const deleteComponentIfExists = async (id: number) => {
+  const component = await prismaLegacySuperUser.elca_element_components.findUnique({ where: { id } })
+  if (component) {
+    await prismaLegacySuperUser.elca_element_components.delete({ where: { id } })
+  }
+}
+
+export const createProject = async (projectId: number, accessGroupId: number, ownerId: number) => {
+  return prismaLegacySuperUser.projects.create({
+    data: {
+      id: projectId,
+      process_db_id: 1,
+      access_group_id: accessGroupId,
+      name: "random name",
+      life_time: 50,
+      owner_id: ownerId,
+    },
+  })
+}
+
+export const createAccessGroup = async (groupId: number) => {
+  return prismaLegacySuperUser.groups.create({
+    data: {
+      id: groupId,
+      name: "random name",
+    },
+  })
+}
+
+export const createProjectAccessToken = async (projectId: number, userId: number, canEdit: boolean) => {
+  return prismaLegacySuperUser.project_access_tokens.create({
+    data: {
+      project_id: projectId,
+      user_id: userId,
+      token: crypto.randomUUID(),
+      user_email: "random email",
+      can_edit: canEdit,
+      is_confirmed: true,
+    },
+  })
+}
+
+export const deleteProjectAccessTokenIfExists = async (projectId: number, userId: number) => {
+  const token = await prismaLegacySuperUser.project_access_tokens.findFirst({
+    where: {
+      project_id: projectId,
+      user_id: userId,
+    },
+  })
+
+  if (token) {
+    await prismaLegacySuperUser.project_access_tokens.delete({
+      where: {
+        token: token.token,
+      },
+    })
+  }
+}
+
+export const setProjectAccessTokenToEditTrue = async (projectId: number, userId: number) => {
+  return prismaLegacySuperUser.project_access_tokens.update({
+    where: {
+      project_id_user_id: {
+        project_id: projectId,
+        user_id: userId,
+      },
+    },
+    data: {
+      can_edit: true,
+    },
+  })
+}
+
+export const createGroupMember = async (userId: number, groupId: number) => {
+  return prismaLegacySuperUser.group_members.create({
+    data: {
+      group_id: groupId,
+      user_id: userId,
+    },
+  })
+}
+
+export const deleteGroupMemberIfExists = async (userId: number, groupId: number) => {
+  return prismaLegacySuperUser.$transaction(async (tx) => {
+    const groupMember = await tx.group_members.findUnique({
+      where: {
+        group_id_user_id: {
+          group_id: groupId,
+          user_id: userId,
+        },
+      },
+    })
+
+    if (groupMember) {
+      await tx.group_members.delete({
+        where: {
+          group_id_user_id: {
+            group_id: groupId,
+            user_id: userId,
+          },
+        },
+      })
+    }
+  })
+}
+
+export const addElementToAccessGroup = async (componentId: number, groupId: number) => {
+  return prismaLegacySuperUser.elca_elements.update({
+    where: { id: componentId },
+    data: {
+      access_group_id: groupId,
+    },
+  })
+}
+
+export const deleteProjectIfExists = async (projectId: number) => {
+  return prismaLegacySuperUser.$transaction(async (tx) => {
+    const project = await tx.projects.findUnique({ where: { id: projectId } })
+
+    if (project) {
+      await prismaLegacySuperUser.projects.delete({
+        where: { id: projectId },
+      })
+    }
+  })
+}
+
+export const deleteAccessGroupIfExists = async (groupId: number) => {
+  return prismaLegacySuperUser.$transaction(async (tx) => {
+    const group = await prismaLegacySuperUser.groups.findUnique({ where: { id: groupId } })
+    if (group) {
+      await prismaLegacySuperUser.groups.delete({ where: { id: groupId } })
+    }
   })
 }

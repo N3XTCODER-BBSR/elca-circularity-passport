@@ -9,7 +9,7 @@ import { Prisma, TBs_OekobaudatMapping } from "prisma/generated/client"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { calculateEolDataByEolCateogryData } from "./calculateEolDataByEolCateogryData"
 import { calculateVolumeForLayer } from "./calculateMassForLayer"
-import { calculateMassForProduct } from "../server-actions/calculateMassForProduct"
+import { calculateMassForProduct } from "../misc/calculateMassForProduct"
 
 export const fetchElcaComponentById = async (layerId: number, variantId: number, projectId: number) => {
   const projectComponent = await legacyDbDalInstance.getElcaComponentDataByLayerId(layerId, variantId, projectId)

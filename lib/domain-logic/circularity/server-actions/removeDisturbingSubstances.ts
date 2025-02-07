@@ -1,24 +1,18 @@
 "use server"
 
+import { z } from "zod"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
+import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
-import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 
-export async function removeDisturbingSubstanceSelection(
-  variantId: number,
-  projectId: number,
-  layerId: number,
-  disturbingSubstanceSelectionId: number
-) {
-  if (!layerId || !disturbingSubstanceSelectionId) {
-    throw new Error("Invalid layerId or disturbingSubstanceSelectionId")
-  }
+export async function removeDisturbingSubstanceSelection(productId: number, disturbingSubstanceSelectionId: number) {
+  z.number().parse(productId)
+  z.number().parse(disturbingSubstanceSelectionId)
 
   const session = await ensureUserIsAuthenticated()
   const userId = Number(session.user.id)
 
-  await ensureUserAuthorizationToProject(userId, projectId)
+  await ensureUserAuthorizationToElementComponent(userId, productId)
 
   await dbDalInstance.deleteDisturbingSubstanceSelectionById(disturbingSubstanceSelectionId)
 }

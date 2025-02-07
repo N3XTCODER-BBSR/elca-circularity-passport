@@ -1,20 +1,20 @@
 "use server"
 
+import { z } from "zod"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
 import { DismantlingPotentialClassId } from "../../../../prisma/generated/client"
 
 export async function updateDismantlingPotentialClassId(
-  layerId: number,
+  productId: number,
   selectedDismantlingPotentialClassId: DismantlingPotentialClassId | null
 ) {
-  if (!layerId) {
-    throw new Error("Invalid layerId")
-  }
+  z.number().parse(productId)
 
   const session = await ensureUserIsAuthenticated()
+  const userId = Number(session.user.id)
 
-  await ensureUserAuthorizationToElementComponent(Number(session.user.id), layerId)
-  await dbDalInstance.upsertUserEnrichedProductDataByLayerId(layerId, selectedDismantlingPotentialClassId)
+  await ensureUserAuthorizationToElementComponent(userId, productId)
+  await dbDalInstance.upsertUserEnrichedProductDataByLayerId(productId, selectedDismantlingPotentialClassId)
 }

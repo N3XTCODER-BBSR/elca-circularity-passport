@@ -80,8 +80,8 @@ type PassportGeneratorResponse = {
 
 // TODO (M): split this long function into smaller ones (this function should only be 'workflow orchestration' on high level)
 export async function createPassportForProjectVariantId(
-  projectVariantId: string,
-  projectId: string
+  projectVariantId: number,
+  projectId: number
 ): Promise<PassportGeneratorResponse> {
   try {
     // TODO (M): review/improve/remove these two falsy checks
@@ -108,7 +108,7 @@ export async function createPassportForProjectVariantId(
       await getProjectCircularityIndexData(Number(projectVariantId), Number(projectId))
 
     const buildingComponents = await Promise.all(
-      circularityData.map(async (component, idx) => {
+      circularityData.map(async (component) => {
         return {
           uuid: component.element_uuid,
           name: component.element_name,
@@ -189,7 +189,8 @@ export async function createPassportForProjectVariantId(
     }
 
     // TODO (M): replace 'any' here with a more specific type to at least cover some basic/obvious type issues (like presence of a field) at compile time already
-    const parsedPassportData: SafeParseReturnType<any, PassportData> = PassportDataSchema.safeParse(passportInputData)
+    const parsedPassportData: SafeParseReturnType<unknown, PassportData> =
+      PassportDataSchema.safeParse(passportInputData)
     if (!parsedPassportData.success) {
       console.error("Data is invalid:", parsedPassportData.error.errors)
       return {

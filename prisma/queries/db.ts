@@ -291,10 +291,10 @@ export class DbDal {
     return await prisma.passport.findMany()
   }
 
-  getMetaDataForAllPassportsForProjectVariantId = async (projectVariantId: string): Promise<PassportMetadata[]> => {
+  getMetaDataForAllPassportsForProjectVariantId = async (projectVariantId: number): Promise<PassportMetadata[]> => {
     return await prisma.passport.findMany({
       where: {
-        projectVariantId,
+        projectVariantId: String(projectVariantId), // TODO: should be a number in the prisma schema
       },
       orderBy: {
         issueDate: "desc",

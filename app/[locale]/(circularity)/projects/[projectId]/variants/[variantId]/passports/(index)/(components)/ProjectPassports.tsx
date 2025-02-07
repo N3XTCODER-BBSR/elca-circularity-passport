@@ -14,8 +14,8 @@ import { PassportMetadata } from "prisma/queries/db"
 
 type ProjectPassportsProps = {
   passportsMetadata: PassportMetadata[]
-  projectVariantId: string
-  projectId: string
+  projectVariantId: number
+  projectId: number
 }
 
 export default function ProjectPassports({ passportsMetadata, projectVariantId, projectId }: ProjectPassportsProps) {

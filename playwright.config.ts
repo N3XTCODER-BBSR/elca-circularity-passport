@@ -25,6 +25,8 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  globalSetup: "./e2e/setup.ts",
+  testMatch: /.*e2e\/.*\.spec\.ts/,
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: `http://localhost:${process.env.CI ? "3005" : "3000"}`,

@@ -1,27 +1,29 @@
-import { prismaLegacy } from "prisma/prismaClient"
+export const getAuthUserFile = (username: string) => `playwright/.auth/${username}.json`
 
-/**
- * delete user with the given id if it exists
- */
-export const deleteUserIfExists = async (userId: number) => {
-  const user = await prismaLegacy.users.findUnique({ where: { id: userId } })
-  if (user) {
-    await prismaLegacy.users.delete({ where: { id: userId } })
-  }
+export const users = {
+  unAuthorizedUser: {
+    username: "unAuthorizedUser",
+    userId: 100,
+  },
+  readOnlyTokenUser: {
+    username: "readOnlyTokenUser",
+    userId: 101,
+  },
+  editTokenUser: {
+    username: "editTokenUser",
+    userId: 102,
+  },
+  groupMemberUser: {
+    username: "groupMemberUser",
+    userId: 103,
+  },
+  projectOwnerUser: {
+    username: "testuser",
+    userId: 2,
+  },
 }
 
-/**
- * create a user with the given username and password that doesn't have any projects
- * @returns newly created user
- */
-export const createUser = async (userId: number, userName: string, hashedPassword: string) => {
-  return prismaLegacy.users.create({
-    data: {
-      id: userId,
-      auth_name: userName,
-      auth_key: hashedPassword,
-      auth_method: 3,
-      group_id: 1,
-    },
-  })
-}
+export const accessGroupId = 3
+export const projectId = 1
+export const variantId = 1
+export const componentId = "32af2f0b-d7d8-4fb1-8354-1e9736d4f513"

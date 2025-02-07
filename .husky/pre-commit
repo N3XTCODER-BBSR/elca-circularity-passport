@@ -1,1 +1,5 @@
+#!/bin/sh
+export NVM_DIR="$HOME/.nvm"
+. "$NVM_DIR/nvm.sh" # This loads nvm
+nvm use # Use the Node.js version specified in .nvmrc
 npx lint-staged

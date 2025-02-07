@@ -1,7 +1,7 @@
 "use client"
 
 import { Accordion } from "@szhsin/react-accordion"
-import { useMutation, useQueries } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useFormatter, useTranslations } from "next-intl"
@@ -11,11 +11,12 @@ import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import Toggle from "app/(components)/generic/Toggle"
-import getElcaComponentDataByLayerId from "lib/domain-logic/circularity/server-actions/getElcaComponentDataByLayerId"
+import getElcaComponentDataByProductId from "lib/domain-logic/circularity/server-actions/getElcaComponentDataByProductId"
 import updateExludedProduct from "lib/domain-logic/circularity/server-actions/toggleExcludedProject"
 import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
+import { CallServerActionError } from "lib/errors"
 import CircularityInfo from "./circularity-info/CircularityInfo"
 
 type ComponentLayerProps = {
@@ -27,23 +28,19 @@ type ComponentLayerProps = {
 }
 
 const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustoffProducts }: ComponentLayerProps) => {
-  const [layerDataQuery] = useQueries({
-    queries: [
-      {
-        queryKey: ["layerData", layerData.component_id],
-        queryFn: async () => {
-          const result = await getElcaComponentDataByLayerId(variantId, projectId, layerData.component_id)
+  const layerDataQuery = useQuery({
+    queryKey: ["layerData", layerData.component_id],
+    queryFn: async () => {
+      const result = await getElcaComponentDataByProductId(variantId, projectId, layerData.component_id)
 
-          if (result.success) {
-            return result.data!
-          }
+      if (result.success) {
+        return result.data!
+      }
 
-          throw new Error(result.error)
-        },
-        initialData: layerData,
-        staleTime: Infinity,
-      },
-    ],
+      throw new CallServerActionError(result.errorI18nKey)
+    },
+    initialData: layerData,
+    staleTime: Infinity,
   })
 
   const unitsTranslations = useTranslations("Units")

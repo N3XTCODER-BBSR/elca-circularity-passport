@@ -571,6 +571,12 @@ const translationsPlattformGeneric = {
       "599": "Sonstige Maßnahmen für Außenanlagen, sonstiges",
     },
   },
+  errors: {
+    unauthorized: "Unberechtigter Zugriff",
+    unauthenticated: "Nicht authentifiziert",
+    unknown: "Ein unbekannter Fehler ist aufgetreten",
+    db: "Datenbankfehler",
+  },
 }
 
 export default translationsPlattformGeneric

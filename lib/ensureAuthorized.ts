@@ -14,6 +14,14 @@ export const ensureUserAuthorizationToProject = async (userId: number, projectId
   }
 }
 
+export const ensureUserAuthorizationToElementByUuid = async (userId: number, elementUuid: string) => {
+  const isAuthorized = await legacyDbDalInstance.isUserAuthorizedToElementByUuid(userId, elementUuid)
+
+  if (!isAuthorized) {
+    throw new UnauthorizedError()
+  }
+}
+
 /**
  * ensure that the user is authorized to access the element with the given id or throw an error
  * @param userId

@@ -1,54 +1,139 @@
 import { expect, test } from "@playwright/test"
-import { createUser, deleteUserIfExists } from "prisma/queries/testUtils"
-
-const username = "testuser2"
-const password = "password1!"
-const userId = 1000
+import {
+  createAccessGroup,
+  createProject,
+  createVariant,
+  deleteAccessGroupIfExists,
+  deleteProjectIfExists,
+  deleteVariantIfExists,
+} from "prisma/queries/testUtils"
+import { componentId, getAuthUserFile, projectId, users, variantId } from "./utils"
 
 test.describe("Authorization", () => {
-  test.beforeEach(async ({ page }) => {
-    await deleteUserIfExists(userId)
-    await createUser(userId, username)
+  const routes = {
+    variantsPage: "/de/projects/projectId/variants",
+    variantPage: "/de/projects/projectId/variants/variantId",
+    passportsPage: "/de/projects/projectId/variants/variantId/passports",
+    catalogPage: "/de/projects/projectId/variants/variantId/catalog",
+    componentPage: "/de/projects/projectId/variants/variantId/catalog/components/componentId",
+  }
 
-    await page.goto("/auth/signin")
+  for (const route of Object.values(routes)) {
+    test.describe(`Route: ${route}`, () => {
+      test.describe("Unauthorized user to project", () => {
+        test.use({ storageState: getAuthUserFile(users.unAuthorizedUser.username) })
 
-    await page.fill('input[name="username"]', username)
-    await page.fill('input[name="password"]', password)
+        test("should not be able to access page", async ({ page }) => {
+          const url = route.replace("projectId", projectId.toString()).replace("variantId", variantId.toString())
 
-    await Promise.all([
-      page.waitForURL(/\/en\/projects/), // Wait until the URL matches /en/projects
-      page.click('button[type="submit"]'),
-    ])
+          await page.goto(url)
 
-    await expect(page).toHaveURL(/\/en\/projects/) // Ensure the URL is as expected
-  })
+          await page.waitForURL(url, { timeout: 5000 })
 
-  test.afterEach(async ({ page }) => {
-    await page.goto("/en/projects")
-    await page.getByTestId("profile-dropdown-button").waitFor()
-    await page.getByTestId("profile-dropdown-button").click()
-    await page.getByTestId("logout-button").click()
+          await expect(page.locator("[data-testid=unauthorized-heading]")).toBeVisible()
+        })
+      })
+      test.describe("Read only token user to project", () => {
+        test.use({ storageState: getAuthUserFile(users.readOnlyTokenUser.username) })
 
-    await expect(page).toHaveURL(/\/auth\/signin/)
-  })
+        test("should not be able to access page", async ({ page }) => {
+          const url = route.replace("projectId", projectId.toString()).replace("variantId", variantId.toString())
 
-  test("should not be able to access project page that user is not authorized to", async ({ page }) => {
-    await page.goto("/en/projects/1")
+          await page.goto(url)
 
-    expect(page.locator("text=Unauthorized")).toBeTruthy()
-  })
+          await page.waitForURL(url, { timeout: 5000 })
 
-  test("should not be able to access catalog page that user is not authorized to", async ({ page }) => {
-    await page.goto("/en/projects/1/catalog")
+          await expect(page.locator("[data-testid=unauthorized-heading]")).toBeVisible()
+        })
+      })
+      test.describe("Edit token user to project", () => {
+        test.use({ storageState: getAuthUserFile(users.editTokenUser.username) })
 
-    expect(page.locator("text=Unauthorized")).toBeTruthy()
-  })
+        test("should be able to access page", async ({ page }) => {
+          const url = route
+            .replace("projectId", projectId.toString())
+            .replace("variantId", variantId.toString())
+            .replace("componentId", componentId.toString())
 
-  test("should not be able to access component page that user is not authorized to", async ({ page }) => {
-    await page.goto("/en/projects/1/catalog/components/32af2f0b-d7d8-4fb1-8354-1e9736d4f513")
+          await page.goto(url)
 
-    expect(page.locator("text=Unauthorized")).toBeTruthy()
-  })
+          await page.waitForURL(url, { timeout: 5000 })
+          await expect(page.locator("[data-testid=root-layout]")).toBeVisible()
+        })
+      })
+      test.describe("Group member user to project", () => {
+        test.use({ storageState: getAuthUserFile(users.groupMemberUser.username) })
 
-  // TODO (L): create project programmatically (database function) that user is owner of and test access to it
+        test("should not be able to access page", async ({ page }) => {
+          const url = route
+            .replace("projectId", projectId.toString())
+            .replace("variantId", variantId.toString())
+            .replace("componentId", componentId.toString())
+
+          await page.goto(url)
+
+          await page.waitForURL(url, { timeout: 5000 })
+
+          await expect(page.locator("[data-testid=root-layout]")).toBeVisible()
+        })
+      })
+
+      test.describe("Project owner user to project", () => {
+        test.use({ storageState: getAuthUserFile(users.projectOwnerUser.username) })
+
+        test("should be able to access page", async ({ page }) => {
+          const url = route
+            .replace("projectId", projectId.toString())
+            .replace("variantId", variantId.toString())
+            .replace("componentId", componentId)
+
+          await page.goto(url)
+
+          await page.waitForURL(url, { timeout: 5000 })
+
+          await expect(page.locator("[data-testid=root-layout]")).toBeVisible()
+        })
+      })
+      if (route !== routes.variantsPage) {
+        test.describe("different parameters", () => {
+          const newAccessGroupId = 199
+          const newProjectId = 99
+          const newVariantId = 99
+
+          test.use({ storageState: getAuthUserFile(users.unAuthorizedUser.username) })
+
+          test.beforeAll(async () => {
+            await deleteProjectIfExists(newProjectId)
+            await deleteAccessGroupIfExists(newAccessGroupId)
+
+            await createAccessGroup(newAccessGroupId)
+            await createProject(newProjectId, newAccessGroupId, users.unAuthorizedUser.userId)
+
+            await deleteVariantIfExists(newVariantId)
+            await createVariant(newVariantId, newProjectId)
+          })
+          test.afterAll(async () => {
+            await deleteProjectIfExists(newProjectId)
+            await deleteAccessGroupIfExists(newAccessGroupId)
+            await deleteVariantIfExists(newVariantId)
+          })
+
+          test("should not be able to access page resource parameter that is not part of project", async ({ page }) => {
+            let url = route.replace("projectId", newProjectId.toString())
+            if (url.includes("componentId")) {
+              url = url.replace("componentId", componentId)
+              url = url.replace("variantId", newVariantId.toString())
+            } else if (url.includes("variantId")) {
+              url = url.replace("variantId", variantId.toString())
+            }
+
+            await page.goto(url)
+
+            await page.waitForURL(url, { timeout: 5000 })
+            await expect(page.locator("[data-testid=unauthorized-heading]")).toBeVisible()
+          })
+        })
+      }
+    })
+  }
 })
