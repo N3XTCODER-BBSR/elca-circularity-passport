@@ -361,7 +361,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
         buildingPassport: "Building Resources Passport",
         switchProject: "Switch Project",
         switchVariant: "Switch Variant",
-        back: "Back"
+        back: "Back",
       },
       sections: {
         variants: translationsGrpPlatformGeneric.variantsPage,

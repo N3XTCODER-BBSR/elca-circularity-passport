@@ -361,7 +361,7 @@ const translationsPlattformGeneric = {
         buildingPassport: "Gebäude-Ressourcen-Pass",
         switchProject: "Project wechseln",
         switchVariant: "Variante wechseln",
-        back: "Zurück"
+        back: "Zurück",
       },
       sections: {
         projects: translationsGrpPlattformGeneric.projectsPage,
@@ -404,7 +404,7 @@ const translationsPlattformGeneric = {
         back: "Zurück",
         title: "Katalog",
         complete: "Vollständig",
-        incomplete: "Unvollständig"
+        incomplete: "Unvollständig",
       },
       passportsForProject: {
         title: "Generierte Gebäude-Ressourcen-Pässe",
