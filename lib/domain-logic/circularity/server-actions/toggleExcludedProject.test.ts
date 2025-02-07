@@ -1,5 +1,4 @@
 import { createMockSession } from "app/(utils)/testUtils"
-import { UnauthorizedError } from "lib/errors"
 import {
   createAccessGroup,
   createGroupMember,
@@ -80,7 +79,10 @@ describe("toggleExcludedProduct", () => {
       const mockSession = createMockSession(notExistingUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(toggleExcludedProduct(product1Id)).rejects.toThrow(UnauthorizedError)
+      await expect(toggleExcludedProduct(product1Id)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws UnauthorizedError if user lacks project access", async () => {
@@ -88,7 +90,10 @@ describe("toggleExcludedProduct", () => {
       const mockSession = createMockSession(user2Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(toggleExcludedProduct(product1Id)).rejects.toThrow(UnauthorizedError)
+      await expect(toggleExcludedProduct(product1Id)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws UnauthorizedError if user is project owner but the product is not in that project", async () => {
@@ -96,7 +101,10 @@ describe("toggleExcludedProduct", () => {
       const mockSession = createMockSession(user1Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(toggleExcludedProduct(product2Id)).rejects.toThrow(UnauthorizedError)
+      await expect(toggleExcludedProduct(product2Id)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws UnauthorizedError if user is in a group that lacks project access", async () => {
@@ -104,7 +112,10 @@ describe("toggleExcludedProduct", () => {
       const mockSession = createMockSession(user3Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(toggleExcludedProduct(product3Id)).rejects.toThrow(UnauthorizedError)
+      await expect(toggleExcludedProduct(product3Id)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     describe("access tokens", () => {
@@ -121,7 +132,10 @@ describe("toggleExcludedProduct", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(toggleExcludedProduct(product1Id)).rejects.toThrow(UnauthorizedError)
+        await expect(toggleExcludedProduct(product1Id)).resolves.toMatchObject({
+          success: false,
+          errorI18nKey: "errors.unauthorized",
+        })
       })
 
       it("resolves if user holds an edit-access token", async () => {
@@ -129,7 +143,7 @@ describe("toggleExcludedProduct", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(toggleExcludedProduct(product1Id)).resolves.toBeUndefined()
+        await expect(toggleExcludedProduct(product1Id)).resolves.toMatchObject({ data: undefined, success: true })
       })
     })
 
@@ -147,7 +161,7 @@ describe("toggleExcludedProduct", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(toggleExcludedProduct(product1Id)).resolves.toBeUndefined()
+        await expect(toggleExcludedProduct(product1Id)).resolves.toMatchObject({ data: undefined, success: true })
       })
     })
 
@@ -156,7 +170,7 @@ describe("toggleExcludedProduct", () => {
       const mockSession = createMockSession(user1Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(toggleExcludedProduct(product1Id)).resolves.toBeUndefined()
+      await expect(toggleExcludedProduct(product1Id)).resolves.toMatchObject({ data: undefined, success: true })
     })
   })
 })

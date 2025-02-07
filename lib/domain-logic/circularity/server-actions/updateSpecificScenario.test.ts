@@ -1,6 +1,4 @@
-import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
-import { UnauthorizedError } from "lib/errors"
 import {
   createAccessGroup,
   createGroupMember,
@@ -85,9 +83,10 @@ describe("updateSpecificEolScenario", () => {
       const mockSession = createMockSession(notExistingUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateSpecificEolScenario(product1Id, newSpecificEolScenario, newProofText)).rejects.toThrow(
-        UnauthorizedError
-      )
+      await expect(updateSpecificEolScenario(product1Id, newSpecificEolScenario, newProofText)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws UnauthorizedError if user lacks project access", async () => {
@@ -95,9 +94,10 @@ describe("updateSpecificEolScenario", () => {
       const mockSession = createMockSession(user2Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateSpecificEolScenario(product1Id, newSpecificEolScenario, newProofText)).rejects.toThrow(
-        UnauthorizedError
-      )
+      await expect(updateSpecificEolScenario(product1Id, newSpecificEolScenario, newProofText)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws ZodError if productId is null", async () => {
@@ -107,7 +107,7 @@ describe("updateSpecificEolScenario", () => {
       await expect(
         // @ts-expect-error Testing null
         updateSpecificEolScenario(null, newSpecificEolScenario, newProofText)
-      ).rejects.toThrow(ZodError)
+      ).resolves.toMatchObject({ success: false, errorI18nKey: "errors.validation" })
     })
 
     it("throws ZodError if productId is undefined", async () => {
@@ -117,7 +117,7 @@ describe("updateSpecificEolScenario", () => {
       await expect(
         // @ts-expect-error Testing undefined
         updateSpecificEolScenario(undefined, newSpecificEolScenario, newProofText)
-      ).rejects.toThrow(ZodError)
+      ).resolves.toMatchObject({ success: false, errorI18nKey: "errors.validation" })
     })
 
     it("throws ZodError if productId is not a number", async () => {
@@ -127,7 +127,7 @@ describe("updateSpecificEolScenario", () => {
       await expect(
         // @ts-expect-error Testing string
         updateSpecificEolScenario("invalidProductId", newSpecificEolScenario, newProofText)
-      ).rejects.toThrow(ZodError)
+      ).resolves.toMatchObject({ success: false, errorI18nKey: "errors.validation" })
     })
 
     it("throws UnauthorizedError if user is the project owner but the product is not in that project", async () => {
@@ -135,9 +135,10 @@ describe("updateSpecificEolScenario", () => {
       const mockSession = createMockSession(user1Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateSpecificEolScenario(product2Id, newSpecificEolScenario, newProofText)).rejects.toThrow(
-        UnauthorizedError
-      )
+      await expect(updateSpecificEolScenario(product2Id, newSpecificEolScenario, newProofText)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws UnauthorizedError if user is in a group that lacks project access", async () => {
@@ -145,9 +146,10 @@ describe("updateSpecificEolScenario", () => {
       const mockSession = createMockSession(user3Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateSpecificEolScenario(product3Id, newSpecificEolScenario, newProofText)).rejects.toThrow(
-        UnauthorizedError
-      )
+      await expect(updateSpecificEolScenario(product3Id, newSpecificEolScenario, newProofText)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     describe("access tokens", () => {
@@ -164,9 +166,9 @@ describe("updateSpecificEolScenario", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(updateSpecificEolScenario(product1Id, newSpecificEolScenario, newProofText)).rejects.toThrow(
-          UnauthorizedError
-        )
+        await expect(
+          updateSpecificEolScenario(product1Id, newSpecificEolScenario, newProofText)
+        ).resolves.toMatchObject({ success: false, errorI18nKey: "errors.unauthorized" })
       })
 
       it("resolves if user holds an edit-access token", async () => {
@@ -176,7 +178,7 @@ describe("updateSpecificEolScenario", () => {
 
         await expect(
           updateSpecificEolScenario(product1Id, newSpecificEolScenario, newProofText)
-        ).resolves.toBeUndefined()
+        ).resolves.toMatchObject({ success: true, data: undefined })
       })
     })
 
@@ -196,7 +198,7 @@ describe("updateSpecificEolScenario", () => {
 
         await expect(
           updateSpecificEolScenario(product1Id, newSpecificEolScenario, newProofText)
-        ).resolves.toBeUndefined()
+        ).resolves.toMatchObject({ success: true, data: undefined })
       })
     })
 
@@ -204,7 +206,10 @@ describe("updateSpecificEolScenario", () => {
       const mockSession = createMockSession(user1Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateSpecificEolScenario(product1Id, newSpecificEolScenario, newProofText)).resolves.toBeUndefined()
+      await expect(updateSpecificEolScenario(product1Id, newSpecificEolScenario, newProofText)).resolves.toMatchObject({
+        success: true,
+        data: undefined,
+      })
     })
   })
 })

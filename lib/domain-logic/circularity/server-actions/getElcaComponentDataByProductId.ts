@@ -1,18 +1,18 @@
 "use server"
 
 import { z } from "zod"
+import { withServerActionErrorHandling } from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
 import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
-import { serverActionErrorHandler } from "../utils/serverActionHandler"
 
 const getElcaComponentDataByProductId = async (variantId: number, projectId: number, productId: number) => {
-  z.number().parse(variantId)
-  z.number().parse(productId)
-  z.number().parse(projectId)
+  return withServerActionErrorHandling(async () => {
+    z.number().parse(variantId)
+    z.number().parse(productId)
+    z.number().parse(projectId)
 
-  return serverActionErrorHandler(async () => {
     const session = await ensureUserIsAuthenticated()
     const userId = Number(session.user.id)
     await ensureUserAuthorizationToProject(userId, projectId)

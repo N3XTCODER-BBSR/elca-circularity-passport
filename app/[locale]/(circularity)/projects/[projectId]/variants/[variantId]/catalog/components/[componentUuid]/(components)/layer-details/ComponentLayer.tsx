@@ -5,6 +5,7 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useFormatter, useTranslations } from "next-intl"
+import toast from "react-hot-toast"
 import { AccordionItemFullSimple } from "app/(components)/generic/AccordionItem"
 import { Badge } from "app/(components)/generic/layout-elements"
 import SideBySideDescriptionListsWithHeadline, {
@@ -44,22 +45,33 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
   })
 
   const unitsTranslations = useTranslations("Units")
-  const t = useTranslations("Circularity.Components.Layers")
+  const layerTranslations = useTranslations("Circularity.Components.Layers")
+  const t = useTranslations()
   const router = useRouter()
   const format = useFormatter()
 
   const { data: currentLayerData, refetch: refetchLayerData } = layerDataQuery
 
   const updateExcludedProductMutation = useMutation({
-    mutationFn: updateExludedProduct,
-    onSettled: async () => {
+    mutationFn: async (productId: number) => {
+      const result = await updateExludedProduct(productId)
+      if (!result.success) {
+        throw new CallServerActionError(result.errorI18nKey)
+      }
+    },
+    onSuccess: async () => {
       await refetchLayerData()
+      router.refresh()
+    },
+    onError: (error: Error) => {
+      if (error instanceof CallServerActionError) {
+        toast.error(t(error.errorI18nKey))
+      }
     },
   })
 
-  const setProductIsExcluded = async () => {
-    await updateExcludedProductMutation.mutate(currentLayerData.component_id)
-    router.refresh()
+  const setProductIsExcluded = () => {
+    updateExcludedProductMutation.mutate(currentLayerData.component_id)
   }
 
   const optimisticProductIsExcluded = updateExcludedProductMutation.isPending
@@ -84,20 +96,21 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     //   value: currentLayerData.quantity,
     // },
     {
-      key: t("mass"),
+      key: layerTranslations("mass"),
       value: currentLayerData.mass
         ? `${format.number(currentLayerData.mass, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
           })} ${unitsTranslations("Kg.short")}`
         : "N/A",
+      isRequired: true,
     },
     // {
     //   key: "Schichtdicke [m]",
     //   value: currentLayerData.layer_size || "N/A",
     // },
     {
-      key: t("volume"),
+      key: layerTranslations("volume"),
       value:
         currentLayerData.volume != null
           ? `${format.number(currentLayerData.volume, {
@@ -127,7 +140,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
           </h2>
         </div>
         <div className="flex items-center gap-1 text-sm font-medium leading-5 sm:gap-2">
-          <div>{t("excludedFromCalculation")}</div>
+          <div>{layerTranslations("excludedFromCalculation")}</div>
           <Toggle
             isEnabled={optimisticProductIsExcluded}
             setEnabled={setProductIsExcluded}
@@ -141,7 +154,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
             !currentLayerData.isExcluded &&
             !circulartyEnrichedLayerData.circularityIndex && (
               <div className="flex">
-                <Badge>{t("incomplete")}</Badge>
+                <Badge>{layerTranslations("incomplete")}</Badge>
               </div>
             )
           }

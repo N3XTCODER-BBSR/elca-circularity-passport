@@ -1,4 +1,3 @@
-import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
 import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/types/domain-types"
 import {
@@ -155,13 +154,13 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
         await expect(
           // @ts-expect-error Testing null
           addOrUpdateDisturbingSubstanceSelection(variant1Id, project1Id, null, disturbingSubstanceSelection)
-        ).rejects.toThrow(ZodError)
+        ).resolves.toMatchObject({ errorI18nKey: "errors.validation", success: false })
 
         // undefined
         await expect(
           // @ts-expect-error Testing undefined
           addOrUpdateDisturbingSubstanceSelection(variant1Id, project1Id, undefined, disturbingSubstanceSelection)
-        ).rejects.toThrow(ZodError)
+        ).resolves.toMatchObject({ errorI18nKey: "errors.validation", success: false })
       })
 
       it("throws ZodError if product id is not a number", async () => {
@@ -176,7 +175,7 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
             "invalidProductId",
             disturbingSubstanceSelection
           )
-        ).rejects.toThrow(ZodError)
+        ).resolves.toMatchObject({ errorI18nKey: "errors.validation", success: false })
       })
     })
 

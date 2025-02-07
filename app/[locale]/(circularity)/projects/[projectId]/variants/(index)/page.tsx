@@ -1,13 +1,13 @@
 import { getTranslations } from "next-intl/server"
 import ListItemLink from "app/(components)/generic/ListItemLink"
-import errorHandler from "app/(utils)/errorHandler"
+import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import ProjectLayout from "../../(components)/ProjectLayout"
 
 const Page = async ({ params }: { params: { projectId: string } }) => {
-  return errorHandler(async () => {
+  return withServerComponentErrorHandling(async () => {
     const session = await ensureUserIsAuthenticated()
 
     const projectId = Number(params.projectId)

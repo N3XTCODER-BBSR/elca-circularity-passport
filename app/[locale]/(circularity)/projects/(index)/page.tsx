@@ -1,12 +1,12 @@
 import { getTranslations } from "next-intl/server"
 import { FC } from "react"
 import ListItemLink from "app/(components)/generic/ListItemLink"
-import errorHandler from "app/(utils)/errorHandler"
+import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 
 const Page = async () => {
-  return errorHandler(async () => {
+  return withServerComponentErrorHandling(async () => {
     const session = await ensureUserIsAuthenticated()
 
     const userId = Number(session.user.id)

@@ -2,7 +2,7 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import { getFormatter, getTranslations } from "next-intl/server"
 import { Heading4 } from "app/(components)/generic/layout-elements"
-import errorHandler from "app/(utils)/errorHandler"
+import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/misc/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
@@ -16,7 +16,7 @@ const Page = async ({
 }: {
   params: { projectId: string; variantId: string; componentUuid: string; locale: string }
 }) => {
-  return errorHandler(async () => {
+  return withServerComponentErrorHandling(async () => {
     const session = await ensureUserIsAuthenticated()
     const format = await getFormatter()
     const projectId = Number(params.projectId)

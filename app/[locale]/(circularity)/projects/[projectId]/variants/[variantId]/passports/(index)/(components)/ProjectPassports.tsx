@@ -20,6 +20,7 @@ type ProjectPassportsProps = {
 
 export default function ProjectPassports({ passportsMetadata, projectVariantId, projectId }: ProjectPassportsProps) {
   const t = useTranslations("CircularityTool.sections.passportsForProject")
+  const tErrors = useTranslations("errors")
   const format = useFormatter()
   const router = useRouter()
 
@@ -29,10 +30,10 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
     setIsLoading(true)
     const generatePassportResponse = await createPassportForProjectVariantId(projectVariantId, projectId)
     setIsLoading(false)
-    if (!generatePassportResponse.error) {
+    if (generatePassportResponse.success) {
       router.refresh()
       toast.success("Passport successfully generated!")
-    } else if (generatePassportResponse.errorType === "validation") {
+    } else if (generatePassportResponse.errorI18nKey === "errors.validation") {
       toast.custom((t) => (
         <div
           className={`${
@@ -64,7 +65,7 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
         </div>
       ))
     } else {
-      toast.error(`There was an error - Passport creation failed: ${generatePassportResponse.details}`)
+      toast.error(tErrors(generatePassportResponse.errorI18nKey))
     }
   }
 

@@ -597,6 +597,7 @@ const translationsPlattformGeneric = {
     unauthenticated: "Nicht authentifiziert",
     unknown: "Ein unbekannter Fehler ist aufgetreten",
     db: "Datenbankfehler",
+    validation: "Validierungsfehler",
   },
 }
 

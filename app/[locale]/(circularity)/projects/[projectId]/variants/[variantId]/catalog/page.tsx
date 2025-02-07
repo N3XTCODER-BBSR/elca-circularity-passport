@@ -1,5 +1,5 @@
 import { ensureVariantAccessible } from "app/(utils)/ensureAccessible"
-import errorHandler from "app/(utils)/errorHandler"
+import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { getElcaElementsForVariantId } from "lib/domain-logic/circularity/misc/getElcaElementsForProjectId"
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
@@ -9,7 +9,7 @@ import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import ProjectCatalog from "./(components)/ProjectCatalog"
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
-  return errorHandler(async () => {
+  return withServerComponentErrorHandling(async () => {
     const session = await ensureUserIsAuthenticated()
 
     const userId = Number(session.user.id)

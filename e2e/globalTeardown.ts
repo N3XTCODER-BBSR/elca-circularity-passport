@@ -4,7 +4,7 @@ const main = async () => {
   // TODO: Add global teardown logic here
 
   if (process.env.CI) {
-    execSync("docker compose --profile e2e-tests down", { stdio: "ignore" })
+    execSync("docker compose --profile e2e-tests down --rmi local", { stdio: "ignore" })
   }
 }
 

@@ -1,6 +1,4 @@
-import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
-import { UnauthorizedError } from "lib/errors"
 import {
   createAccessGroup,
   createDisturbingSubstanceSelectionWithDependencies,
@@ -121,9 +119,9 @@ describe("removeDisturbingSubstanceSelection", () => {
       const mockSession = createMockSession(notExistingUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(removeDisturbingSubstanceSelection(product1Id, disturbingSubstanceSelectionId!)).rejects.toThrow(
-        UnauthorizedError
-      )
+      await expect(
+        removeDisturbingSubstanceSelection(product1Id, disturbingSubstanceSelectionId!)
+      ).resolves.toMatchObject({ success: false, errorI18nKey: "errors.unauthorized" })
     })
 
     it("throws UnauthorizedError if user lacks project access", async () => {
@@ -131,18 +129,18 @@ describe("removeDisturbingSubstanceSelection", () => {
       const mockSession = createMockSession(user2Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(removeDisturbingSubstanceSelection(product1Id, disturbingSubstanceSelectionId!)).rejects.toThrow(
-        UnauthorizedError
-      )
+      await expect(
+        removeDisturbingSubstanceSelection(product1Id, disturbingSubstanceSelectionId!)
+      ).resolves.toMatchObject({ success: false, errorI18nKey: "errors.unauthorized" })
     })
 
     it("throws UnauthorizedError if user is not part of the project (unauthorized user)", async () => {
       const mockSession = createMockSession(unauthorizedUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(removeDisturbingSubstanceSelection(product1Id, disturbingSubstanceSelectionId!)).rejects.toThrow(
-        UnauthorizedError
-      )
+      await expect(
+        removeDisturbingSubstanceSelection(product1Id, disturbingSubstanceSelectionId!)
+      ).resolves.toMatchObject({ success: false, errorI18nKey: "errors.unauthorized" })
     })
 
     describe("product id validations", () => {
@@ -154,13 +152,13 @@ describe("removeDisturbingSubstanceSelection", () => {
         await expect(
           // @ts-expect-error Testing null
           removeDisturbingSubstanceSelection(null, disturbingSubstanceSelectionId!)
-        ).rejects.toThrow(ZodError)
+        ).resolves.toMatchObject({ success: false, errorI18nKey: "errors.validation" })
 
         // undefined
         await expect(
           // @ts-expect-error Testing undefined
           removeDisturbingSubstanceSelection(undefined, disturbingSubstanceSelectionId!)
-        ).rejects.toThrow(ZodError)
+        ).resolves.toMatchObject({ success: false, errorI18nKey: "errors.validation" })
       })
 
       it("throws ZodError if product id is not a number", async () => {
@@ -170,7 +168,7 @@ describe("removeDisturbingSubstanceSelection", () => {
         await expect(
           // @ts-expect-error Testing undefined
           removeDisturbingSubstanceSelection("999" as number, disturbingSubstanceSelectionId!)
-        ).rejects.toThrow(ZodError)
+        ).resolves.toMatchObject({ success: false, errorI18nKey: "errors.validation" })
       })
     })
 
@@ -181,7 +179,7 @@ describe("removeDisturbingSubstanceSelection", () => {
 
       await expect(
         removeDisturbingSubstanceSelection(productIdNotInAuthorizedProject, disturbingSubstanceSelectionId!)
-      ).rejects.toThrow(UnauthorizedError)
+      ).resolves.toMatchObject({ success: false, errorI18nKey: "errors.unauthorized" })
     })
 
     describe("access tokens", () => {
@@ -198,9 +196,9 @@ describe("removeDisturbingSubstanceSelection", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(removeDisturbingSubstanceSelection(product1Id, disturbingSubstanceSelectionId!)).rejects.toThrow(
-          UnauthorizedError
-        )
+        await expect(
+          removeDisturbingSubstanceSelection(product1Id, disturbingSubstanceSelectionId!)
+        ).resolves.toMatchObject({ success: false, errorI18nKey: "errors.unauthorized" })
       })
 
       it("resolves if user holds an edit-access token", async () => {
@@ -210,7 +208,7 @@ describe("removeDisturbingSubstanceSelection", () => {
 
         await expect(
           removeDisturbingSubstanceSelection(product1Id, disturbingSubstanceSelectionId!)
-        ).resolves.toBeUndefined()
+        ).resolves.toMatchObject({ success: true })
       })
     })
 
@@ -230,7 +228,7 @@ describe("removeDisturbingSubstanceSelection", () => {
 
         await expect(
           removeDisturbingSubstanceSelection(product1Id, disturbingSubstanceSelectionId!)
-        ).resolves.toBeUndefined()
+        ).resolves.toMatchObject({ success: true })
       })
     })
 
@@ -241,7 +239,7 @@ describe("removeDisturbingSubstanceSelection", () => {
 
       await expect(
         removeDisturbingSubstanceSelection(product1Id, disturbingSubstanceSelectionId!)
-      ).resolves.toBeUndefined()
+      ).resolves.toMatchObject({ success: true })
     })
   })
 })

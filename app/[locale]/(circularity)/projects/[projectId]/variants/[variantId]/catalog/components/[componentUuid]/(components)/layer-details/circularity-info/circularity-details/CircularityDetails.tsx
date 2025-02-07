@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { useFormatter, useTranslations } from "next-intl"
 import { useState } from "react"
+import toast from "react-hot-toast"
 import { twMerge } from "tailwind-merge"
 import { AccordionItemFull } from "app/(components)/generic/AccordionItem"
 import {
@@ -30,6 +31,7 @@ import {
   EOLScenarioMap,
 } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/types/domain-types"
+import { CallServerActionError } from "lib/errors"
 import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import BuiltS4SpecificScenarioModal from "./disturbing-substances/BuiltS4SpecificScenarioModal"
 import DisturbingSubstances from "./DisturbingSubstances"
@@ -147,18 +149,27 @@ type CircularityDetailsProps = {
   layerData: CalculateCircularityDataForLayerReturnType
 }
 const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDetailsProps) => {
-  const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
+  const circularityInfoTranslations = useTranslations("Circularity.Components.Layers.CircularityInfo")
+  const t = useTranslations()
   const format = useFormatter()
   const queryClient = useQueryClient()
   const router = useRouter()
 
   const updateDismantlingPotentialClassIdMutation = useMutation<void, Error, DismantlingPotentialClassId | null>({
     mutationFn: async (id: DismantlingPotentialClassId | null) => {
-      updateDismantlingPotentialClassId(layerData.component_id, id)
+      const result = await updateDismantlingPotentialClassId(layerData.component_id, id)
+      if (!result.success) {
+        throw new CallServerActionError(result.errorI18nKey)
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] })
       router.refresh()
+    },
+    onError: (error: Error) => {
+      if (error instanceof CallServerActionError) {
+        toast.error(t(error.errorI18nKey))
+      }
     },
   })
 
@@ -174,9 +185,17 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
     }: {
       selectedEolScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
     }) => {
-      await updateDisturbingEolScenarioForS4(layerData.component_id, selectedEolScenario)
+      const result = await updateDisturbingEolScenarioForS4(layerData.component_id, selectedEolScenario)
+      if (!result.success) {
+        throw new CallServerActionError(result.errorI18nKey)
+      }
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
+    onError: (error: Error) => {
+      if (error instanceof CallServerActionError) {
+        toast.error(t(error.errorI18nKey))
+      }
+    },
   })
 
   const addOrUpdateDisturbingSubstanceMutation = useMutation<
@@ -185,26 +204,42 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
     DisturbingSubstanceSelectionWithNullabelId
   >({
     mutationFn: async (disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId) => {
-      await addOrUpdateDisturbingSubstanceSelection(
+      const result = await addOrUpdateDisturbingSubstanceSelection(
         variantId,
         projectId,
         layerData.component_id,
         disturbingSubstanceSelection
       )
+      if (!result.success) {
+        throw new CallServerActionError(result.errorI18nKey)
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] })
       router.refresh()
+    },
+    onError: (error: Error) => {
+      if (error instanceof CallServerActionError) {
+        toast.error(t(error.errorI18nKey))
+      }
     },
   })
 
   const removeDisturbingSubstanceMutation = useMutation<undefined, Error, number>({
     mutationFn: async (id: number) => {
-      await removeDisturbingSubstanceSelection(layerData.component_id, id)
+      const result = await removeDisturbingSubstanceSelection(layerData.component_id, id)
+      if (!result.success) {
+        throw new CallServerActionError(result.errorI18nKey)
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] })
       router.refresh()
+    },
+    onError: (error: Error) => {
+      if (error instanceof CallServerActionError) {
+        toast.error(t(error.errorI18nKey))
+      }
     },
   })
 
@@ -234,11 +269,11 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
 
   const eolUnbuiltDataSecondary = [
     {
-      key: t("RebuildSection.rebuildClass"),
+      key: circularityInfoTranslations("RebuildSection.rebuildClass"),
       value: layerData.dismantlingPotentialClassId ?? "-",
     },
     {
-      key: t("RebuildSection.rebuildPoints"),
+      key: circularityInfoTranslations("RebuildSection.rebuildPoints"),
       value: layerData.dismantlingPotentialClassId
         ? format.number(dismantlingPotentialClassIdMapping[layerData.dismantlingPotentialClassId].points, {
             maximumFractionDigits: 2,
@@ -267,11 +302,11 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
 
   const eolBuiltData = [
     {
-      key: t("EolBuiltSection.class"), //t("..."),
+      key: circularityInfoTranslations("EolBuiltSection.class"),
       value: layerData.eolBuilt?.className ?? "-",
     },
     {
-      key: t("EolBuiltSection.points"), //t("..."),
+      key: circularityInfoTranslations("EolBuiltSection.points"),
       value: layerData.eolBuilt?.points ? format.number(layerData.eolBuilt?.points, { maximumFractionDigits: 2 }) : "-",
     },
   ]
@@ -287,7 +322,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
                 <ArrowPathIcon className="size-5 text-white" aria-hidden="true" />
               </div>
 
-              <p className="">{t("circularityIndex")}</p>
+              <p className="">{circularityInfoTranslations("circularityIndex")}</p>
             </h4>
           </StyledDt>
           <StyledDd justifyEnd>
@@ -302,7 +337,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
       <Area>
         <div className="flex flex-row justify-between">
           <Heading4>
-            {t("RebuildSection.title")} <Required />
+            {circularityInfoTranslations("RebuildSection.title")} <Required />
           </Heading4>
           {layerData.dismantlingPotentialClassId === null && (
             <ErrorText className="mr-4">{t("RebuildSection.error")}</ErrorText>
@@ -329,7 +364,9 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
                   )}
                   onClick={() => setDismantlingPotentialClassId(key as DismantlingPotentialClassId)}
                 >
-                  {t(`sections.dismantlingPotential.dismantlingClassNames.${value.translationKey}`)}
+                  {circularityInfoTranslations(
+                    `sections.dismantlingPotential.dismantlingClassNames.${value.translationKey}`
+                  )}
                 </button>
               )
             })}
@@ -342,12 +379,12 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
       <Area>
         <div className="flex flex-col justify-between">
           <Heading4>
-            {t("EolBuiltSection.title")} <Required />
+            {circularityInfoTranslations("EolBuiltSection.title")} <Required />
           </Heading4>
           {layerData.disturbingSubstances.noDisturbingSubstancesOrOnlyNullClassesSelected && (
             <div className="flex items-center text-red" role="alert">
               <ExclamationTriangleIcon className="mr-2 size-5" aria-hidden="true" />
-              <p className="text-sm">{t("EolBuiltSection.emptyState")}</p>
+              <p className="text-sm">{circularityInfoTranslations("EolBuiltSection.emptyState")}</p>
             </div>
           )}
           <div className="flex w-full flex-row items-center justify-between">
@@ -362,14 +399,14 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
         {layerData.disturbingSubstances.hasS4DisturbingSubstance && (
           <Area>
             <Heading4>
-              {t("EolBuiltSection.eolScenarioS4")}
+              {circularityInfoTranslations("EolBuiltSection.eolScenarioS4")}
               <Required />
             </Heading4>
             {layerData.disturbingEolScenarioForS4 == null ? (
               <>
                 <div className="flex items-center text-red" role="alert">
                   <ExclamationTriangleIcon className="mr-2 size-5" aria-hidden="true" />
-                  <p className="text-sm">{t("EolBuiltSection.selectEolScenario")}</p>
+                  <p className="text-sm">{circularityInfoTranslations("EolBuiltSection.selectEolScenario")}</p>
                 </div>
 
                 <div className="mt-4">
@@ -378,13 +415,13 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
                     className="text-indigo-600 hover:text-indigo-800"
                     onClick={handleOpenEolScenarioModal}
                   >
-                    {t("EolBuiltSection.overrideEolScenarioButton")}
+                    {circularityInfoTranslations("EolBuiltSection.overrideEolScenarioButton")}
                   </button>
                 </div>
               </>
             ) : (
               <div className="flex flex-row justify-between">
-                <div>{t("EolBuiltSection.eolScenarioBuiltSpecific")}</div>
+                <div>{circularityInfoTranslations("EolBuiltSection.eolScenarioBuiltSpecific")}</div>
                 <div className="flex flex-row justify-between">
                   <div className="mx-4">{EOLScenarioMap[layerData.disturbingEolScenarioForS4]}</div>
                   <div>
@@ -401,7 +438,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
       {isEolScenarioModalOpen && (
         <Modal
           onClose={handleCloseEolScenarioModal}
-          title={t("sections.disturbingSubstances.specificScenarioForS4.modal.title")}
+          title={circularityInfoTranslations("sections.disturbingSubstances.specificScenarioForS4.modal.title")}
           isOpen={isEolScenarioModalOpen}
         >
           <BuiltS4SpecificScenarioModal

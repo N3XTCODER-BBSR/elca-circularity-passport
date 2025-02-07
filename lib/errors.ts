@@ -12,13 +12,6 @@ export class UnauthenticatedError extends Error {
   }
 }
 
-export class InvalidParameterError extends Error {
-  constructor(resourceName: string, id: string | number) {
-    const message = `Invalid Parameter: id '${id}' for resource '${resourceName}'`
-    super(message)
-  }
-}
-
 export class NotFoundError extends Error {
   constructor(message = "Not Found") {
     super(message)
@@ -33,17 +26,10 @@ export class DatabaseError extends Error {
 }
 
 export class CallServerActionError extends Error {
-  constructor(i18nErrorKey = "errors.unknown") {
+  constructor(errorI18nKey = "errors.unknown") {
     super("CallServerActionError")
-    this.i18nErrorKey = i18nErrorKey
+    this.errorI18nKey = errorI18nKey
   }
 
-  i18nErrorKey: string
-}
-
-// TODO: implement more advanced error handling
-export class DalError extends Error {
-  constructor(message = "Dal Error") {
-    super(message)
-  }
+  errorI18nKey: string
 }

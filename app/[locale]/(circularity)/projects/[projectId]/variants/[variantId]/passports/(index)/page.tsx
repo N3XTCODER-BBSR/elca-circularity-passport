@@ -1,5 +1,5 @@
 import { ensureVariantAccessible } from "app/(utils)/ensureAccessible"
-import errorHandler from "app/(utils)/errorHandler"
+import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
@@ -7,7 +7,7 @@ import { PassportMetadata } from "prisma/queries/db"
 import ProjectPassports from "./(components)/ProjectPassports"
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
-  return errorHandler(async () => {
+  return withServerComponentErrorHandling(async () => {
     const session = await ensureUserIsAuthenticated()
 
     const userId = Number(session.user.id)
