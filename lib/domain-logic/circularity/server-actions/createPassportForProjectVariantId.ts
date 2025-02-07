@@ -94,7 +94,7 @@ export async function createPassportForProjectVariantId(
 
     const session = await ensureUserIsAuthenticated()
 
-    await ensureUserAuthorizationToProject(Number(session.user.id), Number(projectVariantId))
+    await ensureUserAuthorizationToProject(Number(session.user.id), Number(projectId))
 
     const project = await legacyDbDalInstance.getProjectWithVaraitnsAndProcessDbById(Number(projectId))
 
