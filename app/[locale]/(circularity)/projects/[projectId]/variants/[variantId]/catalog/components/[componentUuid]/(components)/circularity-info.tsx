@@ -2,6 +2,7 @@
 import { Accordion } from "@szhsin/react-accordion"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
+import toast from "react-hot-toast"
 import { twMerge } from "tailwind-merge"
 import { AccordionItemFull } from "app/(components)/generic/AccordionItem"
 import {
@@ -128,7 +129,8 @@ const EolDataSection = ({ layerData, isUpdating, onSaveSpecificEolScenario }: Eo
 type CircularityInfoProps = { layerData: EnrichedElcaElementComponent; tBaustoffProducts: SelectOption[] }
 const CircularityInfo = (props: CircularityInfoProps) => {
   const { tBaustoffProducts } = props
-  const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
+  const t = useTranslations()
+  const circularityInfoTranslations = useTranslations("Circularity.Components.Layers.CircularityInfo")
   const tDismantlingPotentialClassNames = useTranslations(
     "Grp.Web.Sections.detailPage.componentLayer.circularity.dismantlingClassNames"
   )
@@ -140,7 +142,11 @@ const CircularityInfo = (props: CircularityInfoProps) => {
     setError(null)
     try {
       const newIdOrNull = props.layerData.dismantlingPotentialClassId === id ? null : id
-      const updatedLayer = await updateDismantlingPotentialClassId(props.layerData.component_id, newIdOrNull)
+      const result = await updateDismantlingPotentialClassId(props.layerData.component_id, newIdOrNull)
+      if (!result.success) {
+        toast.error(t(result.errorI18nKey))
+        setError(result.errorI18nKey || null)
+      }
     } catch (err: any) {
       console.error("Error saving selection:", err)
       setError(err.message || "An unexpected error occurred")
@@ -156,7 +162,11 @@ const CircularityInfo = (props: CircularityInfoProps) => {
     setIsUpdating(true)
     setError(null)
     try {
-      const updatedLayer = await updateSpecificEolScenario(props.layerData.component_id, selectedEolScenario, proofText)
+      const result = await updateSpecificEolScenario(props.layerData.component_id, selectedEolScenario, proofText)
+      if (!result.success) {
+        toast.error(t(result.errorI18nKey))
+        setError(result.errorI18nKey || null)
+      }
     } catch (err: any) {
       console.error("Error saving selection:", err)
       setError(err.message || "An unexpected error occurred")
@@ -199,7 +209,7 @@ const CircularityInfo = (props: CircularityInfoProps) => {
       )}
 
       <div className="flex flex-row">
-        <Heading3>{t("title")}</Heading3>
+        <Heading3>{circularityInfoTranslations("title")}</Heading3>
         <Badge>Unvollständig</Badge>
       </div>
       <Area>

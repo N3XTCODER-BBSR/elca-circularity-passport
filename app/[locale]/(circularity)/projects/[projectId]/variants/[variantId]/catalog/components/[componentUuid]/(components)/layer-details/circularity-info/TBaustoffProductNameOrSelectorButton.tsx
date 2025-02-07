@@ -5,9 +5,11 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
+import toast from "react-hot-toast"
 import { EditButton, ErrorText } from "app/(components)/generic/layout-elements"
 import { updateTBaustoffProduct } from "lib/domain-logic/circularity/server-actions/updateTBaustoffProductOfLayer"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
+import { CallServerActionError } from "lib/errors"
 import Modal from "../../Modal"
 
 type Option = {
@@ -29,24 +31,34 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedIdStr, setSelectedIdStr] = useState<string>("")
   const isPending = useIsMutating() > 0
-  const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
+  const circularityTranslations = useTranslations("Circularity.Components.Layers.CircularityInfo")
+  const t = useTranslations()
   const router = useRouter()
 
   const queryClient = useQueryClient()
 
   const updateTBaustoffProductMutation = useMutation<void, Error, number>({
-    mutationFn: async (selectedId: number) =>
-      await updateTBaustoffProduct(circulartyEnrichedLayerData.component_id, selectedId),
+    mutationFn: async (selectedId: number) => {
+      const result = await updateTBaustoffProduct(circulartyEnrichedLayerData.component_id, selectedId)
+      if (!result.success) {
+        throw new CallServerActionError(result.errorI18nKey)
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["layerData", circulartyEnrichedLayerData.component_id] })
+      router.refresh()
+      setIsModalOpen(false)
+    },
+    onError: (error: unknown) => {
+      if (error instanceof CallServerActionError) {
+        toast.error(t(error.errorI18nKey))
+      }
     },
   })
 
   const handleSave = async () => {
     const selectedId = parseInt(selectedIdStr)
-    await updateTBaustoffProductMutation.mutate(selectedId)
-    router.refresh()
-    setIsModalOpen(false)
+    updateTBaustoffProductMutation.mutate(selectedId)
   }
 
   const handleCancel = () => {
@@ -57,15 +69,15 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
     <>
       <div>
         <EditButton onClick={() => setIsModalOpen(true)} disabled={isPending}>
-          {t("tBaustoffSelector.select")}
+          {circularityTranslations("tBaustoffSelector.select")}
         </EditButton>
       </div>
 
       <Modal
         isOpen={isModalOpen}
         onClose={handleCancel}
-        title={t("tBaustoffMaterial")}
-        description={t("tBaustoffSelector.modalBody")}
+        title={circularityTranslations("tBaustoffMaterial")}
+        description={circularityTranslations("tBaustoffSelector.modalBody")}
       >
         <div className="mt-4">
           <select
@@ -88,7 +100,7 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
         </div>
         <div className="mt-6 flex justify-end space-x-4">
           <button type="button" className="rounded bg-gray-200 px-4 py-2" onClick={handleCancel} disabled={isPending}>
-            {t("tBaustoffSelector.cancel")}
+            {circularityTranslations("tBaustoffSelector.cancel")}
           </button>
           <button
             type="button"
@@ -98,7 +110,7 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
             onClick={handleSave}
             disabled={!selectedIdStr || isPending}
           >
-            {t("tBaustoffSelector.save")}
+            {circularityTranslations("tBaustoffSelector.save")}
           </button>
         </div>
       </Modal>

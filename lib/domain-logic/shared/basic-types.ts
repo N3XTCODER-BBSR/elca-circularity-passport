@@ -15,4 +15,5 @@ export interface ActionResponse<T = unknown> {
   data?: T
   errorLevel?: "info" | "warning" | "error"
   errorI18nKey?: ErrorI18nKey
+  details?: unknown
 }

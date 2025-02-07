@@ -1,6 +1,4 @@
-import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
-import { UnauthorizedError } from "lib/errors"
 import {
   createAccessGroup,
   createGroupMember,
@@ -78,18 +76,20 @@ describe("updateDismantlingPotentialClassId", () => {
       const mockSession = createMockSession(notExistingUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateDismantlingPotentialClassId(product1Id, dismantlingPotentialClassId)).rejects.toThrow(
-        UnauthorizedError
-      )
+      await expect(updateDismantlingPotentialClassId(product1Id, dismantlingPotentialClassId)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws UnauthorizedError if user lacks project access", async () => {
       const mockSession = createMockSession(user2Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateDismantlingPotentialClassId(product1Id, dismantlingPotentialClassId)).rejects.toThrow(
-        UnauthorizedError
-      )
+      await expect(updateDismantlingPotentialClassId(product1Id, dismantlingPotentialClassId)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws ZodError if productId is null", async () => {
@@ -97,7 +97,10 @@ describe("updateDismantlingPotentialClassId", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       // @ts-expect-error testing null
-      await expect(updateDismantlingPotentialClassId(null, dismantlingPotentialClassId)).rejects.toThrow(ZodError)
+      await expect(updateDismantlingPotentialClassId(null, dismantlingPotentialClassId)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.validation",
+      })
     })
 
     it("throws ZodError if productId is undefined", async () => {
@@ -105,7 +108,10 @@ describe("updateDismantlingPotentialClassId", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       // @ts-expect-error testing undefined
-      await expect(updateDismantlingPotentialClassId(undefined, dismantlingPotentialClassId)).rejects.toThrow(ZodError)
+      await expect(updateDismantlingPotentialClassId(undefined, dismantlingPotentialClassId)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.validation",
+      })
     })
 
     it("throws ZodError if productId is not a number", async () => {
@@ -115,25 +121,27 @@ describe("updateDismantlingPotentialClassId", () => {
       await expect(
         // @ts-expect-error testing string
         updateDismantlingPotentialClassId("invalidProductId", dismantlingPotentialClassId)
-      ).rejects.toThrow(ZodError)
+      ).resolves.toMatchObject({ success: false, errorI18nKey: "errors.validation" })
     })
 
     it("throws UnauthorizedError if user is the project owner but the product is not in that project", async () => {
       const mockSession = createMockSession(user1Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateDismantlingPotentialClassId(product2Id, dismantlingPotentialClassId)).rejects.toThrow(
-        UnauthorizedError
-      )
+      await expect(updateDismantlingPotentialClassId(product2Id, dismantlingPotentialClassId)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws UnauthorizedError if user is in a group that lacks project access", async () => {
       const mockSession = createMockSession(user3Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateDismantlingPotentialClassId(product3Id, dismantlingPotentialClassId)).rejects.toThrow(
-        UnauthorizedError
-      )
+      await expect(updateDismantlingPotentialClassId(product3Id, dismantlingPotentialClassId)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     describe("access tokens", () => {
@@ -149,8 +157,8 @@ describe("updateDismantlingPotentialClassId", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(updateDismantlingPotentialClassId(product1Id, dismantlingPotentialClassId)).rejects.toThrow(
-          UnauthorizedError
+        await expect(updateDismantlingPotentialClassId(product1Id, dismantlingPotentialClassId)).resolves.toMatchObject(
+          { success: false, errorI18nKey: "errors.unauthorized" }
         )
       })
 
@@ -159,9 +167,9 @@ describe("updateDismantlingPotentialClassId", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(
-          updateDismantlingPotentialClassId(product1Id, dismantlingPotentialClassId)
-        ).resolves.toBeUndefined()
+        await expect(updateDismantlingPotentialClassId(product1Id, dismantlingPotentialClassId)).resolves.toMatchObject(
+          { success: true, data: undefined }
+        )
       })
     })
 
@@ -178,9 +186,9 @@ describe("updateDismantlingPotentialClassId", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(
-          updateDismantlingPotentialClassId(product1Id, dismantlingPotentialClassId)
-        ).resolves.toBeUndefined()
+        await expect(updateDismantlingPotentialClassId(product1Id, dismantlingPotentialClassId)).resolves.toMatchObject(
+          { success: true, data: undefined }
+        )
       })
     })
 
@@ -188,7 +196,10 @@ describe("updateDismantlingPotentialClassId", () => {
       const mockSession = createMockSession(user1Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateDismantlingPotentialClassId(product1Id, dismantlingPotentialClassId)).resolves.toBeUndefined()
+      await expect(updateDismantlingPotentialClassId(product1Id, dismantlingPotentialClassId)).resolves.toMatchObject({
+        success: true,
+        data: undefined,
+      })
     })
   })
 })

@@ -1,6 +1,7 @@
 "use server"
 
-import { SafeParseReturnType, ZodIssue } from "zod"
+import { z } from "zod"
+import { withServerActionErrorHandling } from "app/(utils)/errorHandler"
 import {
   MaterialGeometry,
   PassportData,
@@ -9,7 +10,6 @@ import {
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { InvalidParameterError as InvalidOrMissingParameterError } from "lib/errors"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { getProjectCircularityIndexData } from "../misc/getProjectCircularityIndex"
 import { CalculateCircularityDataForLayerReturnType } from "../utils/calculate-circularity-data-for-layer"
@@ -40,12 +40,13 @@ const createMaterialForComponent = async (
   quantity: number
 ) => {
   const circularityData = getCircularityForMaterial(layer)
+  // TODO (L): needs double check how to handle null values here
+  const massInKg = layer.mass === null ? null : quantity * layer.mass
 
   return {
     layerIndex: layer.layer_position,
     name: layer.process_name,
-    // TODO (L): needs double check how to handle null values here
-    massInKg: (layer.mass != null ? layer.mass : 0) * quantity || 0,
+    massInKg,
     // TODO (M): move this one level up to component?
     materialGeometry: {
       unit: unit as MaterialGeometry["unit"],
@@ -72,25 +73,12 @@ const createMaterialForComponent = async (
   }
 }
 
-type PassportGeneratorResponse = {
-  error: boolean
-  errorType?: "validation" | "generic"
-  details?: ZodIssue[] | string
-}
-
 // TODO (M): split this long function into smaller ones (this function should only be 'workflow orchestration' on high level)
-export async function createPassportForProjectVariantId(
-  projectVariantId: number,
-  projectId: number
-): Promise<PassportGeneratorResponse> {
-  try {
+export async function createPassportForProjectVariantId(projectVariantId: number, projectId: number) {
+  return withServerActionErrorHandling(async () => {
     // TODO (M): review/improve/remove these two falsy checks
-    if (!projectVariantId) {
-      throw new InvalidOrMissingParameterError("ProjectVariantId", projectVariantId)
-    }
-    if (!projectId) {
-      throw new InvalidOrMissingParameterError("ProjectId", projectId)
-    }
+    z.number().parse(projectVariantId)
+    z.number().parse(projectId)
 
     const session = await ensureUserIsAuthenticated()
 
@@ -132,7 +120,7 @@ export async function createPassportForProjectVariantId(
       return (
         acc +
         component.materials.reduce((acc2, material) => {
-          return acc2 + material.massInKg
+          return acc2 + (material.massInKg || 0)
         }, 0)
       )
     }, 0)
@@ -189,44 +177,16 @@ export async function createPassportForProjectVariantId(
     }
 
     // TODO (M): replace 'any' here with a more specific type to at least cover some basic/obvious type issues (like presence of a field) at compile time already
-    const parsedPassportData: SafeParseReturnType<unknown, PassportData> =
-      PassportDataSchema.safeParse(passportInputData)
-    if (!parsedPassportData.success) {
-      console.error("Data is invalid:", parsedPassportData.error.errors)
-      return {
-        error: true,
-        errorType: "validation",
-        details: parsedPassportData.error.errors,
-      }
-    }
+    const parsedPassportData: PassportData = PassportDataSchema.parse(passportInputData)
 
     await dbDalInstance.createNewPassportForProjectVariantId(
       uuid,
       String(projectVariantId),
       // TODO (L): set the version tag in a clean way
       "v0.0.1",
-      parsedPassportData.data,
+      parsedPassportData,
       now,
       fiftyYearsFromNow
     )
-
-    return {
-      error: false,
-    }
-  } catch (e) {
-    console.error("Error in createPassportForProjectVariantId:", e)
-    if (e instanceof InvalidOrMissingParameterError) {
-      return {
-        error: true,
-        errorType: "generic",
-        details: e.message,
-      }
-    } else {
-      return {
-        error: true,
-        errorType: "generic",
-        details: "An unknown error happened",
-      }
-    }
-  }
+  })
 }

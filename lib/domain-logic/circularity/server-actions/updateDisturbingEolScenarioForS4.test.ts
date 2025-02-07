@@ -1,6 +1,4 @@
-import { ZodError } from "zod"
 import { createMockSession } from "app/(utils)/testUtils"
-import { UnauthorizedError } from "lib/errors"
 import {
   createAccessGroup,
   createGroupMember,
@@ -93,7 +91,10 @@ describe("updateDisturbingEolScenarioForS4", () => {
       const mockSession = createMockSession(notExistingUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).rejects.toThrow(UnauthorizedError)
+      await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws UnauthorizedError if user lacks project access", async () => {
@@ -101,7 +102,10 @@ describe("updateDisturbingEolScenarioForS4", () => {
       const mockSession = createMockSession(user2Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).rejects.toThrow(UnauthorizedError)
+      await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws UnauthorizedError if user is not in the project at all", async () => {
@@ -109,7 +113,10 @@ describe("updateDisturbingEolScenarioForS4", () => {
       const mockSession = createMockSession(unauthorizedUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).rejects.toThrow(UnauthorizedError)
+      await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws ZodError if product id is null", async () => {
@@ -117,7 +124,10 @@ describe("updateDisturbingEolScenarioForS4", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       // @ts-expect-error intentionally testing null
-      await expect(updateDisturbingEolScenarioForS4(null, newScenario)).rejects.toThrow(ZodError)
+      await expect(updateDisturbingEolScenarioForS4(null, newScenario)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.validation",
+      })
     })
 
     it("throws ZodError if product id is undefined", async () => {
@@ -125,7 +135,10 @@ describe("updateDisturbingEolScenarioForS4", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       // @ts-expect-error intentionally testing undefined
-      await expect(updateDisturbingEolScenarioForS4(undefined, newScenario)).rejects.toThrow(ZodError)
+      await expect(updateDisturbingEolScenarioForS4(undefined, newScenario)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.validation",
+      })
     })
 
     it("throws ZodError if product id is not a number", async () => {
@@ -133,16 +146,22 @@ describe("updateDisturbingEolScenarioForS4", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       // @ts-expect-error intentionally passing string
-      await expect(updateDisturbingEolScenarioForS4("invalidProductId", newScenario)).rejects.toThrow(ZodError)
+      await expect(updateDisturbingEolScenarioForS4("invalidProductId", newScenario)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.validation",
+      })
     })
 
     it("throws UnauthorizedError if user is project owner but product id is not part of project", async () => {
       const mockSession = createMockSession(user1Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateDisturbingEolScenarioForS4(productIdNotInAuthorizedProject, newScenario)).rejects.toThrow(
-        UnauthorizedError
-      )
+      await expect(
+        updateDisturbingEolScenarioForS4(productIdNotInAuthorizedProject, newScenario)
+      ).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     describe("access tokens", () => {
@@ -159,7 +178,10 @@ describe("updateDisturbingEolScenarioForS4", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).rejects.toThrow(UnauthorizedError)
+        await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).resolves.toMatchObject({
+          success: false,
+          errorI18nKey: "errors.unauthorized",
+        })
       })
 
       it("resolves if user holds an edit-access token", async () => {
@@ -167,7 +189,10 @@ describe("updateDisturbingEolScenarioForS4", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).resolves.toBeUndefined()
+        await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).resolves.toMatchObject({
+          success: true,
+          data: undefined,
+        })
       })
     })
 
@@ -185,7 +210,10 @@ describe("updateDisturbingEolScenarioForS4", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).resolves.toBeUndefined()
+        await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).resolves.toMatchObject({
+          success: true,
+          data: undefined,
+        })
       })
     })
 
@@ -193,7 +221,10 @@ describe("updateDisturbingEolScenarioForS4", () => {
       const mockSession = createMockSession(user1Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).resolves.toBeUndefined()
+      await expect(updateDisturbingEolScenarioForS4(product1Id, newScenario)).resolves.toMatchObject({
+        success: true,
+        data: undefined,
+      })
     })
   })
 })

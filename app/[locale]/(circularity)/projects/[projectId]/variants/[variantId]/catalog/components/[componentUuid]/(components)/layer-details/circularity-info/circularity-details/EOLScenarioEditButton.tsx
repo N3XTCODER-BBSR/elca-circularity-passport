@@ -2,12 +2,15 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
+import toast from "react-hot-toast"
 import { EditButton } from "app/(components)/generic/layout-elements"
 import { Required, Text } from "app/(components)/generic/layout-elements"
 import { updateSpecificEolScenario } from "lib/domain-logic/circularity/server-actions/updateSpecificScenario"
 import { EOLScenarioMap } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
+import { CallServerActionError } from "lib/errors"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import EolScenarioInfoBox from "./EolScenarioInfoBox"
 import Modal from "../../../Modal"
@@ -123,6 +126,7 @@ const ModalPage2 = ({ layerData, handleCancel, handleSave, options }: ModalPage2
 
 const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ layerData }) => {
   const queryClient = useQueryClient()
+  const t = useTranslations()
 
   const updateSpecificEolScenarioMutation = useMutation<
     void,
@@ -139,9 +143,17 @@ const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ layerData
       selectedEolScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
       proofText: string
     }) => {
-      await updateSpecificEolScenario(layerData.component_id, selectedEolScenario, proofText)
+      const result = await updateSpecificEolScenario(layerData.component_id, selectedEolScenario, proofText)
+      if (!result.success) {
+        throw new CallServerActionError(result.errorI18nKey)
+      }
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
+    onError: (error: unknown) => {
+      if (error instanceof CallServerActionError) {
+        toast.error(t(error.errorI18nKey))
+      }
+    },
   })
 
   const eolScenarioOptions = Object.values(TBs_ProductDefinitionEOLCategoryScenario).map((value) => ({

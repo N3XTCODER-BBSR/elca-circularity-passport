@@ -1,9 +1,11 @@
-import { notFound, redirect } from "next/navigation"
-import { NotFoundError, UnauthenticatedError, UnauthorizedError } from "../../lib/errors"
-import Unauthorized from "../[locale]/(circularity)/(components)/Unauthorized"
+import { notFound } from "next/navigation"
+import { ZodError } from "zod"
 import UnauthenticatedRedirect from "app/[locale]/(circularity)/(components)/UnauthenticatedRedirect"
+import { ActionResponse } from "lib/domain-logic/shared/basic-types"
+import { DatabaseError, NotFoundError, UnauthenticatedError, UnauthorizedError } from "../../lib/errors"
+import Unauthorized from "../[locale]/(circularity)/(components)/Unauthorized"
 
-const errorHandler = async (fn: () => Promise<React.ReactNode>) => {
+export const withServerComponentErrorHandling = async (fn: () => Promise<React.ReactNode>) => {
   try {
     return await fn()
   } catch (error) {
@@ -24,30 +26,24 @@ const errorHandler = async (fn: () => Promise<React.ReactNode>) => {
   }
 }
 
-export interface ActionResponse<T = unknown> {
-  success: boolean
-  data?: T
-  error?: string
-  level?: "info" | "warning" | "error"
-  message?: string // i18n key
-}
-
-export const serverActionErrorHandler = async <TData = unknown,>(
+export const withServerActionErrorHandling = async <TData = unknown,>(
   fn: () => Promise<TData>
 ): Promise<ActionResponse<TData>> => {
   try {
     const result = await fn()
     return { success: true, data: result }
   } catch (error: unknown) {
+    console.error("Error in server action", error)
     if (error instanceof UnauthorizedError) {
-      return { success: false, message: error.message, level: "error" }
+      return { success: false, errorI18nKey: "errors.unauthorized", errorLevel: "error" }
     }
-    if (error instanceof Error) {
-      return { success: false, message: error.message, level: "error" }
+    if (error instanceof DatabaseError) {
+      return { success: false, errorI18nKey: "errors.db", errorLevel: "error" }
+    }
+    if (error instanceof ZodError) {
+      return { success: false, errorI18nKey: "errors.validation", errorLevel: "error", details: error.issues }
     }
 
-    return { success: false, message: "An unknown error occurred" } // TODO before merge: define generic i18n error message key
+    return { success: false, errorI18nKey: "errors.unknown" }
   }
 }
-
-export default errorHandler

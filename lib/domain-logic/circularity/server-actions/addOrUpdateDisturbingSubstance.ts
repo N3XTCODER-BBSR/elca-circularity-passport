@@ -1,13 +1,13 @@
 "use server"
 
 import { z } from "zod"
+import { withServerActionErrorHandling } from "app/(utils)/errorHandler"
 import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToElementComponent } from "lib/ensureAuthorized"
 import { DisturbingSubstanceClassId, Prisma } from "prisma/generated/client"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
 import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
-import { serverActionErrorHandler } from "../utils/serverActionHandler"
 
 export async function addOrUpdateDisturbingSubstanceSelection(
   variantId: number,
@@ -15,12 +15,12 @@ export async function addOrUpdateDisturbingSubstanceSelection(
   productId: number,
   disturbingSubstanceSelectionWithNullableId: DisturbingSubstanceSelectionWithNullabelId
 ) {
-  z.number().parse(variantId)
-  z.number().parse(productId)
-  z.object({}).passthrough().parse(disturbingSubstanceSelectionWithNullableId)
-  z.number().parse(projectId)
+  return withServerActionErrorHandling(async () => {
+    z.number().parse(variantId)
+    z.number().parse(productId)
+    z.object({}).passthrough().parse(disturbingSubstanceSelectionWithNullableId)
+    z.number().parse(projectId)
 
-  return serverActionErrorHandler(async () => {
     const session = await ensureUserIsAuthenticated()
     const userId = Number(session.user.id)
 

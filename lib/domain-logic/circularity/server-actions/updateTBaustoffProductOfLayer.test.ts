@@ -86,7 +86,10 @@ describe("updateTBaustoffProduct", () => {
       const mockSession = createMockSession(notExistingUserId)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateTBaustoffProduct(product1Id, tbProductDefinitionId)).rejects.toThrow(UnauthorizedError)
+      await expect(updateTBaustoffProduct(product1Id, tbProductDefinitionId)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws UnauthorizedError if user lacks project access", async () => {
@@ -94,7 +97,10 @@ describe("updateTBaustoffProduct", () => {
       const mockSession = createMockSession(user2Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateTBaustoffProduct(product1Id, tbProductDefinitionId)).rejects.toThrow(UnauthorizedError)
+      await expect(updateTBaustoffProduct(product1Id, tbProductDefinitionId)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws ZodError if productId is null", async () => {
@@ -102,7 +108,10 @@ describe("updateTBaustoffProduct", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       // @ts-expect-error Testing null
-      await expect(updateTBaustoffProduct(null, tbProductDefinitionId)).rejects.toThrow(ZodError)
+      await expect(updateTBaustoffProduct(null, tbProductDefinitionId)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.validation",
+      })
     })
 
     it("throws ZodError if productId is undefined", async () => {
@@ -110,7 +119,10 @@ describe("updateTBaustoffProduct", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       // @ts-expect-error Testing undefined
-      await expect(updateTBaustoffProduct(undefined, tbProductDefinitionId)).rejects.toThrow(ZodError)
+      await expect(updateTBaustoffProduct(undefined, tbProductDefinitionId)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.validation",
+      })
     })
 
     it("throws ZodError if productId is not a number", async () => {
@@ -118,7 +130,10 @@ describe("updateTBaustoffProduct", () => {
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
       // @ts-expect-error Testing string
-      await expect(updateTBaustoffProduct("invalidProductId", tbProductDefinitionId)).rejects.toThrow(ZodError)
+      await expect(updateTBaustoffProduct("invalidProductId", tbProductDefinitionId)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.validation",
+      })
     })
 
     it("throws UnauthorizedError if user is the project owner but the product is not part of that project", async () => {
@@ -126,7 +141,10 @@ describe("updateTBaustoffProduct", () => {
       const mockSession = createMockSession(user1Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateTBaustoffProduct(product2Id, tbProductDefinitionId)).rejects.toThrow(UnauthorizedError)
+      await expect(updateTBaustoffProduct(product2Id, tbProductDefinitionId)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     it("throws UnauthorizedError if user is in a group that lacks project access", async () => {
@@ -134,7 +152,10 @@ describe("updateTBaustoffProduct", () => {
       const mockSession = createMockSession(user3Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateTBaustoffProduct(product3Id, tbProductDefinitionId)).rejects.toThrow(UnauthorizedError)
+      await expect(updateTBaustoffProduct(product3Id, tbProductDefinitionId)).resolves.toMatchObject({
+        success: false,
+        errorI18nKey: "errors.unauthorized",
+      })
     })
 
     describe("access tokens", () => {
@@ -151,7 +172,10 @@ describe("updateTBaustoffProduct", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(updateTBaustoffProduct(product1Id, tbProductDefinitionId)).rejects.toThrow(UnauthorizedError)
+        await expect(updateTBaustoffProduct(product1Id, tbProductDefinitionId)).resolves.toMatchObject({
+          success: false,
+          errorI18nKey: "errors.unauthorized",
+        })
       })
 
       it("resolves if user holds an edit-access token", async () => {
@@ -159,7 +183,10 @@ describe("updateTBaustoffProduct", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(updateTBaustoffProduct(product1Id, tbProductDefinitionId)).resolves.toBeUndefined()
+        await expect(updateTBaustoffProduct(product1Id, tbProductDefinitionId)).resolves.toMatchObject({
+          success: true,
+          data: undefined,
+        })
       })
     })
 
@@ -177,7 +204,10 @@ describe("updateTBaustoffProduct", () => {
         const mockSession = createMockSession(user3Id)
         ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-        await expect(updateTBaustoffProduct(product1Id, tbProductDefinitionId)).resolves.toBeUndefined()
+        await expect(updateTBaustoffProduct(product1Id, tbProductDefinitionId)).resolves.toMatchObject({
+          success: true,
+          data: undefined,
+        })
       })
     })
 
@@ -185,7 +215,10 @@ describe("updateTBaustoffProduct", () => {
       const mockSession = createMockSession(user1Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
-      await expect(updateTBaustoffProduct(product1Id, tbProductDefinitionId)).resolves.toBeUndefined()
+      await expect(updateTBaustoffProduct(product1Id, tbProductDefinitionId)).resolves.toMatchObject({
+        success: true,
+        data: undefined,
+      })
     })
   })
 })

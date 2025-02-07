@@ -1,5 +1,6 @@
 import _ from "lodash"
 import { twMerge } from "tailwind-merge"
+import { Required } from "./layout-elements"
 import Tooltip from "./Tooltip"
 
 export type KeyValueTuple = {
@@ -9,6 +10,7 @@ export type KeyValueTuple = {
     content: React.ReactNode | string
     id: string
   }
+  isRequired?: boolean
 }
 
 export type SideBySideDescriptionListsWithHeadlineProps = {
@@ -27,6 +29,9 @@ const SingleKeyValueTuple = ({
   isLeft?: boolean
   justifyEnd?: boolean
 }) => {
+  // TODO: improve N/A check here (e.g. at least put the "N/A" in a global const or even use semantically more specific values like null etc)
+  const requiredValueIsMissing = keyValueTuple?.isRequired && keyValueTuple.value === "N/A"
+
   return (
     <div
       className={twMerge(
@@ -37,8 +42,11 @@ const SingleKeyValueTuple = ({
       <dt className="flex items-center text-sm font-semibold leading-6 text-gray-700">
         {keyValueTuple?.tooltip && <Tooltip id={keyValueTuple?.tooltip.id}>{keyValueTuple?.tooltip.content}</Tooltip>}
         <span>{keyValueTuple?.key}</span>
+        {keyValueTuple?.isRequired && <Required />}
       </dt>
-      <dd className={`mt-1 text-gray-600 ${justifyEnd ? "text-right" : ""}`}>
+      <dd
+        className={twMerge("mt-1", justifyEnd && "text-right", requiredValueIsMissing ? "text-red" : "text-gray-600")}
+      >
         {keyValueTuple?.value != null ? keyValueTuple?.value : !!keyValueTuple?.key && "N/A"}
       </dd>
     </div>
