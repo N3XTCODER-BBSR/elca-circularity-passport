@@ -2,6 +2,7 @@ import {
   LifeCycleSubPhaseId,
   MaterialResourceTypeNamesSchema,
 } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
+import { TranslationsPlattformGeneric } from "./de"
 
 const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
   A1A2A3: "Módulo A1 - A3",
@@ -208,6 +209,7 @@ const translationsGrpPlattformGeneric = {
         general: "General",
         materialCompatibility: "Compatibilidad del Material - Contaminantes",
         eolClass: "Clase EOL",
+        disturbingSubstanceNameUnspecified: "sin especificar",
         circularityIndex: "Índice de Circularidad",
         dismantlingClass: "Clase de Desmantelamiento",
         eolPoints: "Puntos EOL",
@@ -224,7 +226,7 @@ const translationsGrpPlattformGeneric = {
   },
 }
 
-const translationsPlattformGeneric = {
+const translationsPlattformGeneric: TranslationsPlattformGeneric = {
   Circularity: {
     Components: {
       name: "Nombre del Componente",
@@ -268,10 +270,10 @@ const translationsPlattformGeneric = {
             },
             dismantlingPotential: {
               dismantlingClassNames: {
-                1: "Non-destructively dismantled",
-                2: "Can be dismantled with minimal damage",
-                3: "Destructively dismantlable without impurities",
-                4: "Can only be dismantled with impurities",
+                1: "Desmontado de manera no destructiva",
+                2: "Se puede desmontar con daños mínimos",
+                3: "Desmontable de manera destructiva sin impurezas",
+                4: "Solo se puede desmontar con impurezas",
               },
             },
           },
@@ -309,11 +311,28 @@ const translationsPlattformGeneric = {
                 specific: "Escenario EOL (Específico)",
               },
             },
+            ModalPage1: {
+              title: "El escenario EOL seleccionado actualmente es:",
+              description: "¿Desea sobrescribir estos valores?",
+              buttonNo: "No, mantener los valores",
+              buttonYes: "Sí, sobrescribir",
+            },
+            ModalPage2: {
+              title: "Escenario EOL (Específico)",
+              empty: "[VACÍO]",
+              proof: "Prueba para sobrescribir el escenario EOL predeterminado",
+              description: "¿Desea sobrescribir estos valores?",
+              buttonCancel: "Cancelar",
+              buttonSave: "Guardar",
+              buttonEdit: "Editar",
+              proofPlaceholder: "Proporcione su prueba aquí...",
+            },
           },
           RebuildSection: {
             title: "Potencial de Desmontaje",
             rebuildClass: "Clase de Desmontaje",
             rebuildPoints: "Puntos de Desmontaje",
+            error: "Por favor, seleccione el potencial de desmontaje",
           },
           EolBuiltSection: {
             title: "Potencial de Circularidad - Construido",
@@ -345,6 +364,7 @@ const translationsPlattformGeneric = {
         buildingPassport: "Pasaporte",
         switchProject: "Cambiar proyecto",
         switchVariant: "Cambiar variante",
+        back: "Atrás"
       },
       sections: {
         variants: translationsGrpPlattformGeneric.variantsPage,
@@ -408,6 +428,9 @@ const translationsPlattformGeneric = {
       },
       catalog: {
         back: "Atrás",
+        title: "Catálogo",
+        complete: "Completo",
+        incomplete: "Incompleto",
       },
     },
   },

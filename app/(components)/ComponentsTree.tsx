@@ -49,6 +49,7 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
   showIncompleteCompleteLabels = true,
 }: ComponentsTreeProps<T>) => {
   const tCostGroups = useTranslations("Common.costGroups")
+  const t = useTranslations("CircularityTool.sections.catalog")
   const router = useRouter()
 
   const din276WithComponents = mergeDin276HierarchyWithBuildingComponents(components, categoryNumbersToInclude)
@@ -117,7 +118,7 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
 
   return (
     <div>
-      <h3 className="mx-2 mb-8 text-2xl font-bold">Katalog</h3>
+      <h3 className="mx-2 mb-8 text-2xl font-bold">{t("title")}</h3>
       <div className="flex">
         <div className="w-1/3 pr-6">
           <ul className="mx-2 space-y-1">
@@ -227,9 +228,9 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
                         <h3 className="pl-4 text-[16px] font-semibold">{component.name}</h3>
                         {showIncompleteCompleteLabels &&
                           (hasAnyCircularityMissingData3 ? (
-                            <Badge>Unvollständig</Badge>
+                            <Badge>{t("incomplete")}</Badge>
                           ) : (
-                            <Badge color="green">Vollständig</Badge>
+                            <Badge color="green">{t("complete")}</Badge>
                           ))}
                       </div>
                     </Box>

@@ -308,11 +308,28 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
                 specific: "EOL Scenario (Specific)",
               },
             },
+            ModalPage1: {
+              title: "The currently selected EOL Scenario is:",
+              description: "Do you want to override these values?",
+              buttonNo: "No, keep the values",
+              buttonYes: "Yes, override",
+            },
+            ModalPage2: {
+              title: "EOL Scenario (Specific)",
+              empty: "[EMPTY]",
+              proof: "Proof for Overriding Default EOL Scenario",
+              description: "Do you want to override these values?",
+              buttonCancel: "Cancel",
+              buttonSave: "Save",
+              buttonEdit: "Edit",
+              proofPlaceholder: "Provide your proof here...",
+            },
           },
           RebuildSection: {
             title: "Dismantling Potential",
             rebuildClass: "Dismantling Class",
             rebuildPoints: "Dismantling Points",
+            error: "Please select the dismantling potential",
           },
           EolBuiltSection: {
             title: "Circularity Potential - Built",
@@ -344,6 +361,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
         buildingPassport: "Building Resources Passport",
         switchProject: "Switch Project",
         switchVariant: "Switch Variant",
+        back: "Back"
       },
       sections: {
         variants: translationsGrpPlatformGeneric.variantsPage,
@@ -407,6 +425,9 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
       },
       catalog: {
         back: "Back",
+        title: "Catalog",
+        complete: "Complete",
+        incomplete: "Incomplete",
       },
     },
   },

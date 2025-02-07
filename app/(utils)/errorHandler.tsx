@@ -1,7 +1,7 @@
-import { notFound, redirect } from "next/navigation"
+import { notFound } from "next/navigation"
+import UnauthenticatedRedirect from "app/[locale]/(circularity)/(components)/UnauthenticatedRedirect"
 import { NotFoundError, UnauthenticatedError, UnauthorizedError } from "../../lib/errors"
 import Unauthorized from "../[locale]/(circularity)/(components)/Unauthorized"
-import UnauthenticatedRedirect from "app/[locale]/(circularity)/(components)/UnauthenticatedRedirect"
 
 const errorHandler = async (fn: () => Promise<React.ReactNode>) => {
   try {

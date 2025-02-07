@@ -41,7 +41,7 @@ const NavBar: FC<{
 
               {backButtonTo && (
                 <div className="flex items-center">
-                  <BackButton handleOnClick={() => router.push(backButtonTo)} text="Back" />
+                  <BackButton handleOnClick={() => router.push(backButtonTo)} text={t("back")} />
                 </div>
               )}
               {/* Navigation Links */}
