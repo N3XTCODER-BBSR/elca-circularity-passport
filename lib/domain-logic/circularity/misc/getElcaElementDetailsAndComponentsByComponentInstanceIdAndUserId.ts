@@ -6,6 +6,7 @@ import {
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import { ElcaVariantElementBaseData } from "prisma/queries/legacyDb"
 import { calculateMassForProduct } from "./calculateMassForProduct"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
@@ -16,7 +17,8 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   projectId: number,
   componentInstanceId: string
 ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
-  const elementBaseData = await legacyDbDalInstance.getElcaVariantElementBaseDataByUuid(
+  // TODO: BATCHING - START
+  const elementBaseData: ElcaVariantElementBaseData = await legacyDbDalInstance.getElcaVariantElementBaseDataByUuid(
     componentInstanceId,
     variantId,
     projectId
@@ -27,6 +29,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
     variantId,
     projectId
   )
+  // TODO: BATCHING - END
 
   const componentIds = Array.from(new Set(projectComponents.map((c) => c.component_id)))
   const oekobaudatProcessUuids = Array.from(

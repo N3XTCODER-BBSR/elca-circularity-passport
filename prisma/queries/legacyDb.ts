@@ -28,6 +28,39 @@ export type ProjectWithUserName = Prisma.projectsGetPayload<{
   }
 }>
 
+export type ElcaVariantComponent = {
+  access_group_id: number | null
+  element_uuid: string
+  component_id: number
+  layer_position: number
+  process_name: string
+  oekobaudat_process_uuid: string | null | undefined
+  pdb_name: string | null | undefined
+  pdb_version: string | null | undefined
+  oekobaudat_process_db_uuid: string | null | undefined
+  element_name: string
+  unit: string | null | undefined
+  element_component_id: number
+  quantity: number
+  layer_size: number | null
+  layer_length: number | null
+  layer_width: number | null
+  process_config_density: number | null
+  process_config_id: number | null
+  process_config_name: string
+  process_category_node_id: number | null
+  process_category_ref_num: string | null
+}
+
+export type ElcaVariantElementBaseData = {
+  uuid: string
+  din_code: number | null
+  element_name: string
+  element_type_name: string
+  unit: string | null
+  quantity: number
+}
+
 export class LegacyDbDal {
   getElcaComponentDataByLayerId = async (layerId: number, variantId: number, projectId: number) => {
     const data = await prismaLegacy.elca_element_components.findFirstOrThrow({
@@ -117,7 +150,11 @@ export class LegacyDbDal {
     return result
   }
 
-  getElcaVariantComponentsByInstanceId = async (componentInstanceId: string, variantId: number, projectId: number) => {
+  getElcaVariantComponentsByInstanceId = async (
+    componentInstanceId: string,
+    variantId: number,
+    projectId: number
+  ): Promise<ElcaVariantComponent[]> => {
     const elements = await prismaLegacy.elca_elements.findMany({
       where: {
         uuid: componentInstanceId,
@@ -210,7 +247,11 @@ export class LegacyDbDal {
     })
   }
 
-  getElcaVariantElementBaseDataByUuid = async (componentInstanceId: string, variantId: number, projectId: number) => {
+  getElcaVariantElementBaseDataByUuid = async (
+    componentInstanceId: string,
+    variantId: number,
+    projectId: number
+  ): Promise<ElcaVariantElementBaseData> => {
     const element = await prismaLegacy.elca_elements.findFirstOrThrow({
       where: {
         uuid: componentInstanceId,

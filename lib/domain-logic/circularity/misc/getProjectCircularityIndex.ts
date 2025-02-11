@@ -30,6 +30,8 @@ export const getProjectCircularityIndexData = async (
   const componentsWithProducts: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
     await Promise.all(
       elements.map(async (element) => {
+        // TODO: probably highly inefficient DB query handling here.
+        // Should use batching etc instead of mapping throgh elements and hitting a new query for each one
         const elementDetailsWithProducts = await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(
           variantId,
           projectId,
