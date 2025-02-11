@@ -340,7 +340,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
             {circularityInfoTranslations("RebuildSection.title")} <Required />
           </Heading4>
           {layerData.dismantlingPotentialClassId === null && (
-            <ErrorText className="mr-4">Please select the rebuild potential</ErrorText>
+            <ErrorText className="mr-4">{t("RebuildSection.error")}</ErrorText>
           )}
         </div>
 

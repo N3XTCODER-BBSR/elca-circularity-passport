@@ -39,17 +39,18 @@ type ModalPage2Props = {
 }
 
 const ModalPage1 = ({ layerData, isUpdating, handleCancel, handleNextModalPage }: ModalPage1Props) => {
+  const t = useTranslations("Circularity.Components.Layers.CircularityInfo.EolDataSection.ModalPage1")
   return (
     <div className="mt-4">
-      <Text>The currently selected EOL Scenario is:</Text>
+      <Text>{t("title")}</Text>
       <div className="my-4 flex flex-row justify-center">
         <EolScenarioInfoBox layerData={layerData} />
       </div>
 
-      <Text>Do you want to override these values?</Text>
+      <Text>{t("description")}</Text>
       <div className="mt-6 flex justify-end space-x-4">
         <button type="button" className="rounded bg-gray-200 px-4 py-2" onClick={handleCancel} disabled={isUpdating}>
-          No, keep the values
+          {t("buttonNo")}
         </button>
         <button
           type="button"
@@ -57,7 +58,7 @@ const ModalPage1 = ({ layerData, isUpdating, handleCancel, handleNextModalPage }
           onClick={handleNextModalPage}
           disabled={false}
         >
-          Yes, override
+          {t("buttonYes")}
         </button>
       </div>
     </div>
@@ -69,11 +70,12 @@ const ModalPage2 = ({ layerData, handleCancel, handleSave, options }: ModalPage2
   const [selectedScenario, setSelectedScenario] = useState<TBs_ProductDefinitionEOLCategoryScenario | null | undefined>(
     layerData.eolUnbuiltSpecificScenario
   )
+  const t = useTranslations("Circularity.Components.Layers.CircularityInfo.EolDataSection.ModalPage2")
 
   return (
     <div className="mt-4">
       <label htmlFor="tbaustoff" className="block text-sm font-medium text-gray-700">
-        EOL Scenario (Specific)
+        {t("title")}
         <Required />
       </label>
       <select
@@ -83,7 +85,7 @@ const ModalPage2 = ({ layerData, handleCancel, handleSave, options }: ModalPage2
         value={selectedScenario?.toString()}
         onChange={(e) => setSelectedScenario(e.target.value as TBs_ProductDefinitionEOLCategoryScenario)}
       >
-        <option value="">[EMPTY]</option>
+        <option value="">{t("empty")}</option>
         {options.map((option) => (
           <option key={option.id} value={option.id}>
             {option.value}
@@ -92,7 +94,7 @@ const ModalPage2 = ({ layerData, handleCancel, handleSave, options }: ModalPage2
       </select>
 
       <label htmlFor="proof" className="mt-4 block text-sm font-medium text-gray-700">
-        Proof for Overriding Default EOL Scenario
+        {t("proof")}
         <Required />
       </label>
       <textarea
@@ -100,14 +102,14 @@ const ModalPage2 = ({ layerData, handleCancel, handleSave, options }: ModalPage2
         name="proof"
         required
         className="mt-2 block w-full rounded-md border-2 border-gray-200 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-        placeholder="Provide your proof here..."
+        placeholder={t("proofPlaceholder")}
         value={proof}
         onChange={(e) => setProof(e.target.value)}
       ></textarea>
 
       <div className="mt-6 flex justify-end space-x-4">
         <button type="button" className="rounded bg-gray-200 px-4 py-2" onClick={handleCancel}>
-          Cancel
+          {t("buttonCancel")}
         </button>
         <button
           type="button"
@@ -117,7 +119,7 @@ const ModalPage2 = ({ layerData, handleCancel, handleSave, options }: ModalPage2
           onClick={() => handleSave(selectedScenario, proof)}
           disabled={!selectedScenario || !proof}
         >
-          Save
+          {t("buttonSave")}
         </button>
       </div>
     </div>
@@ -125,8 +127,8 @@ const ModalPage2 = ({ layerData, handleCancel, handleSave, options }: ModalPage2
 }
 
 const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ layerData }) => {
+  const t = useTranslations("Circularity.Components.Layers.CircularityInfo.EolDataSection.ModalPage2")
   const queryClient = useQueryClient()
-  const t = useTranslations()
 
   const updateSpecificEolScenarioMutation = useMutation<
     void,
@@ -188,10 +190,10 @@ const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ layerData
   return (
     <>
       <div>
-        <EditButton onClick={() => setIsModalOpen(true)}>Edit</EditButton>
+        <EditButton onClick={() => setIsModalOpen(true)}>{t("buttonEdit")}</EditButton>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={handleCancel} title="EOL Scenario - Unbuilt">
+      <Modal isOpen={isModalOpen} onClose={handleCancel} title={t("title")}>
         {modalPage === 1 ? (
           <ModalPage1
             handleCancel={handleCancel}

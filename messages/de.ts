@@ -309,11 +309,28 @@ const translationsPlattformGeneric = {
                 specific: "EOL Scenario (Spezifisch)",
               },
             },
+            ModalPage1: {
+              title: "Das aktuell ausgewählte EOL-Szenario ist:",
+              description: "Möchten Sie diese Werte überschreiben?",
+              buttonNo: "Nein, Werte beibehalten",
+              buttonYes: "Ja, überschreiben",
+            },
+            ModalPage2: {
+              title: "EOL-Szenario (Spezifisch)",
+              empty: "[LEER]",
+              proof: "Nachweis für das Überschreiben des Standard-EOL-Szenarios",
+              description: "Möchten Sie diese Werte überschreiben?",
+              buttonCancel: "Abbrechen",
+              buttonSave: "Speichern",
+              buttonEdit: "Bearbeiten",
+              proofPlaceholder: "Geben Sie hier Ihren Nachweis ein...",
+            },
           },
           RebuildSection: {
             title: "Rückbaupotential",
             rebuildClass: "Klasse Rückbau",
             rebuildPoints: "Punkte Rückbau",
+            error: "Bitte wählen Sie das Rückbaupotenzial",
           },
           EolBuiltSection: {
             title: "Zirkularitätspotenzial - Verbaut",
@@ -344,6 +361,7 @@ const translationsPlattformGeneric = {
         buildingPassport: "Gebäude-Ressourcen-Pass",
         switchProject: "Project wechseln",
         switchVariant: "Variante wechseln",
+        back: "Zurück",
       },
       sections: {
         projects: translationsGrpPlattformGeneric.projectsPage,
@@ -384,6 +402,9 @@ const translationsPlattformGeneric = {
       },
       catalog: {
         back: "Zurück",
+        title: "Katalog",
+        complete: "Vollständig",
+        incomplete: "Unvollständig",
       },
       passportsForProject: {
         title: "Generierte Gebäude-Ressourcen-Pässe",
