@@ -129,7 +129,6 @@ const ModalPage2 = ({ layerData, handleCancel, handleSave, options }: ModalPage2
 const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ layerData }) => {
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo.EolDataSection.ModalPage2")
   const queryClient = useQueryClient()
-  const t = useTranslations()
 
   const updateSpecificEolScenarioMutation = useMutation<
     void,
