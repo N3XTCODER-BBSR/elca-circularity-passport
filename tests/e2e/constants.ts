@@ -1,5 +1,3 @@
-export const getAuthUserFile = (username: string) => `playwright/.auth/${username}.json`
-
 export const users = {
   unAuthorizedUser: {
     username: "unAuthorizedUser",

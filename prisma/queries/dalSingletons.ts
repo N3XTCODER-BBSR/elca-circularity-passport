@@ -1,4 +1,4 @@
-import { buildDalProxyInstance } from "./testUtils"
+import { buildDalProxyInstance } from "./utils"
 import { DbDal } from "./db"
 import { LegacyDbDal } from "./legacyDb"
 

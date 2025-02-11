@@ -1,8 +1,5 @@
 import crypto from "crypto"
-import { DatabaseError } from "lib/errors"
 import { prisma, prismaLegacySuperUser } from "prisma/prismaClient"
-import { DbDal } from "./db"
-import { LegacyDbDal } from "./legacyDb"
 
 /**
  * delete user with the given id if it exists
@@ -26,26 +23,6 @@ export const createUser = async (userId: number, userName: string) => {
       auth_key: "$1$6a7aabf1$tHpd7.FjG03D18kbREnsa1", // test password1!
       auth_method: 3,
       group_id: 1,
-    },
-  })
-}
-
-export const buildDalProxyInstance = <T extends LegacyDbDal | DbDal>(dal: T) => {
-  return new Proxy<T>(dal, {
-    get(target, propKey, receiver) {
-      const originalProperty = Reflect.get(target, propKey, receiver)
-
-      if (typeof originalProperty === "function") {
-        return async (...args: unknown[]) => {
-          try {
-            return await originalProperty.apply(target, args)
-          } catch (error: unknown) {
-            throw new DatabaseError(error)
-          }
-        }
-      }
-
-      return originalProperty
     },
   })
 }

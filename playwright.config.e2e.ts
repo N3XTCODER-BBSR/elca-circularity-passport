@@ -12,7 +12,7 @@ dotenv.config({ path: ".env.e2e_tests" })
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: "./e2e",
+  testDir: "./tests/e2e",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -25,8 +25,8 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  globalSetup: "./e2e/setup.ts",
-  testMatch: /.*e2e\/.*\.spec\.ts/,
+  globalSetup: "./tests/e2e/setup.ts",
+  testMatch: /\/.*\.spec\.ts/,
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: `http://localhost:${process.env.CI ? "3005" : "3000"}`,
@@ -73,7 +73,7 @@ export default defineConfig({
     // },
   ],
 
-  globalTeardown: "./e2e/globalTeardown.ts",
+  globalTeardown: "./tests/e2e/globalTeardown.ts",
 
   /* Run your local dev server before starting the tests */
   webServer: {

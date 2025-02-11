@@ -7,7 +7,8 @@ import {
   deleteProjectIfExists,
   deleteVariantIfExists,
 } from "prisma/queries/testUtils"
-import { componentId, getAuthUserFile, projectId, users, variantId } from "./utils"
+import { getAuthUserFile } from "tests/utils"
+import { componentId, projectId, users, variantId } from "./constants"
 
 test.describe("Authorization", () => {
   const routes = {
