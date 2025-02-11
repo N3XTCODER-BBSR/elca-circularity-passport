@@ -2,6 +2,10 @@
 
 ## Prerequisites
 
+The project must be set up as documented in the [README.md](../../README.md) file.
+
+## Preparation
+
 Copy the contents of the `/tests/performance/.env.EXAMPLE` file into a newly created `/tests/performance/.env` file
 
 ```
