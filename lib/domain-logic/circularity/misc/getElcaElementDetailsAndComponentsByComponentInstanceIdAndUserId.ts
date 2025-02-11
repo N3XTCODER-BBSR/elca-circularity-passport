@@ -24,7 +24,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
     projectId
   )
 
-  const projectComponents = await legacyDbDalInstance.getElcaVariantComponentsByInstanceId(
+  const projectComponents: ElcaProjectComponentRow[] = await legacyDbDalInstance.getElcaVariantComponentsByInstanceId(
     componentInstanceId,
     variantId,
     projectId

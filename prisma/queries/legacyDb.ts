@@ -1,4 +1,5 @@
 import { costGroupyDinNumbersToInclude } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
+import { ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
 import { Prisma } from "prisma/generated/client-legacy"
 import { prismaLegacy } from "prisma/prismaClient"
 
@@ -28,29 +29,29 @@ export type ProjectWithUserName = Prisma.projectsGetPayload<{
   }
 }>
 
-export type ElcaVariantComponent = {
-  access_group_id: number | null
-  element_uuid: string
-  component_id: number
-  layer_position: number
-  process_name: string
-  oekobaudat_process_uuid: string | null | undefined
-  pdb_name: string | null | undefined
-  pdb_version: string | null | undefined
-  oekobaudat_process_db_uuid: string | null | undefined
-  element_name: string
-  unit: string | null | undefined
-  element_component_id: number
-  quantity: number
-  layer_size: number | null
-  layer_length: number | null
-  layer_width: number | null
-  process_config_density: number | null
-  process_config_id: number | null
-  process_config_name: string
-  process_category_node_id: number | null
-  process_category_ref_num: string | null
-}
+// export type ElcaVariantComponent = {
+//   access_group_id: number | null
+//   element_uuid: string
+//   component_id: number
+//   layer_position: number
+//   process_name: string
+//   oekobaudat_process_uuid: string | null | undefined
+//   pdb_name: string | null | undefined
+//   pdb_version: string | null | undefined
+//   oekobaudat_process_db_uuid: string | null | undefined
+//   element_name: string
+//   unit: string | null | undefined
+//   element_component_id: number
+//   quantity: number
+//   layer_size: number | null
+//   layer_length: number | null
+//   layer_width: number | null
+//   process_config_density: number | null
+//   process_config_id: number | null
+//   process_config_name: string
+//   process_category_node_id: number | null
+//   process_category_ref_num: string | null
+// }
 
 export type ElcaVariantElementBaseData = {
   uuid: string
@@ -154,7 +155,7 @@ export class LegacyDbDal {
     componentInstanceId: string,
     variantId: number,
     projectId: number
-  ): Promise<ElcaVariantComponent[]> => {
+  ): Promise<ElcaProjectComponentRow[]> => {
     const elements = await prismaLegacy.elca_elements.findMany({
       where: {
         uuid: componentInstanceId,
