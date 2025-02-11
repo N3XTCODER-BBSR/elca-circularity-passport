@@ -20,7 +20,7 @@ export const createUser = async (userId: number, userName: string) => {
     data: {
       id: userId,
       auth_name: userName,
-      auth_key: "$1$6a7aabf1$tHpd7.FjG03D18kbREnsa1", // test password1!
+      auth_key: "$1$6a7aabf1$tHpd7.FjG03D18kbREnsa1", // hashed "password1!"
       auth_method: 3,
       group_id: 1,
     },
