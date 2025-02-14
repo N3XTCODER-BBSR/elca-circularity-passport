@@ -7,7 +7,7 @@ import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from
 import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToElementByUuid } from "lib/ensureAuthorized"
-import { dbDalInstance } from "prisma/queries/dalSingletons"
+import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
 
@@ -21,13 +21,30 @@ const Page = async ({
     const format = await getFormatter()
     const projectId = Number(params.projectId)
     const variantId = Number(params.variantId)
+    const componentUuid = params.componentUuid
     const userId = Number(session.user.id)
     const t = await getTranslations("Circularity.Components")
 
     await ensureUserAuthorizationToElementByUuid(userId, params.componentUuid)
 
+    const elementBaseData = await legacyDbDalInstance.getElcaVariantElementBaseDataByUuid(
+      componentUuid,
+      variantId,
+      projectId
+    )
+
+    const projectComponents = await legacyDbDalInstance.getElcaVariantComponentsByInstanceId(
+      componentUuid,
+      variantId,
+      projectId
+    )
     const componentData: ElcaElementWithComponents<EnrichedElcaElementComponent> =
-      await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(variantId, projectId, params.componentUuid)
+      await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(elementBaseData, projectComponents)
+
+    // const elementDetailsWithProducts = await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(
+    //   elementBaseData,
+    //   elementComponents
+    // )
 
     if (componentData == null) {
       notFound()

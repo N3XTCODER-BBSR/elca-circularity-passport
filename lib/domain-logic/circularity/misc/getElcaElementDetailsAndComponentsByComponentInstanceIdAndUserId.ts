@@ -12,6 +12,7 @@ import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../..
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
 import { calculateVolumeForLayer } from "../utils/calculateMassForLayer"
 
+// TODO: Rename now
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
   // variantId: number,
   // projectId: number,

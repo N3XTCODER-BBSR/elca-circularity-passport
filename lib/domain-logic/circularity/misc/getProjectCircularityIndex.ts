@@ -50,7 +50,7 @@ export const getProjectCircularityIndexData = async (
   // )
   // TODO: BATCHING - END
 
-  await Promise.all(
+  return await Promise.all(
     elementsWithComponents.map(async (element) => {
       // TODO: probably highly inefficient DB query handling here.
       // Should use batching etc instead of mapping throgh elements and hitting a new query for each one
@@ -99,12 +99,10 @@ export const getProjectCircularityIndexData = async (
 
       return {
         ...elementDetailsWithProducts,
-        layers: element.element_components
-          .filter((layer) => !excludedProductIdsSet.has(layer.id))
+        layers: elementDetailsWithProducts.layers
+          .filter((layer) => !excludedProductIdsSet.has(layer.component_id))
           .map((layer) => calculateCircularityDataForLayer(layer)),
       } as ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>
     })
   )
-
-  return componentsWithProducts
 }

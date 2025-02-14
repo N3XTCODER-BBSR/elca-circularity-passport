@@ -311,13 +311,13 @@ export class LegacyDbDal {
   }
 
   getElcaVariantElementBaseDataByUuid = async (
-    componentInstanceId: string,
+    componentInstanceUuid: string,
     variantId: number,
     projectId: number
   ): Promise<ElcaVariantElementBaseData> => {
     const element = await prismaLegacy.elca_elements.findFirstOrThrow({
       where: {
-        uuid: componentInstanceId,
+        uuid: componentInstanceUuid,
         element_types: {
           din_code: {
             in: costGroupyDinNumbersToInclude,
