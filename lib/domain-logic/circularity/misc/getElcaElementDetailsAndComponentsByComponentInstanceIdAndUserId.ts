@@ -14,9 +14,6 @@ import { calculateVolumeForLayer } from "../utils/calculateMassForLayer"
 
 // TODO: Rename now
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
-  // variantId: number,
-  // projectId: number,
-  // componentInstanceId: string,
   elementBaseData: ElcaVariantElementBaseData,
   elementComponents: ElcaProjectComponentRow[]
 ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {

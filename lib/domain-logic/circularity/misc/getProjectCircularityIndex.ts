@@ -29,31 +29,13 @@ export const getProjectCircularityIndexData = async (
   // currently there are 1+n queries: 1 for the project and n for the components
   // const componentsWithProducts: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
 
-  const elementsWithComponents = await legacyDbDalInstance.FOOgetElcaComponentsWithElementsForProjectAndVariantId(
+  const elementsWithComponents = await legacyDbDalInstance.getElcaComponentsWithElementsForProjectAndVariantId(
     variantId,
     projectId
   )
 
-  // TODO: BATCHING - START
-  // TODO: Lift this up
-  // const elementBaseData: ElcaVariantElementBaseData = await legacyDbDalInstance.getElcaVariantElementBaseDataByUuid(
-  //   componentInstanceId,
-  //   variantId,
-  //   projectId
-  // )
-
-  // // TODO: Lift this up
-  // const projectComponents: ElcaProjectComponentRow[] = await legacyDbDalInstance.getElcaVariantComponentsByInstanceId(
-  //   componentInstanceId,
-  //   variantId,
-  //   projectId
-  // )
-  // TODO: BATCHING - END
-
   return await Promise.all(
     elementsWithComponents.map(async (element) => {
-      // TODO: probably highly inefficient DB query handling here.
-      // Should use batching etc instead of mapping throgh elements and hitting a new query for each one
       const elementBaseData: ElcaVariantElementBaseData = {
         uuid: element.uuid,
         din_code: element.element_types.din_code,

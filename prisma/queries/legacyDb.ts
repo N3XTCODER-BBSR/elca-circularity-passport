@@ -248,7 +248,7 @@ export class LegacyDbDal {
     })
   }
 
-  FOOgetElcaComponentsWithElementsForProjectAndVariantId = async (variantId: number, projectId: number) => {
+  getElcaComponentsWithElementsForProjectAndVariantId = async (variantId: number, projectId: number) => {
     return await prismaLegacy.elca_elements.findMany({
       where: {
         project_variant_id: variantId,
