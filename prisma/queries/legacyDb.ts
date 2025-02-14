@@ -255,6 +255,9 @@ export class LegacyDbDal {
         project_variants: {
           project_id: projectId,
         },
+        // element_components: {
+        //   process_conf
+        // }
       },
       include: {
         project_variants: {
@@ -282,6 +285,14 @@ export class LegacyDbDal {
                 process_category_node_id: true,
                 process_categories: true,
                 process_life_cycle_assignments: {
+                  // TODO: check if this is correct
+                  where: {
+                    processes: {
+                      life_cycles: {
+                        ident: "A1-3",
+                      },
+                    },
+                  },
                   include: {
                     processes: {
                       include: {
