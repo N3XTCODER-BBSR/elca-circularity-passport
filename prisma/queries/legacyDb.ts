@@ -248,6 +248,57 @@ export class LegacyDbDal {
     })
   }
 
+  FOOgetElcaComponentsWithElementsForProjectAndVariantId = async (variantId: number, projectId: number) => {
+    return await prismaLegacy.elca_elements.findMany({
+      where: {
+        project_variant_id: variantId,
+        project_variants: {
+          project_id: projectId,
+        },
+      },
+      include: {
+        project_variants: {
+          include: {
+            projects_projects_current_variant_idToproject_variants: {
+              include: {
+                process_dbs: true,
+              },
+            },
+          },
+        },
+        element_types: {
+          select: {
+            name: true,
+            din_code: true,
+          },
+        },
+        element_components: {
+          include: {
+            process_configs: {
+              select: {
+                name: true,
+                density: true,
+                id: true,
+                process_category_node_id: true,
+                process_categories: true,
+                process_life_cycle_assignments: {
+                  include: {
+                    processes: {
+                      include: {
+                        life_cycles: true,
+                        process_dbs: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
+  }
+
   getElcaVariantElementBaseDataByUuid = async (
     componentInstanceId: string,
     variantId: number,

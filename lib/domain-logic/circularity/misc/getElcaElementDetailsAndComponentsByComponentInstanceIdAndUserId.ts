@@ -5,7 +5,7 @@ import {
   TBaustoffProductData,
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
-import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 import { ElcaVariantElementBaseData } from "prisma/queries/legacyDb"
 import { calculateMassForProduct } from "./calculateMassForProduct"
 import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
@@ -13,27 +13,31 @@ import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEo
 import { calculateVolumeForLayer } from "../utils/calculateMassForLayer"
 
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
-  variantId: number,
-  projectId: number,
-  componentInstanceId: string
+  // variantId: number,
+  // projectId: number,
+  // componentInstanceId: string,
+  elementBaseData: ElcaVariantElementBaseData,
+  elementComponents: ElcaProjectComponentRow[]
 ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
   // TODO: BATCHING - START
-  const elementBaseData: ElcaVariantElementBaseData = await legacyDbDalInstance.getElcaVariantElementBaseDataByUuid(
-    componentInstanceId,
-    variantId,
-    projectId
-  )
+  // TODO: Lift this up
+  // const elementBaseData: ElcaVariantElementBaseData = await legacyDbDalInstance.getElcaVariantElementBaseDataByUuid(
+  //   componentInstanceId,
+  //   variantId,
+  //   projectId
+  // )
 
-  const projectComponents: ElcaProjectComponentRow[] = await legacyDbDalInstance.getElcaVariantComponentsByInstanceId(
-    componentInstanceId,
-    variantId,
-    projectId
-  )
+  // TODO: Lift this up
+  // const projectComponents: ElcaProjectComponentRow[] = await legacyDbDalInstance.getElcaVariantComponentsByInstanceId(
+  //   componentInstanceId,
+  //   variantId,
+  //   projectId
+  // )
   // TODO: BATCHING - END
 
-  const componentIds = Array.from(new Set(projectComponents.map((c) => c.component_id)))
+  const componentIds = Array.from(new Set(elementComponents.map((c) => c.component_id)))
   const oekobaudatProcessUuids = Array.from(
-    new Set(projectComponents.map((c) => c.oekobaudat_process_uuid).filter(Boolean))
+    new Set(elementComponents.map((c) => c.oekobaudat_process_uuid).filter(Boolean))
   )
 
   const [excludedProductIds, userDefinedTBaustoffDataList, tBaustoffMappingEntries] = await Promise.all([
@@ -61,7 +65,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
     quantity: elementBaseData.quantity,
     layers: await enrichLayerData(
       excludedProductIdsSet,
-      projectComponents,
+      elementComponents,
       userDefinedTBaustoffDataMap,
       tBaustoffMappingEntriesMap,
       tBaustoffProductMap
