@@ -255,9 +255,11 @@ export class LegacyDbDal {
         project_variants: {
           project_id: projectId,
         },
-        // element_components: {
-        //   process_conf
-        // }
+        element_types: {
+          din_code: {
+            in: costGroupyDinNumbersToInclude,
+          },
+        },
       },
       include: {
         project_variants: {
