@@ -19,22 +19,6 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   elementBaseData: ElcaVariantElementBaseData,
   elementComponents: ElcaProjectComponentRow[]
 ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
-  // TODO: BATCHING - START
-  // TODO: Lift this up
-  // const elementBaseData: ElcaVariantElementBaseData = await legacyDbDalInstance.getElcaVariantElementBaseDataByUuid(
-  //   componentInstanceId,
-  //   variantId,
-  //   projectId
-  // )
-
-  // TODO: Lift this up
-  // const projectComponents: ElcaProjectComponentRow[] = await legacyDbDalInstance.getElcaVariantComponentsByInstanceId(
-  //   componentInstanceId,
-  //   variantId,
-  //   projectId
-  // )
-  // TODO: BATCHING - END
-
   const componentIds = Array.from(new Set(elementComponents.map((c) => c.component_id)))
   const oekobaudatProcessUuids = Array.from(
     new Set(elementComponents.map((c) => c.oekobaudat_process_uuid).filter(Boolean))
