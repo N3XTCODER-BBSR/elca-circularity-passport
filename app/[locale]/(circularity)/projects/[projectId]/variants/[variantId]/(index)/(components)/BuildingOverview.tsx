@@ -54,7 +54,9 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
             className="mb-6 inline-block size-28"
             alt={"missing-circularity-data"}
           />
-          <h3 className="mx-2 mb-8 text-2xl font-semibold">{t("emptyState.title")}</h3>
+          <h3 className="mx-2 mb-8 text-2xl font-semibold" data-testid="building-overview-empty-state__h3__heading">
+            {t("emptyState.title")}
+          </h3>
           <div>{t("emptyState.body")}</div>
           <Link href={catalogPath} className="mt-8 inline-block rounded-md bg-blue-600 px-2 py-1 text-white">
             {t("emptyState.cta")}

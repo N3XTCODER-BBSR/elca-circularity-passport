@@ -67,10 +67,12 @@ const formatEolUnbuiltData = (data: EolUnbuiltData | null, format: Formatter, t:
     {
       key: `${t("EolUnbuilt.Class.class")} ${keySuffix}`, // TODO: i18n
       value: eolClassName,
+      testId: "eol-unbuilt-class",
     },
     {
       key: `${t("EolUnbuilt.Points.points")} ${keySuffix}`, // TODO: i18n
       value: format.number(eolPoints, { maximumFractionDigits: 2 }),
+      testId: "eol-unbuilt-points",
     },
   ]
 }
@@ -308,6 +310,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
     {
       key: circularityInfoTranslations("EolBuiltSection.points"),
       value: layerData.eolBuilt?.points ? format.number(layerData.eolBuilt?.points, { maximumFractionDigits: 2 }) : "-",
+      testId: "eol-built-points",
     },
   ]
 
@@ -355,6 +358,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
                   key={key}
                   type="button"
                   disabled={isDisabled}
+                  data-testid={`circularity-details-rebuild-class-button__button__${value.points}`}
                   className={twMerge(
                     `relative flex min-w-[400px] items-center justify-center rounded-md px-4 py-4 text-sm font-semibold ring-1 ring-inset ring-gray-300 focus:z-10`,
                     key === layerData.dismantlingPotentialClassId

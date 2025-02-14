@@ -1,14 +1,5 @@
 export const performanceMetricsArtifactsName = "performance-metrics"
 
-export const pages = {
-  projectsPage: "/projects",
-  variantsPage: "/projects/<projectId>/variants",
-  overviewPage: "/projects/<projectId>/variants/<variantId>",
-  passportsPage: "/projects/<projectId>/variants/<variantId>/passports",
-  catalogPage: "/projects/<projectId>/variants/<variantId>/catalog",
-  componentPage: "/projects/<projectId>/variants/<variantId>/catalog/components/<componentId>",
-}
-
 // TODO: all resource ids and the userId should be dynamic and passed as environment variables
 export const users = {
   "elcadevs+01@n3xtcoder.org": {

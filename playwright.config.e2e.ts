@@ -26,6 +26,7 @@ export default defineConfig({
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   globalSetup: "./tests/e2e/setup.ts",
+  globalTeardown: "./tests/e2e/globalTeardown.ts",
   testMatch: /\/.*\.spec\.ts/,
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -72,8 +73,6 @@ export default defineConfig({
     //   use: { ..devices['Desktop Chrome'], channel: 'chrome' },
     // },
   ],
-
-  globalTeardown: "./tests/e2e/globalTeardown.ts",
 
   /* Run your local dev server before starting the tests */
   webServer: {

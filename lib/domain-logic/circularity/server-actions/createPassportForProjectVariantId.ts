@@ -76,7 +76,6 @@ const createMaterialForComponent = async (
 // TODO (M): split this long function into smaller ones (this function should only be 'workflow orchestration' on high level)
 export async function createPassportForProjectVariantId(projectVariantId: number, projectId: number) {
   return withServerActionErrorHandling(async () => {
-    // TODO (M): review/improve/remove these two falsy checks
     z.number().parse(projectVariantId)
     z.number().parse(projectId)
 
