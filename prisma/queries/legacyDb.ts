@@ -147,21 +147,6 @@ export class LegacyDbDal {
         },
       },
       include: {
-        project_variants: {
-          include: {
-            projects_projects_current_variant_idToproject_variants: {
-              include: {
-                process_dbs: true,
-              },
-            },
-          },
-        },
-        element_types: {
-          select: {
-            name: true,
-            din_code: true,
-          },
-        },
         element_components: {
           include: {
             process_configs: {
@@ -204,14 +189,11 @@ export class LegacyDbDal {
           // TODO (XL): Check whether this is proper handling of null values in DB
           layer_position: ec.layer_position || -1,
           process_name: pc.name,
-          // process_ref_unit: process?.ref_unit,
           oekobaudat_process_uuid: process?.uuid,
           pdb_name: pdb?.name,
           pdb_version: pdb?.version,
           oekobaudat_process_db_uuid: pdb?.uuid,
           element_name: element.name,
-          element_type_name: element.element_types.name,
-          din_code: element.element_types.din_code,
           unit: element.ref_unit,
           element_component_id: ec.id,
           quantity: Number(element.quantity),
@@ -226,6 +208,72 @@ export class LegacyDbDal {
         }
       })
     })
+  }
+
+  getElcaVariantElementBaseDataByUuid = async (componentInstanceId: string, variantId: number, projectId: number) => {
+    const element = await prismaLegacy.elca_elements.findFirstOrThrow({
+      where: {
+        uuid: componentInstanceId,
+        element_types: {
+          din_code: {
+            in: costGroupyDinNumbersToInclude,
+          },
+        },
+        project_variant_id: variantId, // added because element.project_variant_id can be null
+        project_variants: {
+          project_id: projectId,
+        },
+      },
+      include: {
+        project_variants: {
+          include: {
+            projects_projects_current_variant_idToproject_variants: {
+              include: {
+                process_dbs: true,
+              },
+            },
+          },
+        },
+        element_types: {
+          select: {
+            name: true,
+            din_code: true,
+          },
+        },
+        element_components: {
+          include: {
+            process_configs: {
+              select: {
+                name: true,
+                density: true,
+                id: true,
+                process_category_node_id: true,
+                process_categories: true,
+                process_life_cycle_assignments: {
+                  include: {
+                    processes: {
+                      include: {
+                        life_cycles: true,
+                        process_dbs: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
+
+    return {
+      uuid: element.uuid,
+      din_code: element.element_types.din_code,
+      element_name: element.name,
+      element_type_name: element.element_types.name,
+      unit: element.ref_unit,
+      quantity: Number(element.quantity),
+    }
   }
 
   findUsersByAuthName = async (authName: string) => {

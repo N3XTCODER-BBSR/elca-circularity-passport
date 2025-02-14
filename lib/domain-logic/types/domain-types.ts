@@ -45,8 +45,6 @@ export type ElcaProjectComponentRow = {
   pdb_version: string | undefined | null
   oekobaudat_process_db_uuid: string | undefined
   element_name: string
-  element_type_name: string
-  din_code: number | null
   unit: string | null
   quantity: number
   layer_size: number | null

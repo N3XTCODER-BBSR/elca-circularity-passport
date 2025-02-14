@@ -16,6 +16,12 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   projectId: number,
   componentInstanceId: string
 ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
+  const elementBaseData = await legacyDbDalInstance.getElcaVariantElementBaseDataByUuid(
+    componentInstanceId,
+    variantId,
+    projectId
+  )
+
   const projectComponents = await legacyDbDalInstance.getElcaVariantComponentsByInstanceId(
     componentInstanceId,
     variantId,
@@ -43,15 +49,13 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   const tBaustoffProductsList = await dbDalInstance.getTBaustoffProducts(tBaustoffProductIds)
   const tBaustoffProductMap = createMap(tBaustoffProductsList, (product) => product.id)
 
-  const componentData = projectComponents[0]
-
   return {
-    element_uuid: componentData?.element_uuid,
-    element_name: componentData?.element_name,
-    element_type_name: componentData?.element_type_name,
-    din_code: componentData?.din_code,
-    unit: componentData?.unit,
-    quantity: componentData?.quantity,
+    element_uuid: elementBaseData.uuid,
+    element_name: elementBaseData.element_name,
+    element_type_name: elementBaseData.element_type_name,
+    din_code: elementBaseData.din_code,
+    unit: elementBaseData.unit,
+    quantity: elementBaseData.quantity,
     layers: await enrichLayerData(
       excludedProductIdsSet,
       projectComponents,
@@ -60,7 +64,6 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
       tBaustoffProductMap
     ),
   } as ElcaElementWithComponents<EnrichedElcaElementComponent>
-  // })
 }
 
 function createMap<T, K>(list: T[], keyGetter: (item: T) => K): Map<K, T> {

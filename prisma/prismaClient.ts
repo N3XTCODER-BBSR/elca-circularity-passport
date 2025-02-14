@@ -35,7 +35,8 @@ const prismaClientSingleton = () => {
 
 const prismaLegacyClientSingleton = () => {
   const url = modifyDatabaseUrl(legacyDatabaseUrl, legacyDatabasePoolMaxConn, legacyDatabasePoolTimeout)
-  return new PrismaLegacyClient({ ...options, datasourceUrl: url }).$extends({
+
+  const prismaLegacyClient = new PrismaLegacyClient({ ...options, datasourceUrl: url }).$extends({
     query: {
       $executeRaw: () => {
         throw new Error("Write operations are not allowed")
@@ -72,6 +73,7 @@ const prismaLegacyClientSingleton = () => {
       },
     },
   })
+  return prismaLegacyClient
 }
 
 const prismaLegacySuperUserClientSingleton = () => {
@@ -89,6 +91,7 @@ declare const globalThis: {
 
 const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
 const prismaLegacy = globalThis.prismaLegacyGlobal ?? prismaLegacyClientSingleton()
+
 const prismaLegacySuperUser = globalThis.prismaLegacyGlobalSuperUser ?? prismaLegacySuperUserClientSingleton()
 
 export { prisma, prismaLegacy, prismaLegacySuperUser }
