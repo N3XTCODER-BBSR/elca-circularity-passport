@@ -6,29 +6,10 @@ import calculateCircularityDataForLayer, {
   CalculateCircularityDataForLayerReturnType,
 } from "../utils/calculate-circularity-data-for-layer"
 
-// type ProjectCircularityIndexData = {
-//   projectId: string
-//   projectName: string
-//   components: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
-// }
-
 export const getProjectCircularityIndexData = async (
   variantId: number,
   projectId: number
-  // ): Promise<ProjectCircularityIndexData> => {
 ): Promise<ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]> => {
-  // TODO (XL): once the merge confusion is resolved (is checked by Niko)
-  // add authorization / authentication check here
-  // 1. Get all components for the project
-  // TODO (XL): only get the elements that are falling into the DIN categories we are considering
-
-  // const elements = await getElcaElementsForVariantId(variantId, projectId)
-
-  // 2. Call existing function to get all the data for the components.
-  // TODO (M): consider to refactor so that all data is fetched by only one query;
-  // currently there are 1+n queries: 1 for the project and n for the components
-  // const componentsWithProducts: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
-
   const elementsWithComponents = await legacyDbDalInstance.getElcaComponentsWithElementsForProjectAndVariantId(
     variantId,
     projectId
