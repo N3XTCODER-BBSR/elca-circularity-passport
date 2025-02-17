@@ -84,6 +84,12 @@ const authOptions: NextAuthOptions = {
       }
       return session
     },
+    async redirect() {
+      if (!process.env.NEXTAUTH_URL) {
+        return "/"
+      }
+      return process.env.NEXTAUTH_URL
+    },
   },
   theme: {
     logo: "/elca_circularity_index_heading.png",

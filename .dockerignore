@@ -36,3 +36,4 @@ yarn-error.log*
 /.npm-only-allow
 dbdata
 generated
+tests/

@@ -95,7 +95,6 @@ test.describe("Circularity tool", () => {
       await page.goto(overviewPageUrl)
       await expect(page.locator("[data-testid=building-overview-empty-state__h3__heading]")).toBeVisible()
     })
-    // HINT: test runs successfully in production but fails sometimes in development environment
     test('if there are no "incomplete" materials (and minimal 1 completed), the overview page shows a graph', async ({
       page,
     }) => {
@@ -114,6 +113,7 @@ test.describe("Circularity tool", () => {
         .locator("[data-testid=circularity-details-rebuild-class-button__button__75]")
         .click()
 
+      await page.waitForLoadState("networkidle")
       await page.goto(componentPageUrl2)
       await page.locator("[data-testid=toggle__switch__13]").click()
       await page.locator("[data-testid=accordion__button__14]").click()
@@ -135,10 +135,12 @@ test.describe("Circularity tool", () => {
         .locator("data-testid=disturbing-substance-class__button__S1")
         .click()
 
+      await page.waitForLoadState("networkidle")
       await page.goto(componentPageUrl3)
       await page.locator("[data-testid=toggle__switch__15]").click()
       await page.locator("[data-testid=toggle__switch__16]").click()
 
+      await page.waitForLoadState("networkidle")
       await page.goto(componentPageUrl4)
       await page.locator("[data-testid=toggle__switch__17]").click()
       await page.locator("[data-testid=toggle__switch__18]").click()
@@ -146,21 +148,27 @@ test.describe("Circularity tool", () => {
       await page.locator("[data-testid=toggle__switch__20]").click()
       await page.locator("[data-testid=toggle__switch__21]").click()
 
+      await page.waitForLoadState("networkidle")
       await page.goto(componentPageUrl5)
       await page.locator("[data-testid=toggle__switch__22]").click()
 
+      await page.waitForLoadState("networkidle")
       await page.goto(componentPageUrl6)
       await page.locator("[data-testid=toggle__switch__23]").click()
 
+      await page.waitForLoadState("networkidle")
       await page.goto(componentPageUrl7)
       await page.locator("[data-testid=toggle__switch__24]").click()
 
+      await page.waitForLoadState("networkidle")
       await page.goto(overviewPageUrl)
       await expect(page.locator("[data-testid=circularity-index-total-number__points-div]")).toHaveText(/4.72/)
 
+      await page.waitForLoadState("networkidle")
       await page.goto(componentPageUrl1)
       await page.locator("[data-testid=toggle__switch__7]").click()
 
+      await page.waitForLoadState("networkidle")
       await page.goto(overviewPageUrl)
       await expect(page.locator("[data-testid=circularity-index-total-number__points-div]")).toHaveText(/29/)
     })
