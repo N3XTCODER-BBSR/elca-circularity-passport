@@ -41,11 +41,6 @@ const Page = async ({
     const componentData: ElcaElementWithComponents<EnrichedElcaElementComponent> =
       await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(elementBaseData, projectComponents)
 
-    // const elementDetailsWithProducts = await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(
-    //   elementBaseData,
-    //   elementComponents
-    // )
-
     if (componentData == null) {
       notFound()
     }
