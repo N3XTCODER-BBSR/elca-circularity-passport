@@ -69,6 +69,19 @@ The project leverages the most modern tech stack, ensuring cutting-edge performa
   The eLCA app and its database must be running locally.  
   [Set it up here](https://github.com/n3xtcoder/elca-beibob-elca?tab=readme-ov-file#getting-started).
 
+- **PDF export:**  
+  The PDF export feature uses the [Doppio](https://doppio.sh/) service to render the PDF.
+
+  We also use a custom, European S3 bucket instead of Doppios default Google Cloud Storage bucket.
+  So you also need to create a (AWS S3 compatible) S3 bucket and set the following environment variables:
+
+  - `S3_BUCKET_NAME`
+  - `S3_ACCESS_KEY`
+  - `S3_SECRET_KEY`
+  - `S3_REGION`
+  - `S3_ENDPOINT`
+    Also, you need to ensure that the S3 bucket is configured to allow public access to the objects (often called 'Static Website Hosting' in the S3 console).
+
 ### Installation Steps
 
 1. **Fork & clone the repository:**

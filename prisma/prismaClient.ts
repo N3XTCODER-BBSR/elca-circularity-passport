@@ -35,7 +35,45 @@ const prismaClientSingleton = () => {
 
 const prismaLegacyClientSingleton = () => {
   const url = modifyDatabaseUrl(legacyDatabaseUrl, legacyDatabasePoolMaxConn, legacyDatabasePoolTimeout)
-  return new PrismaLegacyClient({ ...options, datasourceUrl: url })
+
+  const prismaLegacyClient = new PrismaLegacyClient({ ...options, datasourceUrl: url }).$extends({
+    query: {
+      $executeRaw: () => {
+        throw new Error("Write operations are not allowed")
+      },
+      $queryRaw: () => {
+        throw new Error("Write operations are not allowed")
+      },
+      $executeRawUnsafe: () => {
+        throw new Error("Write operations are not allowed")
+      },
+      $queryRawUnsafe: () => {
+        throw new Error("Write operations are not allowed")
+      },
+      $allModels: {
+        $allOperations: ({ query, args, operation }) => {
+          const allWriteOperations = [
+            "create",
+            "createMany",
+            "createManyAndReturn",
+            "update",
+            "updateMany",
+            "updateManyAndReturn",
+            "upsert",
+            "delete",
+            "deleteMany",
+          ]
+
+          if (allWriteOperations.includes(operation)) {
+            throw new Error("Write operations are not allowed")
+          }
+
+          return query(args)
+        },
+      },
+    },
+  })
+  return prismaLegacyClient
 }
 
 const prismaLegacySuperUserClientSingleton = () => {
@@ -53,6 +91,7 @@ declare const globalThis: {
 
 const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
 const prismaLegacy = globalThis.prismaLegacyGlobal ?? prismaLegacyClientSingleton()
+
 const prismaLegacySuperUser = globalThis.prismaLegacyGlobalSuperUser ?? prismaLegacySuperUserClientSingleton()
 
 export { prisma, prismaLegacy, prismaLegacySuperUser }
