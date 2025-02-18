@@ -24,25 +24,35 @@
  */
 import withBundleAnalyzer from "@next/bundle-analyzer"
 import withPlugins from "next-compose-plugins"
-import createNextIntlPlugin from 'next-intl/plugin';
+import createNextIntlPlugin from "next-intl/plugin"
 import { env } from "./env.mjs"
-import appsignal from "./appsignal.cjs"
 
-const withNextIntl = createNextIntlPlugin();
- 
+const withNextIntl = createNextIntlPlugin()
+
 /**
  * @type {import('next').NextConfig}
  */
 const config = withPlugins([[withBundleAnalyzer({ enabled: env.ANALYZE })]], {
+  // Add the `productionBrowserSourceMaps` flag
+  productionBrowserSourceMaps: true,
+  webpack: (config, { isServer }) => {
+    // Add the following lines inside the function
+    if (isServer) {
+      config.devtool = "eval-source-map"
+    }
+
+    return config
+  },
+  serverExternalPackages: ["@appsignal/nodejs"],
   reactStrictMode: true,
   logging: {
     fetches: {
       fullUrl: true,
     },
   },
-  experimental: { 
+  experimental: {
     instrumentationHook: true,
-    serverComponentsExternalPackages: ["@appsignal/nodejs"],
+    // serverComponentsExternalPackages: ["@appsignal/nodejs"],
   },
   rewrites() {
     return [

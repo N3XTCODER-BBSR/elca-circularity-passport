@@ -1,4 +1,4 @@
-const { Appsignal } = require("@appsignal/nodejs");
+import { Appsignal } from "@appsignal/nodejs";
 
 new Appsignal({
   active: true,
