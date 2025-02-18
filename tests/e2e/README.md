@@ -2,9 +2,10 @@
 
 ## How to name data-testids values
 
-Format: component-name**element**modifier
+Format: `component-name__element__modifier`
 
-- component name does not need to be the exact name of the component
-- modifier for list items that need a specific testid (not required), for a list item can be a number that is unique to the list item
+- component name: the React component name - does not need to be the exact name of the component
+- element: the HTML element name
+- modifier (not required): additional identifier eg. for list items that need a specific testid - can be a number that is unique to the list item
 
 Example: `toggle__switch__23`
