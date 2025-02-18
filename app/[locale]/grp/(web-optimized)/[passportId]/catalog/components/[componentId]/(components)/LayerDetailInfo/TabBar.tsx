@@ -10,7 +10,11 @@ type TabBarProps = {
 
 export default function Tabs({ currentTabIdx, setCurrentTabIdx }: TabBarProps) {
   const t = useTranslations("Grp.Web.sections.detailPage.tabBar")
-  const tabs = [{ name: t("material") }, { name: t("resources") }, { name: t("circularity") }]
+  const tabs = [
+    { name: t("material"), testId: "material" },
+    { name: t("resources"), testId: "resources" },
+    { name: t("circularity"), testId: "circularity" },
+  ]
 
   return (
     <div className="relative">
@@ -30,6 +34,7 @@ export default function Tabs({ currentTabIdx, setCurrentTabIdx }: TabBarProps) {
                           return (
                             <button
                               onClick={() => setCurrentTabIdx(i)}
+                              data-testid={`tabs__tab-button__${tab.testId}`}
                               key={tab.name}
                               className={twMerge(
                                 currentTabIdx === i

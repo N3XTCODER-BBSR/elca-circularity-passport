@@ -100,7 +100,9 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
               </td>
               <td className="whitespace-nowrap p-3 py-5 text-sm text-gray-500">
                 <span className={twMerge("inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium")}>
-                  <Link href={`/grp/${passportInstanceMetadata.uuid}`}>#{passportInstanceMetadata.uuid}</Link>
+                  <Link href={`/grp/${passportInstanceMetadata.uuid}`} data-testid={`project-passports__passport-link`}>
+                    #{passportInstanceMetadata.uuid}
+                  </Link>
                 </span>
               </td>
             </tr>
@@ -110,6 +112,7 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
       <button
         onClick={onCreatePassportClick}
         type="button"
+        data-testid="project-passports__create-passport-button"
         className={twMerge(
           `h-8 rounded-md bg-indigo-100 px-2.5 text-sm font-semibold text-indigo-700 shadow-sm 
           hover:bg-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 

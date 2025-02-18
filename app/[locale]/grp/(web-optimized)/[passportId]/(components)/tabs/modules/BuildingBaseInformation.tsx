@@ -35,6 +35,7 @@ const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passp
     {
       key: t("netFloorArea.abbreviation"),
       value: format.number(passportData.buildingBaseData.nrf, { maximumFractionDigits: 2 }) + " m2",
+      testId: "nrf",
       tooltip: {
         id: "nrf",
         content: (
@@ -72,6 +73,7 @@ const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passp
     {
       key: t("totalBuildingMass"),
       value: format.number(passportData.buildingBaseData.totalBuildingMass, { maximumFractionDigits: 1 }) + " kg",
+      testId: "total-building-mass",
     },
   ]
 
