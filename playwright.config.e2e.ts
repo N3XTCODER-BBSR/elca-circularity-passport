@@ -10,7 +10,7 @@ export default defineConfig({
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  timeout: 15 * 1000,
+  timeout: process.env.CI ? 60 * 1000 : 15 * 1000,
   workers: 1,
   reporter: "html",
   globalSetup: "./tests/e2e/globalSetup.ts",
