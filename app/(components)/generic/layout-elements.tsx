@@ -36,14 +36,18 @@ export const Badge = ({ children, color = "orange" }: LayoutElementProps & { col
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string
+  testId?: string
   children: React.ReactNode
 }
 
 export const EditButton: React.FC<ButtonProps> = ({ className, children, ...props }) => {
+  const dataTestId = props.testId ? `edit-button__button__${props.testId}` : null
+
   return (
     <button
       className={`h-8 rounded-md bg-indigo-100 px-2.5 text-sm font-semibold text-indigo-700 shadow-sm hover:bg-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-200 ${className}`}
       {...props}
+      data-testid={dataTestId}
     >
       {children}
     </button>

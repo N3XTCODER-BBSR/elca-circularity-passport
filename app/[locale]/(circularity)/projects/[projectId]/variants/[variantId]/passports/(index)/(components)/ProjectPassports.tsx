@@ -19,8 +19,8 @@ type ProjectPassportsProps = {
 }
 
 export default function ProjectPassports({ passportsMetadata, projectVariantId, projectId }: ProjectPassportsProps) {
-  const t = useTranslations("CircularityTool.sections.passportsForProject")
-  const tErrors = useTranslations("errors")
+  const projectPassportTranslations = useTranslations("CircularityTool.sections.passportsForProject")
+  const t = useTranslations()
   const format = useFormatter()
   const router = useRouter()
 
@@ -65,21 +65,21 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
         </div>
       ))
     } else {
-      toast.error(tErrors(generatePassportResponse.errorI18nKey))
+      toast.error(t(generatePassportResponse.errorI18nKey))
     }
   }
 
   return (
     <div className="flex flex-col space-y-4">
-      <h3 className="text-lg font-medium text-gray-900">{t("title")}</h3>
+      <h3 className="text-lg font-medium text-gray-900">{projectPassportTranslations("title")}</h3>
       <table className="min-w-full divide-y rounded-3xl border-2 border-gray-200 ">
         <thead className="bg-gray-50">
           <tr>
             <th scope="col" className="p-3 text-left text-sm font-semibold text-gray-900">
-              {t("passIssueDate")}
+              {projectPassportTranslations("passIssueDate")}
             </th>
             <th scope="col" className="p-3 text-left text-sm font-semibold text-gray-900">
-              {t("passUuid")}
+              {projectPassportTranslations("passUuid")}
             </th>
           </tr>
         </thead>
@@ -100,7 +100,9 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
               </td>
               <td className="whitespace-nowrap p-3 py-5 text-sm text-gray-500">
                 <span className={twMerge("inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium")}>
-                  <Link href={`/grp/${passportInstanceMetadata.uuid}`}>#{passportInstanceMetadata.uuid}</Link>
+                  <Link href={`/grp/${passportInstanceMetadata.uuid}`} data-testid={`project-passports__passport-link`}>
+                    #{passportInstanceMetadata.uuid}
+                  </Link>
                 </span>
               </td>
             </tr>
@@ -110,6 +112,7 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
       <button
         onClick={onCreatePassportClick}
         type="button"
+        data-testid="project-passports__create-passport-button"
         className={twMerge(
           `h-8 rounded-md bg-indigo-100 px-2.5 text-sm font-semibold text-indigo-700 shadow-sm 
           hover:bg-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
@@ -129,10 +132,10 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
             </svg>
-            <span>{t("creatingPassport")}</span>
+            <span>{projectPassportTranslations("creatingPassport")}</span>
           </div>
         ) : (
-          t("createPassport")
+          projectPassportTranslations("createPassport")
         )}
       </button>
     </div>

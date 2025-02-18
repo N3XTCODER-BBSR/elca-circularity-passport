@@ -69,6 +69,7 @@ const DisturbingSubstanceRow = ({
           return (
             <button
               key={disturbingSubstanceClassId}
+              data-testid={`disturbing-substance-class__button__${disturbingSubstanceClassId}`}
               disabled={isDisabled}
               type="button"
               className={twMerge(
