@@ -38,6 +38,8 @@
     "seed": "ts-node --project prisma/seeding/tsconfig.json prisma/seeding/dbInitDataSeeder.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.749.0",
+    "@aws-sdk/s3-request-presigner": "^3.749.0",
     "@headlessui/react": "^2.1.1",
     "@heroicons/react": "^2.1.4",
     "@next/bundle-analyzer": "^14.2.3",
