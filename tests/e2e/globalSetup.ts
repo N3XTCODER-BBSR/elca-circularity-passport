@@ -1,6 +1,10 @@
 import { FullConfig } from "@playwright/test"
 import { GenericContainer, Network, type StartedTestContainer } from "testcontainers"
 import { setupElcaTestDB, setupPassportTestDB } from "tests/setUpDbs"
+import dotenv from "dotenv"
+import fs from "node:fs"
+
+const testEnvFileName = ".env.e2e_tests"
 
 const globalSetup = async () => {
   const network = await new Network().start()
@@ -23,21 +27,18 @@ const globalSetup = async () => {
   console.log("Builds app image...")
   const appContainerBuilder = await GenericContainer.fromDockerfile(".", "Dockerfile.e2e").build()
 
-  const envs = {
+  const databaseEnvs = {
     DATABASE_URL: passportInternalUrl,
     ELCA_LEGACY_DATABASE_URL: elcaInternalUrlWithReadOnlyUser,
     ELCA_LEGACY_DATABASE_URL_SUPERUSER_FOR_TESTING: elcaInternalUrlWithSuperUser,
-    ELCA_LEGACY_DATABASE_HAS_SSL: "false",
-    DOPPIO_API_KEY: "f3fd4127815a1ecb59717e75",
-    HTTP_BASIC_AUTH: "username:password",
-    NEXTAUTH_SECRET: "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
-    NEXT_PUBLIC_PASSPORT_BASE_URL: "https://example.com",
-    NEXT_TELEMETRY_DISABLED: "1",
-    PRISMA_TELEMETRY_DISABLED: "1",
-    DATABASE_POOL_MAX_CONN: "2",
-    DATABASE_POOL_TIMEOUT: "20000",
-    LEGACY_DATABASE_POOL_MAX_CONN: "2",
-    LEGACY_DATABASE_POOL_TIMEOUT: "20000",
+  }
+
+  const envFile = fs.readFileSync(testEnvFileName)
+  const envFileEnvs = dotenv.parse(envFile)
+
+  const envs = {
+    ...databaseEnvs,
+    ...envFileEnvs,
   }
 
   console.log("Starts app container...")
