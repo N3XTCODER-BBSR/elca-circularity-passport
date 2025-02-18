@@ -40,8 +40,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
 }
 
-export const EditButton: React.FC<ButtonProps> = ({ className, children, ...props }) => {
-  const dataTestId = props.testId ? `edit-button__button__${props.testId}` : null
+export const EditButton: React.FC<ButtonProps> = ({ className, children, testId, ...props }) => {
+  const dataTestId = testId ? `edit-button__button__${testId}` : null
 
   return (
     <button
