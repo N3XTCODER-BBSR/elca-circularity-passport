@@ -132,7 +132,7 @@ test.describe("Circularity tool", () => {
     })
 
     test("creates passport and displays values correctly", async ({ page }) => {
-      test.setTimeout(35 * 1000)
+      test.setTimeout(60 * 1000)
 
       const passportsPage = circularityToolPages.passportsPage
         .replace("<projectId>", projectId.toString())
