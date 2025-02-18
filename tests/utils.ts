@@ -45,5 +45,5 @@ export const resetDb = async () => {
     await prisma.$executeRawUnsafe(truncateSql)
   }
 
-  execSync(`DATABASE_URL=${process.env.DATABASE_URL} yarn prisma:seed`, { stdio: "inherit" })
+  execSync(`SEED_INITIAL_DATA=true DATABASE_URL=${process.env.DATABASE_URL} yarn prisma:seed`, { stdio: "inherit" })
 }
