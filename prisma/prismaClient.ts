@@ -21,7 +21,7 @@ const modifyDatabaseUrl = (urlString: string, maxConnection: number, timeOut: nu
 
     return url.toString()
   } catch (error) {
-    throw new Error(`Error modifying database URL: ${urlString}\n${error}`)
+    throw new Error(`Error modifying database URL: ${error}`)
   }
 }
 

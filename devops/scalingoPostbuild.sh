@@ -2,9 +2,13 @@
 
 set -eux -o pipefail
 
-export NEXTAUTH_URL="https://${APP}.${REGION_NAME}.scalingo.io"
-echo "NEXTAUTH_URL=${NEXTAUTH_URL}" >> .env
-echo "NEXTAUTH_URL=${NEXTAUTH_URL}"
+# Only set NEXTAUTH_URL if it's not already defined
+if [ -z "${NEXTAUTH_URL:-}" ]; then
+  export NEXTAUTH_URL="https://${APP}.${REGION_NAME}.scalingo.io"
+  echo "NEXTAUTH_URL=${NEXTAUTH_URL}" >> .env
+  echo "NEXTAUTH_URL=${NEXTAUTH_URL}"
+fi
+
 
 yarn prisma:generate
 
