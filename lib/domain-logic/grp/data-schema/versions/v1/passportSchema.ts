@@ -37,7 +37,13 @@ export type MaterialProduct = z.infer<typeof MaterialSpecificProductSchema>
 export type MaterialTradeDetails = z.infer<typeof MaterialTradeSchema>
 
 const MaterialGeometrySchema = z.object({
-  unit: z.enum(["m", "m2", "m3", "pieces"]),
+  unit: z.preprocess(
+    (val) => {
+      if (val === "Stück") return "pieces"
+      return val
+    },
+    z.enum(["m", "m2", "m3", "pieces"])
+  ),
   amount: z.number().positive(),
 })
 
