@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl"
+import { useFormatter, useTranslations } from "next-intl"
 import MaterialsBarChart, {
   MaterialsBarChartDatum,
 } from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/materials/MaterialsBarChart"
@@ -23,6 +23,7 @@ const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportD
   const tCostGroups = useTranslations("Common.costGroups")
   const tMaterialClasses = useTranslations("Common.materialClasses")
   const unitsTranslations = useTranslations("Units")
+  const format = useFormatter()
 
   const aggregatedDataByBuildingComponentCategory = aggregateMaterialsDataByBuildingComponentCategory(
     dinEnrichedPassportData.dinEnrichedBuildingComponents,
@@ -56,8 +57,7 @@ const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportD
       }
     })
 
-  const totalMass = aggregatedDataByBuildingComponentCategory.totalMass
-  const totalMassRelativeToNrf = aggregatedDataByBuildingComponentCategory.totalMassRelativeToNrf
+  const unit = unitsTranslations("Kg.short")
 
   return (
     <ModuleContainer>
@@ -71,7 +71,10 @@ const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportD
               <dl className="mb-2">
                 <TextXSLeading4 light>Flächenbezogen: </TextXSLeading4>
                 <TextXSLeading4 semiBold>
-                  {aggregatedDataByBuildingComponentCategory.totalMassRelativeToNrf.toFixed(2)} t
+                  {format.number(aggregatedDataByBuildingComponentCategory.totalMassRelativeToNrf, {
+                    maximumFractionDigits: 2,
+                  })}{" "}
+                  {unit}/m2 NRF
                 </TextXSLeading4>
               </dl>
             </div>
@@ -79,7 +82,8 @@ const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportD
               <dl className="mb-2">
                 <TextXSLeading4 light>Gesamt: </TextXSLeading4>
                 <TextXSLeading4 semiBold>
-                  {aggregatedDataByBuildingComponentCategory.totalMass.toFixed(2)} t
+                  {format.number(aggregatedDataByBuildingComponentCategory.totalMass, { maximumFractionDigits: 2 })}{" "}
+                  {unit}
                 </TextXSLeading4>
               </dl>
             </div>
