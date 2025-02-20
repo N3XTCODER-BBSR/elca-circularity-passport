@@ -1,6 +1,12 @@
 import { Prisma, PrismaClient } from "./generated/client"
 import { PrismaClient as PrismaLegacyClient } from "./generated/client-legacy"
 
+declare global {
+  var prismaGlobal: ReturnType<typeof prismaClientSingleton>
+  var prismaLegacyGlobal: ReturnType<typeof prismaLegacyClientSingleton>
+  var prismaLegacyGlobalSuperUser: ReturnType<typeof prismaLegacySuperUserClientSingleton>
+}
+
 const databasePoolMaxConn = Number(process.env.DATABASE_POOL_MAX_CONN)
 const databasePoolTimeout = Number(process.env.DATABASE_POOL_TIMEOUT)
 const databaseUrl = process.env.DATABASE_URL || ""
@@ -83,21 +89,12 @@ const prismaLegacySuperUserClientSingleton = () => {
   })
 }
 
-declare const globalThis: {
-  prismaGlobal: ReturnType<typeof prismaClientSingleton>
-  prismaLegacyGlobal: ReturnType<typeof prismaLegacyClientSingleton>
-  prismaLegacyGlobalSuperUser: ReturnType<typeof prismaLegacySuperUserClientSingleton>
-} & typeof global
-
 const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
 const prismaLegacy = globalThis.prismaLegacyGlobal ?? prismaLegacyClientSingleton()
-
 const prismaLegacySuperUser = globalThis.prismaLegacyGlobalSuperUser ?? prismaLegacySuperUserClientSingleton()
 
 export { prisma, prismaLegacy, prismaLegacySuperUser }
 
-if (process.env.NODE_ENV !== "production") {
-  globalThis.prismaGlobal = prisma
-  globalThis.prismaLegacyGlobal = prismaLegacy
-  globalThis.prismaLegacyGlobalSuperUser = prismaLegacySuperUser
-}
+globalThis.prismaGlobal = prisma
+globalThis.prismaLegacyGlobal = prismaLegacy
+globalThis.prismaLegacyGlobalSuperUser = prismaLegacySuperUser

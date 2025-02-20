@@ -10,9 +10,7 @@ declare global {
 const _legacyDbDalInstance = globalThis.__legacyDbDalInstance ?? buildDalProxyInstance(new LegacyDbDal())
 const _dbDalInstance = globalThis.__dbDalInstance ?? buildDalProxyInstance(new DbDal())
 
-if (process.env.NODE_ENV !== "production") {
-  globalThis.__legacyDbDalInstance = _legacyDbDalInstance
-  globalThis.__dbDalInstance = _dbDalInstance
-}
+globalThis.__legacyDbDalInstance = _legacyDbDalInstance
+globalThis.__dbDalInstance = _dbDalInstance
 
 export { _legacyDbDalInstance as legacyDbDalInstance, _dbDalInstance as dbDalInstance }
