@@ -146,6 +146,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
         <div className="flex items-center gap-1 text-sm font-medium leading-5 sm:gap-2">
           <div>{layerTranslations("excludedFromCalculation")}</div>
           <Toggle
+            disabled={updateExcludedProductMutation.isPending}
             testId={layerData.component_id.toString()}
             isEnabled={optimisticProductIsExcluded}
             setEnabled={setProductIsExcluded}
