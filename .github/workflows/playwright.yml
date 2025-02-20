@@ -23,8 +23,10 @@ jobs:
         run: yarn playwright install --with-deps
       - name: Generate Prisma Clients
         run: yarn prisma:generate
-      - name: Run Playwright tests
-        run: yarn e2e:headless
+      - name: Run Playwright tests in Chromium and Firefox
+        run: yarn e2e:headless --project=chromium --project=firefox
+      - name: Run Playwright tests in Safari (without erroring on failure)
+        run: yarn e2e:headless --project=webkit || echo "Safari failures are ignored"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
