@@ -23,6 +23,11 @@ jobs:
       DOPPIO_API_KEY: FOO_TESTING # ${{ secrets.DOPPIO_API_KEY }}
       NEXTAUTH_SECRET: FOO_TESTING # ${{ secrets.NEXTAUTH_SECRET }}
       NEXT_PUBLIC_PASSPORT_BASE_URL: http://foo.testing.com # ${{ vars.NEXT_PUBLIC_PASSPORT_BASE_URL }}
+      S3_BUCKET_NAME: elca-grp-dev
+      S3_ACCESS_KEY: DUMMY_ACCESS_KEY
+      S3_SECRET_KEY: DUMMY_SECRET_KEY
+      S3_REGION: eu-central-3
+      S3_ENDPOINT: s3.eu-central-3.ionoscloud.com
     steps:
       - uses: actions/checkout@v4
       - run: echo "node_version=$(cat .github/nodejs.version)" >> $GITHUB_ENV

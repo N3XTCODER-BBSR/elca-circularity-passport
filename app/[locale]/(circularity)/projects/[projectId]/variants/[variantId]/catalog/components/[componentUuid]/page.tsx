@@ -86,13 +86,21 @@ const Page = async ({
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-900">{t("numberInstalled")}</dt>
-                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    <dd
+                      className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+                      data-testid="component-page-overview__dd__number-installed"
+                    >
                       {format.number(componentData.quantity, { maximumFractionDigits: 2 })}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-900">{t("referenceUnit")}</dt>
-                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{componentData.unit}</dd>
+                    <dd
+                      className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+                      data-testid="component-page-overview__dd__ref-unit"
+                    >
+                      {componentData.unit}
+                    </dd>
                   </div>
                 </dl>
               </div>

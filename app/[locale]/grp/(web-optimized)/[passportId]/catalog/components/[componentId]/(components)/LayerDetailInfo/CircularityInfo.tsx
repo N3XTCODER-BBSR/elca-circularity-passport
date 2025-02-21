@@ -14,6 +14,7 @@ const CircularityInfo = ({ circularity }: { circularity?: Circularity }) => {
         circularity?.circularityIndex != null
           ? format.number(circularity.circularityIndex, { maximumFractionDigits: 2 })
           : "-",
+      testId: "circularity-index",
     },
     { key: t("eolClass"), value: eolClass },
     { key: t("dismantlingClass"), value: circularity?.dismantlingPotentialClassId },

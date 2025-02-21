@@ -8,7 +8,11 @@ const MaterialInfo = ({ material }: { material: Material }) => {
   const materialValues = [
     { key: t("materialDescription"), value: material.genericMaterial.name },
     { key: t("materialClassId"), value: material.genericMaterial.classId },
-    { key: t("materialClassDescription"), value: material.genericMaterial.classDescription },
+    {
+      key: t("materialClassDescription"),
+      value: material.genericMaterial.classDescription,
+      testId: "material-class-description",
+    },
     { key: t("uuidMaterial"), value: material.genericMaterial.uuid },
     { key: t("serviceLife"), value: `${material.serviceLifeInYears} Jahre` },
     { key: t("versionNumberServiceLife"), value: material.serviceLifeTableVersion },

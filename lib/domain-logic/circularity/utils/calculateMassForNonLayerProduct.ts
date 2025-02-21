@@ -75,27 +75,14 @@ export const calculateMassForNonLayerProduct = async (elementComponentId: number
   return mass.toNumber()
 }
 
-/**
- * Looks up the density factor for a given process config.
- *
- * It queries the process conversion audit table for records matching the given process_config_id,
- * the specified input unit, and an output unit of kg.
- *
- * If a record with a factor greater than 1 is found, that factor is returned.
- * (For example, for process_config_id 49 with in_unit 'm3', out_unit 'kg', factor 2000 is returned;
- *  for another process config with in_unit 'm2', out_unit 'kg', factor 35.8 might be expected.)
- *
- * If no record is found, 1 is returned.
- */
 const findDensityFactor = async (processConfigId: number, inUnit: string, outUnit: string): Promise<Decimal> => {
-  // Query the audit table for matching records.
   const auditRecords = await legacyDbDalInstance.getProcessConversionAuditRecords(processConfigId, inUnit, outUnit)
 
   for (const record of auditRecords) {
-    if (record.factor && new Decimal(record.factor).gt(1)) {
+    if (record.factor && (new Decimal(record.factor).gt(1) || inUnit === "m")) {
       return new Decimal(record.factor)
     }
-    if (record.old_factor && new Decimal(record.old_factor).gt(1)) {
+    if (record.old_factor && (new Decimal(record.old_factor).gt(1) || inUnit === "m")) {
       return new Decimal(record.old_factor)
     }
   }

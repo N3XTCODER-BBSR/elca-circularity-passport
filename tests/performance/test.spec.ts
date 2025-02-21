@@ -1,7 +1,8 @@
 import { test } from "@playwright/test"
 import { getAuthUserFile } from "tests/utils"
-import { pages, performanceMetricsArtifactsName, users } from "./constants"
+import { performanceMetricsArtifactsName, users } from "./constants"
 import { ArtifactMetric } from "./types"
+import { circularityToolPages } from "tests/constants"
 
 const iterationsPerUser = parseInt(process.env.ITERATIONS_PER_USER!)
 const testTimeout = (process.env.TEST_TIMEOUT_IN_SECONDS ? parseInt(process.env.TEST_TIMEOUT_IN_SECONDS) : 120) * 1000
@@ -17,7 +18,7 @@ test.describe("Performance", () => {
         test(`Iteration ${i + 1} for user ${username}: should load all pages`, async ({ page }, testInfo) => {
           const metrics: Array<Record<string, any>> = []
 
-          const resolvedPages = Object.entries(pages).map(([pageName, pageUrl]) => {
+          const resolvedPages = Object.entries(circularityToolPages).map(([pageName, pageUrl]) => {
             return [
               pageName,
               pageUrl

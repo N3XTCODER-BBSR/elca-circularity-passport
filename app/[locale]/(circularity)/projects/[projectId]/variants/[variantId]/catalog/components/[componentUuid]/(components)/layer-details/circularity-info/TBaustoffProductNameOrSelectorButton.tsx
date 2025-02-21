@@ -68,7 +68,7 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
   return (
     <>
       <div>
-        <EditButton onClick={() => setIsModalOpen(true)} disabled={isPending}>
+        <EditButton onClick={() => setIsModalOpen(true)} disabled={isPending} testId="tbaustoff-selector">
           {circularityTranslations("tBaustoffSelector.select")}
         </EditButton>
       </div>
@@ -81,6 +81,7 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
       >
         <div className="mt-4">
           <select
+            data-testid="select-material-button__select"
             id="tbaustoff"
             name="tbaustoff"
             className="mt-1 block w-full rounded-md border-2 border-gray-200 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -99,7 +100,13 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
           </select>
         </div>
         <div className="mt-6 flex justify-end space-x-4">
-          <button type="button" className="rounded bg-gray-200 px-4 py-2" onClick={handleCancel} disabled={isPending}>
+          <button
+            type="button"
+            className="rounded bg-gray-200 px-4 py-2"
+            onClick={handleCancel}
+            disabled={isPending}
+            data-testid="select-material-cancel-button__button"
+          >
             {circularityTranslations("tBaustoffSelector.cancel")}
           </button>
           <button
@@ -109,6 +116,7 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
             }`}
             onClick={handleSave}
             disabled={!selectedIdStr || isPending}
+            data-testid="select-material-save-button__button"
           >
             {circularityTranslations("tBaustoffSelector.save")}
           </button>
@@ -133,7 +141,10 @@ const TBaustoffProductNameOrSelectorButton: React.FC<TBaustoffProductNameOrSelec
 
   return (
     <>
-      <span className="mr-4 mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+      <span
+        className="mr-4 mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+        data-testid="tbaustoff-product-name__span"
+      >
         {layerData.tBaustoffProductData.name}
       </span>
       <SelectMaterialButton options={options} circulartyEnrichedLayerData={layerData} />

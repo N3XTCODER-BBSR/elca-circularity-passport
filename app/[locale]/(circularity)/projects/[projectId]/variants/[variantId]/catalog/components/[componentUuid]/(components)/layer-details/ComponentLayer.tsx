@@ -104,6 +104,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
           })} ${unitsTranslations("Kg.short")}`
         : "N/A",
       isRequired: true,
+      testId: "mass",
     },
     // {
     //   key: "Schichtdicke [m]",
@@ -131,7 +132,10 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
   )
 
   return (
-    <div className="mb-6 overflow-hidden border border-gray-200 bg-white p-6">
+    <div
+      className="mb-6 overflow-hidden border border-gray-200 bg-white p-6"
+      data-testid={`component-layer__div__${layerData.component_id}`}
+    >
       <div className="flex justify-between gap-4">
         <div className="flex items-start">
           <Image src="/component-layer.svg" alt="layer-icon" width={20} height={20} />
@@ -142,6 +146,8 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
         <div className="flex items-center gap-1 text-sm font-medium leading-5 sm:gap-2">
           <div>{layerTranslations("excludedFromCalculation")}</div>
           <Toggle
+            disabled={updateExcludedProductMutation.isPending}
+            testId={layerData.component_id.toString()}
             isEnabled={optimisticProductIsExcluded}
             setEnabled={setProductIsExcluded}
             label="Exclude from calculation"
@@ -150,6 +156,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
       </div>
       <Accordion transition transitionTimeout={200}>
         <AccordionItemFullSimple
+          testId={layerData.component_id.toString()}
           header={
             !currentLayerData.isExcluded &&
             !circulartyEnrichedLayerData.circularityIndex && (

@@ -28,6 +28,11 @@ export const env = createEnv({
     DATABASE_POOL_TIMEOUT: z.string(),
     LEGACY_DATABASE_POOL_MAX_CONN: z.string(),
     LEGACY_DATABASE_POOL_TIMEOUT: z.string(),
+    S3_BUCKET_NAME: z.string(),
+    S3_ACCESS_KEY: z.string(),
+    S3_SECRET_KEY: z.string(),
+    S3_REGION: z.string(),
+    S3_ENDPOINT: z.string(),
   },
   client: {
     NEXT_PUBLIC_PASSPORT_BASE_URL: z.string().url(),
@@ -46,6 +51,11 @@ export const env = createEnv({
     DATABASE_POOL_TIMEOUT: process.env.DATABASE_POOL_TIMEOUT,
     LEGACY_DATABASE_POOL_MAX_CONN: process.env.LEGACY_DATABASE_POOL_MAX_CONN,
     LEGACY_DATABASE_POOL_TIMEOUT: process.env.LEGACY_DATABASE_POOL_TIMEOUT,
+    S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
+    S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
+    S3_SECRET_KEY: process.env.S3_SECRET_KEY,
+    S3_REGION: process.env.S3_REGION,
+    S3_ENDPOINT: process.env.S3_ENDPOINT,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   },
 })

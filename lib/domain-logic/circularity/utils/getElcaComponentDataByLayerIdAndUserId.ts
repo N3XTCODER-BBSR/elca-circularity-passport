@@ -72,7 +72,12 @@ async function processProjectComponent(
   //   }
   // }
 
-  const mass = await calculateMassForProduct(componentRow.component_id)
+  let mass: number | null = null
+  try {
+    mass = await calculateMassForProduct(componentRow.component_id)
+  } catch (error) {
+    console.error(error)
+  }
   const volume = calculateVolumeForLayer(componentRow)
   const isExcluded = await dbDalInstance.getExcludedProductId(componentRow.component_id)
   const enrichedComponent: EnrichedElcaElementComponent = {

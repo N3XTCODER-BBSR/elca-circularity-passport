@@ -11,6 +11,7 @@ export type KeyValueTuple = {
     id: string
   }
   isRequired?: boolean
+  testId?: string
 }
 
 export type SideBySideDescriptionListsWithHeadlineProps = {
@@ -31,6 +32,7 @@ const SingleKeyValueTuple = ({
 }) => {
   // TODO: improve N/A check here (e.g. at least put the "N/A" in a global const or even use semantically more specific values like null etc)
   const requiredValueIsMissing = keyValueTuple?.isRequired && keyValueTuple.value === "N/A"
+  const dataTestIdValue = keyValueTuple?.testId ? `${keyValueTuple?.testId}-value__dd` : null
 
   return (
     <div
@@ -46,6 +48,7 @@ const SingleKeyValueTuple = ({
       </dt>
       <dd
         className={twMerge("mt-1", justifyEnd && "text-right", requiredValueIsMissing ? "text-red" : "text-gray-600")}
+        data-testid={dataTestIdValue}
       >
         {keyValueTuple?.value != null ? keyValueTuple?.value : !!keyValueTuple?.key && "N/A"}
       </dd>

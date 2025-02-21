@@ -1,10 +1,13 @@
-import { execSync } from "node:child_process"
+import { StartedTestContainer } from "testcontainers"
 
 const main = async () => {
-  // TODO: Add global teardown logic here
-
-  if (process.env.CI) {
-    execSync("docker compose --profile e2e-tests down --rmi local", { stdio: "ignore" })
+  try {
+    await (globalThis as unknown as { [key: string]: StartedTestContainer }).__PASSPORT_DB_CONTAINER__?.stop()
+    await (globalThis as unknown as { [key: string]: StartedTestContainer }).__ELCA_DB_CONTAINER__?.stop()
+    await (globalThis as unknown as { [key: string]: StartedTestContainer }).__APP_CONTAINER__?.stop()
+  } catch (error) {
+    console.error(error)
+    process.exit(1)
   }
 }
 
