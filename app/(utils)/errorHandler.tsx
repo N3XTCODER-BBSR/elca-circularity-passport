@@ -4,11 +4,14 @@ import UnauthenticatedRedirect from "app/[locale]/(circularity)/(components)/Una
 import { ActionResponse } from "lib/domain-logic/shared/basic-types"
 import { DatabaseError, NotFoundError, UnauthenticatedError, UnauthorizedError } from "../../lib/errors"
 import Unauthorized from "../[locale]/(circularity)/(components)/Unauthorized"
+import { getRequestId } from "./getRequestId"
 
 export const withServerComponentErrorHandling = async (fn: () => Promise<React.ReactNode>) => {
   try {
     return await fn()
   } catch (error) {
+    console.error(`Error in server component (requestId: ${getRequestId()})`, error)
+
     if (error instanceof UnauthorizedError) {
       return <Unauthorized />
     }
@@ -33,7 +36,7 @@ export const withServerActionErrorHandling = async <TData = unknown,>(
     const result = await fn()
     return { success: true, data: result }
   } catch (error: unknown) {
-    console.error("Error in server action", error)
+    console.error(`Error in server action (requestId: ${getRequestId()})`, error)
     if (error instanceof UnauthorizedError) {
       return { success: false, errorI18nKey: "errors.unauthorized", errorLevel: "error" }
     }
