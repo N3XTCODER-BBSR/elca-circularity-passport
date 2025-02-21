@@ -119,11 +119,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
         <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400">{title}</h2>
         <div className="mt-2">
           {`${labelTotalDimensionalValue}: `}
-          {currentNode.dimensionalValue.toLocaleString("en-US", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          })}{" "}
-          {unitNameTotalDimensionalValue}
+          {format.number(currentNode.dimensionalValue, { maximumFractionDigits: 2 })} {unitNameTotalDimensionalValue}
         </div>
         <div className="mt-4 px-8 py-4">{currentNode.label}</div>
       </div>
