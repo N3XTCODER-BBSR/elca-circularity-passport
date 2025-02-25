@@ -9,6 +9,23 @@ import {
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { ChartDataInternalNode, ChartDataLeaf, ChartDataNode } from "./ChartAndBreadCrumbComponent"
 
+/**
+ * Transforms a list of elements (with possible multiple layers each) into a hierarchical
+ * chart data structure aligned with the DIN 276 hierarchy.
+ *
+ * **Steps**:
+ * 1. Filter elements by cost group (e.g. only 330, 340, 350, etc.).
+ * 2. Build a map from DIN code to an array of single **leaf** nodes, aggregating each element's
+ *    layers into total mass & weighted-average circularity index.
+ * 3. Recursively build internal nodes from the `din276Hierarchy` for group → category → type.
+ * 4. Optionally skip the top-level root node if there’s only one child (for simpler UI).
+ * 5. Recursively compute dimensionalValue (sum of children's mass) and metricValue (weighted avg).
+ *
+ * @param circularityData  A list of elements, each having one or more layers with circularity data
+ * @param rootLabel        The label to give the top-level (root) node in the hierarchy
+ * @param skipRootNode     If true, removes the artificial top-level node if it has only one child
+ * @returns                The fully built hierarchy of chart data, with internal nodes for DIN groups and leaves for elements
+ */
 export function transformCircularityDataAndDinHierachyToChartTree(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
   rootLabel: string,
@@ -47,19 +64,33 @@ export function transformCircularityDataAndDinHierachyToChartTree(
   return rootNode
 }
 
-/** Filter out elements whose DIN code is not in the selected cost group categories. */
+/**
+ * Filters the list of elements so that only those whose DIN code
+ * belongs to a selected set of cost group categories remain.
+ *
+ * @param circularityData  Array of building elements with associated circularity data
+ * @returns                A filtered array including only elements whose DIN code
+ *                        falls into `costGroupCategoryNumbersToInclude`.
+ */
 function filterDataByCostGroup(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
 ): ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] {
   return circularityData.filter((elem) => {
+    // e.g. if din_code=331 -> floor(331/10)*10=330
     const level2Din = Math.floor(elem.din_code / 10) * 10
     return costGroupCategoryNumbersToInclude.includes(level2Din)
   })
 }
 
 /**
- * Build a map from DIN code -> array of leaf nodes (one leaf per element),
- * aggregating that element's layers into totalMass & weighted average circularityIndex.
+ * Builds a map from DIN code → an array of *aggregated* leaf nodes, with exactly one leaf per element.
+ *
+ * We:
+ * - Sum up all layer masses in an element.
+ * - Compute a weighted average circularity index based on those masses.
+ *
+ * @param data  List of elements to be aggregated
+ * @returns     A Map where each DIN code points to a list of ChartDataLeaf nodes
  */
 function buildDinCodeToLeafNodesMap(
   data: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
@@ -81,6 +112,7 @@ function buildDinCodeToLeafNodesMap(
 
     const avgCI = totalMass > 0 ? weightedSumCI / totalMass : 0
 
+    // Create exactly one leaf for this element
     const leaf: ChartDataLeaf = {
       isLeaf: true,
       label: element_name,
@@ -98,7 +130,14 @@ function buildDinCodeToLeafNodesMap(
   return map
 }
 
-/** Build an internal node from a top-level DIN group. Returns null if no children. */
+/**
+ * Builds an internal node corresponding to a top-level `ComponentGroup` in the DIN hierarchy.
+ * Collects children from the categories inside that group.
+ *
+ * @param group           A top-level DIN group (like "300: Bauwerk - Baukonstruktionen")
+ * @param dinCodeToLeaves Map from DIN code to an array of aggregated leaf nodes
+ * @returns               A ChartDataInternalNode, or `null` if there were no valid children
+ */
 function buildNodeFromGroup(
   group: ComponentGroup,
   dinCodeToLeaves: Map<number, ChartDataLeaf[]>
@@ -120,7 +159,14 @@ function buildNodeFromGroup(
   }
 }
 
-/** Build an internal node from a category. Returns null if no children. */
+/**
+ * Builds an internal node corresponding to a `ComponentCategory` in the DIN hierarchy.
+ * Collects children from the types inside that category.
+ *
+ * @param category        A DIN category (like "330: Außenwände")
+ * @param dinCodeToLeaves Map from DIN code to an array of aggregated leaf nodes
+ * @returns               A ChartDataInternalNode, or `null` if there were no valid children
+ */
 function buildNodeFromCategory(
   category: ComponentCategory,
   dinCodeToLeaves: Map<number, ChartDataLeaf[]>
@@ -142,7 +188,14 @@ function buildNodeFromCategory(
   }
 }
 
-/** Build an internal node from a type. This node has leaves (ChartDataLeaf) as children. */
+/**
+ * Builds an internal node from a `ComponentType` in the DIN hierarchy,
+ * retrieving all aggregated leaf nodes (one per element) from the `dinCodeToLeaves` map.
+ *
+ * @param type            A DIN type (like "331: Tragende Außenwände")
+ * @param dinCodeToLeaves Map from DIN code to an array of aggregated leaf nodes
+ * @returns               A ChartDataInternalNode with leaf children, or `null` if no leaves exist
+ */
 function buildNodeFromType(
   type: ComponentType,
   dinCodeToLeaves: Map<number, ChartDataLeaf[]>
@@ -162,17 +215,23 @@ function buildNodeFromType(
 }
 
 /**
- * Recursively compute:
- * - node.dimensionalValue = sum of children's dimensionalValue
- * - node.metricValue = weighted average (child.metricValue * child.dimensionalValue)
+ * Recursively computes:
+ * - `node.dimensionalValue` = sum of children's dimensionalValue
+ * - `node.metricValue`      = weighted average (child.metricValue * child.dimensionalValue)
+ *
+ * This function modifies each node in-place, walking from the leaves up to the root.
+ *
+ * @param node  A chart data node (leaf or internal) whose metrics should be updated.
  */
 function computeWeightedMetrics(node: ChartDataNode): void {
   if (node.isLeaf) return
 
+  // Recurse on children first
   for (const child of node.children) {
     computeWeightedMetrics(child)
   }
 
+  // Then compute this node's dimensionalValue (mass sum) & metricValue (weighted average)
   let totalWeight = 0
   let weightedSum = 0
 
