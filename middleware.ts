@@ -1,7 +1,18 @@
 import createMiddleware from "next-intl/middleware"
 import { routing } from "./i18n/routing"
+import { NextRequest } from "next/server"
 
-export default createMiddleware(routing)
+const intlMiddleware = createMiddleware(routing)
+
+const middleware = (request: NextRequest) => {
+  const response = intlMiddleware(request)
+
+  const requestId = crypto.randomUUID()
+
+  response.headers.set("X-Request-ID", requestId)
+
+  return response
+}
 
 export const config = {
   /*
@@ -10,3 +21,5 @@ export const config = {
 //      */
   matcher: ["/((?!api|static|.*\\..*|_next).*)"],
 }
+
+export default middleware

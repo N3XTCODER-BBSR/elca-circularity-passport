@@ -1,4 +1,5 @@
 import { costGroupyDinNumbersToInclude } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
+import { ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
 import { Prisma } from "prisma/generated/client-legacy"
 import { prismaLegacy } from "prisma/prismaClient"
 
@@ -27,6 +28,15 @@ export type ProjectWithUserName = Prisma.projectsGetPayload<{
     }
   }
 }>
+
+export type ElcaVariantElementBaseData = {
+  uuid: string
+  din_code: number | null
+  element_name: string
+  element_type_name: string
+  unit: string | null
+  quantity: number
+}
 
 export class LegacyDbDal {
   getElcaComponentDataByLayerId = async (layerId: number, variantId: number, projectId: number) => {
@@ -117,7 +127,11 @@ export class LegacyDbDal {
     return result
   }
 
-  getElcaVariantComponentsByInstanceId = async (componentInstanceId: string, variantId: number, projectId: number) => {
+  getElcaVariantComponentsByInstanceId = async (
+    componentInstanceId: string,
+    variantId: number,
+    projectId: number
+  ): Promise<ElcaProjectComponentRow[]> => {
     const elements = await prismaLegacy.elca_elements.findMany({
       where: {
         uuid: componentInstanceId,
@@ -210,10 +224,78 @@ export class LegacyDbDal {
     })
   }
 
-  getElcaVariantElementBaseDataByUuid = async (componentInstanceId: string, variantId: number, projectId: number) => {
+  getElcaComponentsWithElementsForProjectAndVariantId = async (variantId: number, projectId: number) => {
+    return await prismaLegacy.elca_elements.findMany({
+      where: {
+        project_variant_id: variantId,
+        project_variants: {
+          project_id: projectId,
+        },
+        element_types: {
+          din_code: {
+            in: costGroupyDinNumbersToInclude,
+          },
+        },
+      },
+      include: {
+        project_variants: {
+          include: {
+            projects_projects_current_variant_idToproject_variants: {
+              include: {
+                process_dbs: true,
+              },
+            },
+          },
+        },
+        element_types: {
+          select: {
+            name: true,
+            din_code: true,
+          },
+        },
+        element_components: {
+          include: {
+            process_configs: {
+              select: {
+                name: true,
+                density: true,
+                id: true,
+                process_category_node_id: true,
+                process_categories: true,
+                process_life_cycle_assignments: {
+                  // TODO: check if this is correct
+                  where: {
+                    processes: {
+                      life_cycles: {
+                        ident: "A1-3",
+                      },
+                    },
+                  },
+                  include: {
+                    processes: {
+                      include: {
+                        life_cycles: true,
+                        process_dbs: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
+  }
+
+  getElcaVariantElementBaseDataByUuid = async (
+    componentInstanceUuid: string,
+    variantId: number,
+    projectId: number
+  ): Promise<ElcaVariantElementBaseData> => {
     const element = await prismaLegacy.elca_elements.findFirstOrThrow({
       where: {
-        uuid: componentInstanceId,
+        uuid: componentInstanceUuid,
         element_types: {
           din_code: {
             in: costGroupyDinNumbersToInclude,
@@ -366,10 +448,12 @@ export class LegacyDbDal {
     })
   }
 
-  getDataForMassCalculationByProductId = async (productId: number) => {
-    return prismaLegacy.elca_element_components.findUnique({
+  getDataForMassCalculationByProductId = async (productIds: number[]) => {
+    return prismaLegacy.elca_element_components.findMany({
       where: {
-        id: productId,
+        id: {
+          in: productIds,
+        },
       },
       include: {
         // Include related process_configs and their attributes
@@ -523,20 +607,26 @@ export class LegacyDbDal {
       },
     })
 
-  getProcessConversionAuditRecords = (processConfigId: number, inUnit: string, outUnit: string) => {
+  getProcessConversionAuditRecords = (
+    conversionAuditCriteria: {
+      process_config_id: number
+      in_unit: string
+      out_unit: string
+    }[]
+  ) => {
     return prismaLegacy.process_conversion_audit.findMany({
-      where: {
-        process_config_id: processConfigId,
-        in_unit: inUnit,
-        out_unit: outUnit,
-      },
+      where: { OR: conversionAuditCriteria },
       orderBy: { modified: "desc" },
     })
   }
 
-  getElementComponentWithDetails = (elementComponentId: number) => {
-    return prismaLegacy.elca_element_components.findUnique({
-      where: { id: elementComponentId },
+  getElementComponentsWithDetails = (elementComponentIds: number[]) => {
+    return prismaLegacy.elca_element_components.findMany({
+      where: {
+        id: {
+          in: elementComponentIds,
+        },
+      },
       include: {
         process_conversions: {
           include: {
@@ -551,9 +641,9 @@ export class LegacyDbDal {
     })
   }
 
-  getProductById = (productId: number) => {
-    return prismaLegacy.elca_element_components.findUnique({
-      where: { id: productId },
+  getProductsByIds = (productIds: number[]) => {
+    return prismaLegacy.elca_element_components.findMany({
+      where: { id: { in: productIds } },
     })
   }
 }

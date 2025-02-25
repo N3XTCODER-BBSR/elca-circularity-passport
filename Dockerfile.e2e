@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 RUN apk add --no-cache openssl
 
@@ -32,10 +32,3 @@ ENV S3_ENDPOINT="s3.eu-central-3.ionoscloud.com"
 
 
 RUN yarn build
-
-EXPOSE 3005
-
-ENV NODE_ENV=production
-ENV PORT=3005
-
-CMD ["yarn", "start"]

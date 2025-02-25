@@ -7,9 +7,10 @@ import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from
 import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToElementByUuid } from "lib/ensureAuthorized"
-import { dbDalInstance } from "prisma/queries/dalSingletons"
+import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
+import { preloadCircularityData } from "lib/domain-logic/circularity/misc/preloadCircularityData"
 
 const Page = async ({
   params,
@@ -21,13 +22,35 @@ const Page = async ({
     const format = await getFormatter()
     const projectId = Number(params.projectId)
     const variantId = Number(params.variantId)
+    const componentUuid = params.componentUuid
     const userId = Number(session.user.id)
     const t = await getTranslations("Circularity.Components")
 
-    await ensureUserAuthorizationToElementByUuid(userId, params.componentUuid)
+    await ensureUserAuthorizationToElementByUuid(userId, componentUuid)
+
+    const elementBaseData = await legacyDbDalInstance.getElcaVariantElementBaseDataByUuid(
+      componentUuid,
+      variantId,
+      projectId
+    )
+
+    const projectComponents = await legacyDbDalInstance.getElcaVariantComponentsByInstanceId(
+      componentUuid,
+      variantId,
+      projectId
+    )
+    const preloadedData = await preloadCircularityData(projectComponents)
 
     const componentData: ElcaElementWithComponents<EnrichedElcaElementComponent> =
-      await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(variantId, projectId, params.componentUuid)
+      await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(
+        elementBaseData,
+        projectComponents,
+        preloadedData.excludedProductIdsSet,
+        preloadedData.userEnrichedMap,
+        preloadedData.tBaustoffMappingEntriesMap,
+        preloadedData.tBaustoffProductMap,
+        preloadedData.productMassMap
+      )
 
     if (componentData == null) {
       notFound()
@@ -44,7 +67,7 @@ const Page = async ({
     return (
       <div>
         <HistoryBackButton />
-        <h1 className="mt-12 text-2xl font-semibold leading-6">{componentData?.element_name}</h1>
+        <h1 className="mt-12 text-2xl font-semibold leading-6">{componentData.element_name}</h1>
         <div className="flex flex-col md:flex-row">
           <div className="w-full py-4 md:w-1/3">
             {" "}
@@ -53,17 +76,17 @@ const Page = async ({
           <div className="w-full md:w-2/3 md:p-4">
             <div className="overflow-hidden">
               <div className="border border-gray-200">
-                <dl className="">
+                <dl>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-900">{t("name")}</dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {componentData?.element_name}
+                      {componentData.element_name}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-900">{t("uuid")}</dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {componentData?.element_uuid}
+                      {componentData.element_uuid}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

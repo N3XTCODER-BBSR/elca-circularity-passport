@@ -1,53 +1,101 @@
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
-import { dbDalInstance } from "prisma/queries/dalSingletons"
-import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
-import { getElcaElementsForVariantId } from "./getElcaElementsForProjectId"
+import { ElcaElementWithComponents, ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import { ElcaVariantElementBaseData } from "prisma/queries/legacyDb"
 import calculateCircularityDataForLayer, {
   CalculateCircularityDataForLayerReturnType,
 } from "../utils/calculate-circularity-data-for-layer"
+import { preloadCircularityData } from "./preloadCircularityData"
+import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 
-// type ProjectCircularityIndexData = {
-//   projectId: string
-//   projectName: string
-//   components: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
-// }
+type RawComponent = Awaited<
+  ReturnType<typeof legacyDbDalInstance.getElcaComponentsWithElementsForProjectAndVariantId>
+>[number]["element_components"][number]
+
+export function mapLegacyComponentToProjectComponentRow(
+  elementBaseData: ElcaVariantElementBaseData,
+  rawComponent: RawComponent
+): ElcaProjectComponentRow {
+  return {
+    component_id: rawComponent.id,
+    element_uuid: elementBaseData.uuid,
+    layer_position: rawComponent.layer_position || -1,
+    process_name: rawComponent.process_configs.name,
+    oekobaudat_process_uuid: rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.uuid,
+    pdb_name: rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.process_dbs.name,
+    pdb_version: rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.process_dbs.version,
+    oekobaudat_process_db_uuid:
+      rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.process_dbs.uuid,
+    element_name: elementBaseData.element_name,
+    unit: elementBaseData.unit,
+    quantity: elementBaseData.quantity,
+    layer_size: Number(rawComponent.layer_size),
+    layer_length: Number(rawComponent.layer_length),
+    layer_width: Number(rawComponent.layer_width),
+    process_config_density: Number(rawComponent.process_configs.density),
+    process_config_id: rawComponent.process_configs.id,
+    process_config_name: rawComponent.process_configs.name,
+    process_category_node_id: rawComponent.process_configs.process_category_node_id,
+    process_category_ref_num: rawComponent.process_configs.process_categories.ref_num,
+  }
+}
 
 export const getProjectCircularityIndexData = async (
   variantId: number,
   projectId: number
-  // ): Promise<ProjectCircularityIndexData> => {
 ): Promise<ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]> => {
-  // TODO (XL): once the merge confusion is resolved (is checked by Niko)
-  // add authorization / authentication check here
-  // 1. Get all components for the project
-  // TODO (XL): only get the elements that are falling into the DIN categories we are considering
+  const elementsWithComponents = await legacyDbDalInstance.getElcaComponentsWithElementsForProjectAndVariantId(
+    variantId,
+    projectId
+  )
 
-  const elements = await getElcaElementsForVariantId(variantId, projectId)
+  const mappedComponents = elementsWithComponents.flatMap((element) => {
+    const elementBaseData: ElcaVariantElementBaseData = {
+      uuid: element.uuid,
+      din_code: element.element_types.din_code,
+      element_name: element.element_types.name,
+      element_type_name: element.element_types.name,
+      unit: element.ref_unit,
+      quantity: Number(element.quantity),
+    }
 
-  // 2. Call existing function to get all the data for the components.
-  // TODO (M): consider to refactor so that all data is fetched by only one query;
-  // currently there are 1+n queries: 1 for the project and n for the components
-  const componentsWithProducts: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
-    await Promise.all(
-      elements.map(async (element) => {
-        const elementDetailsWithProducts = await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(
-          variantId,
-          projectId,
-          element.element_uuid
-        )
-
-        const productIds = elementDetailsWithProducts.layers.map((layer) => layer.component_id)
-        const excludedProductIds = await dbDalInstance.getExcludedProductIds(productIds)
-        const excludedProductIdsSet = new Set(excludedProductIds.map((entry) => entry.productId))
-
-        return {
-          ...elementDetailsWithProducts,
-          layers: elementDetailsWithProducts.layers
-            .filter((layer) => !excludedProductIdsSet.has(layer.component_id))
-            .map((layer) => calculateCircularityDataForLayer(layer)),
-        } as ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>
-      })
+    return element.element_components.map((component) =>
+      mapLegacyComponentToProjectComponentRow(elementBaseData, component)
     )
+  })
 
-  return componentsWithProducts
+  const preloadedData = await preloadCircularityData(mappedComponents)
+
+  return await Promise.all(
+    elementsWithComponents.map(async (element) => {
+      const elementBaseData: ElcaVariantElementBaseData = {
+        uuid: element.uuid,
+        din_code: element.element_types.din_code,
+        element_name: element.element_types.name,
+        element_type_name: element.element_types.name,
+        unit: element.ref_unit,
+        quantity: Number(element.quantity),
+      }
+
+      const elementComponents: ElcaProjectComponentRow[] = element.element_components.map((component) =>
+        mapLegacyComponentToProjectComponentRow(elementBaseData, component)
+      )
+
+      const elementDetailsWithProducts = await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(
+        elementBaseData,
+        elementComponents,
+        preloadedData.excludedProductIdsSet,
+        preloadedData.userEnrichedMap,
+        preloadedData.tBaustoffMappingEntriesMap,
+        preloadedData.tBaustoffProductMap,
+        preloadedData.productMassMap
+      )
+
+      return {
+        ...elementDetailsWithProducts,
+        layers: elementDetailsWithProducts.layers
+          .filter((layer) => !preloadedData.excludedProductIdsSet.has(layer.component_id))
+          .map((layer) => calculateCircularityDataForLayer(layer)),
+      } as ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>
+    })
+  )
 }

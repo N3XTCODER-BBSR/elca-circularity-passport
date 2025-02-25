@@ -8,11 +8,13 @@ import { Prisma, TBs_OekobaudatMapping } from "prisma/generated/client"
 
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { calculateEolDataByEolCateogryData } from "./calculateEolDataByEolCateogryData"
-import { calculateVolumeForLayer } from "./calculateMassForLayer"
-import { calculateMassForProduct } from "../misc/calculateMassForProduct"
+import { calculateVolumeForLayer } from "../misc/getMassForLayer"
+import { getMassForProduct } from "../misc/getMassForProducts"
 
 export const fetchElcaComponentById = async (layerId: number, variantId: number, projectId: number) => {
   const projectComponent = await legacyDbDalInstance.getElcaComponentDataByLayerId(layerId, variantId, projectId)
+
+  const mass = await getMassForProduct(layerId)
 
   const [userDefinedData, mappingEntry] = await Promise.all([
     dbDalInstance.getUserDefinedTBaustoffDataForComponentId(layerId),
@@ -33,7 +35,8 @@ export const fetchElcaComponentById = async (layerId: number, variantId: number,
     projectComponent as unknown as ElcaProjectComponentRow, // TODO (L): adapt types so they are compatible to Prisma types
     userDefinedData,
     mappingEntry,
-    product
+    product,
+    mass
   )
 
   return enrichedComponent
@@ -45,39 +48,13 @@ async function processProjectComponent(
   mappingEntry: TBs_OekobaudatMapping | null,
   product: Prisma.TBs_ProductDefinitionGetPayload<{
     include: { tBs_ProductDefinitionEOLCategory: true }
-  }> | null
+  }> | null,
+  mass: number | null
 ): Promise<EnrichedElcaElementComponent> {
   const componentRow: ElcaProjectComponentRow = projectComponent
 
   const productData = getTBaustoffProductData(userDefinedData, mappingEntry, product)
 
-  // for (const component of circularityData) {
-  //   for (const layer of component.layers) {
-  //     // Await the asynchronous function
-  //     const { mass } = await calculateVolumeAndMass(layer)
-  //     if (mass == null) {
-  //       continue
-  //     }
-
-  //     // Accumulate total mass
-  //     totalMass += mass
-
-  //     // Only proceed if circularityIndex is not null
-  //     if (layer.circularityIndex == null) {
-  //       continue
-  //     }
-
-  //     // Accumulate the product of circularityIndex and mass
-  //     circularityIndexTimesMassSumOverAllComponentLayers += layer.circularityIndex * mass
-  //   }
-  // }
-
-  let mass: number | null = null
-  try {
-    mass = await calculateMassForProduct(componentRow.component_id)
-  } catch (error) {
-    console.error(error)
-  }
   const volume = calculateVolumeForLayer(componentRow)
   const isExcluded = await dbDalInstance.getExcludedProductId(componentRow.component_id)
   const enrichedComponent: EnrichedElcaElementComponent = {

@@ -1,91 +1,105 @@
 import Decimal from "decimal.js"
+import { mergeMaps } from "app/(utils)/map"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import { MassInKg, ProductId } from "../misc/types"
 
-export class UnsupportedUnitError extends Error {
-  constructor(unit: string) {
-    super(`Unsupported unit: "${unit}". Only m, m2, m3, or kg are allowed.`)
-  }
-}
+const allowedUnits = ["m", "m2", "m3", "kg"]
 
-/**
- * Calculates the mass (in kg) for a non-layer element component.
- *
- * If the direct conversion record (from the element component’s process_conversion)
- * is not converting to kg (e.g. it is an identity conversion), then this function
- * falls back to looking up the true density from the audit records.
- *
- * It throws an error if the input or output unit is not one of:
- * "m", "m2", "m3", or "kg".
- */
-export const calculateMassForNonLayerProduct = async (elementComponentId: number): Promise<number> => {
+type DataForMassCalculationWithFallback = {
+  productId: number
+  processConfigId: number
+  directInUnit: string
+  quantity: Decimal
+}[]
+
+export const getMassForNonLayerProducts = async (elementComponentIds: number[]) => {
   // Load the element component and include its process conversion and process config.
-  const elementComponent = await legacyDbDalInstance.getElementComponentWithDetails(elementComponentId)
+  const elementComponents = await legacyDbDalInstance.getElementComponentsWithDetails(elementComponentIds)
 
-  if (!elementComponent) {
-    throw new Error("Element component not found.")
-  }
-  if (elementComponent.is_layer) {
-    throw new Error("This function is only for non-layer components.")
-  }
+  const productIdMassMap = new Map<ProductId, MassInKg | null>()
 
-  const { quantity, process_config_id } = elementComponent
-  const compQuantity = new Decimal(quantity || 0)
+  const dataForMassCalculationWithFallback: DataForMassCalculationWithFallback = []
 
-  // Get the direct conversion record.
-  let directFactor = new Decimal(1)
-  let directInUnit = ""
-  let directOutUnit = ""
-  if (elementComponent.process_conversions) {
-    directInUnit = elementComponent.process_conversions.in_unit?.toLowerCase() || ""
-    directOutUnit = elementComponent.process_conversions.out_unit?.toLowerCase() || ""
-    const version = elementComponent.process_conversions.process_conversion_versions[0]
-    if (version?.factor) {
-      directFactor = new Decimal(version.factor)
+  // loop over all element components, add mass to the map if possible, otherwise add to the fallback data
+  for (const elementComponent of elementComponents) {
+    const { quantity, process_config_id: processConfigId } = elementComponent
+
+    let directFactor = new Decimal(1)
+    let directInUnit = ""
+    let directOutUnit = ""
+    if (elementComponent.process_conversions) {
+      directInUnit = elementComponent.process_conversions.in_unit?.toLowerCase() || ""
+      directOutUnit = elementComponent.process_conversions.out_unit?.toLowerCase() || ""
+      const version = elementComponent.process_conversions.process_conversion_versions[0]
+      if (version?.factor) {
+        directFactor = new Decimal(version.factor)
+      }
     }
+
+    if (!allowedUnits.includes(directInUnit) || !allowedUnits.includes(directOutUnit)) {
+      productIdMassMap.set(elementComponent.id, null)
+
+      continue
+    }
+
+    const useFallback = directOutUnit !== "kg" || directFactor.eq(1)
+
+    if (!useFallback) {
+      const mass = calculateMassByDensity(quantity, directFactor)
+      productIdMassMap.set(elementComponent.id, mass)
+
+      continue
+    }
+
+    dataForMassCalculationWithFallback.push({
+      productId: elementComponent.id,
+      processConfigId,
+      directInUnit,
+      quantity,
+    })
   }
 
-  // Define allowed units.
-  const allowedUnits = ["m", "m2", "m3", "kg"]
+  const fallbackMassMap = await getMassWithFallbackFactor(dataForMassCalculationWithFallback)
 
-  // Validate that both the in_unit and out_unit are allowed.
-  if (!allowedUnits.includes(directInUnit)) {
-    throw new UnsupportedUnitError(directInUnit)
-  }
-  if (!allowedUnits.includes(directOutUnit)) {
-    throw new UnsupportedUnitError(directOutUnit)
-  }
-
-  // Determine the effective conversion factor.
-  // If the direct conversion record converts directly to kg (e.g. m3 -> kg or m2 -> kg)
-  // with a factor greater than 1, use it. Otherwise, fallback.
-  let effectiveFactor = directFactor
-  if (
-    // Either the conversion isn't going to kg…
-    directOutUnit !== "kg" ||
-    // …or it is, but the factor is 1 (identity conversion)
-    directFactor.eq(1)
-  ) {
-    // Use a fallback: Look up the density factor from the audit table.
-    // Pass along the in_unit from the direct conversion and request output in kg.
-    effectiveFactor = await findDensityFactor(process_config_id, directInUnit, "kg")
-  }
-
-  // Final mass is quantity multiplied by the effective factor.
-  const mass = compQuantity.mul(effectiveFactor)
-  return mass.toNumber()
+  return mergeMaps(productIdMassMap, fallbackMassMap)
 }
 
-const findDensityFactor = async (processConfigId: number, inUnit: string, outUnit: string): Promise<Decimal> => {
-  const auditRecords = await legacyDbDalInstance.getProcessConversionAuditRecords(processConfigId, inUnit, outUnit)
+const getMassWithFallbackFactor = async (data: DataForMassCalculationWithFallback) => {
+  const productIdMassMap = new Map<ProductId, MassInKg | null>()
 
-  for (const record of auditRecords) {
-    if (record.factor && (new Decimal(record.factor).gt(1) || inUnit === "m")) {
-      return new Decimal(record.factor)
+  const fallbackCriteria = data.map(({ processConfigId, directInUnit }) => {
+    return {
+      process_config_id: processConfigId,
+      in_unit: directInUnit,
+      out_unit: "kg",
     }
-    if (record.old_factor && (new Decimal(record.old_factor).gt(1) || inUnit === "m")) {
-      return new Decimal(record.old_factor)
-    }
-  }
+  })
 
-  return new Decimal(1)
+  const auditRecords = await legacyDbDalInstance.getProcessConversionAuditRecords(fallbackCriteria)
+
+  data.map(({ productId, processConfigId, directInUnit, quantity }) => {
+    const matchingRecords = auditRecords.filter(
+      (record) => record.process_config_id === processConfigId && record.in_unit?.toLowerCase() === directInUnit
+    )
+    let factor = new Decimal(1)
+    for (const record of matchingRecords) {
+      if (record.factor && (new Decimal(record.factor).gt(1) || directInUnit === "m")) {
+        factor = new Decimal(record.factor)
+        break
+      }
+      if (record.old_factor && (new Decimal(record.old_factor).gt(1) || directInUnit === "m")) {
+        factor = new Decimal(record.old_factor)
+        break
+      }
+    }
+
+    const mass = calculateMassByDensity(quantity, factor)
+    productIdMassMap.set(productId, mass)
+  })
+
+  return productIdMassMap
+}
+
+const calculateMassByDensity = (quantity: Decimal, density: Decimal) => {
+  return quantity.mul(density).toNumber()
 }
