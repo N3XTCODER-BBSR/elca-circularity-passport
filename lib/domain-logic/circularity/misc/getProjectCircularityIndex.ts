@@ -86,7 +86,8 @@ export const getProjectCircularityIndexData = async (
         preloadedData.excludedProductIdsSet,
         preloadedData.userEnrichedMap,
         preloadedData.tBaustoffMappingEntriesMap,
-        preloadedData.tBaustoffProductMap
+        preloadedData.tBaustoffProductMap,
+        preloadedData.productMassMap
       )
 
       return {

@@ -1,6 +1,7 @@
-import { dbDalInstance } from "prisma/queries/dalSingletons"
+import { createMap } from "app/(utils)/map"
 import { ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
-import { createMap } from "app/(utils)/createMap"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
+import { calculateMassForProducts } from "./calculateMassForProducts"
 
 export async function preloadCircularityData(components: ElcaProjectComponentRow[]) {
   const allComponentIds = new Set<number>()
@@ -13,10 +14,11 @@ export async function preloadCircularityData(components: ElcaProjectComponentRow
     }
   })
 
-  const [excludedProductRows, userEnrichedRows, tBaustoffMappingEntries] = await Promise.all([
+  const [excludedProductRows, userEnrichedRows, tBaustoffMappingEntries, productMassMap] = await Promise.all([
     dbDalInstance.getExcludedProductIds([...Array.from(allComponentIds)]),
     dbDalInstance.getUserDefinedTBaustoffData([...Array.from(allComponentIds)]),
     dbDalInstance.getTBaustoffMappingEntries([...Array.from(allOekobaudatProcessUuids)]),
+    calculateMassForProducts([...Array.from(allComponentIds)]),
   ])
 
   const excludedProductIdsSet = new Set(excludedProductRows.map((r) => r.productId))
@@ -43,5 +45,6 @@ export async function preloadCircularityData(components: ElcaProjectComponentRow
     userEnrichedMap,
     tBaustoffMappingEntriesMap,
     tBaustoffProductMap,
+    productMassMap,
   }
 }

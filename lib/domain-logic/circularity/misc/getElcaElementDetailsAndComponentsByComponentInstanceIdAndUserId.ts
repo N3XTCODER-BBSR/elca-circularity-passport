@@ -6,8 +6,7 @@ import {
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
 import { ElcaVariantElementBaseData } from "prisma/queries/legacyDb"
-import { calculateMassForProduct } from "./calculateMassForProduct"
-import { Prisma, TBs_OekobaudatMapping, UserEnrichedProductData } from "../../../../prisma/generated/client"
+import { Prisma, TBs_OekobaudatMapping } from "../../../../prisma/generated/client"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
 import { calculateVolumeForLayer } from "../utils/calculateMassForLayer"
 
@@ -22,14 +21,16 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
     Prisma.TBs_ProductDefinitionGetPayload<{
       include: { tBs_ProductDefinitionEOLCategory: true }
     }>
-  >
+  >,
+  productMassMap: Map<number, number | undefined>
 ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
   const layers = await enrichLayerData(
     excludedProductIdsSet,
     elementComponents,
     userDefinedTBaustoffDataMap,
     tBaustoffMappingEntriesMap,
-    tBaustoffProductMap
+    tBaustoffProductMap,
+    productMassMap
   )
   return {
     element_uuid: elementBaseData.uuid,
@@ -52,7 +53,8 @@ async function enrichLayerData(
     Prisma.TBs_ProductDefinitionGetPayload<{
       include: { tBs_ProductDefinitionEOLCategory: true }
     }>
-  >
+  >,
+  productMassMap: Map<number, number | undefined>
 ): Promise<EnrichedElcaElementComponent[]> {
   const enrichedComponents = components.map(async (component) => {
     const userDefinedData = userDefinedMap.get(component.component_id)
@@ -75,12 +77,7 @@ async function enrichLayerData(
       }
     }
 
-    let mass: number | null = null
-    try {
-      mass = await calculateMassForProduct(component.component_id)
-    } catch (error) {
-      console.error(error)
-    }
+    const mass = productMassMap.get(component.component_id)
 
     const volume = calculateVolumeForLayer(component)
 

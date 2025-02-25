@@ -448,10 +448,12 @@ export class LegacyDbDal {
     })
   }
 
-  getDataForMassCalculationByProductId = async (productId: number) => {
-    return prismaLegacy.elca_element_components.findUnique({
+  getDataForMassCalculationByProductId = async (productIds: number[]) => {
+    return prismaLegacy.elca_element_components.findMany({
       where: {
-        id: productId,
+        id: {
+          in: productIds,
+        },
       },
       include: {
         // Include related process_configs and their attributes
@@ -605,20 +607,26 @@ export class LegacyDbDal {
       },
     })
 
-  getProcessConversionAuditRecords = (processConfigId: number, inUnit: string, outUnit: string) => {
+  getProcessConversionAuditRecords = (
+    conversionAuditCriteria: {
+      process_config_id: number
+      in_unit: string
+      out_unit: string
+    }[]
+  ) => {
     return prismaLegacy.process_conversion_audit.findMany({
-      where: {
-        process_config_id: processConfigId,
-        in_unit: inUnit,
-        out_unit: outUnit,
-      },
+      where: { OR: conversionAuditCriteria },
       orderBy: { modified: "desc" },
     })
   }
 
-  getElementComponentWithDetails = (elementComponentId: number) => {
-    return prismaLegacy.elca_element_components.findUnique({
-      where: { id: elementComponentId },
+  getElementComponentsWithDetails = (elementComponentIds: number[]) => {
+    return prismaLegacy.elca_element_components.findMany({
+      where: {
+        id: {
+          in: elementComponentIds,
+        },
+      },
       include: {
         process_conversions: {
           include: {
@@ -633,9 +641,9 @@ export class LegacyDbDal {
     })
   }
 
-  getProductById = (productId: number) => {
-    return prismaLegacy.elca_element_components.findUnique({
-      where: { id: productId },
+  getProductsByIds = (productIds: number[]) => {
+    return prismaLegacy.elca_element_components.findMany({
+      where: { id: { in: productIds } },
     })
   }
 }
