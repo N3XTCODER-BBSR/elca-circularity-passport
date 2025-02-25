@@ -58,7 +58,7 @@ export type ElcaProjectComponentRow = {
 }
 
 export type EnrichedElcaElementComponent = ElcaProjectComponentRow & {
-  mass: number | undefined
+  mass: number | null
   volume: number | null
   isExcluded: boolean
   tBaustoffProductSelectedByUser?: boolean

@@ -6,9 +6,9 @@ import {
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
 import { ElcaVariantElementBaseData } from "prisma/queries/legacyDb"
+import { calculateVolumeForLayer } from "./getMassForLayer"
 import { Prisma, TBs_OekobaudatMapping } from "../../../../prisma/generated/client"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
-import { calculateVolumeForLayer } from "../utils/calculateMassForLayer"
 
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
   elementBaseData: ElcaVariantElementBaseData,
@@ -22,7 +22,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
       include: { tBs_ProductDefinitionEOLCategory: true }
     }>
   >,
-  productMassMap: Map<number, number | undefined>
+  productMassMap: Map<number, number | null>
 ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
   const layers = await enrichLayerData(
     excludedProductIdsSet,
@@ -54,7 +54,7 @@ async function enrichLayerData(
       include: { tBs_ProductDefinitionEOLCategory: true }
     }>
   >,
-  productMassMap: Map<number, number | undefined>
+  productMassMap: Map<number, number | null>
 ): Promise<EnrichedElcaElementComponent[]> {
   const enrichedComponents = components.map(async (component) => {
     const userDefinedData = userDefinedMap.get(component.component_id)
@@ -77,7 +77,7 @@ async function enrichLayerData(
       }
     }
 
-    const mass = productMassMap.get(component.component_id)
+    const mass = productMassMap.get(component.component_id) || null
 
     const volume = calculateVolumeForLayer(component)
 

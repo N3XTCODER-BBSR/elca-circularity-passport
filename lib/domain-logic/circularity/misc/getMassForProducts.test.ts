@@ -1,4 +1,4 @@
-import { calculateMassForProduct, calculateMassForProducts } from "./calculateMassForProducts"
+import { getMassForProduct, getMassForProducts } from "./getMassForProducts"
 import { MassInKg, ProductId } from "./types"
 
 describe("calculateMassForProducts", () => {
@@ -19,11 +19,11 @@ describe("calculateMassForProducts", () => {
     ])
 
     const productIds = Array.from(productIdsExpectedMassMap.entries()).map(([productId]) => productId)
-    let productIdMassMap: Map<ProductId, MassInKg | undefined>
+    let productIdMassMap: Map<ProductId, MassInKg | null>
 
     beforeAll(async () => {
       // calculate the mass for all products at once
-      productIdMassMap = await calculateMassForProducts(productIds)
+      productIdMassMap = await getMassForProducts(productIds)
     })
 
     it.each(
@@ -41,19 +41,19 @@ describe("calculateMassForProducts", () => {
     )
     it("should return the correct weight for layer with m as ref_unit of the component", async () => {
       const productId = 23
-      const result = await calculateMassForProduct(productId)
+      const result = await getMassForProduct(productId)
 
       expect(result).toBe(1027.2)
     })
     it("should return the correct weight for layer with m2 as ref_unit of the component", async () => {
       const productId = 22
-      const result = await calculateMassForProduct(productId)
+      const result = await getMassForProduct(productId)
 
       expect(result).toBe(5.39)
     })
     it("should return the correct weight for layer with piece as ref_unit of the component", async () => {
       const productId = 24
-      const result = await calculateMassForProduct(productId)
+      const result = await getMassForProduct(productId)
 
       expect(result).toBe(87.84)
     })
@@ -63,35 +63,35 @@ describe("calculateMassForProducts", () => {
       // 14 pieces
       const productWithPieceUnitId = 21
 
-      const result = await calculateMassForProduct(productWithPieceUnitId)
+      const result = await getMassForProduct(productWithPieceUnitId)
 
-      expect(result).toBeUndefined()
+      expect(result).toBeNull()
     })
     it('should return the correct mass for an element component with unit "m"', async () => {
       // 13 meters
       const productWithMUnitId = 20
-      const result = await calculateMassForProduct(productWithMUnitId)
+      const result = await getMassForProduct(productWithMUnitId)
 
       expect(result).toBe(27.43)
     })
     it('should return the correct mass for an element component with unit "m2"', async () => {
       // 11 square meters
       const productWithM2UnitId = 18
-      const result = await calculateMassForProduct(productWithM2UnitId)
+      const result = await getMassForProduct(productWithM2UnitId)
 
       expect(result).toBe(393.8)
     })
     it('should return the correct mass for an element component with unit "m3"', async () => {
       // 10 cubic meters
       const productWithM3UnitId = 17
-      const result = await calculateMassForProduct(productWithM3UnitId)
+      const result = await getMassForProduct(productWithM3UnitId)
 
       expect(result).toBe(20000)
     })
     it('should return the correct mass for an element component with unit "kg"', async () => {
       // 12 kg
       const productWithKgUnitId = 19
-      const result = await calculateMassForProduct(productWithKgUnitId)
+      const result = await getMassForProduct(productWithKgUnitId)
 
       expect(result).toBe(12)
     })

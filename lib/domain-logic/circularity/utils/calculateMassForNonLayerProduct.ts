@@ -12,14 +12,15 @@ type DataForMassCalculationWithFallback = {
   quantity: Decimal
 }[]
 
-export const calculateMassForNonLayerProducts = async (elementComponentIds: number[]) => {
+export const getMassForNonLayerProducts = async (elementComponentIds: number[]) => {
   // Load the element component and include its process conversion and process config.
   const elementComponents = await legacyDbDalInstance.getElementComponentsWithDetails(elementComponentIds)
 
-  const productIdMassMap = new Map<ProductId, MassInKg | undefined>()
+  const productIdMassMap = new Map<ProductId, MassInKg | null>()
 
   const dataForMassCalculationWithFallback: DataForMassCalculationWithFallback = []
 
+  // loop over all element components, add mass to the map if possible, otherwise add to the fallback data
   for (const elementComponent of elementComponents) {
     const { quantity, process_config_id: processConfigId } = elementComponent
 
@@ -36,7 +37,7 @@ export const calculateMassForNonLayerProducts = async (elementComponentIds: numb
     }
 
     if (!allowedUnits.includes(directInUnit) || !allowedUnits.includes(directOutUnit)) {
-      productIdMassMap.set(elementComponent.id, undefined)
+      productIdMassMap.set(elementComponent.id, null)
 
       continue
     }
@@ -58,13 +59,13 @@ export const calculateMassForNonLayerProducts = async (elementComponentIds: numb
     })
   }
 
-  const fallbackMassMap = await calculateMassWithFallbackFactor(dataForMassCalculationWithFallback)
+  const fallbackMassMap = await getMassWithFallbackFactor(dataForMassCalculationWithFallback)
 
   return mergeMaps(productIdMassMap, fallbackMassMap)
 }
 
-const calculateMassWithFallbackFactor = async (data: DataForMassCalculationWithFallback) => {
-  const productIdMassMap = new Map<ProductId, MassInKg | undefined>()
+const getMassWithFallbackFactor = async (data: DataForMassCalculationWithFallback) => {
+  const productIdMassMap = new Map<ProductId, MassInKg | null>()
 
   const fallbackCriteria = data.map(({ processConfigId, directInUnit }) => {
     return {

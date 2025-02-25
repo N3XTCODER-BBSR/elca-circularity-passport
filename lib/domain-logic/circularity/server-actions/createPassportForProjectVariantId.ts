@@ -41,7 +41,7 @@ const createMaterialForComponent = async (
 ) => {
   const circularityData = getCircularityForMaterial(layer)
   // TODO (L): needs double check how to handle null values here
-  const massInKg = layer.mass === undefined ? null : quantity * layer.mass
+  const massInKg = layer.mass === null ? null : quantity * layer.mass
 
   return {
     layerIndex: layer.layer_position,

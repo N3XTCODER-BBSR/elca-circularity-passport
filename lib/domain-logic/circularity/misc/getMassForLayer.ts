@@ -1,7 +1,7 @@
 import Decimal from "decimal.js"
 import { ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
-import { MassInKg, ProductId } from "../misc/types"
+import { MassInKg, ProductId } from "./types"
 
 export const calculateVolumeForLayer = (component: ElcaProjectComponentRow): number | null =>
   component.layer_length !== null && component.layer_width !== null && component.layer_size !== null
@@ -11,7 +11,7 @@ export const calculateVolumeForLayer = (component: ElcaProjectComponentRow): num
 export const calculateMassForLayers = async (productIds: number[]) => {
   const productData = await legacyDbDalInstance.getDataForMassCalculationByProductId(productIds)
 
-  const productMassMap = new Map<ProductId, MassInKg | undefined>()
+  const productMassMap = new Map<ProductId, MassInKg | null>()
 
   for (const product of productData) {
     // Extract necessary fields
@@ -22,7 +22,7 @@ export const calculateMassForLayers = async (productIds: number[]) => {
     const processConversion = product.process_conversions
 
     if (!processConfig) {
-      productMassMap.set(product.id, undefined)
+      productMassMap.set(product.id, null)
 
       continue
     }
@@ -57,7 +57,7 @@ export const calculateMassForLayers = async (productIds: number[]) => {
     }
 
     if (!density) {
-      productMassMap.set(product.id, undefined)
+      productMassMap.set(product.id, null)
 
       continue
     }
@@ -82,7 +82,7 @@ export const calculateMassForLayers = async (productIds: number[]) => {
     let volume = adjustedQuantity
     if (product.is_layer) {
       if (!layerSize) {
-        productMassMap.set(product.id, undefined)
+        productMassMap.set(product.id, null)
 
         continue
       }
