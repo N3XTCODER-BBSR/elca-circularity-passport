@@ -5,7 +5,10 @@ import { DisturbingSubstanceSelection } from "prisma/generated/client"
 import { ChartDataInternalNode, ChartDataLeaf } from "./ChartAndBreadCrumbComponent"
 import { transformCircularityDataAndDinHierachyToChartTree } from "./transformCircularityDataAndDinHierachyToChartTree"
 
-// Define a helper function to create a mock layer
+/**
+ * Helper to create a mock layer object for testing.
+ * We allow partial overrides to set things like mass, circularityIndex, etc.
+ */
 function createMockLayer(
   overrides: Partial<CalculateCircularityDataForLayerReturnType> = {}
 ): CalculateCircularityDataForLayerReturnType {
@@ -55,6 +58,7 @@ function createMockLayer(
   }
 }
 
+// Example test data with multiple DIN codes
 const circularityData = [
   {
     element_uuid: "32af2f0b-d7d8-4fb1-8354-1e9736d4f513",
@@ -113,11 +117,14 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
     expect(root.isLeaf).toBe(false)
     const children = (root as ChartDataInternalNode).children
     expect(children.length).toBe(1)
+    // Because skipRootNode flattened the structure, the child is not a "intermediate" node but effectively the next level
     const leaf = children[0] as ChartDataLeaf
-    expect(leaf.label).toBe("340: Innenwände")
+    expect(leaf.label).toBe("340: Innenwände") // From the real din276Hierarchy data
+    // We expect the dimensionalValue = quantity(4) * mass(80) = 320
+    expect(leaf.dimensionalValue).toBe(320)
     expect(leaf.metricValue).toBe(0.8)
-    expect(leaf.dimensionalValue).toBe(320) // expect 4 * 80 (quantity * mass)
   })
+
   test("handles scenario with no matching DIN codes (empty after filtering)", () => {
     const noMatchData = circularityData.filter((d) => d.din_code === 9999) // A DIN code that doesn't exist
     const root = transformCircularityDataAndDinHierachyToChartTree(noMatchData, "No Matches", true)
@@ -134,7 +141,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       layers: d.layers.map((l) => ({ ...l, circularityIndex: null })),
     }))
     const root = transformCircularityDataAndDinHierachyToChartTree(modifiedData, "Null Circularity", false)
-    // Expect zero metric because null treated as 0
+    // Expect zero metric because null is treated as 0
     expect(root.metricValue).toBe(0)
   })
 
@@ -144,7 +151,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       layers: d.layers.map((l) => ({ ...l, mass: 0 })),
     }))
     const root = transformCircularityDataAndDinHierachyToChartTree(zeroMassData, "Zero Mass Project", false)
-    // Expect no meaningful averages if all masses are zero; metric likely 0
+    // Expect no meaningful average if all masses are zero
     expect(root.metricValue).toBe(0)
     expect(root.dimensionalValue).toBe(0)
   })
@@ -152,9 +159,9 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
   test("handles multiple top-level categories with skipRootNode=true (no flattening)", () => {
     const root = transformCircularityDataAndDinHierachyToChartTree(circularityData, "Multiple Categories Project", true)
     // Expect multiple top-level categories, so no flattening:
+    expect(root.label).toBe("Multiple Categories Project")
     const children = (root as ChartDataInternalNode).children
     expect(children.length).toBeGreaterThan(1)
-    expect(root.label).toBe("Multiple Categories Project")
   })
 
   test("handles a scenario where all layers have the same circularityIndex", () => {
@@ -170,5 +177,70 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
     for (const child of children) {
       expect(child.metricValue).toBeCloseTo(0.7)
     }
+  })
+
+  /**
+   * TEST to ensure we don't get duplicates when multiple layers refer to the *same* element.
+   * We create an element with multiple layers, all having the same element_uuid, and confirm
+   * that there's exactly ONE leaf node in the final tree for that element.
+   */
+  test("merges multiple layers for the same element into a single leaf node (no duplicates)", () => {
+    const multiLayerElement = {
+      element_uuid: "dbdec081-20c9-4432-b47c-29f5c7b170eb",
+      element_name: "Composite Outer Wall",
+      element_type_name: "Tragende Außenwände",
+      din_code: 331, // e.g. "Tragende Außenwände"
+      quantity: 1,
+      unit: "m2",
+      layers: [
+        createMockLayer({ element_name: "Layer 1", din_code: 331, mass: 10, circularityIndex: 0.9 }),
+        createMockLayer({ element_name: "Layer 2", din_code: 331, mass: 20, circularityIndex: 0.5 }),
+        createMockLayer({ element_name: "Layer 3", din_code: 331, mass: 15, circularityIndex: 0.75 }),
+      ],
+    }
+
+    // We add this multi-layer element to our test data (plus at least one other item).
+    const customData = [
+      multiLayerElement,
+      {
+        element_uuid: "another-element-uuid",
+        element_name: "Some Other Element",
+        element_type_name: "Tragende Außenwände",
+        din_code: 331,
+        quantity: 2,
+        unit: "m2",
+        layers: [createMockLayer({ element_name: "Something else", din_code: 331, mass: 10, circularityIndex: 0.5 })],
+      },
+    ]
+
+    const root = transformCircularityDataAndDinHierachyToChartTree(customData, "DupCheck Project", false)
+    expect(root.label).toBe("DupCheck Project")
+
+    // We'll gather all leaves from the entire tree
+    function gatherLeaves(node: ChartDataInternalNode): ChartDataLeaf[] {
+      const result: ChartDataLeaf[] = []
+      for (const child of node.children) {
+        if (child.isLeaf) {
+          result.push(child)
+        } else {
+          result.push(...gatherLeaves(child))
+        }
+      }
+      return result
+    }
+
+    // We know root is an internal node, so let's collect all leaf nodes
+    const leaves = gatherLeaves(root as ChartDataInternalNode)
+
+    // We expect to find exactly ONE leaf that has resourceId == "dbdec081-20c9-4432-b47c-29f5c7b170eb"
+    const matchingLeaves = leaves.filter((leaf) => leaf.resourceId === "dbdec081-20c9-4432-b47c-29f5c7b170eb")
+    expect(matchingLeaves.length).toBe(1)
+
+    // That single leaf should have aggregated mass = 10 + 20 + 15 = 45,
+    // weighted average CI = (10*0.9 + 20*0.5 + 15*0.75) / 45
+    // => = (9 + 10 + 11.25) / 45 = 30.25 / 45 ≈ 0.6722
+    const leaf = matchingLeaves[0]
+    expect(leaf.dimensionalValue).toBe(45)
+    expect(leaf.metricValue).toBeCloseTo(0.6722, 4)
   })
 })
