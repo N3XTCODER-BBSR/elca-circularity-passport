@@ -19,6 +19,7 @@ export function mapLegacyComponentToProjectComponentRow(
     component_id: rawComponent.id,
     element_uuid: elementBaseData.uuid,
     layer_position: rawComponent.layer_position || -1,
+    is_layer: rawComponent.is_layer,
     process_name: rawComponent.process_configs.name,
     oekobaudat_process_uuid: rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.uuid,
     pdb_name: rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.process_dbs.name,

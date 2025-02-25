@@ -36,6 +36,7 @@ export type UserEnrichedProductDataWithDisturbingSubstanceSelection = UserEnrich
 export type ElcaProjectComponentRow = {
   component_id: number
   element_uuid: string
+  is_layer: boolean
   layer_position: number
   process_name: string
   // lb_nr: number
@@ -61,6 +62,7 @@ export type EnrichedElcaElementComponent = ElcaProjectComponentRow & {
   mass: number | null
   volume: number | null
   isExcluded: boolean
+  isLayer: boolean
   tBaustoffProductSelectedByUser?: boolean
   tBaustoffProductData?: TBaustoffProductData | null
   dismantlingPotentialClassId?: DismantlingPotentialClassId | null

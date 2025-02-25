@@ -110,6 +110,7 @@ export class LegacyDbDal {
       life_cycle_ident: process.life_cycle_ident,
       component_id: data.id,
       layer_position: data.layer_position,
+      is_layer: data.is_layer,
       process_name: process.name,
       // process_ref_unit: process.ref_unit,
       oekobaudat_process_uuid: process.uuid,
@@ -202,6 +203,7 @@ export class LegacyDbDal {
           component_id: ec.id,
           // TODO (XL): Check whether this is proper handling of null values in DB
           layer_position: ec.layer_position || -1,
+          is_layer: ec.is_layer,
           process_name: pc.name,
           oekobaudat_process_uuid: process?.uuid,
           pdb_name: pdb?.name,

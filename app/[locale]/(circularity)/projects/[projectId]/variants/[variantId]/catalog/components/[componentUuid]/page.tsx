@@ -1,16 +1,17 @@
+import _ from "lodash"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import { getFormatter, getTranslations } from "next-intl/server"
 import { Heading4 } from "app/(components)/generic/layout-elements"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/misc/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
+import { preloadCircularityData } from "lib/domain-logic/circularity/misc/preloadCircularityData"
 import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToElementByUuid } from "lib/ensureAuthorized"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
-import { preloadCircularityData } from "lib/domain-logic/circularity/misc/preloadCircularityData"
 
 const Page = async ({
   params,
@@ -51,6 +52,11 @@ const Page = async ({
         preloadedData.tBaustoffProductMap,
         preloadedData.productMassMap
       )
+
+    const [layers, nonLayers] = _.partition(componentData.layers, (layer) => layer.is_layer)
+
+    console.log("nonLayers", nonLayers)
+    console.log("layers", layers)
 
     if (componentData == null) {
       notFound()

@@ -61,6 +61,7 @@ async function processProjectComponent(
     ...componentRow,
     mass,
     isExcluded: !!isExcluded,
+    isLayer: componentRow.is_layer,
     volume,
     tBaustoffProductData: productData,
     tBaustoffProductSelectedByUser: userDefinedData?.tBaustoffProductSelectedByUser,
