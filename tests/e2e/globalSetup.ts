@@ -1,8 +1,8 @@
 import { FullConfig } from "@playwright/test"
-import { GenericContainer, Network, type StartedTestContainer } from "testcontainers"
-import { setupElcaTestDB, setupPassportTestDB } from "tests/setUpDbs"
 import dotenv from "dotenv"
+import { GenericContainer, Network, type StartedTestContainer } from "testcontainers"
 import fs from "node:fs"
+import { setupElcaTestDB, setupPassportTestDB } from "tests/setUpDbs"
 
 const testEnvFileName = ".env.e2e_tests"
 
