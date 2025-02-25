@@ -235,6 +235,7 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
       numberInstalled: "Número Instalado",
       referenceUnit: "Unidad de Referencia",
       layersHeading: "Materiales relativos a 1",
+      nonLayersHeading: "Otros Materiales",
       Layers: {
         mass: "Masa",
         volume: "Volumen",

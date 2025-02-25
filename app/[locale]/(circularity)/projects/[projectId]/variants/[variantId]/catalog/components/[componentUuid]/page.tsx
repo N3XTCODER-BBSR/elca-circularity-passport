@@ -29,6 +29,24 @@ const Page = async ({
 
     await ensureUserAuthorizationToElementByUuid(userId, componentUuid)
 
+    const ProductsList = ({ products }: { products: EnrichedElcaElementComponent[] }) => (
+      <ul>
+        {products.map((product, i) => (
+          <li key={i}>
+            <ComponentLayer
+              projectId={projectId}
+              variantId={variantId}
+              layerData={product}
+              // TODO: check/update logic here (and other places where laufende nummer is used) once we decided about the semantics of it
+              layerNumber={product.layer_position}
+              //unitName={componentData.unit}
+              tBaustoffProducts={availableTBaustoffProductIdAndNames}
+            />
+          </li>
+        ))}
+      </ul>
+    )
+
     const elementBaseData = await legacyDbDalInstance.getElcaVariantElementBaseDataByUuid(
       componentUuid,
       variantId,
@@ -124,24 +142,16 @@ const Page = async ({
             </div>
           </div>
         </div>
-        <Heading4>
-          {t("layersHeading")} {componentData.unit}:
-        </Heading4>
-        <ul>
-          {componentData.layers.map((layer, i) => (
-            <li key={i}>
-              <ComponentLayer
-                projectId={projectId}
-                variantId={variantId}
-                layerData={layer}
-                // TODO: check/update logic here (and other places where laufende nummer is used) once we decided about the semantics of it
-                layerNumber={layer.layer_position}
-                //unitName={componentData.unit}
-                tBaustoffProducts={availableTBaustoffProductIdAndNames}
-              />
-            </li>
-          ))}
-        </ul>
+        <div className="mb-12 flex flex-col gap-2">
+          <Heading4>
+            {t("layersHeading")} {componentData.unit}:
+          </Heading4>
+          <ProductsList products={layers} />
+        </div>
+        <div className="mb-12 flex flex-col gap-2">
+          <Heading4>{t("nonLayersHeading")}:</Heading4>
+          <ProductsList products={nonLayers} />
+        </div>
       </div>
     )
   })
