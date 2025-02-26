@@ -24,16 +24,18 @@ export default function CircularityIndexBreakdownByDin(props: CircularityIndexBr
     const detailLink = `${props.catalogPath}/components/${resourceId}`
     if (detailLink) router.push(detailLink)
   }
-
   const chartData = transformCircularityDataAndDinHierachyToChartTree(props.circularityData, props.projectName)
 
   return (
-    <ChartAndBreadCrumbComponent
-      rootChartDataNode={chartData}
-      leafClickHandler={exampleLeafClickHandler}
-      title={t("title")}
-      labelTotalDimensionalValue={t("totalMass")}
-      unitNameTotalDimensionalValue={tUnits("Kg.short")}
-    />
+    <div>
+      chartData: {JSON.stringify(chartData, null, 2)}
+      <ChartAndBreadCrumbComponent
+        rootChartDataNode={chartData}
+        leafClickHandler={exampleLeafClickHandler}
+        title={t("title")}
+        labelTotalDimensionalValue={t("totalMass")}
+        unitNameTotalDimensionalValue={tUnits("Kg.short")}
+      />
+    </div>
   )
 }
