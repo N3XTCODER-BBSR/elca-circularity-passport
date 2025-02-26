@@ -5,11 +5,10 @@ import {
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
 import { Prisma, TBs_OekobaudatMapping } from "prisma/generated/client"
-
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { calculateEolDataByEolCateogryData } from "./calculateEolDataByEolCateogryData"
-import { calculateVolumeForLayer } from "../misc/getMassForLayer"
 import { getMassForProduct } from "../misc/getMassForProducts"
+import { calculateVolumeForProduct } from "../misc/getVolumeForProduct"
 
 export const fetchElcaComponentById = async (layerId: number, variantId: number, projectId: number) => {
   const projectComponent = await legacyDbDalInstance.getElcaComponentDataByLayerId(layerId, variantId, projectId)
@@ -55,7 +54,7 @@ async function processProjectComponent(
 
   const productData = getTBaustoffProductData(userDefinedData, mappingEntry, product)
 
-  const volume = calculateVolumeForLayer(componentRow)
+  const volume = calculateVolumeForProduct(componentRow)
   const isExcluded = await dbDalInstance.getExcludedProductId(componentRow.component_id)
   const enrichedComponent: EnrichedElcaElementComponent = {
     ...componentRow,
