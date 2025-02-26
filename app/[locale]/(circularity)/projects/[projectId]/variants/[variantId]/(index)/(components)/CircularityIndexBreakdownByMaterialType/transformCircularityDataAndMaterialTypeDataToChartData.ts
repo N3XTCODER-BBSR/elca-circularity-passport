@@ -31,6 +31,7 @@ export function transformCircularityDataAndMaterialTypesToChartData(
   skipRootNode: boolean
 ): ChartDataNode {
   // 1) Build the hierarchical tree:
+  debugger
   const categoryTree = buildCategoryTree(processCategories, products)
 
   // 2) Convert the built tree into ChartDataNode:
@@ -146,7 +147,7 @@ function buildLeavesAggregatedByUuid(materials: MaterialNode[]): ChartDataLeaf[]
       isLeaf: true,
       metricValue: finalMetric,
       dimensionalValue: totalWeight,
-      label: `Component with ID ${uuid}`,
+      label: items[0].component_name,
       resourceId: uuid,
     })
   }

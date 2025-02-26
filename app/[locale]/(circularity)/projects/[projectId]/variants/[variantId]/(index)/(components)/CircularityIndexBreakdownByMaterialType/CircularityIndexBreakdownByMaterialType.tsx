@@ -19,6 +19,7 @@ export type ProcessCategory = {
 
 export type MaterialNode = {
   component_uuid: string
+  component_name: string
   product_id: number
   name: string
   process_category_node_id: number
@@ -43,6 +44,7 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
   const products: MaterialNode[] = props.circularityData.flatMap((el) =>
     el.layers.map((layer) => ({
       component_uuid: layer.element_uuid,
+      component_name: layer.element_name,
       product_id: layer.component_id,
       name: layer.process_name,
       process_category_node_id: layer.process_category_node_id,
@@ -67,15 +69,12 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
   debugger
 
   return (
-    <div>
-      chartData: {JSON.stringify(chartData, null, 2)}
-      <ChartAndBreadCrumbComponent
-        rootChartDataNode={chartData}
-        leafClickHandler={leafClickHandler}
-        title={t("title")}
-        labelTotalDimensionalValue={t("totalMass")}
-        unitNameTotalDimensionalValue={tUnits("Kg.short")}
-      />
-    </div>
+    <ChartAndBreadCrumbComponent
+      rootChartDataNode={chartData}
+      leafClickHandler={leafClickHandler}
+      title={t("title")}
+      labelTotalDimensionalValue={t("totalMass")}
+      unitNameTotalDimensionalValue={tUnits("Kg.short")}
+    />
   )
 }
