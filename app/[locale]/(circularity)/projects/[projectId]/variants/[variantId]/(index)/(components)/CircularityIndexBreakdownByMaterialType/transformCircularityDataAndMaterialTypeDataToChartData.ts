@@ -43,8 +43,8 @@ export function transformCircularityDataAndMaterialTypesToChartData(
   }
 
   // If skipRootNode is true and there's exactly one top-level node and it's internal, flatten it:
-  if (skipRootNode && rootNode.children.length === 1 && !rootNode.children[0].isLeaf) {
-    const singleChild = rootNode.children[0]
+  if (skipRootNode && rootNode.children.length === 1 && !rootNode.children[0]?.isLeaf) {
+    const singleChild = rootNode.children[0] as ChartDataInternalNode
     rootNode.children = singleChild.children
     rootNode.label = singleChild.label
   }
@@ -57,11 +57,6 @@ export function transformCircularityDataAndMaterialTypesToChartData(
 
 /**
  * Convert a CategoryTreeNode into a ChartDataNode (internal or null).
- *
- * New approach:
- *   - Subcategories become child internal nodes (recursively).
- *   - Each node's .materials become "product-group" internal nodes,
- *     which then have leaf children aggregated by component_uuid.
  */
 function toChartDataNode(node: CategoryTreeNode): ChartDataInternalNode | null {
   // Recursively map subcategories into ChartDataNodes:
@@ -99,10 +94,15 @@ function buildProductGroupChildren(materials: MaterialNode[]): ChartDataInternal
   const groupedByName = groupBy(materials, (m) => m.name)
 
   const productGroups: ChartDataInternalNode[] = []
-  groupedByName.forEach((itemsInThisGroup, materialName) => {
+
+  // Use Array.from(...) to avoid the downlevelIteration warning:
+  for (const [materialName, itemsInThisGroup] of Array.from(groupedByName.entries())) {
     // For each group, build leaves aggregated by component_uuid:
     const leafChildren = buildLeavesAggregatedByUuid(itemsInThisGroup)
-    if (leafChildren.length === 0) return
+
+    if (leafChildren.length === 0) {
+      continue
+    }
 
     // Create one internal node for this group of materials:
     productGroups.push({
@@ -112,8 +112,7 @@ function buildProductGroupChildren(materials: MaterialNode[]): ChartDataInternal
       dimensionalValue: 0,
       children: leafChildren,
     })
-  })
-
+  }
   return productGroups
 }
 
@@ -126,16 +125,12 @@ function buildLeavesAggregatedByUuid(materials: MaterialNode[]): ChartDataLeaf[]
   const groupedByUuid = groupBy(materials, (m) => m.component_uuid)
 
   const leaves: ChartDataLeaf[] = []
-  groupedByUuid.forEach((items, uuid) => {
-    // Define an accumulator type so reduce doesn't default to 'any':
-    interface AccType {
-      totalWeight: number
-      weightedMetric: number
-    }
 
+  // Again, use Array.from(...) instead of direct `for-of map.entries()`:
+  for (const [uuid, items] of Array.from(groupedByUuid.entries())) {
     // Sum total mass (dimensionalValue), weighted-sum for metricValue:
-    const { totalWeight, weightedMetric } = items.reduce<AccType>(
-      (acc: AccType, mat: MaterialNode) => {
+    const { totalWeight, weightedMetric } = items.reduce(
+      (acc: { totalWeight: number; weightedMetric: number }, mat: MaterialNode) => {
         acc.totalWeight += mat.weight
         acc.weightedMetric += mat.circularityIndex * mat.weight
         return acc
@@ -145,20 +140,15 @@ function buildLeavesAggregatedByUuid(materials: MaterialNode[]): ChartDataLeaf[]
 
     const finalMetric = totalWeight > 0 ? weightedMetric / totalWeight : 0
 
-    // Safely extract the component_name (in case items might be empty).
-    // If everything has the same name, just pick the first's name or fallback:
-    const firstName = items.find((m) => m.component_name)?.component_name
-    const leafLabel = firstName || `Unknown component (${uuid})`
-
+    // Use the first matched item’s component_name for the label:
     leaves.push({
       isLeaf: true,
       metricValue: finalMetric,
       dimensionalValue: totalWeight,
-      label: leafLabel,
+      label: items[0]?.component_name ?? `Component ${uuid}`,
       resourceId: uuid,
     })
-  })
-
+  }
   return leaves
 }
 
@@ -239,8 +229,7 @@ function buildCategoryTree(categories: ProcessCategory[], materials: MaterialNod
 
   // Initialize all categories as CategoryTreeTemp objects:
   categories.forEach((cat) => {
-    const ref = cat.ref_num ?? ""
-    allNodesByRef[ref] = {
+    allNodesByRef[cat.ref_num ?? ""] = {
       node_id: cat.node_id,
       name: cat.name,
       ref_num: cat.ref_num,
@@ -253,9 +242,8 @@ function buildCategoryTree(categories: ProcessCategory[], materials: MaterialNod
   for (const cat of categories) {
     if (cat.ref_num && cat.ref_num.includes(".")) {
       const parentRefNum = getParentRefNum(cat.ref_num)
-      // Only link if we found a valid parent and that parent exists in the map
-      if (parentRefNum && allNodesByRef[parentRefNum]) {
-        allNodesByRef[parentRefNum].subcategories.push(allNodesByRef[cat.ref_num])
+      if (parentRefNum && allNodesByRef[parentRefNum] && allNodesByRef[cat.ref_num]) {
+        allNodesByRef[parentRefNum].subcategories.push(allNodesByRef[cat.ref_num]!)
       }
     }
   }
@@ -264,34 +252,29 @@ function buildCategoryTree(categories: ProcessCategory[], materials: MaterialNod
   materials.forEach((material) => {
     const cat = categoriesByNodeId[material.process_category_node_id]
     if (cat && cat.ref_num && allNodesByRef[cat.ref_num]) {
-      allNodesByRef[cat.ref_num].materials.push(material)
+      allNodesByRef[cat.ref_num]!.materials.push(material)
     }
   })
 
   // Prune empty subcategories (recursively):
-  function pruneEmptySubcategories(node: CategoryTreeTemp) {
+  function pruneEmptySubcategories(node: CategoryTreeTemp): void {
     node.subcategories = node.subcategories.filter((sub) => {
       pruneEmptySubcategories(sub)
       return sub.subcategories.length > 0 || sub.materials.length > 0
     })
   }
+  Object.values(allNodesByRef).forEach((tempNode) => {
+    pruneEmptySubcategories(tempNode)
+  })
 
-  Object.values(allNodesByRef).forEach((node) => pruneEmptySubcategories(node))
-
-  // Identify root-level categories (no '.' in their ref_num):
-  // We skip any that end up empty after pruning.
+  // Identify root-level categories (no '.' in their ref_num),
+  // skipping any that end up empty after pruning:
   const rootCategoryNodes = categories.filter((cat) => cat.ref_num && !cat.ref_num.includes("."))
 
   // Return the final CategoryTreeNode array:
   return rootCategoryNodes
     .map((rootCat) => {
-      const ref = rootCat.ref_num!
-      // If for some reason there's no rootNode, skip it
-      const rootNode = allNodesByRef[ref]
-      if (!rootNode) {
-        return undefined
-      }
-
+      const rootNode = allNodesByRef[rootCat.ref_num!]!
       return {
         node_id: rootNode.node_id,
         name: rootNode.name,
@@ -299,16 +282,11 @@ function buildCategoryTree(categories: ProcessCategory[], materials: MaterialNod
         materials: rootNode.materials,
       }
     })
-    .filter((r): r is CategoryTreeNode => !!r && (r.subcategories.length > 0 || r.materials.length > 0))
+    .filter((r) => r.subcategories.length > 0 || r.materials.length > 0)
 }
 
 // Convert a generic node to CategoryTreeNode structure recursively.
-function convertToCategoryTreeNode(node: {
-  node_id: number
-  name: string
-  subcategories: CategoryTreeTemp[]
-  materials: MaterialNode[]
-}): CategoryTreeNode {
+function convertToCategoryTreeNode(node: CategoryTreeNode): CategoryTreeNode {
   return {
     node_id: node.node_id,
     name: node.name,
