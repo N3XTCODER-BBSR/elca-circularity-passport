@@ -59,14 +59,12 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
     router.push(detailLink)
   }
 
-  debugger
   const chartData: ChartDataNode = transformCircularityDataAndMaterialTypesToChartData(
     props.processCategories,
     products,
     props.projectName,
     true
   )
-  debugger
 
   return (
     <ChartAndBreadCrumbComponent
