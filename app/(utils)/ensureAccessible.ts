@@ -1,5 +1,5 @@
 import { NotFoundError, UnauthorizedError } from "lib/errors"
-import { getVariantById } from "prisma/queries/legacyDb"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 
 /**
  * Validates if a variant belongs to a specific project.
@@ -10,7 +10,7 @@ import { getVariantById } from "prisma/queries/legacyDb"
  * @throws {UnauthorizedError} If the variant does not belong to the project.
  */
 export const ensureVariantAccessible = async (variantId: number, projectId: number) => {
-  const variant = await getVariantById(variantId)
+  const variant = await legacyDbDalInstance.getVariantById(variantId)
   if (!variant) {
     throw new NotFoundError()
   }

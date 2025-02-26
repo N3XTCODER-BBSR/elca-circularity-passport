@@ -323,4 +323,8 @@ export class DbDal {
       select: passportMetaDataSelect,
     })
   }
+
+  healthCheck = () => {
+    return prisma.$queryRaw`SELECT 1`
+  }
 }

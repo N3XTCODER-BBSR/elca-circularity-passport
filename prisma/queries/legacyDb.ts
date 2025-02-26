@@ -646,12 +646,16 @@ export class LegacyDbDal {
       where: { id: { in: productIds } },
     })
   }
-}
 
-export const getVariantById = async (id: number) => {
-  return await prismaLegacy.elca_project_variants.findUnique({
-    where: {
-      id,
-    },
-  })
+  getVariantById = async (id: number) => {
+    return await prismaLegacy.elca_project_variants.findUnique({
+      where: {
+        id,
+      },
+    })
+  }
+
+  healthCheck = async () => {
+    return prismaLegacy.$queryRaw`SELECT 1`
+  }
 }

@@ -47,7 +47,13 @@ const prismaLegacyClientSingleton = () => {
       $executeRaw: () => {
         throw new Error("Write operations are not allowed")
       },
-      $queryRaw: () => {
+      $queryRaw: ({ args, query }) => {
+        const isHealthCheck = args.strings.includes("SELECT 1") && args.strings.length === 1
+
+        if (isHealthCheck) {
+          return query(args)
+        }
+
         throw new Error("Write operations are not allowed")
       },
       $executeRawUnsafe: () => {
