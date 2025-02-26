@@ -238,9 +238,6 @@ export class LegacyDbDal {
         },
       },
       include: {
-        // select: {
-        //   name
-        // },
         project_variants: {
           include: {
             projects_projects_current_variant_idToproject_variants: {
