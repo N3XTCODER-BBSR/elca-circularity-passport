@@ -57,6 +57,7 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
     router.push(detailLink)
   }
 
+  debugger
   const chartData: ChartDataNode = transformCircularityDataAndMaterialTypesToChartData(
     props.processCategories,
     products,
@@ -66,12 +67,15 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
   debugger
 
   return (
-    <ChartAndBreadCrumbComponent
-      rootChartDataNode={chartData}
-      leafClickHandler={leafClickHandler}
-      title={t("title")}
-      labelTotalDimensionalValue={t("totalMass")}
-      unitNameTotalDimensionalValue={tUnits("Kg.short")}
-    />
+    <div>
+      chartData: {JSON.stringify(chartData, null, 2)}
+      <ChartAndBreadCrumbComponent
+        rootChartDataNode={chartData}
+        leafClickHandler={leafClickHandler}
+        title={t("title")}
+        labelTotalDimensionalValue={t("totalMass")}
+        unitNameTotalDimensionalValue={tUnits("Kg.short")}
+      />
+    </div>
   )
 }
