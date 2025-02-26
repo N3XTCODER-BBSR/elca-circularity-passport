@@ -7,8 +7,8 @@ import {
 import { Prisma, TBs_OekobaudatMapping } from "prisma/generated/client"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { calculateEolDataByEolCateogryData } from "./calculateEolDataByEolCateogryData"
+import { calculateVolumeForProduct } from "./calculateVolumeForProduct"
 import { getMassForProduct } from "../misc/getMassForProducts"
-import { calculateVolumeForProduct } from "../misc/getVolumeForProduct"
 
 export const fetchElcaComponentById = async (layerId: number, variantId: number, projectId: number) => {
   const projectComponent = await legacyDbDalInstance.getElcaComponentDataByLayerId(layerId, variantId, projectId)
@@ -26,7 +26,7 @@ export const fetchElcaComponentById = async (layerId: number, variantId: number,
   const productId = userDefinedData?.tBaustoffProductDefinitionId ?? mappingEntry?.tBs_productId
 
   let product = null
-  if (productId != null) {
+  if (productId !== null && productId !== undefined) {
     product = await dbDalInstance.getTBaustoffProduct(productId)
   }
 
@@ -54,7 +54,8 @@ async function processProjectComponent(
 
   const productData = getTBaustoffProductData(userDefinedData, mappingEntry, product)
 
-  const volume = calculateVolumeForProduct(componentRow)
+  const volume = calculateVolumeForProduct(componentRow.layer_length, componentRow.layer_width, componentRow.layer_size)
+
   const isExcluded = await dbDalInstance.getExcludedProductId(componentRow.component_id)
   const enrichedComponent: EnrichedElcaElementComponent = {
     ...componentRow,

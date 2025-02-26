@@ -3,7 +3,7 @@ import { MassInKg, ProductId } from "./types"
 
 describe("calculateMassForProducts", () => {
   describe("layers", () => {
-    const productIdsExpectedMassMap = new Map<ProductId, MassInKg>([
+    const productIdExpectedMassMap = new Map<ProductId, MassInKg>([
       [1, 1.7],
       [2, 84],
       [3, 1.7],
@@ -18,7 +18,7 @@ describe("calculateMassForProducts", () => {
       [14, 50.843],
     ])
 
-    const productIds = Array.from(productIdsExpectedMassMap.entries()).map(([productId]) => productId)
+    const productIds = Array.from(productIdExpectedMassMap.entries()).map(([productId]) => productId)
     let productIdMassMap: Map<ProductId, MassInKg | null>
 
     beforeAll(async () => {
@@ -34,7 +34,7 @@ describe("calculateMassForProducts", () => {
       "should return the correct weight for layer $productId with kg as ref_unit of the component",
       async ({ productId }) => {
         const mass = productIdMassMap.get(productId)
-        const expectedMass = productIdsExpectedMassMap.get(productId)!
+        const expectedMass = productIdExpectedMassMap.get(productId)!
 
         expect(mass).toBeCloseTo(expectedMass, 3)
       }

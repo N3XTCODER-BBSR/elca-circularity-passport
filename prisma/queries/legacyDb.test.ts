@@ -177,9 +177,7 @@ describe("legacyDb queries", () => {
     })
   })
   describe("getComponentsByVariantId", () => {
-    it(`should return the correct project elements for a given variant ID, 
-      but only the ones which fall into the DIN category number pool 
-      for the Circularity Tool (const costGroupCategoryNumbersToInclude = [320, 330, 340, 350, 360])`, async () => {
+    it(`should return the correct project elements for a given variant ID, but only the ones which fall into the DIN category number pool for the Circularity Tool (const costGroupCategoryNumbersToInclude = [320, 330, 340, 350, 360])`, async () => {
       const result = await legacyDbDalInstance.getComponentsByVariantId(1, 1)
       const want = [
         {
@@ -248,9 +246,15 @@ describe("legacyDb queries", () => {
           project_variant_id: 1,
           element_types: { din_code: 342 },
         },
+        {
+          uuid: "8c4cc20d-79de-4586-a927-3cb518b3c64a",
+          name: "test several materials in layer",
+          project_variant_id: 1,
+          element_types: { din_code: 351 },
+        },
       ]
 
-      const expectedLength = 7 // because of the DIN category number pool
+      const expectedLength = 8 // because of the DIN category number pool
       expect(result).toHaveLength(expectedLength)
       result.forEach((resultElement) => {
         const matchingElement = want.find((element) => element.uuid === resultElement.uuid)
