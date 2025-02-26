@@ -63,6 +63,7 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
     props.projectName,
     true
   )
+  debugger
 
   return (
     <ChartAndBreadCrumbComponent
