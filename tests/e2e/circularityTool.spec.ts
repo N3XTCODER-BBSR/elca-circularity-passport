@@ -1,4 +1,4 @@
-import { test, expect, Page } from "@playwright/test"
+import { expect, Page, test } from "@playwright/test"
 import { circularityToolPages } from "tests/constants"
 import { getAuthUserFile, resetDb } from "tests/utils"
 import { users } from "./constants"
@@ -20,6 +20,7 @@ test.describe("Circularity tool", () => {
   const componentUuid5 = "c74c2dc0-04b9-4f68-af43-5450ba04ea1e"
   const componentUuid6 = "e05939a3-370a-4d8a-b8e5-a0633055806d"
   const componentUuid7 = "6568c2fd-9105-4bfa-a85c-a5f8d19aff7b"
+  const componentUuid8 = "8c4cc20d-79de-4586-a927-3cb518b3c64a"
 
   const componentPageUrl1 = getComponentsPageUrl(componentUuid1)
   const componentPageUrl2 = getComponentsPageUrl(componentUuid2)
@@ -28,6 +29,7 @@ test.describe("Circularity tool", () => {
   const componentPageUrl5 = getComponentsPageUrl(componentUuid5)
   const componentPageUrl6 = getComponentsPageUrl(componentUuid6)
   const componentPageUrl7 = getComponentsPageUrl(componentUuid7)
+  const componentPageUrl8 = getComponentsPageUrl(componentUuid8)
 
   const overviewPageUrl = circularityToolPages.overviewPage
     .replace("<projectId>", projectId.toString())
@@ -107,6 +109,7 @@ test.describe("Circularity tool", () => {
         componentPageUrl5,
         componentPageUrl6,
         componentPageUrl7,
+        componentPageUrl8,
         overviewPageUrl
       )
 
@@ -127,6 +130,7 @@ test.describe("Circularity tool", () => {
         componentPageUrl5,
         componentPageUrl6,
         componentPageUrl7,
+        componentPageUrl8,
         overviewPageUrl
       )
     })
@@ -171,6 +175,7 @@ const fillOutAllCircularityDetails = async (
   componentPageUrl5: string,
   componentPageUrl6: string,
   componentPageUrl7: string,
+  componentPageUrl8: string,
   overviewPageUrl: string
 ) => {
   await page.goto(componentPageUrl1)
@@ -234,6 +239,11 @@ const fillOutAllCircularityDetails = async (
   await page.waitForLoadState("networkidle")
   await page.goto(componentPageUrl7)
   await page.locator("[data-testid=toggle__switch__24]").click()
+
+  await page.waitForLoadState("networkidle")
+  await page.goto(componentPageUrl8)
+  await page.locator("[data-testid=toggle__switch__25]").click()
+  await page.locator("[data-testid=toggle__switch__26]").click()
 
   await page.waitForLoadState("networkidle")
   await page.goto(overviewPageUrl)
