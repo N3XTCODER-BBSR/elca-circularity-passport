@@ -2,7 +2,7 @@ import _ from "lodash"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import { getFormatter, getTranslations } from "next-intl/server"
-import { Heading4 } from "app/(components)/generic/layout-elements"
+import { Heading3, Heading4 } from "app/(components)/generic/layout-elements"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/misc/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import { preloadCircularityData } from "lib/domain-logic/circularity/misc/preloadCircularityData"
@@ -73,9 +73,6 @@ const Page = async ({
 
     const [layers, nonLayers] = _.partition(componentData.layers, (layer) => layer.is_layer)
 
-    console.log("nonLayers", nonLayers)
-    console.log("layers", layers)
-
     if (componentData == null) {
       notFound()
     }
@@ -143,14 +140,24 @@ const Page = async ({
           </div>
         </div>
         <div className="mb-12 flex flex-col gap-2">
-          <Heading4>
-            {t("layersHeading")} {componentData.unit}:
-          </Heading4>
-          <ProductsList products={layers} />
-        </div>
-        <div className="mb-12 flex flex-col gap-2">
-          <Heading4>{t("nonLayersHeading")}:</Heading4>
-          <ProductsList products={nonLayers} />
+          <Heading3>
+            {t("buildingMaterialsHeading")} {componentData.unit}
+          </Heading3>
+          {layers.length < 1 && nonLayers.length < 1 && (
+            <span className="text-sm font-medium text-gray-900">{t("noBuildingMaterials")}</span>
+          )}
+          {layers.length > 0 && (
+            <div className="mb-12 flex flex-col gap-2">
+              <Heading4>{t("layersHeading")}</Heading4>
+              <ProductsList products={layers} />
+            </div>
+          )}
+          {nonLayers.length > 0 && (
+            <div className="mb-12 flex flex-col gap-2">
+              <Heading4>{t("nonLayersHeading")}</Heading4>
+              <ProductsList products={nonLayers} />
+            </div>
+          )}
         </div>
       </div>
     )

@@ -232,7 +232,9 @@ const translationsPlattformGeneric = {
       costGroup: "Kostengruppe DIN 276",
       numberInstalled: "Installierte Anzahl",
       referenceUnit: "Referenzeinheit",
-      layersHeading: "Materialien relativ zu 1",
+      noBuildingMaterials: "Hier gibts noch nichts. Fügen Sie ein Baumaterial in elca hinzu, um loszulegen",
+      buildingMaterialsHeading: "Materialien relativ zu 1",
+      layersHeading: "Ebenen (von innen nach aussen)",
       nonLayersHeading: "Andere Materialien",
       Layers: {
         mass: "Masse",
