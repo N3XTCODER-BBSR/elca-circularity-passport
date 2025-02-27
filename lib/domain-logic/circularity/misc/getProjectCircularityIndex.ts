@@ -1,11 +1,11 @@
 import { ElcaElementWithComponents, ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { ElcaVariantElementBaseData } from "prisma/queries/legacyDb"
+import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
+import { preloadCircularityData } from "./preloadCircularityData"
 import calculateCircularityDataForLayer, {
   CalculateCircularityDataForLayerReturnType,
 } from "../utils/calculate-circularity-data-for-layer"
-import { preloadCircularityData } from "./preloadCircularityData"
-import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 
 type RawComponent = Awaited<
   ReturnType<typeof legacyDbDalInstance.getElcaComponentsWithElementsForProjectAndVariantId>
@@ -52,7 +52,7 @@ export const getProjectCircularityIndexData = async (
     const elementBaseData: ElcaVariantElementBaseData = {
       uuid: element.uuid,
       din_code: element.element_types.din_code,
-      element_name: element.element_types.name,
+      element_name: element.name,
       element_type_name: element.element_types.name,
       unit: element.ref_unit,
       quantity: Number(element.quantity),
@@ -70,7 +70,7 @@ export const getProjectCircularityIndexData = async (
       const elementBaseData: ElcaVariantElementBaseData = {
         uuid: element.uuid,
         din_code: element.element_types.din_code,
-        element_name: element.element_types.name,
+        element_name: element.name,
         element_type_name: element.element_types.name,
         unit: element.ref_unit,
         quantity: Number(element.quantity),
