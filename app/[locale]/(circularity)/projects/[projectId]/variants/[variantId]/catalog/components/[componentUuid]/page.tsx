@@ -140,9 +140,7 @@ const Page = async ({
           </div>
         </div>
         <div className="mb-12 flex flex-col gap-2">
-          <Heading3>
-            {t("buildingMaterialsHeading")} {componentData.unit}
-          </Heading3>
+          <Heading3>{t("buildingMaterialsHeading", { refUnit: componentData.unit })}</Heading3>
           {layers.length < 1 && nonLayers.length < 1 && (
             <span className="text-sm font-medium text-gray-900">{t("noBuildingMaterials")}</span>
           )}
