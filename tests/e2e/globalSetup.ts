@@ -63,10 +63,10 @@ const globalSetup = async () => {
   process.env.BASE_URL = baseUrl
 
   // HINT: don't use static import so that the prisma client is only created after the dyncamic DB URL env vars are set
-  const { createUsers } = require("./utils")
+  const { createAndAuthenticateUsers } = require("./utils")
 
   console.log("Creates test users...")
-  await createUsers(baseUrl, "password1!")
+  await createAndAuthenticateUsers(baseUrl)
 }
 
 const main = async (_: FullConfig) => {
