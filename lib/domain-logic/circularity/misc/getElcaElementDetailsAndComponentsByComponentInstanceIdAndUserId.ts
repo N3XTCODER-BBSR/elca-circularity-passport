@@ -83,6 +83,7 @@ async function enrichLayerData(
 
     return {
       ...component,
+      isLayer: component.is_layer,
       mass,
       volume,
       isExcluded: excludedProductIdsSet.has(component.component_id),
