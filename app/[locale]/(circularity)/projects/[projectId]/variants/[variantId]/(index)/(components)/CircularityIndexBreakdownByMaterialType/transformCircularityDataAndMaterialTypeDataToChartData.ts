@@ -90,12 +90,10 @@ function toChartDataNode(node: CategoryTreeNode): ChartDataInternalNode | null {
  * Each group becomes an internal node, which then has leaves aggregated by component_uuid.
  */
 function buildProductGroupChildren(materials: MaterialNode[]): ChartDataInternalNode[] {
-  // Group materials by .name (or use product_id if you prefer).
   const groupedByName = groupBy(materials, (m) => m.name)
 
   const productGroups: ChartDataInternalNode[] = []
 
-  // Use Array.from(...) to avoid the downlevelIteration warning:
   for (const [materialName, itemsInThisGroup] of Array.from(groupedByName.entries())) {
     // For each group, build leaves aggregated by component_uuid:
     const leafChildren = buildLeavesAggregatedByUuid(itemsInThisGroup)
@@ -126,7 +124,6 @@ function buildLeavesAggregatedByUuid(materials: MaterialNode[]): ChartDataLeaf[]
 
   const leaves: ChartDataLeaf[] = []
 
-  // Again, use Array.from(...) instead of direct `for-of map.entries()`:
   for (const [uuid, items] of Array.from(groupedByUuid.entries())) {
     // Sum total mass (dimensionalValue), weighted-sum for metricValue:
     const { totalWeight, weightedMetric } = items.reduce(
@@ -152,6 +149,7 @@ function buildLeavesAggregatedByUuid(materials: MaterialNode[]): ChartDataLeaf[]
   return leaves
 }
 
+// TODO: consider to replace this with lodash groupBy
 /**
  * Simple groupBy helper. Returns a Map of key -> array of items that share that key.
  */
