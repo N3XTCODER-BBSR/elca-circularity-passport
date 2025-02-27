@@ -62,7 +62,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     expect(categoryNode.label).toBe("Bindemittel")
     expect(categoryNode.children.length).toBe(1)
 
-    // Product group node: labeled "Cement Product"
+    // Product-group node: labeled "Cement Product"
     const productGroupNode = categoryNode.children[0] as ChartDataInternalNode
     expect(productGroupNode.isLeaf).toBe(false)
     expect(productGroupNode.label).toBe("Cement Product")
@@ -87,7 +87,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
   })
 
   test("multiple categories with decimal hierarchies", () => {
-    // We'll have Mörtel und Beton(1), Mineralwolle(2), Metalle(4), and Stahl und Eisen(4.01)
+    // We'll have Mörtel und Beton(1), Mineralwolle(2), Metalle(4), Stahl und Eisen(4.01)
     const processCategories: ProcessCategory[] = [
       createProcessCategory(617, "Mörtel und Beton", "1"),
       createProcessCategory(620, "Mineralwolle", "2"),
@@ -117,13 +117,16 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     expect(metalsNode).toBeDefined()
 
     // Mörtel und Beton
+    expect(mortarNode.isLeaf).toBe(false)
     expect(mortarNode.children.length).toBe(1)
+
     const mortarGroupNode = mortarNode.children[0] as ChartDataInternalNode
-    expect(mortarGroupNode.label).toBe("Concrete Mix A")
     expect(mortarGroupNode.isLeaf).toBe(false)
+    expect(mortarGroupNode.label).toBe("Concrete Mix A")
     expect(mortarGroupNode.children.length).toBe(1)
 
     const concreteLeaf = mortarGroupNode.children[0] as ChartDataLeaf
+    expect(concreteLeaf.isLeaf).toBe(true)
     expect(concreteLeaf.label).toBe("Comp: 1")
     expect(concreteLeaf.metricValue).toBe(0.8)
     expect(concreteLeaf.dimensionalValue).toBe(100)
@@ -135,13 +138,16 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     expect(mortarNode.dimensionalValue).toBe(100)
 
     // Mineralwolle
+    expect(mineralWoolNode.isLeaf).toBe(false)
     expect(mineralWoolNode.children.length).toBe(1)
+
     const mwGroupNode = mineralWoolNode.children[0] as ChartDataInternalNode
     expect(mwGroupNode.isLeaf).toBe(false)
     expect(mwGroupNode.label).toBe("Mineral Wool A")
     expect(mwGroupNode.children.length).toBe(1)
 
     const mineralWoolLeaf = mwGroupNode.children[0] as ChartDataLeaf
+    expect(mineralWoolLeaf.isLeaf).toBe(true)
     expect(mineralWoolLeaf.label).toBe("Comp: 2")
     expect(mineralWoolLeaf.metricValue).toBe(0.9)
     expect(mineralWoolLeaf.dimensionalValue).toBe(50)
@@ -155,27 +161,32 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     // Metalle(4) -> Stahl und Eisen(4.01)
     expect(metalsNode.isLeaf).toBe(false)
     expect(metalsNode.children.length).toBe(1)
+
     const steelNode = metalsNode.children[0] as ChartDataInternalNode
-    expect(steelNode.label).toBe("Stahl und Eisen")
     expect(steelNode.isLeaf).toBe(false)
+    expect(steelNode.label).toBe("Stahl und Eisen")
 
     // Inside Stahl und Eisen, we expect 2 product group nodes: "Steel Beam A", "Steel Beam B"
     const steelBeamAGroup = steelNode.children.find((c) => c.label === "Steel Beam A") as ChartDataInternalNode
     const steelBeamBGroup = steelNode.children.find((c) => c.label === "Steel Beam B") as ChartDataInternalNode
 
     expect(steelBeamAGroup).toBeDefined()
+    expect(steelBeamAGroup.isLeaf).toBe(false)
     expect(steelBeamBGroup).toBeDefined()
+    expect(steelBeamBGroup.isLeaf).toBe(false)
 
     // Each group node has exactly one leaf
     expect(steelBeamAGroup.children.length).toBe(1)
     expect(steelBeamBGroup.children.length).toBe(1)
 
     const steelBeamALeaf = steelBeamAGroup.children[0] as ChartDataLeaf
+    expect(steelBeamALeaf.isLeaf).toBe(true)
     expect(steelBeamALeaf.label).toBe("Comp: 3")
     expect(steelBeamALeaf.metricValue).toBe(0.7)
     expect(steelBeamALeaf.dimensionalValue).toBe(120)
 
     const steelBeamBLeaf = steelBeamBGroup.children[0] as ChartDataLeaf
+    expect(steelBeamBLeaf.isLeaf).toBe(true)
     expect(steelBeamBLeaf.label).toBe("Comp: 4")
     expect(steelBeamBLeaf.metricValue).toBe(0.6)
     expect(steelBeamBLeaf.dimensionalValue).toBe(80)
@@ -191,7 +202,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     expect(steelNode.metricValue).toBeCloseTo(0.66, 2)
     expect(steelNode.dimensionalValue).toBe(200)
 
-    // metalsNode aggregation (just the one child steelNode):
+    // metalsNode aggregation:
     expect(metalsNode.metricValue).toBeCloseTo(0.66, 2)
     expect(metalsNode.dimensionalValue).toBe(200)
 
@@ -204,7 +215,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
   })
 
   test("skipRootNode=true with a single top-level category hierarchy", () => {
-    // Only one top-level category "Bindemittel" with ref_num "1"
+    // Only one top-level category "Bindemittel" (1)
     const processCategories: ProcessCategory[] = [createProcessCategory(614, "Bindemittel", "1")]
     const products: MaterialNode[] = [
       createMaterialNode("uuid-binder", "Comp: binder", 501, "Binder Product", 614, 60, 0.95),
@@ -217,21 +228,23 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       true
     )
 
-    // Because there's exactly one top-level category, skipRootNode flattening applies.
-    // So 'result' should now be "Bindemittel" as the top-level instead of "Artificial Root".
+    // Because there's exactly one top-level category, skipRootNode flattening applies:
+    // So 'result' is "Bindemittel" as the top-level instead of "Artificial Root".
     expect(result.label).toBe("Bindemittel")
     expect(result.isLeaf).toBe(false)
 
-    // Check product group
     const categoryNode = result as ChartDataInternalNode
     expect(categoryNode.children.length).toBe(1)
+
+    // Product group node: "Binder Product"
     const productGroupNode = categoryNode.children[0] as ChartDataInternalNode
-    expect(productGroupNode.label).toBe("Binder Product")
     expect(productGroupNode.isLeaf).toBe(false)
+    expect(productGroupNode.label).toBe("Binder Product")
     expect(productGroupNode.children.length).toBe(1)
 
-    // Leaf
+    // Final leaf: "Comp: binder"
     const leaf = productGroupNode.children[0] as ChartDataLeaf
+    expect(leaf.isLeaf).toBe(true)
     expect(leaf.label).toBe("Comp: binder")
     expect(leaf.metricValue).toBe(0.95)
     expect(leaf.dimensionalValue).toBe(60)
@@ -254,7 +267,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       "Artificial Root",
       true
     )
-    // Because there are multiple top-level categories, we keep the artificial root
+    // Because multiple top-level categories exist, we keep the artificial root
     expect(result.label).toBe("Artificial Root")
     expect(result.isLeaf).toBe(false)
 
@@ -292,18 +305,26 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     const rootChildren = (result as ChartDataInternalNode).children
     const metalleNode = rootChildren.find((c) => c.label === "Metalle") as ChartDataInternalNode
     expect(metalleNode).toBeDefined()
+    expect(metalleNode.isLeaf).toBe(false)
 
     const stahlEisenNode = metalleNode.children.find((c) => c.label === "Stahl und Eisen") as ChartDataInternalNode
     expect(stahlEisenNode).toBeDefined()
+    expect(stahlEisenNode.isLeaf).toBe(false)
 
     const spezialStahlNode = stahlEisenNode.children.find((c) => c.label === "Spezialstahl") as ChartDataInternalNode
     expect(spezialStahlNode).toBeDefined()
+    expect(spezialStahlNode.isLeaf).toBe(false)
 
-    // Inside Spezialstahl product group node: "Special Steel Product"
+    // Inside 'Spezialstahl', there should be a product-group node: "Special Steel Product"
     expect(spezialStahlNode.children.length).toBe(1)
-    const specialSteelLeaf = spezialStahlNode.children[0] as ChartDataLeaf
+    const productGroupNode = spezialStahlNode.children[0] as ChartDataInternalNode
+    expect(productGroupNode.isLeaf).toBe(false)
+    expect(productGroupNode.label).toBe("Special Steel Product")
+
+    // Now, the final leaf inside that product group has label "Comp: specialsteel"
+    expect(productGroupNode.children.length).toBe(1)
+    const specialSteelLeaf = productGroupNode.children[0] as ChartDataLeaf
     expect(specialSteelLeaf.isLeaf).toBe(true)
-    // Leaf label is the component_name: "Comp: specialsteel"
     expect(specialSteelLeaf.label).toBe("Comp: specialsteel")
     expect(specialSteelLeaf.metricValue).toBe(0.85)
     expect(specialSteelLeaf.dimensionalValue).toBe(30)
