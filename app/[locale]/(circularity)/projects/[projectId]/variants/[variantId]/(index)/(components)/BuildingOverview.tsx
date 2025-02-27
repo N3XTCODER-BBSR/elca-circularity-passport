@@ -1,8 +1,8 @@
 import Image from "next/image"
 import { getTranslations } from "next-intl/server"
 import { FC } from "react"
+import { CtaButton } from "app/(components)/generic/CtaButton"
 import { NoComponentsMessage } from "app/(components)/NoComponentsMessage"
-import { Link } from "i18n/routing"
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { calculateTotalCircularityIndexForProject } from "lib/domain-logic/circularity/utils/calculateTotalCircularityIndex"
@@ -29,10 +29,8 @@ const MissingCircularityIndexDataMessage: FC<{ catalogPath: string }> = async ({
       <h3 className="mx-2 mb-8 text-2xl font-semibold" data-testid="building-overview-empty-state__h3__heading">
         {t("emptyState.title")}
       </h3>
-      <div>{t("emptyState.body")}</div>
-      <Link href={catalogPath} className="mt-8 inline-block rounded-md bg-blue-600 px-2 py-1 text-white">
-        {t("emptyState.cta")}
-      </Link>
+      <div className="mb-8">{t("emptyState.body")}</div>
+      <CtaButton href={catalogPath} text={t("emptyState.cta")} />
     </div>
   )
 }
