@@ -148,6 +148,10 @@ const translationsGrpPlattformGeneric = {
         },
       },
     },
+    moduleByMaterialCategory: {
+      title: "Nach Materialkategorie",
+      totalMass: "Gesamtmasse",
+    },
   },
   projectsPage: {
     yourProjects: "Deine Projekte",
@@ -405,6 +409,9 @@ const translationsPlattformGeneric = {
         moduleByMaterialCategory: {
           title: "Nach Materialkategorie",
           totalMass: "Gesamtmasse",
+        },
+        materialExport: {
+          exportMaterialsToCsv: "Materialien als CSV exportieren",
         },
       },
       catalog: {
