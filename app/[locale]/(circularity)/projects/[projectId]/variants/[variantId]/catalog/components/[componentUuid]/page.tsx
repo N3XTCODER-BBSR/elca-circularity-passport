@@ -31,8 +31,8 @@ const Page = async ({
 
     const ProductsList = ({ products }: { products: EnrichedElcaElementComponent[] }) => (
       <ul>
-        {products.map((product, i) => (
-          <li key={i}>
+        {products.map((product) => (
+          <li key={product.component_id}>
             <ComponentLayer
               projectId={projectId}
               variantId={variantId}
