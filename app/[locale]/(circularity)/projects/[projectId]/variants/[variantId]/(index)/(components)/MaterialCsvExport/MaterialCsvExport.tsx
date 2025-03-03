@@ -42,28 +42,14 @@ export default function MaterialCsvExport(props: MaterialCsvExportProps) {
       unit: layer.unit ?? "",
       tBaustoffMaterial: layer.tBaustoffProductData?.name ?? "",
       thickness: layer.layer_size ?? 0,
-      share: 0, // TODO: share still needs to be added!
-
-      // Volume / [unit]
+      share: layer.layer_area_ratio ?? 0,
       volumePerUnit: layer.volume ?? 0,
-
-      // Mass / [unit]
       massPerUnit: layer.mass ?? 0,
-
-      // Circularity index
       circularityIndex: layer.circularityIndex ?? 0,
-
-      // EOL Class (built)
       eolClassBuilt: layer.eolBuilt?.className ?? "",
-
-      // EOL points (built)
       eolPointsBuilt: layer.eolBuilt?.points ?? 0,
-
-      // EOL Class (unbuilt)
       eolClassUnbuilt: layer.eolUnbuilt?.className ?? "",
-
       eolPointsUnbuilt: layer.eolUnbuilt?.points ?? 0,
-
       rebuildClass: layer.dismantlingPotentialClassId ? `Class ${layer.dismantlingPotentialClassId}` : "",
 
       rebuildPoints: layer.dismantlingPoints ?? 0,

@@ -30,6 +30,7 @@ export function mapLegacyComponentToProjectComponentRow(
     unit: elementBaseData.unit,
     quantity: elementBaseData.quantity,
     layer_size: Number(rawComponent.layer_size),
+    layer_area_ratio: Number(rawComponent.layer_area_ratio),
     layer_length: Number(rawComponent.layer_length),
     layer_width: Number(rawComponent.layer_width),
     process_config_density: Number(rawComponent.process_configs.density),
