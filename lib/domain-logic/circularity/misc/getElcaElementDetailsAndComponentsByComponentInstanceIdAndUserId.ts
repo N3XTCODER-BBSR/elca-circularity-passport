@@ -6,9 +6,9 @@ import {
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
 } from "lib/domain-logic/types/domain-types"
 import { ElcaVariantElementBaseData } from "prisma/queries/legacyDb"
-import { calculateVolumeForLayer } from "./getMassForLayer"
 import { Prisma, TBs_OekobaudatMapping } from "../../../../prisma/generated/client"
 import { calculateEolDataByEolCateogryData } from "../utils/calculateEolDataByEolCateogryData"
+import { calculateVolumeForProduct } from "../utils/calculateVolumeForProduct"
 
 export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = async (
   elementBaseData: ElcaVariantElementBaseData,
@@ -79,7 +79,7 @@ async function enrichLayerData(
 
     const mass = productMassMap.get(component.component_id) || null
 
-    const volume = calculateVolumeForLayer(component)
+    const volume = calculateVolumeForProduct(component.layer_length, component.layer_width, component.layer_size)
 
     return {
       ...component,

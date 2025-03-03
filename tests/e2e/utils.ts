@@ -50,6 +50,7 @@ export const fillOutAllCircularityDetails = async (
   componentPageUrl5: string,
   componentPageUrl6: string,
   componentPageUrl7: string,
+  componentPageUrl8: string,
   overviewPageUrl: string
 ) => {
   await page.goto(componentPageUrl1)
@@ -113,6 +114,11 @@ export const fillOutAllCircularityDetails = async (
   await page.waitForLoadState("networkidle")
   await page.goto(componentPageUrl7)
   await page.locator("[data-testid=toggle__switch__24]").click()
+
+  await page.waitForLoadState("networkidle")
+  await page.goto(componentPageUrl8)
+  await page.locator("[data-testid=toggle__switch__25]").click()
+  await page.locator("[data-testid=toggle__switch__26]").click()
 
   await page.waitForLoadState("networkidle")
   await page.goto(overviewPageUrl)

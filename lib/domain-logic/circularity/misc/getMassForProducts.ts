@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { mergeMaps } from "app/(utils)/map"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
-import { calculateMassForLayers } from "./getMassForLayer"
+import { getMassForLayers } from "./getMassForLayer"
 import { getMassForNonLayerProducts } from "../utils/calculateMassForNonLayerProduct"
 
 export const getMassForProducts = async (productIds: number[]) => {
@@ -13,7 +13,7 @@ export const getMassForProducts = async (productIds: number[]) => {
 
   const [productIdMassMapForNonLayerProducts, productIdMassForLayerProducts] = await Promise.all([
     getMassForNonLayerProducts(nonLayerProductIds),
-    calculateMassForLayers(layerProductIds),
+    getMassForLayers(layerProductIds),
   ])
 
   return mergeMaps(productIdMassMapForNonLayerProducts, productIdMassForLayerProducts)

@@ -20,6 +20,7 @@ test.describe("Circularity tool", () => {
   const componentUuid5 = "c74c2dc0-04b9-4f68-af43-5450ba04ea1e"
   const componentUuid6 = "e05939a3-370a-4d8a-b8e5-a0633055806d"
   const componentUuid7 = "6568c2fd-9105-4bfa-a85c-a5f8d19aff7b"
+  const componentUuid8 = "8c4cc20d-79de-4586-a927-3cb518b3c64a"
 
   const componentPageUrl1 = getComponentsPageUrl(1, componentUuid1)
   const componentPageUrl2 = getComponentsPageUrl(1, componentUuid2)
@@ -28,6 +29,7 @@ test.describe("Circularity tool", () => {
   const componentPageUrl5 = getComponentsPageUrl(1, componentUuid5)
   const componentPageUrl6 = getComponentsPageUrl(1, componentUuid6)
   const componentPageUrl7 = getComponentsPageUrl(1, componentUuid7)
+  const componentPageUrl8 = getComponentsPageUrl(1, componentUuid8)
 
   const getOverviewPageUrl = (variantId: number) => {
     return circularityToolPages.overviewPage
@@ -119,6 +121,7 @@ test.describe("Circularity tool", () => {
         componentPageUrl5,
         componentPageUrl6,
         componentPageUrl7,
+        componentPageUrl8,
         overviewPageUrl
       )
 
@@ -153,6 +156,7 @@ test.describe("Circularity tool", () => {
         componentPageUrl5,
         componentPageUrl6,
         componentPageUrl7,
+        componentPageUrl8,
         overviewPageUrl
       )
     })

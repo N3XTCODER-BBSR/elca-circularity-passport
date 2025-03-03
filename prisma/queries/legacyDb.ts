@@ -649,6 +649,12 @@ export class LegacyDbDal {
     })
   }
 
+  getProductById = (productId: number) => {
+    return prismaLegacy.elca_element_components.findUnique({
+      where: { id: productId },
+    })
+  }
+
   getVariantById = async (id: number) => {
     return await prismaLegacy.elca_project_variants.findUnique({
       where: {
