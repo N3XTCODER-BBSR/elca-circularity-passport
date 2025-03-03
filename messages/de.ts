@@ -232,7 +232,10 @@ const translationsPlattformGeneric = {
       costGroup: "Kostengruppe DIN 276",
       numberInstalled: "Installierte Anzahl",
       referenceUnit: "Referenzeinheit",
-      layersHeading: "Materialien relativ zu 1",
+      noBuildingMaterials: "Hier gibts noch nichts. Fügen Sie Baustoffe in elca hinzu, um loszulegen",
+      buildingMaterialsHeading: "Materialien (relativ zu 1 {refUnit})",
+      layersHeading: "Schichten (von innen nach aussen)",
+      nonLayersHeading: "Andere Materialien",
       Layers: {
         mass: "Masse",
         volume: "Volumen",
@@ -382,8 +385,12 @@ const translationsPlattformGeneric = {
         projectNotFound: "Projekt mit dieser ID für den aktuellen Benutzer nicht gefunden.",
         emptyState: {
           title: "Für die Anzeige des Zirkularitätsindex werden Daten benötigt",
-          body: "Um den Kreislaufwirtschaftsindex anzuzeigen, stellen Sie bitte sicher, dass jedes Bauprodukt entweder vollständig ist oder von der Berechnung. Sobald diese Informationen aktualisiert sind, werden Ihre Daten hier angezeigt.",
+          body: "Um den Zirkularitätsindex anzuzeigen, stellen Sie bitte sicher, dass jedes Bauprodukt entweder vollständig ist oder von der Berechnung. Sobald diese Informationen aktualisiert sind, werden Ihre Daten hier angezeigt.",
           cta: "Gebäudedaten aktualisieren",
+        },
+        noComponentsState: {
+          title: "Keine relevanten Bauprodukte gefunden",
+          body: "Der Zirkularitätsindex wird für Bauprodukte in den Kostengruppen 320, 330, 340, 350 und 360 berechnet. Bitte gehen Sie zu eLCA und fügen Sie Bauprodukte in einer dieser Gruppen hinzu, um zu beginnen.",
         },
         title: "Zirkularitätsindex",
         moduleTotal: {

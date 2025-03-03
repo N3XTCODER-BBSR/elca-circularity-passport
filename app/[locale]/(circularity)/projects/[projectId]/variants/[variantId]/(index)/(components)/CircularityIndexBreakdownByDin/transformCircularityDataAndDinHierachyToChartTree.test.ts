@@ -16,6 +16,7 @@ function createMockLayer(
     component_id: 1,
     element_uuid: "mock-element-uuid",
     layer_position: 0,
+    is_layer: true,
     process_name: "mock-process",
     oekobaudat_process_uuid: undefined,
     pdb_name: undefined,

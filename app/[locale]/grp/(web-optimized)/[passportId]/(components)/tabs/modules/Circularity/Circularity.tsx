@@ -1,6 +1,6 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import { useFormatter, useTranslations } from "next-intl"
 import CircularityBarChart, {
   CircularityBarChartDatum,
 } from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/circularity/CircularityBarChart"
@@ -18,6 +18,7 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
   const tCostGroups = useTranslations("Common.costGroups")
   const tAggregationSelector = useTranslations("GenericComponents.AggregationSelector")
   const aggregatedData = aggregateCircularityData(dinEnrichedBuildingComponents)
+  const format = useFormatter()
 
   const chartDataForAvgEolPointsPerComponentCostCategory: CircularityBarChartDatum[] =
     aggregatedData.avgEolPointsPerComponentCostCategory.map((data) => {
@@ -30,12 +31,17 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
       }
     })
 
+  const formattedCircularityIndexPoints = format.number(aggregatedData.totalAvgEolPoints, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  })
+
   const chartDataForAvgEolPoints: CircularityBarChartDatum[] = [
     {
       eolPoints: aggregatedData.totalAvgEolPoints,
       identifier: tAggregationSelector("total"),
       eolClass: aggregatedData.totalEolClass,
-      overlayText: `${aggregatedData.totalEolClass} (${Math.round(aggregatedData.totalAvgEolPoints)})`,
+      overlayText: `${aggregatedData.totalEolClass} (${formattedCircularityIndexPoints})`,
     },
   ]
   const faqContent = [
@@ -61,7 +67,8 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
         <b className="text-md mb-4 max-w-xl text-center leading-none tracking-tight dark:text-white lg:text-2xl xl:text-xl">
           {t("eol.title")}
         </b>
-        <p>{aggregatedData.totalEolClass}</p>
+        <p>{formattedCircularityIndexPoints}</p>
+
         <div className="h-[100px] md:w-2/4">
           <CircularityBarChart data={chartDataForAvgEolPoints} margin={{ top: 0, right: 30, bottom: 50, left: 150 }} />
         </div>

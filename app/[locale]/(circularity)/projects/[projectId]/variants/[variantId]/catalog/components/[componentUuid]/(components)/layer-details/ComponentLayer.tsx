@@ -140,7 +140,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
         <div className="flex items-start">
           <Image src="/component-layer.svg" alt="layer-icon" width={20} height={20} />
           <h2 className="ml-2 text-2xl font-semibold leading-6 text-gray-900">
-            {layerNumber} - {currentLayerData.process_name}
+            {layerNumber != null && layerNumber > 0 ? `${layerNumber} - ` : ""} {currentLayerData.process_name}
           </h2>
         </div>
         <div className="flex items-center gap-1 text-sm font-medium leading-5 sm:gap-2">

@@ -1,11 +1,11 @@
 import { ElcaElementWithComponents, ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { ElcaVariantElementBaseData } from "prisma/queries/legacyDb"
+import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
+import { preloadCircularityData } from "./preloadCircularityData"
 import calculateCircularityDataForLayer, {
   CalculateCircularityDataForLayerReturnType,
 } from "../utils/calculate-circularity-data-for-layer"
-import { preloadCircularityData } from "./preloadCircularityData"
-import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 
 type RawComponent = Awaited<
   ReturnType<typeof legacyDbDalInstance.getElcaComponentsWithElementsForProjectAndVariantId>
@@ -19,6 +19,7 @@ export function mapLegacyComponentToProjectComponentRow(
     component_id: rawComponent.id,
     element_uuid: elementBaseData.uuid,
     layer_position: rawComponent.layer_position || -1,
+    is_layer: rawComponent.is_layer,
     process_name: rawComponent.process_configs.name,
     oekobaudat_process_uuid: rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.uuid,
     pdb_name: rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.process_dbs.name,
@@ -52,7 +53,7 @@ export const getProjectCircularityIndexData = async (
     const elementBaseData: ElcaVariantElementBaseData = {
       uuid: element.uuid,
       din_code: element.element_types.din_code,
-      element_name: element.element_types.name,
+      element_name: element.name,
       element_type_name: element.element_types.name,
       unit: element.ref_unit,
       quantity: Number(element.quantity),
@@ -70,7 +71,7 @@ export const getProjectCircularityIndexData = async (
       const elementBaseData: ElcaVariantElementBaseData = {
         uuid: element.uuid,
         din_code: element.element_types.din_code,
-        element_name: element.element_types.name,
+        element_name: element.name,
         element_type_name: element.element_types.name,
         unit: element.ref_unit,
         quantity: Number(element.quantity),

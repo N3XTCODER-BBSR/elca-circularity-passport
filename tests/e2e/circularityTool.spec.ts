@@ -1,13 +1,13 @@
-import { expect, Page, test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { circularityToolPages } from "tests/constants"
 import { getAuthUserFile, resetDb } from "tests/utils"
 import { users } from "./constants"
+import { fillOutAllCircularityDetails } from "./utils"
 
 test.describe("Circularity tool", () => {
-  const variantId = 1
   const projectId = 1
 
-  const getComponentsPageUrl = (componentUuid: string) =>
+  const getComponentsPageUrl = (variantId: number, componentUuid: string) =>
     circularityToolPages.componentPage
       .replace("<projectId>", projectId.toString())
       .replace("<variantId>", variantId.toString())
@@ -22,18 +22,26 @@ test.describe("Circularity tool", () => {
   const componentUuid7 = "6568c2fd-9105-4bfa-a85c-a5f8d19aff7b"
   const componentUuid8 = "8c4cc20d-79de-4586-a927-3cb518b3c64a"
 
-  const componentPageUrl1 = getComponentsPageUrl(componentUuid1)
-  const componentPageUrl2 = getComponentsPageUrl(componentUuid2)
-  const componentPageUrl3 = getComponentsPageUrl(componentUuid3)
-  const componentPageUrl4 = getComponentsPageUrl(componentUuid4)
-  const componentPageUrl5 = getComponentsPageUrl(componentUuid5)
-  const componentPageUrl6 = getComponentsPageUrl(componentUuid6)
-  const componentPageUrl7 = getComponentsPageUrl(componentUuid7)
-  const componentPageUrl8 = getComponentsPageUrl(componentUuid8)
+  const componentPageUrl1 = getComponentsPageUrl(1, componentUuid1)
+  const componentPageUrl2 = getComponentsPageUrl(1, componentUuid2)
+  const componentPageUrl3 = getComponentsPageUrl(1, componentUuid3)
+  const componentPageUrl4 = getComponentsPageUrl(1, componentUuid4)
+  const componentPageUrl5 = getComponentsPageUrl(1, componentUuid5)
+  const componentPageUrl6 = getComponentsPageUrl(1, componentUuid6)
+  const componentPageUrl7 = getComponentsPageUrl(1, componentUuid7)
+  const componentPageUrl8 = getComponentsPageUrl(1, componentUuid8)
 
-  const overviewPageUrl = circularityToolPages.overviewPage
-    .replace("<projectId>", projectId.toString())
-    .replace("<variantId>", variantId.toString())
+  const getOverviewPageUrl = (variantId: number) => {
+    return circularityToolPages.overviewPage
+      .replace("<projectId>", projectId.toString())
+      .replace("<variantId>", variantId.toString())
+  }
+
+  const getCatalogPageUrl = (variantId: number) => {
+    return circularityToolPages.catalogPage
+      .replace("<projectId>", projectId.toString())
+      .replace("<variantId>", variantId.toString())
+  }
 
   test.use({ storageState: getAuthUserFile(users.projectOwnerUser.username) })
 
@@ -45,7 +53,7 @@ test.describe("Circularity tool", () => {
     test.beforeEach(async ({ page }) => {
       const componentUuid = "32af2f0b-d7d8-4fb1-8354-1e9736d4f513"
 
-      const componentPageUrl = getComponentsPageUrl(componentUuid)
+      const componentPageUrl = getComponentsPageUrl(1, componentUuid)
 
       await page.goto(componentPageUrl)
     })
@@ -94,12 +102,16 @@ test.describe("Circularity tool", () => {
     })
 
     test("if there is at least one incomplete material, the overview page shows the empty state", async ({ page }) => {
+      const overviewPageUrl = getOverviewPageUrl(1)
+
       await page.goto(overviewPageUrl)
       await expect(page.locator("[data-testid=building-overview-empty-state__h3__heading]")).toBeVisible()
     })
     test('if there are no "incomplete" materials (and minimal 1 completed), the overview page shows a graph', async ({
       page,
     }) => {
+      const overviewPageUrl = getOverviewPageUrl(1)
+
       await fillOutAllCircularityDetails(
         page,
         componentPageUrl1,
@@ -116,9 +128,23 @@ test.describe("Circularity tool", () => {
       await page.goto(overviewPageUrl)
       await expect(page.locator("[data-testid=circularity-index-total-number__points-div]")).toHaveText(/29/)
     })
+    test("if there are no components in variant, the overview and the catalog page should display a no components message", async ({
+      page,
+    }) => {
+      const overviewPageUrl = getOverviewPageUrl(2)
+      const catalogPageUrl = getCatalogPageUrl(2)
+
+      await page.goto(overviewPageUrl)
+      await expect(page.locator("[data-testid=no-components-message__h3__heading]")).toBeVisible()
+
+      await page.goto(catalogPageUrl)
+      await expect(page.locator("[data-testid=no-components-message__h3__heading]")).toBeVisible()
+    })
   })
   test.describe("Passports Page", () => {
     test.beforeEach(async ({ page }) => {
+      const overviewPageUrl = getOverviewPageUrl(1)
+
       await resetDb()
 
       await fillOutAllCircularityDetails(
@@ -138,7 +164,7 @@ test.describe("Circularity tool", () => {
     test("creates passport and displays values correctly", async ({ page }) => {
       const passportsPage = circularityToolPages.passportsPage
         .replace("<projectId>", projectId.toString())
-        .replace("<variantId>", variantId.toString())
+        .replace("<variantId>", "1")
 
       await page.goto(passportsPage)
       await page.locator("[data-testid=project-passports__create-passport-button]").click()
@@ -165,93 +191,3 @@ test.describe("Circularity tool", () => {
     })
   })
 })
-
-const fillOutAllCircularityDetails = async (
-  page: Page,
-  componentPageUrl1: string,
-  componentPageUrl2: string,
-  componentPageUrl3: string,
-  componentPageUrl4: string,
-  componentPageUrl5: string,
-  componentPageUrl6: string,
-  componentPageUrl7: string,
-  componentPageUrl8: string,
-  overviewPageUrl: string
-) => {
-  await page.goto(componentPageUrl1)
-  await page.locator("[data-testid=toggle__switch__5]").click()
-  await page.locator("[data-testid=toggle__switch__6]").click()
-
-  await page.locator("[data-testid=component-layer__div__7]").locator("[data-testid=accordion__button__7]").click()
-  await page
-    .locator("[data-testid=component-layer__div__7]")
-    .locator("[data-testid=disturbing-substance-class__button__S3]")
-    .click()
-
-  await page
-    .locator("[data-testid=component-layer__div__7]")
-    .locator("[data-testid=circularity-details-rebuild-class-button__button__75]")
-    .click()
-
-  await page.waitForLoadState("networkidle")
-  await page.goto(componentPageUrl2)
-  await page.locator("[data-testid=toggle__switch__13]").click()
-  await page.locator("[data-testid=accordion__button__14]").click()
-  await page
-    .locator("[data-testid=component-layer__div__14]")
-    .locator("[data-testid=edit-button__button__tbaustoff-selector]")
-    .click()
-  await page.locator("[data-testid=select-material-button__select]").selectOption({ value: "1" })
-
-  await page.locator("[data-testid=select-material-save-button__button]").click()
-
-  await page
-    .locator("[data-testid=component-layer__div__14]")
-    .locator("data-testid=circularity-details-rebuild-class-button__button__50")
-    .click()
-
-  await page
-    .locator("[data-testid=component-layer__div__14]")
-    .locator("data-testid=disturbing-substance-class__button__S1")
-    .click()
-
-  await page.waitForLoadState("networkidle")
-  await page.goto(componentPageUrl3)
-  await page.locator("[data-testid=toggle__switch__15]").click()
-  await page.locator("[data-testid=toggle__switch__16]").click()
-
-  await page.waitForLoadState("networkidle")
-  await page.goto(componentPageUrl4)
-  await page.locator("[data-testid=toggle__switch__17]").click()
-  await page.locator("[data-testid=toggle__switch__18]").click()
-  await page.locator("[data-testid=toggle__switch__19]").click()
-  await page.locator("[data-testid=toggle__switch__20]").click()
-  await page.locator("[data-testid=toggle__switch__21]").click()
-
-  await page.waitForLoadState("networkidle")
-  await page.goto(componentPageUrl5)
-  await page.locator("[data-testid=toggle__switch__22]").click()
-
-  await page.waitForLoadState("networkidle")
-  await page.goto(componentPageUrl6)
-  await page.locator("[data-testid=toggle__switch__23]").click()
-
-  await page.waitForLoadState("networkidle")
-  await page.goto(componentPageUrl7)
-  await page.locator("[data-testid=toggle__switch__24]").click()
-
-  await page.waitForLoadState("networkidle")
-  await page.goto(componentPageUrl8)
-  await page.locator("[data-testid=toggle__switch__25]").click()
-  await page.locator("[data-testid=toggle__switch__26]").click()
-
-  await page.waitForLoadState("networkidle")
-  await page.goto(overviewPageUrl)
-  await expect(page.locator("[data-testid=circularity-index-total-number__points-div]")).toHaveText(/4.72/)
-
-  await page.waitForLoadState("networkidle")
-  await page.goto(componentPageUrl1)
-  await page.locator("[data-testid=toggle__switch__7]").click()
-
-  await page.waitForLoadState("networkidle")
-}

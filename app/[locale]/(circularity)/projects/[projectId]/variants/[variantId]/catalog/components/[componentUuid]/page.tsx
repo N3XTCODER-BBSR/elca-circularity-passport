@@ -1,16 +1,17 @@
+import _ from "lodash"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import { getFormatter, getTranslations } from "next-intl/server"
-import { Heading4 } from "app/(components)/generic/layout-elements"
+import { Heading3, Heading4 } from "app/(components)/generic/layout-elements"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/misc/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
+import { preloadCircularityData } from "lib/domain-logic/circularity/misc/preloadCircularityData"
 import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToElementByUuid } from "lib/ensureAuthorized"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
-import { preloadCircularityData } from "lib/domain-logic/circularity/misc/preloadCircularityData"
 
 const Page = async ({
   params,
@@ -27,6 +28,24 @@ const Page = async ({
     const t = await getTranslations("Circularity.Components")
 
     await ensureUserAuthorizationToElementByUuid(userId, componentUuid)
+
+    const ProductsList = ({ products }: { products: EnrichedElcaElementComponent[] }) => (
+      <ul>
+        {products.map((product) => (
+          <li key={product.component_id}>
+            <ComponentLayer
+              projectId={projectId}
+              variantId={variantId}
+              layerData={product}
+              // TODO: check/update logic here (and other places where laufende nummer is used) once we decided about the semantics of it
+              layerNumber={product.layer_position}
+              //unitName={componentData.unit}
+              tBaustoffProducts={availableTBaustoffProductIdAndNames}
+            />
+          </li>
+        ))}
+      </ul>
+    )
 
     const elementBaseData = await legacyDbDalInstance.getElcaVariantElementBaseDataByUuid(
       componentUuid,
@@ -51,6 +70,8 @@ const Page = async ({
         preloadedData.tBaustoffProductMap,
         preloadedData.productMassMap
       )
+
+    const [layers, nonLayers] = _.partition(componentData.layers, (layer) => layer.is_layer)
 
     if (componentData == null) {
       notFound()
@@ -118,24 +139,24 @@ const Page = async ({
             </div>
           </div>
         </div>
-        <Heading4>
-          {t("layersHeading")} {componentData.unit}:
-        </Heading4>
-        <ul>
-          {componentData.layers.map((layer, i) => (
-            <li key={i}>
-              <ComponentLayer
-                projectId={projectId}
-                variantId={variantId}
-                layerData={layer}
-                // TODO: check/update logic here (and other places where laufende nummer is used) once we decided about the semantics of it
-                layerNumber={layer.layer_position}
-                //unitName={componentData.unit}
-                tBaustoffProducts={availableTBaustoffProductIdAndNames}
-              />
-            </li>
-          ))}
-        </ul>
+        <div className="mb-12 flex flex-col gap-2">
+          <Heading3>{t("buildingMaterialsHeading", { refUnit: componentData.unit })}</Heading3>
+          {layers.length < 1 && nonLayers.length < 1 && (
+            <span className="text-sm font-medium text-gray-900">{t("noBuildingMaterials")}</span>
+          )}
+          {layers.length > 0 && (
+            <div className="mb-12 flex flex-col gap-2">
+              <Heading4>{t("layersHeading")}</Heading4>
+              <ProductsList products={layers} />
+            </div>
+          )}
+          {nonLayers.length > 0 && (
+            <div className="mb-12 flex flex-col gap-2">
+              <Heading4>{t("nonLayersHeading")}</Heading4>
+              <ProductsList products={nonLayers} />
+            </div>
+          )}
+        </div>
       </div>
     )
   })

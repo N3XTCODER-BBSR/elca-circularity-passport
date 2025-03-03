@@ -24,7 +24,6 @@ export default function CircularityIndexBreakdownByDin(props: CircularityIndexBr
     const detailLink = `${props.catalogPath}/components/${resourceId}`
     if (detailLink) router.push(detailLink)
   }
-
   const chartData = transformCircularityDataAndDinHierachyToChartTree(props.circularityData, props.projectName)
 
   return (

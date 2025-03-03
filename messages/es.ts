@@ -234,7 +234,10 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
       costGroup: "Grupo de Coste DIN 276",
       numberInstalled: "Número Instalado",
       referenceUnit: "Unidad de Referencia",
-      layersHeading: "Materiales relativos a 1",
+      noBuildingMaterials: "No hay nada aquí. Agrega un material de construcción en elca para comenzar.",
+      buildingMaterialsHeading: "Materiales (relativos a 1 {refUnit})",
+      layersHeading: "Capas (de interior a exterior)",
+      nonLayersHeading: "Otros Materiales",
       Layers: {
         mass: "Masa",
         volume: "Volumen",
@@ -410,6 +413,10 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           title: "Se necesitan datos para mostrar el Índice de Circularidad",
           body: "Para mostrar el Índice de Circularidad, asegúrese de que cada producto de construcción esté completo o sea parte del cálculo. Una vez que se actualice esta información, sus datos se mostrarán aquí.",
           cta: "Actualizar datos del edificio",
+        },
+        noComponentsState: {
+          title: "No se encontraron componentes de construcción relevantes",
+          body: "El índice de circularidad se calcula para los componentes de construcción en los grupos de costos: 320, 330, 340, 350 y 360. Por favor, vaya a eLCA y agregue componentes de construcción en uno de estos grupos para comenzar.",
         },
         title: "Índice de Circularidad",
         moduleTotal: {
