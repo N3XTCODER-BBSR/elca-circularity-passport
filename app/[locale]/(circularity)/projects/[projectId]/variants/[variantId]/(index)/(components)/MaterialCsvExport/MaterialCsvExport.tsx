@@ -114,13 +114,29 @@ export default function MaterialCsvExport(props: MaterialCsvExportProps) {
     return [headerRow, ...dataRows].join("\n")
   }
 
+  const generateCsvFilename = () => {
+    // Generate a filename with the pattern YYYYMMDD-Zirkulaeritaetsinventar-[PROJECT_NAME]
+    const date = new Date()
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, "0")
+    const day = String(date.getDate()).padStart(2, "0")
+    const formattedDate = `${year}${month}${day}`
+
+    // Sanitize project name to remove problematic characters for filenames
+    const sanitizedProjectName = props.projectName.replace(/[/\\?%*:|"<>]/g, "-")
+
+    return `${formattedDate}-Zirkulaeritaetsinventar-${sanitizedProjectName}.csv`
+  }
+
   const downloadCSV = () => {
     const csv = convertToCSV(mappedProducts)
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.setAttribute("href", url)
-    link.setAttribute("download", "materials_export.csv")
+
+    const filename = generateCsvFilename()
+    link.setAttribute("download", filename)
     link.style.visibility = "hidden"
     document.body.appendChild(link)
     link.click()
