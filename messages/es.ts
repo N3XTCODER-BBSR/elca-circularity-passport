@@ -432,6 +432,17 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           title: "Por Categoría de Material",
           totalMass: "Masa Total",
         },
+        materialExport: {
+          exportMaterialsToCsv: "Exportar materiales como CSV",
+          fields: {
+            processName: "Nombre del proceso",
+            amount: "Cantidad",
+            unit: "Unidad",
+            thickness: "Espesor",
+            share: "Proporción",
+            componentId: "ID del componente",
+          },
+        },
       },
       catalog: {
         back: "Atrás",

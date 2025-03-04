@@ -429,6 +429,17 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           title: "By Material Category",
           totalMass: "Total Mass",
         },
+        materialExport: {
+          exportMaterialsToCsv: "Export Materials as CSV",
+          fields: {
+            processName: "Process Name",
+            amount: "Amount",
+            unit: "Unit",
+            thickness: "Thickness",
+            share: "Share",
+            componentId: "Component ID",
+          },
+        },
       },
       catalog: {
         back: "Back",

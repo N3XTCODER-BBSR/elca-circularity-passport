@@ -30,8 +30,40 @@ type MaterialCsvExportProps = {
 
 export default function MaterialCsvExport(props: MaterialCsvExportProps) {
   const t = useTranslations("CircularityTool.sections.overview.materialExport")
+  const tFields = useTranslations("CircularityTool.sections.overview.materialExport.fields")
+  const tCircularity = useTranslations("Circularity.Components.Layers.CircularityInfo")
+  const tComponents = useTranslations("Circularity.Components")
+  const tLayers = useTranslations("Circularity.Components.Layers")
+  const tRebuild = useTranslations("Circularity.Components.Layers.CircularityInfo.RebuildSection")
+  const tEolBuilt = useTranslations("Circularity.Components.Layers.CircularityInfo.EolBuiltSection")
+  const tEolUnbuiltClass = useTranslations(
+    "Circularity.Components.Layers.CircularityInfo.EolDataSection.EolUnbuilt.Class"
+  )
+  const tEolUnbuiltPoints = useTranslations(
+    "Circularity.Components.Layers.CircularityInfo.EolDataSection.EolUnbuilt.Points"
+  )
 
-  // Map layers to MaterialNodes
+  // Map of field names to their translation keys
+  const fieldTranslations: Record<string, string> = {
+    processName: tFields("processName"),
+    buildingComponent: tComponents("name"),
+    amount: tFields("amount"),
+    unit: tFields("unit"),
+    tBaustoffMaterial: tCircularity("tBaustoffMaterial"),
+    thickness: tFields("thickness"),
+    share: tFields("share"),
+    volumePerUnit: tLayers("volume"),
+    massPerUnit: tLayers("mass"),
+    circularityIndex: tCircularity("circularityIndex"),
+    eolClassBuilt: tEolBuilt("class"),
+    eolPointsBuilt: tEolBuilt("points"),
+    eolClassUnbuilt: tEolUnbuiltClass("class"),
+    eolPointsUnbuilt: tEolUnbuiltPoints("points"),
+    rebuildClass: tRebuild("rebuildClass"),
+    rebuildPoints: tRebuild("rebuildPoints"),
+    componentId: tFields("componentId"),
+    elementUuid: tComponents("uuid"),
+  }
 
   // Map products to get a list of elements with the required properties
   const mappedProducts = props.circularityData.flatMap((buildingComponent) =>
@@ -51,9 +83,7 @@ export default function MaterialCsvExport(props: MaterialCsvExportProps) {
       eolClassUnbuilt: layer.eolUnbuilt?.className ?? "",
       eolPointsUnbuilt: layer.eolUnbuilt?.points ?? 0,
       rebuildClass: layer.dismantlingPotentialClassId ? `Class ${layer.dismantlingPotentialClassId}` : "",
-
       rebuildPoints: layer.dismantlingPoints ?? 0,
-
       componentId: layer.component_id,
       elementUuid: layer.element_uuid,
     }))
@@ -63,11 +93,12 @@ export default function MaterialCsvExport(props: MaterialCsvExportProps) {
   const convertToCSV = (data: any[]) => {
     if (data.length === 0) return ""
 
-    // Get headers from the first object's keys
+    // Get headers from the first object's keys and translate them
     const headers = Object.keys(data[0])
+    const translatedHeaders = headers.map((header) => fieldTranslations[header] || header)
 
     // Create CSV header row
-    const headerRow = headers.join(",")
+    const headerRow = translatedHeaders.join(",")
 
     // Create CSV data rows
     const dataRows = data.map((item) =>

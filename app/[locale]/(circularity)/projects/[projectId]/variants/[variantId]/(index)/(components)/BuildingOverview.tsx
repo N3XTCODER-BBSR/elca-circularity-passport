@@ -67,7 +67,6 @@ const CircularityData: FC<{
         projectName={projectName}
         processCategories={processCategories}
         circularityData={circularityData}
-        margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
       />
     </>
   )
