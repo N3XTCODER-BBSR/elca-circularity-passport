@@ -149,6 +149,10 @@ const translationsGrpPlatformGeneric = {
         },
       },
     },
+    moduleByMaterialCategory: {
+      title: "By Material Category",
+      totalMass: "Total mass",
+    },
   },
   projectsPage: {
     yourProjects: "Your Projects",
