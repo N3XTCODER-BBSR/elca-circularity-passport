@@ -23,7 +23,7 @@ export type MaterialNode = {
   product_id: number
   name: string
   process_category_node_id: number
-  weight: number
+  volume: number
   circularityIndex: number
 }
 
@@ -49,7 +49,7 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
       name: layer.process_name,
       process_category_node_id: layer.process_category_node_id,
       // TODO (L): check whether this should actually fall back 'silently' to 0
-      weight: (layer.mass ?? 0) * (layer.quantity ?? 0) || 0, // if weight might be null, default to 0 or handle upstream
+      volume: (layer.volume ?? 0) * (layer.quantity ?? 0) || 0, // if volume might be null, default to 0 or handle upstream
       circularityIndex: layer.circularityIndex ?? 0,
     }))
   )
@@ -71,8 +71,8 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
       rootChartDataNode={chartData}
       leafClickHandler={leafClickHandler}
       title={t("title")}
-      labelTotalDimensionalValue={t("totalMass")}
-      unitNameTotalDimensionalValue={tUnits("Kg.short")}
+      labelTotalDimensionalValue={t("totalVolume")}
+      unitNameTotalDimensionalValue={tUnits("m3")}
     />
   )
 }

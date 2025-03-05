@@ -116,7 +116,7 @@ function buildProductGroupChildren(materials: MaterialNode[]): ChartDataInternal
 
 /**
  * Build leaf nodes for each unique component_uuid in a group of materials.
- * If the same component_uuid appears multiple times, we sum the weights
+ * If the same component_uuid appears multiple times, we sum the volumes
  * and compute a weighted-average of the circularityIndex.
  */
 function buildLeavesAggregatedByUuid(materials: MaterialNode[]): ChartDataLeaf[] {
@@ -125,23 +125,23 @@ function buildLeavesAggregatedByUuid(materials: MaterialNode[]): ChartDataLeaf[]
   const leaves: ChartDataLeaf[] = []
 
   for (const [uuid, items] of Array.from(groupedByUuid.entries())) {
-    // Sum total mass (dimensionalValue), weighted-sum for metricValue:
-    const { totalWeight, weightedMetric } = items.reduce(
-      (acc: { totalWeight: number; weightedMetric: number }, mat: MaterialNode) => {
-        acc.totalWeight += mat.weight
-        acc.weightedMetric += mat.circularityIndex * mat.weight
+    // Sum total volume (dimensionalValue), weighted-sum for metricValue:
+    const { totalVolume, weightedMetric } = items.reduce(
+      (acc: { totalVolume: number; weightedMetric: number }, mat: MaterialNode) => {
+        acc.totalVolume += mat.volume
+        acc.weightedMetric += mat.circularityIndex * mat.volume
         return acc
       },
-      { totalWeight: 0, weightedMetric: 0 }
+      { totalVolume: 0, weightedMetric: 0 }
     )
 
-    const finalMetric = totalWeight > 0 ? weightedMetric / totalWeight : 0
+    const finalMetric = totalVolume > 0 ? weightedMetric / totalVolume : 0
 
-    // Use the first matched item’s component_name for the label:
+    // Use the first matched item's component_name for the label:
     leaves.push({
       isLeaf: true,
       metricValue: finalMetric,
-      dimensionalValue: totalWeight,
+      dimensionalValue: totalVolume,
       label: items[0]?.component_name ?? `Component ${uuid}`,
       resourceId: uuid,
     })
@@ -180,16 +180,16 @@ function computeWeightedMetrics(node: ChartDataNode): void {
   }
 
   // Now aggregate:
-  let totalWeight = 0
+  let totalVolume = 0
   let weightedSum = 0
 
   for (const child of node.children) {
-    totalWeight += child.dimensionalValue
+    totalVolume += child.dimensionalValue
     weightedSum += child.metricValue * child.dimensionalValue
   }
 
-  node.dimensionalValue = totalWeight
-  node.metricValue = totalWeight > 0 ? weightedSum / totalWeight : 0
+  node.dimensionalValue = totalVolume
+  node.metricValue = totalVolume > 0 ? weightedSum / totalVolume : 0
 }
 
 /**

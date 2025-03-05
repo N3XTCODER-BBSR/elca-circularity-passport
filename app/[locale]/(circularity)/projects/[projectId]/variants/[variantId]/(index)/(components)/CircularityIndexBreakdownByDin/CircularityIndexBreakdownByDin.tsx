@@ -31,8 +31,8 @@ export default function CircularityIndexBreakdownByDin(props: CircularityIndexBr
       rootChartDataNode={chartData}
       leafClickHandler={exampleLeafClickHandler}
       title={t("title")}
-      labelTotalDimensionalValue={t("totalMass")}
-      unitNameTotalDimensionalValue={tUnits("Kg.short")}
+      labelTotalDimensionalValue={t("totalVolume")}
+      unitNameTotalDimensionalValue={tUnits("m3")}
     />
   )
 }

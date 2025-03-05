@@ -12,35 +12,35 @@ export const calculateTotalCircularityIndexForProject = (
   // all entries in circulartiyData
   //   and within each entry, summing the
   //     circularity index of each component
-  //     calculate the mass of each component
-  // At the end, divide the total circularity index by the total mass of the project
+  //     calculate the volume of each component
+  // At the end, divide the total circularity index by the total volume of the project
   // to get the total circularity index of the project
 
-  let circularityIndexTimesMassSumOverAllComponentLayers = 0
-  let totalMass = 0
+  let circularityIndexTimesVolumeSumOverAllComponentLayers = 0
+  let totalVolume = 0
 
   for (const component of circularityData) {
     for (const layer of component.layers) {
-      // Await the asynchronous function
-      const { mass } = layer
-      if (mass == null) {
+      // Get the volume
+      const { volume } = layer
+      if (volume == null) {
         continue
       }
 
-      // Accumulate total mass
-      totalMass += mass
+      // Accumulate total volume
+      totalVolume += volume
 
       // Only proceed if circularityIndex is not null
       if (layer.circularityIndex == null) {
         continue
       }
 
-      // Accumulate the product of circularityIndex and mass
-      circularityIndexTimesMassSumOverAllComponentLayers += layer.circularityIndex * mass
+      // Accumulate the product of circularityIndex and volume
+      circularityIndexTimesVolumeSumOverAllComponentLayers += layer.circularityIndex * volume
     }
   }
   // Calculate the total circularity index for the project
 
-  const totalCircularityIndexForProject = circularityIndexTimesMassSumOverAllComponentLayers / totalMass
+  const totalCircularityIndexForProject = circularityIndexTimesVolumeSumOverAllComponentLayers / totalVolume
   return totalCircularityIndexForProject
 }

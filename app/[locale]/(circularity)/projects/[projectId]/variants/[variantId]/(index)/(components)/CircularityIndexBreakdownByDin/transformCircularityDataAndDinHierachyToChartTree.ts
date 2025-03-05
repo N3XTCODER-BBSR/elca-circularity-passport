@@ -16,10 +16,10 @@ import { ChartDataInternalNode, ChartDataLeaf, ChartDataNode } from "./ChartAndB
  * **Steps**:
  * 1. Filter elements by cost group (e.g. only 330, 340, 350, etc.).
  * 2. Build a map from DIN code to an array of single **leaf** nodes, aggregating each element's
- *    layers into total mass & weighted-average circularity index.
+ *    layers into total volume & weighted-average circularity index.
  * 3. Recursively build internal nodes from the `din276Hierarchy` for group → category → type.
- * 4. Optionally skip the top-level root node if there’s only one child (for simpler UI).
- * 5. Recursively compute dimensionalValue (sum of children's mass) and metricValue (weighted avg).
+ * 4. Optionally skip the top-level root node if there's only one child (for simpler UI).
+ * 5. Recursively compute dimensionalValue (sum of children's volume) and metricValue (weighted avg).
  *
  * @param circularityData  A list of elements, each having one or more layers with circularity data
  * @param rootLabel        The label to give the top-level (root) node in the hierarchy
@@ -86,8 +86,8 @@ function filterDataByCostGroup(
  * Builds a map from DIN code → an array of *aggregated* leaf nodes, with exactly one leaf per element.
  *
  * We:
- * - Sum up all layer masses in an element.
- * - Compute a weighted average circularity index based on those masses.
+ * - Sum up all layer volumes in an element.
+ * - Compute a weighted average circularity index based on those volumes.
  *
  * @param data  List of elements to be aggregated
  * @returns     A Map where each DIN code points to a list of ChartDataLeaf nodes
@@ -102,17 +102,17 @@ function buildDinCodeToLeafNodesMap(
     // TODO: also check codebase for other instances of fallback values and check if they are valid
     const { din_code, element_name, element_uuid, quantity = 1 } = element
 
-    let totalMass = 0
+    let totalVolume = 0
     let weightedSumCI = 0
 
     for (const layer of element.layers) {
-      const mass = (layer.mass ?? 0) * quantity
+      const volume = (layer.volume ?? 0) * quantity
       const ci = layer.circularityIndex ?? 0
-      totalMass += mass
-      weightedSumCI += ci * mass
+      totalVolume += volume
+      weightedSumCI += ci * volume
     }
 
-    const avgCI = totalMass > 0 ? weightedSumCI / totalMass : 0
+    const avgCI = totalVolume > 0 ? weightedSumCI / totalVolume : 0
 
     // Create exactly one leaf for this element
     const leaf: ChartDataLeaf = {
@@ -120,7 +120,7 @@ function buildDinCodeToLeafNodesMap(
       label: element_name,
       resourceId: element_uuid,
       metricValue: avgCI,
-      dimensionalValue: totalMass,
+      dimensionalValue: totalVolume,
     }
 
     if (!map.has(din_code)) {
@@ -233,7 +233,7 @@ function computeWeightedMetrics(node: ChartDataNode): void {
     computeWeightedMetrics(child)
   }
 
-  // Then compute this node's dimensionalValue (mass sum) & metricValue (weighted average)
+  // Then compute this node's dimensionalValue (volume sum) & metricValue (weighted average)
   let totalWeight = 0
   let weightedSum = 0
 
