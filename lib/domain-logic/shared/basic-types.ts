@@ -17,3 +17,5 @@ export interface ActionResponse<T = unknown> {
   errorI18nKey?: ErrorI18nKey
   details?: unknown
 }
+
+export type DimensionalFieldName = "mass" | "volume"
