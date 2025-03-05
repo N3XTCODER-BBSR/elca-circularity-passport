@@ -9,6 +9,8 @@ import {
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { ChartDataInternalNode, ChartDataLeaf, ChartDataNode } from "./ChartAndBreadCrumbComponent"
 
+type DimensionalFieldName = "mass" | "volume"
+
 /**
  * Transforms a list of elements (with possible multiple layers each) into a hierarchical
  * chart data structure aligned with the DIN 276 hierarchy.
@@ -16,10 +18,10 @@ import { ChartDataInternalNode, ChartDataLeaf, ChartDataNode } from "./ChartAndB
  * **Steps**:
  * 1. Filter elements by cost group (e.g. only 330, 340, 350, etc.).
  * 2. Build a map from DIN code to an array of single **leaf** nodes, aggregating each element's
- *    layers into total volume & weighted-average circularity index.
+ *    layers into total volume/mass & weighted-average circularity index.
  * 3. Recursively build internal nodes from the `din276Hierarchy` for group → category → type.
  * 4. Optionally skip the top-level root node if there's only one child (for simpler UI).
- * 5. Recursively compute dimensionalValue (sum of children's volume) and metricValue (weighted avg).
+ * 5. Recursively compute dimensionalValue (sum of children's volume/mass) and metricValue (weighted avg).
  *
  * @param circularityData  A list of elements, each having one or more layers with circularity data
  * @param rootLabel        The label to give the top-level (root) node in the hierarchy
@@ -28,6 +30,7 @@ import { ChartDataInternalNode, ChartDataLeaf, ChartDataNode } from "./ChartAndB
  */
 export function transformCircularityDataAndDinHierachyToChartTree(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
+  dimensionalFieldName: DimensionalFieldName,
   rootLabel: string,
   skipRootNode = true
 ): ChartDataNode {
@@ -35,7 +38,7 @@ export function transformCircularityDataAndDinHierachyToChartTree(
   const filteredData = filterDataByCostGroup(circularityData)
 
   // 2. Build a map: DIN code -> array of single-leaf nodes (aggregated per element)
-  const dinCodeToLeaves = buildDinCodeToLeafNodesMap(filteredData)
+  const dinCodeToLeaves = buildDinCodeToLeafNodesMap(filteredData, dimensionalFieldName)
 
   // 3. Build the hierarchy from `din276Hierarchy`
   const children = din276Hierarchy
@@ -86,14 +89,15 @@ function filterDataByCostGroup(
  * Builds a map from DIN code → an array of *aggregated* leaf nodes, with exactly one leaf per element.
  *
  * We:
- * - Sum up all layer volumes in an element.
- * - Compute a weighted average circularity index based on those volumes.
+ * - Sum up all layer volumes or mass (depending on the value of dimensionalFieldName) in an element.
+ * - Compute a weighted average circularity index based on those volumes/masses.
  *
  * @param data  List of elements to be aggregated
  * @returns     A Map where each DIN code points to a list of ChartDataLeaf nodes
  */
 function buildDinCodeToLeafNodesMap(
-  data: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
+  data: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
+  dimensionalFieldName: DimensionalFieldName
 ): Map<number, ChartDataLeaf[]> {
   const map = new Map<number, ChartDataLeaf[]>()
 
@@ -102,17 +106,17 @@ function buildDinCodeToLeafNodesMap(
     // TODO: also check codebase for other instances of fallback values and check if they are valid
     const { din_code, element_name, element_uuid, quantity = 1 } = element
 
-    let totalVolume = 0
+    let totalDimensionalValue = 0
     let weightedSumCI = 0
 
     for (const layer of element.layers) {
-      const volume = (layer.volume ?? 0) * quantity
+      const dimensionalValue = (layer[dimensionalFieldName] ?? 0) * quantity
       const ci = layer.circularityIndex ?? 0
-      totalVolume += volume
-      weightedSumCI += ci * volume
+      totalDimensionalValue += dimensionalValue
+      weightedSumCI += ci * dimensionalValue
     }
 
-    const avgCI = totalVolume > 0 ? weightedSumCI / totalVolume : 0
+    const avgCI = totalDimensionalValue > 0 ? weightedSumCI / totalDimensionalValue : 0
 
     // Create exactly one leaf for this element
     const leaf: ChartDataLeaf = {
@@ -120,7 +124,7 @@ function buildDinCodeToLeafNodesMap(
       label: element_name,
       resourceId: element_uuid,
       metricValue: avgCI,
-      dimensionalValue: totalVolume,
+      dimensionalValue: totalDimensionalValue,
     }
 
     if (!map.has(din_code)) {
@@ -233,7 +237,7 @@ function computeWeightedMetrics(node: ChartDataNode): void {
     computeWeightedMetrics(child)
   }
 
-  // Then compute this node's dimensionalValue (volume sum) & metricValue (weighted average)
+  // Then compute this node's dimensionalValue (volume/mass sum) & metricValue (weighted average)
   let totalWeight = 0
   let weightedSum = 0
 

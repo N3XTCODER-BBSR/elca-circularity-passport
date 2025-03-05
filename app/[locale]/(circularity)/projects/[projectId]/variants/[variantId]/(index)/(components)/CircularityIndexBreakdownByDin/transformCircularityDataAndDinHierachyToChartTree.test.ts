@@ -113,7 +113,12 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
   test("skipRootNode=true flattens single top-level node", () => {
     // Filter so we only have DIN code 341 (Tragende Innenwände)
     const singleCategoryData = circularityData.filter((d) => d.din_code === 341)
-    const root = transformCircularityDataAndDinHierachyToChartTree(singleCategoryData, "Single Category Project", true)
+    const root = transformCircularityDataAndDinHierachyToChartTree(
+      singleCategoryData,
+      "mass",
+      "Single Category Project",
+      true
+    )
     expect(root.label).toBe("Single Category Project")
     expect(root.isLeaf).toBe(false)
     const children = (root as ChartDataInternalNode).children
