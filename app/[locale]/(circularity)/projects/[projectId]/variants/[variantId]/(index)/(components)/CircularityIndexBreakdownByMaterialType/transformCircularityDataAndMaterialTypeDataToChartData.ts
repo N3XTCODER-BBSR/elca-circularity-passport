@@ -1,3 +1,4 @@
+import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
 import { MaterialNode, ProcessCategory } from "./CircularityIndexBreakdownByMaterialType"
 import {
   ChartDataInternalNode,
@@ -27,6 +28,7 @@ type CategoryTreeNode = {
 export function transformCircularityDataAndMaterialTypesToChartData(
   processCategories: ProcessCategory[],
   products: MaterialNode[],
+  dimensionalFieldName: DimensionalFieldName,
   rootLabel: string,
   skipRootNode: boolean
 ): ChartDataNode {
@@ -39,7 +41,9 @@ export function transformCircularityDataAndMaterialTypesToChartData(
     label: rootLabel,
     metricValue: 0,
     dimensionalValue: 0,
-    children: categoryTree.map(toChartDataNode).filter((n): n is ChartDataInternalNode => n !== null),
+    children: categoryTree
+      .map((categoryTreeNode) => toChartDataNode(categoryTreeNode, dimensionalFieldName))
+      .filter((n): n is ChartDataInternalNode => n !== null),
   }
 
   // If skipRootNode is true and there's exactly one top-level node and it's internal, flatten it:
@@ -58,14 +62,17 @@ export function transformCircularityDataAndMaterialTypesToChartData(
 /**
  * Convert a CategoryTreeNode into a ChartDataNode (internal or null).
  */
-function toChartDataNode(node: CategoryTreeNode): ChartDataInternalNode | null {
+function toChartDataNode(
+  node: CategoryTreeNode,
+  dimensionalFieldName: DimensionalFieldName
+): ChartDataInternalNode | null {
   // Recursively map subcategories into ChartDataNodes:
   const childCategoryNodes = node.subcategories
-    .map(toChartDataNode)
+    .map((subCat) => toChartDataNode(subCat, dimensionalFieldName))
     .filter((n): n is ChartDataInternalNode => n !== null)
 
   // Build intermediate "product-group" nodes from node.materials:
-  const productGroupChildren = buildProductGroupChildren(node.materials)
+  const productGroupChildren = buildProductGroupChildren(node.materials, dimensionalFieldName)
 
   // Combine subcategory children with these product-group children:
   const allChildren = [...childCategoryNodes, ...productGroupChildren]
@@ -89,14 +96,17 @@ function toChartDataNode(node: CategoryTreeNode): ChartDataInternalNode | null {
  * Create internal nodes grouping materials by some key (e.g., 'name' or 'product_id').
  * Each group becomes an internal node, which then has leaves aggregated by component_uuid.
  */
-function buildProductGroupChildren(materials: MaterialNode[]): ChartDataInternalNode[] {
+function buildProductGroupChildren(
+  materials: MaterialNode[],
+  dimensionalFieldName: DimensionalFieldName
+): ChartDataInternalNode[] {
   const groupedByName = groupBy(materials, (m) => m.name)
 
   const productGroups: ChartDataInternalNode[] = []
 
   for (const [materialName, itemsInThisGroup] of Array.from(groupedByName.entries())) {
     // For each group, build leaves aggregated by component_uuid:
-    const leafChildren = buildLeavesAggregatedByUuid(itemsInThisGroup)
+    const leafChildren = buildLeavesAggregatedByUuid(itemsInThisGroup, dimensionalFieldName)
 
     if (leafChildren.length === 0) {
       continue
@@ -116,32 +126,35 @@ function buildProductGroupChildren(materials: MaterialNode[]): ChartDataInternal
 
 /**
  * Build leaf nodes for each unique component_uuid in a group of materials.
- * If the same component_uuid appears multiple times, we sum the volumes
+ * If the same component_uuid appears multiple times, we sum the volumes/masses
  * and compute a weighted-average of the circularityIndex.
  */
-function buildLeavesAggregatedByUuid(materials: MaterialNode[]): ChartDataLeaf[] {
+function buildLeavesAggregatedByUuid(
+  materials: MaterialNode[],
+  dimensionalFieldName: DimensionalFieldName
+): ChartDataLeaf[] {
   const groupedByUuid = groupBy(materials, (m) => m.component_uuid)
 
   const leaves: ChartDataLeaf[] = []
 
   for (const [uuid, items] of Array.from(groupedByUuid.entries())) {
-    // Sum total volume (dimensionalValue), weighted-sum for metricValue:
-    const { totalVolume, weightedMetric } = items.reduce(
-      (acc: { totalVolume: number; weightedMetric: number }, mat: MaterialNode) => {
-        acc.totalVolume += mat.volume
-        acc.weightedMetric += mat.circularityIndex * mat.volume
+    // Sum total volume/mass (dimensionalValue), weighted-sum for metricValue:
+    const { totalDimensionalValue, weightedMetric } = items.reduce(
+      (acc: { totalDimensionalValue: number; weightedMetric: number }, mat: MaterialNode) => {
+        acc.totalDimensionalValue += mat[dimensionalFieldName]
+        acc.weightedMetric += mat.circularityIndex * mat[dimensionalFieldName]
         return acc
       },
-      { totalVolume: 0, weightedMetric: 0 }
+      { totalDimensionalValue: 0, weightedMetric: 0 }
     )
 
-    const finalMetric = totalVolume > 0 ? weightedMetric / totalVolume : 0
+    const finalMetric = totalDimensionalValue > 0 ? weightedMetric / totalDimensionalValue : 0
 
     // Use the first matched item's component_name for the label:
     leaves.push({
       isLeaf: true,
       metricValue: finalMetric,
-      dimensionalValue: totalVolume,
+      dimensionalValue: totalDimensionalValue,
       label: items[0]?.component_name ?? `Component ${uuid}`,
       resourceId: uuid,
     })
@@ -180,16 +193,16 @@ function computeWeightedMetrics(node: ChartDataNode): void {
   }
 
   // Now aggregate:
-  let totalVolume = 0
+  let totalDimensionalValue = 0
   let weightedSum = 0
 
   for (const child of node.children) {
-    totalVolume += child.dimensionalValue
+    totalDimensionalValue += child.dimensionalValue
     weightedSum += child.metricValue * child.dimensionalValue
   }
 
-  node.dimensionalValue = totalVolume
-  node.metricValue = totalVolume > 0 ? weightedSum / totalVolume : 0
+  node.dimensionalValue = totalDimensionalValue
+  node.metricValue = totalDimensionalValue > 0 ? weightedSum / totalDimensionalValue : 0
 }
 
 /**

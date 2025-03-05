@@ -24,6 +24,7 @@ export type MaterialNode = {
   name: string
   process_category_node_id: number
   volume: number
+  mass: number
   circularityIndex: number
 }
 
@@ -50,6 +51,7 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
       process_category_node_id: layer.process_category_node_id,
       // TODO (L): check whether this should actually fall back 'silently' to 0
       volume: (layer.volume ?? 0) * (layer.quantity ?? 0) || 0, // if volume might be null, default to 0 or handle upstream
+      mass: (layer.mass ?? 0) * (layer.quantity ?? 0) || 0, // if mass might be null, default to 0 or handle upstream
       circularityIndex: layer.circularityIndex ?? 0,
     }))
   )
@@ -62,6 +64,7 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
   const chartData: ChartDataNode = transformCircularityDataAndMaterialTypesToChartData(
     props.processCategories,
     products,
+    "volume",
     props.projectName,
     true
   )

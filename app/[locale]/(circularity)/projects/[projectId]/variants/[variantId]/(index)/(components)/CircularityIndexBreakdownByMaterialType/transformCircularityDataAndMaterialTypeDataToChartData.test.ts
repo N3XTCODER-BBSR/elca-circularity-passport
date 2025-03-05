@@ -33,7 +33,13 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     const processCategories: ProcessCategory[] = []
     const products: MaterialNode[] = []
 
-    const result = transformCircularityDataAndMaterialTypesToChartData(processCategories, products, "Root", false)
+    const result = transformCircularityDataAndMaterialTypesToChartData(
+      processCategories,
+      products,
+      "mass",
+      "Root",
+      false
+    )
 
     expect(result.label).toBe("Root")
     expect(result.isLeaf).toBe(false)
@@ -47,7 +53,13 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     const processCategories: ProcessCategory[] = [createProcessCategory(614, "Bindemittel", "1")]
     const products: MaterialNode[] = [createMaterialNode("uuid-1", "Comp: 1", 101, "Cement Product", 614, 100, 0.8)]
 
-    const result = transformCircularityDataAndMaterialTypesToChartData(processCategories, products, "Root", false)
+    const result = transformCircularityDataAndMaterialTypesToChartData(
+      processCategories,
+      products,
+      "mass",
+      "Root",
+      false
+    )
 
     // Root node checks
     expect(result.label).toBe("Root")
@@ -102,7 +114,13 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       createMaterialNode("uuid-4", "Comp: 4", 104, "Steel Beam B", 646, 80, 0.6),
     ]
 
-    const result = transformCircularityDataAndMaterialTypesToChartData(processCategories, products, "Root", false)
+    const result = transformCircularityDataAndMaterialTypesToChartData(
+      processCategories,
+      products,
+      "mass",
+      "Root",
+      false
+    )
     expect(result.isLeaf).toBe(false)
 
     const rootChildren = (result as ChartDataInternalNode).children
@@ -224,6 +242,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     const result = transformCircularityDataAndMaterialTypesToChartData(
       processCategories,
       products,
+      "mass",
       "Artificial Root",
       true
     )
@@ -264,6 +283,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     const result = transformCircularityDataAndMaterialTypesToChartData(
       processCategories,
       products,
+      "mass",
       "Artificial Root",
       true
     )
@@ -282,7 +302,13 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     const processCategories: ProcessCategory[] = [createProcessCategory(640, "Wärmedämmverbundsystem", "1")]
     const products: MaterialNode[] = []
 
-    const result = transformCircularityDataAndMaterialTypesToChartData(processCategories, products, "Root", false)
+    const result = transformCircularityDataAndMaterialTypesToChartData(
+      processCategories,
+      products,
+      "mass",
+      "Root",
+      false
+    )
     // Since the category has no products, it won't appear as a child
     expect((result as ChartDataInternalNode).children.length).toBe(0)
   })
@@ -299,7 +325,13 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       createMaterialNode("uuid-specialsteel", "Comp: specialsteel", 9999, "Special Steel Product", 999, 30, 0.85),
     ]
 
-    const result = transformCircularityDataAndMaterialTypesToChartData(processCategories, products, "Root", false)
+    const result = transformCircularityDataAndMaterialTypesToChartData(
+      processCategories,
+      products,
+      "mass",
+      "Root",
+      false
+    )
 
     // Root -> Metalle(4) -> Stahl und Eisen(4.01) -> Spezialstahl(4.01.1)
     const rootChildren = (result as ChartDataInternalNode).children
