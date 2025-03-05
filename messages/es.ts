@@ -426,11 +426,17 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
         },
         moduleByCostGroup: {
           title: "Por Grupo de Costos (DIN 276)",
-          totalMass: "Masa Total",
+          totalDimensionValue: {
+            mass: "Masa Total",
+            volume: "Volumen Total",
+          },
         },
         moduleByMaterialCategory: {
           title: "Por Categoría de Material",
-          totalMass: "Masa Total",
+          totalDimensionValue: {
+            mass: "Masa Total",
+            volume: "Volumen Total",
+          },
         },
       },
       catalog: {

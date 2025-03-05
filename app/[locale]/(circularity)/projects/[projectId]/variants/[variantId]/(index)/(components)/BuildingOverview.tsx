@@ -40,7 +40,11 @@ const CircularityData: FC<{
   projectName: string
   catalogPath: string
 }> = async ({ circularityData, catalogPath, projectName }) => {
-  const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(circularityData, "volume")
+  const dimensionalFieldName = "volume"
+  const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(
+    circularityData,
+    dimensionalFieldName
+  )
 
   const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
 
@@ -50,11 +54,13 @@ const CircularityData: FC<{
         <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
       </div>
       <CircularityIndexBreakdownByDin
+        dimensionalFieldName={dimensionalFieldName}
         circularityData={circularityData}
         projectName={projectName}
         catalogPath={catalogPath}
       />
       <CircularityIndexBreakdownByMaterialType
+        dimensionalFieldName={dimensionalFieldName}
         catalogPath={catalogPath}
         projectName={projectName}
         processCategories={processCategories}

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import React from "react"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { transformCircularityDataAndMaterialTypesToChartData } from "./transformCircularityDataAndMaterialTypeDataToChartData"
 import {
@@ -31,6 +32,7 @@ export type MaterialNode = {
 type CircularityIndexBreakdownByMaterialTypeProps = {
   catalogPath: string
   projectName: string
+  dimensionalFieldName: DimensionalFieldName
   processCategories: ProcessCategory[]
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   margin: { top: number; right: number; bottom: number; left: number }
@@ -64,18 +66,21 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
   const chartData: ChartDataNode = transformCircularityDataAndMaterialTypesToChartData(
     props.processCategories,
     products,
-    "volume",
+    props.dimensionalFieldName,
     props.projectName,
     true
   )
 
   return (
-    <ChartAndBreadCrumbComponent
-      rootChartDataNode={chartData}
-      leafClickHandler={leafClickHandler}
-      title={t("title")}
-      labelTotalDimensionalValue={t("totalVolume")}
-      unitNameTotalDimensionalValue={tUnits("m3")}
-    />
+    <>
+      FOO-tUnits(m3)-BAR: {tUnits("m3")}
+      <ChartAndBreadCrumbComponent
+        rootChartDataNode={chartData}
+        leafClickHandler={leafClickHandler}
+        title={t("title")}
+        labelTotalDimensionalValue={t(`totalDimensionValue.${props.dimensionalFieldName}`)}
+        unitNameTotalDimensionalValue={tUnits("m3")}
+      />
+    </>
   )
 }

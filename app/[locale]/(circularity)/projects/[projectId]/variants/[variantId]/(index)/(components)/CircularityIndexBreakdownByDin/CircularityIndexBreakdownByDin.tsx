@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import React from "react"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { ChartAndBreadCrumbComponent } from "./ChartAndBreadCrumbComponent"
 import { transformCircularityDataAndDinHierachyToChartTree } from "./transformCircularityDataAndDinHierachyToChartTree"
@@ -13,6 +14,7 @@ type CircularityIndexBreakdownByDin = {
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   projectName: string
   catalogPath: string
+  dimensionalFieldName: DimensionalFieldName
 }
 
 export default function CircularityIndexBreakdownByDin(props: CircularityIndexBreakdownByDin) {
@@ -26,7 +28,7 @@ export default function CircularityIndexBreakdownByDin(props: CircularityIndexBr
   }
   const chartData = transformCircularityDataAndDinHierachyToChartTree(
     props.circularityData,
-    "volume",
+    props.dimensionalFieldName,
     props.projectName
   )
 
@@ -35,7 +37,7 @@ export default function CircularityIndexBreakdownByDin(props: CircularityIndexBr
       rootChartDataNode={chartData}
       leafClickHandler={exampleLeafClickHandler}
       title={t("title")}
-      labelTotalDimensionalValue={t("totalVolume")}
+      labelTotalDimensionalValue={t(`totalDimensionValue.${props.dimensionalFieldName}`)}
       unitNameTotalDimensionalValue={tUnits("m3")}
     />
   )
