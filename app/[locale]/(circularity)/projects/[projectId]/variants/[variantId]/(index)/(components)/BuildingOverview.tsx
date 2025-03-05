@@ -40,7 +40,7 @@ const CircularityData: FC<{
   projectName: string
   catalogPath: string
 }> = async ({ circularityData, catalogPath, projectName }) => {
-  const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(circularityData)
+  const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(circularityData, "volume")
 
   const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
 

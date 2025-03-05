@@ -24,7 +24,11 @@ export default function CircularityIndexBreakdownByDin(props: CircularityIndexBr
     const detailLink = `${props.catalogPath}/components/${resourceId}`
     if (detailLink) router.push(detailLink)
   }
-  const chartData = transformCircularityDataAndDinHierachyToChartTree(props.circularityData, "mass", props.projectName)
+  const chartData = transformCircularityDataAndDinHierachyToChartTree(
+    props.circularityData,
+    "volume",
+    props.projectName
+  )
 
   return (
     <ChartAndBreadCrumbComponent
