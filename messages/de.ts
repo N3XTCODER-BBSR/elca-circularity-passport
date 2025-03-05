@@ -456,6 +456,10 @@ const translationsPlattformGeneric = {
       short: "t",
       long: "Tonnen",
     },
+    M3: {
+      short: "m3",
+      long: "Kubikmeter",
+    },
     KgCo2Eq: {
       short: "kg Co2eq",
     },

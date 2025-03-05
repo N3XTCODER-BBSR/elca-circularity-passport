@@ -6,6 +6,7 @@ import { NoComponentsMessage } from "app/(components)/NoComponentsMessage"
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { calculateTotalCircularityIndexForProject } from "lib/domain-logic/circularity/utils/calculateTotalCircularityIndex"
+import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
@@ -39,8 +40,8 @@ const CircularityData: FC<{
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   projectName: string
   catalogPath: string
-}> = async ({ circularityData, catalogPath, projectName }) => {
-  const dimensionalFieldName = "volume"
+  dimensionalFieldName: DimensionalFieldName
+}> = async ({ circularityData, catalogPath, projectName, dimensionalFieldName }) => {
   const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(
     circularityData,
     dimensionalFieldName
@@ -78,6 +79,7 @@ type BuildingOverviewProps = {
 }
 
 const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingOverviewProps) => {
+  const dimensionalFieldName: DimensionalFieldName = "volume"
   const circularityData = await getProjectCircularityIndexData(variantId, projectId)
 
   const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
@@ -96,7 +98,14 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
     if (isCircularityIndexMissingForAnyProduct) {
       return <MissingCircularityIndexDataMessage catalogPath={catalogPath} />
     }
-    return <CircularityData circularityData={circularityData} projectName={projectName} catalogPath={catalogPath} />
+    return (
+      <CircularityData
+        circularityData={circularityData}
+        projectName={projectName}
+        catalogPath={catalogPath}
+        dimensionalFieldName={dimensionalFieldName}
+      />
+    )
   }
 
   return (

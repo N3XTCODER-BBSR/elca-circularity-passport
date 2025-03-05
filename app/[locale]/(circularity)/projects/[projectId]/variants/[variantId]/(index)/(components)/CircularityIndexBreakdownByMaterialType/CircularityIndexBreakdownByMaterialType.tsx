@@ -72,15 +72,12 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
   )
 
   return (
-    <>
-      FOO-tUnits(m3)-BAR: {tUnits("m3")}
-      <ChartAndBreadCrumbComponent
-        rootChartDataNode={chartData}
-        leafClickHandler={leafClickHandler}
-        title={t("title")}
-        labelTotalDimensionalValue={t(`totalDimensionValue.${props.dimensionalFieldName}`)}
-        unitNameTotalDimensionalValue={tUnits("m3")}
-      />
-    </>
+    <ChartAndBreadCrumbComponent
+      rootChartDataNode={chartData}
+      leafClickHandler={leafClickHandler}
+      title={t("title")}
+      labelTotalDimensionalValue={t(`totalDimensionValue.${props.dimensionalFieldName}`)}
+      unitNameTotalDimensionalValue={tUnits(`${props.dimensionalFieldName === "mass" ? "Kg" : "M3"}.short`)}
+    />
   )
 }

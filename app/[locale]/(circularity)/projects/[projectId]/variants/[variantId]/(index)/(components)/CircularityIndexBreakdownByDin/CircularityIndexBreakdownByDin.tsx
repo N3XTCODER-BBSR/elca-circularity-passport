@@ -38,7 +38,7 @@ export default function CircularityIndexBreakdownByDin(props: CircularityIndexBr
       leafClickHandler={exampleLeafClickHandler}
       title={t("title")}
       labelTotalDimensionalValue={t(`totalDimensionValue.${props.dimensionalFieldName}`)}
-      unitNameTotalDimensionalValue={tUnits("m3")}
+      unitNameTotalDimensionalValue={tUnits(`${props.dimensionalFieldName === "mass" ? "Kg" : "M3"}.short`)}
     />
   )
 }
