@@ -6,10 +6,9 @@ import {
   costGroupCategoryNumbersToInclude,
   din276Hierarchy,
 } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
-import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
+import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { ChartDataInternalNode, ChartDataLeaf, ChartDataNode } from "./ChartAndBreadCrumbComponent"
-import { MetricType } from "./CircularityIndexBreakdownByDin"
 
 /**
  * Transforms a list of elements (with possible multiple layers each) into a hierarchical
@@ -32,7 +31,7 @@ export function transformCircularityDataAndDinHierachyToChartTree(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
   dimensionalFieldName: DimensionalFieldName,
   rootLabel: string,
-  metricType: MetricType = "circularityIndex",
+  metricType: MetricType,
   skipRootNode = true
 ): ChartDataNode {
   // 1. Filter data by cost group

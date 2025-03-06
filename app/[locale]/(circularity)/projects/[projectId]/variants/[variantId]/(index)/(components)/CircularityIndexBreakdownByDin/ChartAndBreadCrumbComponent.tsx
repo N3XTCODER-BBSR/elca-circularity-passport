@@ -4,7 +4,7 @@ import { ResponsiveBar } from "@nivo/bar"
 import { useFormatter } from "next-intl"
 import React, { useState } from "react"
 import { circularityBarCharColorMapping } from "constants/styleConstants"
-import { MetricType } from "./CircularityIndexBreakdownByDin"
+import { MetricType } from "lib/domain-logic/shared/basic-types"
 
 export type ChartDataLeaf = {
   isLeaf: true

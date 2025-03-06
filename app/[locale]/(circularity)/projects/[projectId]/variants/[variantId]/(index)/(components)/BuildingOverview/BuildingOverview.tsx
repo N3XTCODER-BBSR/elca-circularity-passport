@@ -9,16 +9,14 @@ import {
   calculateTotalMetricValuesForProject,
   ProjectMetricValues,
 } from "lib/domain-logic/circularity/utils/calculateTotalMetricValues"
-import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
+import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
-import CircularityIndexBreakdownByDin, {
-  MetricType,
-} from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
 import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
-} from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
-import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
+} from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
+import CircularityIndexTotalNumber from "../CircularityIndexTotalNumber"
+import CircularityIndexBreakdownByDin from "../CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
 
 const MissingCircularityIndexDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) => {
   const t = await getTranslations("CircularityTool.sections.overview")

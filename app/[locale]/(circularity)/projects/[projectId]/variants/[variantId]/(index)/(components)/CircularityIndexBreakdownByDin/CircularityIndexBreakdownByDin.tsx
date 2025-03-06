@@ -4,12 +4,10 @@ import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import React from "react"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
+import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { ChartAndBreadCrumbComponent } from "./ChartAndBreadCrumbComponent"
 import { transformCircularityDataAndDinHierachyToChartTree } from "./transformCircularityDataAndDinHierachyToChartTree"
-
-export type MetricType = "circularityIndex" | "eolBuiltPoints" | "dismantlingPoints"
 
 type CircularityIndexBreakdownByDinProps = {
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]

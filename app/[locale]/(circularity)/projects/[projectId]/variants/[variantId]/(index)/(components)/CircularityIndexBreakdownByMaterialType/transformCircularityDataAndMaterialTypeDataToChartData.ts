@@ -1,11 +1,10 @@
-import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
+import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
 import { MaterialNode, ProcessCategory } from "./CircularityIndexBreakdownByMaterialType"
 import {
   ChartDataInternalNode,
   ChartDataLeaf,
   ChartDataNode,
 } from "../CircularityIndexBreakdownByDin/ChartAndBreadCrumbComponent"
-import { MetricType } from "../CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
 
 // Internal structure that mimics what buildTree returned:
 type CategoryTreeNode = {
