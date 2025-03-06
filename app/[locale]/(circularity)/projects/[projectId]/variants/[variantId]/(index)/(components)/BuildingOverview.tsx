@@ -12,6 +12,7 @@ import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/Cir
 import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
 } from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
+import MaterialCsvExport from "./CircularityIndexBreakdownByMaterialType/MaterialCsvExport/MaterialCsvExport"
 import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
 
 const MissingCircularityIndexDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) => {
@@ -39,10 +40,9 @@ const CircularityData: FC<{
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   projectName: string
   catalogPath: string
-}> = async ({ circularityData, catalogPath, projectName }) => {
+  processCategories: ProcessCategory[]
+}> = async ({ circularityData, catalogPath, projectName, processCategories }) => {
   const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(circularityData)
-
-  const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
 
   return (
     <>
@@ -73,6 +73,7 @@ type BuildingOverviewProps = {
 
 const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingOverviewProps) => {
   const circularityData = await getProjectCircularityIndexData(variantId, projectId)
+  const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
 
   const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
     component.layers.some((layer) => layer.circularityIndex == null)
@@ -90,7 +91,14 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
     if (isCircularityIndexMissingForAnyProduct) {
       return <MissingCircularityIndexDataMessage catalogPath={catalogPath} />
     }
-    return <CircularityData circularityData={circularityData} projectName={projectName} catalogPath={catalogPath} />
+    return (
+      <CircularityData
+        circularityData={circularityData}
+        projectName={projectName}
+        catalogPath={catalogPath}
+        processCategories={processCategories}
+      />
+    )
   }
 
   return (
@@ -100,6 +108,12 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
           <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
             {t("title")}
           </h1>
+          <MaterialCsvExport
+            catalogPath={catalogPath}
+            projectName={projectName}
+            processCategories={processCategories}
+            circularityData={circularityData}
+          />
         </div>
         <h2 className="max-w-[50%]">
           <span className="text-2xl">{projectName}</span>

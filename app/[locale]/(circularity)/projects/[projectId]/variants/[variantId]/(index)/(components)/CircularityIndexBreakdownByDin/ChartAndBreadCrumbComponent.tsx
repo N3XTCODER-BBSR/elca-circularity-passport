@@ -29,7 +29,6 @@ export type ChartAndBreadCrumbComponentProps = {
   title: string
   labelTotalDimensionalValue: string
   unitNameTotalDimensionalValue: string
-  actionElement?: React.ReactNode
 }
 
 function standardAxisProps() {
@@ -68,7 +67,6 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
   title,
   labelTotalDimensionalValue,
   unitNameTotalDimensionalValue,
-  actionElement,
 }) => {
   const [path, setPath] = useState<ChartDataNode[]>([rootChartDataNode])
   const format = useFormatter()
@@ -118,7 +116,6 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
     <div className="mx-8 my-24 h-[370px]">
       <div className="flex flex-col items-center">
         <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400">{title}</h2>
-        {actionElement && <div className="my-4">{actionElement}</div>}
         <div className="mt-2">
           {`${labelTotalDimensionalValue}: `}
           {format.number(currentNode.dimensionalValue, { maximumFractionDigits: 2 })} {unitNameTotalDimensionalValue}
