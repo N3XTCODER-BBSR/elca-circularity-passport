@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl"
 import React from "react"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import MaterialCsvExport from "./MaterialCsvExport/MaterialCsvExport"
 import { transformCircularityDataAndMaterialTypesToChartData } from "./transformCircularityDataAndMaterialTypeDataToChartData"
 import {
   ChartAndBreadCrumbComponent,
@@ -67,12 +68,22 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
   )
 
   return (
-    <ChartAndBreadCrumbComponent
-      rootChartDataNode={chartData}
-      leafClickHandler={leafClickHandler}
-      title={t("title")}
-      labelTotalDimensionalValue={t("totalMass")}
-      unitNameTotalDimensionalValue={tUnits("Kg.short")}
-    />
+    <div>
+      <ChartAndBreadCrumbComponent
+        rootChartDataNode={chartData}
+        leafClickHandler={leafClickHandler}
+        title={t("title")}
+        labelTotalDimensionalValue={t("totalMass")}
+        unitNameTotalDimensionalValue={tUnits("Kg.short")}
+        actionElement={
+          <MaterialCsvExport
+            catalogPath={props.catalogPath}
+            projectName={props.projectName}
+            processCategories={props.processCategories}
+            circularityData={props.circularityData}
+          />
+        }
+      />
+    </div>
   )
 }

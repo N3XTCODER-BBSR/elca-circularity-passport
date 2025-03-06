@@ -13,7 +13,6 @@ import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
 } from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
 import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
-import MaterialCsvExport from "./MaterialCsvExport/MaterialCsvExport"
 
 const MissingCircularityIndexDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) => {
   const t = await getTranslations("CircularityTool.sections.overview")
@@ -61,12 +60,6 @@ const CircularityData: FC<{
         processCategories={processCategories}
         circularityData={circularityData}
         margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
-      />
-      <MaterialCsvExport
-        catalogPath={catalogPath}
-        projectName={projectName}
-        processCategories={processCategories}
-        circularityData={circularityData}
       />
     </>
   )
