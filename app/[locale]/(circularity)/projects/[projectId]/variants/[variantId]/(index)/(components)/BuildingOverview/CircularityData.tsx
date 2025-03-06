@@ -1,5 +1,5 @@
 "use client"
-import { FC } from "react"
+import { FC, useState } from "react"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import {
   calculateTotalMetricValuesForProject,
@@ -13,6 +13,7 @@ import CircularityIndexBreakdownByMaterialType, {
 } from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
 import CircularityIndexTotalNumber from "../CircularityIndexTotalNumber"
 import CircularityIndexBreakdownByDin from "../CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
+import MetricSelector from "./MetricSelector"
 
 const CircularityData: FC<{
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
@@ -20,20 +21,29 @@ const CircularityData: FC<{
   catalogPath: string
   dimensionalFieldName: DimensionalFieldName
   processCategories: ProcessCategory[]
-}> = async ({ circularityData, catalogPath, projectName, dimensionalFieldName, processCategories }) => {
+}> = ({ circularityData, catalogPath, projectName, dimensionalFieldName, processCategories }) => {
+  // Use state to manage the selected metric type
+  const [selectedMetricType, setSelectedMetricType] = useState<MetricType>("eolBuiltPoints")
+
   const totalMetricValues: ProjectMetricValues = calculateTotalMetricValuesForProject(
     circularityData,
     dimensionalFieldName
   )
 
-  // This would typically come from user selection or URL params
-  const selectedMetricType: MetricType = "eolBuiltPoints"
+  // Handle metric type change from the selector
+  const handleMetricTypeChange = (metricType: MetricType) => {
+    setSelectedMetricType(metricType)
+  }
 
   return (
     <>
+      {/* Add the MetricSelector component */}
+      <MetricSelector selectedMetricType={selectedMetricType} onMetricTypeChange={handleMetricTypeChange} />
+
       <div>
         <CircularityIndexTotalNumber circularityIndexPoints={totalMetricValues[selectedMetricType]} />
       </div>
+
       <CircularityIndexBreakdownByDin
         dimensionalFieldName={dimensionalFieldName}
         circularityData={circularityData}
@@ -41,6 +51,7 @@ const CircularityData: FC<{
         catalogPath={catalogPath}
         metricType={selectedMetricType}
       />
+
       <CircularityIndexBreakdownByMaterialType
         dimensionalFieldName={dimensionalFieldName}
         catalogPath={catalogPath}
