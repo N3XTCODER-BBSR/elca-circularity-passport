@@ -8,56 +8,104 @@ export type ProjectMetricValues = {
   dismantlingPoints: number
 }
 
+type Layer = CalculateCircularityDataForLayerReturnType
+type Component = ElcaElementWithComponents<Layer>
+
+// Types for intermediate calculations
+type MetricAccumulator = {
+  circularityIndexTimesDimensionalValueSum: number
+  eolBuiltPointsTimesDimensionalValueSum: number
+  dismantlingPointsTimesDimensionalValueSum: number
+  totalDimensionalValue: number
+}
+
+// Get the dimensional value for a layer based on component quantity
+const getDimensionalValue = (
+  layer: Layer,
+  componentQuantity: number,
+  dimensionalFieldName: DimensionalFieldName
+): number => (layer[dimensionalFieldName] ?? 0) * componentQuantity
+
+// Calculate weighted metric value if the metric exists
+const getWeightedMetricValue = (metricValue: number | null | undefined, dimensionalValue: number): number =>
+  metricValue != null ? metricValue * dimensionalValue : 0
+
+// Process a single layer and return its contribution to the metrics
+const processLayer = (
+  layer: Layer,
+  componentQuantity: number,
+  dimensionalFieldName: DimensionalFieldName
+): MetricAccumulator => {
+  const dimensionalValue = getDimensionalValue(layer, componentQuantity, dimensionalFieldName)
+
+  return {
+    circularityIndexTimesDimensionalValueSum: getWeightedMetricValue(layer.circularityIndex, dimensionalValue),
+    eolBuiltPointsTimesDimensionalValueSum: getWeightedMetricValue(layer.eolBuilt?.points, dimensionalValue),
+    dismantlingPointsTimesDimensionalValueSum: getWeightedMetricValue(layer.dismantlingPoints, dimensionalValue),
+    totalDimensionalValue: dimensionalValue,
+  }
+}
+
+// Combine two metric accumulators
+const combineAccumulators = (acc1: MetricAccumulator, acc2: MetricAccumulator): MetricAccumulator => ({
+  circularityIndexTimesDimensionalValueSum:
+    acc1.circularityIndexTimesDimensionalValueSum + acc2.circularityIndexTimesDimensionalValueSum,
+  eolBuiltPointsTimesDimensionalValueSum:
+    acc1.eolBuiltPointsTimesDimensionalValueSum + acc2.eolBuiltPointsTimesDimensionalValueSum,
+  dismantlingPointsTimesDimensionalValueSum:
+    acc1.dismantlingPointsTimesDimensionalValueSum + acc2.dismantlingPointsTimesDimensionalValueSum,
+  totalDimensionalValue: acc1.totalDimensionalValue + acc2.totalDimensionalValue,
+})
+
+// Initial accumulator with zero values
+const initialAccumulator: MetricAccumulator = {
+  circularityIndexTimesDimensionalValueSum: 0,
+  eolBuiltPointsTimesDimensionalValueSum: 0,
+  dismantlingPointsTimesDimensionalValueSum: 0,
+  totalDimensionalValue: 0,
+}
+
+// Calculate final metric values from accumulator
+const calculateFinalMetrics = (accumulator: MetricAccumulator): ProjectMetricValues => {
+  const {
+    circularityIndexTimesDimensionalValueSum,
+    eolBuiltPointsTimesDimensionalValueSum,
+    dismantlingPointsTimesDimensionalValueSum,
+    totalDimensionalValue,
+  } = accumulator
+
+  const safeDivide = (numerator: number, denominator: number): number =>
+    denominator === 0 ? 0 : numerator / denominator
+
+  return {
+    circularityIndex: safeDivide(circularityIndexTimesDimensionalValueSum, totalDimensionalValue),
+    eolBuiltPoints: safeDivide(eolBuiltPointsTimesDimensionalValueSum, totalDimensionalValue),
+    dismantlingPoints: safeDivide(dismantlingPointsTimesDimensionalValueSum, totalDimensionalValue),
+  }
+}
+
+// Process all layers in a component
+const processComponentLayers = (component: Component, dimensionalFieldName: DimensionalFieldName): MetricAccumulator =>
+  component.layers.reduce(
+    (acc, layer) => combineAccumulators(acc, processLayer(layer, component.quantity, dimensionalFieldName)),
+    initialAccumulator
+  )
+
+// Main function
 export const calculateTotalMetricValuesForProject = (
-  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
+  circularityData: Component[],
   dimensionalFieldName: DimensionalFieldName
 ): ProjectMetricValues => {
-  // TODO (XL): ensure to exlude
+  // TODO (XL): ensure to exclude
   // 1. components which don't fall into our selection of DIN categories
   // 2. explicitly excluded components
 
-  // Calculate the total circularity index for the project by iterating over
-  // all entries in circulartiyData
-  //   and within each entry, summing the
-  //     circularity index of each component
-  //     calculate the volume or mass (depending on dimensionalFieldName) of each component
-  // At the end, divide the total circularity index by the total volume/mass of the project
-  // to get the total circularity index of the project
+  // Process all components and their layers
+  const accumulatedMetrics = circularityData.reduce(
+    (acc, component) => combineAccumulators(acc, processComponentLayers(component, dimensionalFieldName)),
+    initialAccumulator
+  )
 
-  let circularityIndexTimesDimensionalValueSum = 0
-  let eolBuiltPointsTimesDimensionalValueSum = 0
-  let dismantlingPointsTimesDimensionalValueSum = 0
-  let totalDimensionalValue = 0
-
-  for (const component of circularityData) {
-    for (const layer of component.layers) {
-      // Get the dimensional value of the layer
-      const dimensionalValue = (layer[dimensionalFieldName] ?? 0) * component.quantity
-      if (dimensionalValue == null) {
-        continue
-      }
-
-      // Accumulate total dimensional value
-      totalDimensionalValue += dimensionalValue
-
-      // Accumulate the product of each metric and dimensionalValue
-      if (layer.circularityIndex != null) {
-        circularityIndexTimesDimensionalValueSum += layer.circularityIndex * dimensionalValue
-      }
-
-      if (layer.eolBuilt?.points != null) {
-        eolBuiltPointsTimesDimensionalValueSum += layer.eolBuilt.points * dimensionalValue
-      }
-
-      if (layer.dismantlingPoints != null) {
-        dismantlingPointsTimesDimensionalValueSum += layer.dismantlingPoints * dimensionalValue
-      }
-    }
-  }
-  // Calculate the total metric values for the project
-  return {
-    circularityIndex: circularityIndexTimesDimensionalValueSum / totalDimensionalValue,
-    eolBuiltPoints: eolBuiltPointsTimesDimensionalValueSum / totalDimensionalValue,
-    dismantlingPoints: dismantlingPointsTimesDimensionalValueSum / totalDimensionalValue,
-  }
+  // Calculate the final metric values
+  return calculateFinalMetrics(accumulatedMetrics)
 }
