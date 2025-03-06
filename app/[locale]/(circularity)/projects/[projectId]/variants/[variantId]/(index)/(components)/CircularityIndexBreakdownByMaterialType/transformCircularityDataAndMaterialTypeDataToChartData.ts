@@ -5,6 +5,7 @@ import {
   ChartDataLeaf,
   ChartDataNode,
 } from "../CircularityIndexBreakdownByDin/ChartAndBreadCrumbComponent"
+import { MetricType } from "../CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
 
 // Internal structure that mimics what buildTree returned:
 type CategoryTreeNode = {
@@ -30,6 +31,7 @@ export function transformCircularityDataAndMaterialTypesToChartData(
   products: MaterialNode[],
   dimensionalFieldName: DimensionalFieldName,
   rootLabel: string,
+  metricType: MetricType,
   skipRootNode: boolean
 ): ChartDataNode {
   // 1) Build the hierarchical tree:
@@ -42,7 +44,7 @@ export function transformCircularityDataAndMaterialTypesToChartData(
     metricValue: 0,
     dimensionalValue: 0,
     children: categoryTree
-      .map((categoryTreeNode) => toChartDataNode(categoryTreeNode, dimensionalFieldName))
+      .map((categoryTreeNode) => toChartDataNode(categoryTreeNode, dimensionalFieldName, metricType))
       .filter((n): n is ChartDataInternalNode => n !== null),
   }
 
@@ -64,15 +66,16 @@ export function transformCircularityDataAndMaterialTypesToChartData(
  */
 function toChartDataNode(
   node: CategoryTreeNode,
-  dimensionalFieldName: DimensionalFieldName
+  dimensionalFieldName: DimensionalFieldName,
+  metricType: MetricType
 ): ChartDataInternalNode | null {
   // Recursively map subcategories into ChartDataNodes:
   const childCategoryNodes = node.subcategories
-    .map((subCat) => toChartDataNode(subCat, dimensionalFieldName))
+    .map((subCat) => toChartDataNode(subCat, dimensionalFieldName, metricType))
     .filter((n): n is ChartDataInternalNode => n !== null)
 
   // Build intermediate "product-group" nodes from node.materials:
-  const productGroupChildren = buildProductGroupChildren(node.materials, dimensionalFieldName)
+  const productGroupChildren = buildProductGroupChildren(node.materials, dimensionalFieldName, metricType)
 
   // Combine subcategory children with these product-group children:
   const allChildren = [...childCategoryNodes, ...productGroupChildren]
@@ -98,7 +101,8 @@ function toChartDataNode(
  */
 function buildProductGroupChildren(
   materials: MaterialNode[],
-  dimensionalFieldName: DimensionalFieldName
+  dimensionalFieldName: DimensionalFieldName,
+  metricType: MetricType
 ): ChartDataInternalNode[] {
   const groupedByName = groupBy(materials, (m) => m.name)
 
@@ -106,7 +110,7 @@ function buildProductGroupChildren(
 
   for (const [materialName, itemsInThisGroup] of Array.from(groupedByName.entries())) {
     // For each group, build leaves aggregated by component_uuid:
-    const leafChildren = buildLeavesAggregatedByUuid(itemsInThisGroup, dimensionalFieldName)
+    const leafChildren = buildLeavesAggregatedByUuid(itemsInThisGroup, dimensionalFieldName, metricType)
 
     if (leafChildren.length === 0) {
       continue
@@ -131,7 +135,8 @@ function buildProductGroupChildren(
  */
 function buildLeavesAggregatedByUuid(
   materials: MaterialNode[],
-  dimensionalFieldName: DimensionalFieldName
+  dimensionalFieldName: DimensionalFieldName,
+  metricType: MetricType
 ): ChartDataLeaf[] {
   const groupedByUuid = groupBy(materials, (m) => m.component_uuid)
 
@@ -142,7 +147,9 @@ function buildLeavesAggregatedByUuid(
     const { totalDimensionalValue, weightedMetric } = items.reduce(
       (acc: { totalDimensionalValue: number; weightedMetric: number }, mat: MaterialNode) => {
         acc.totalDimensionalValue += mat[dimensionalFieldName]
-        acc.weightedMetric += mat.circularityIndex * mat[dimensionalFieldName]
+        // Use the appropriate metric based on metricType
+        const metricValue = getMetricValue(mat, metricType)
+        acc.weightedMetric += metricValue * mat[dimensionalFieldName]
         return acc
       },
       { totalDimensionalValue: 0, weightedMetric: 0 }
@@ -160,6 +167,21 @@ function buildLeavesAggregatedByUuid(
     })
   }
   return leaves
+}
+
+/**
+ * Helper function to get the appropriate metric value based on the metric type
+ */
+function getMetricValue(material: MaterialNode, metricType: MetricType): number {
+  switch (metricType) {
+    case "eolBuiltPoints":
+      return material.eolBuiltPoints ?? 0
+    case "dismantlingPoints":
+      return material.dismantlingPoints ?? 0
+    case "circularityIndex":
+    default:
+      return material.circularityIndex ?? 0
+  }
 }
 
 // TODO: consider to replace this with lodash groupBy
