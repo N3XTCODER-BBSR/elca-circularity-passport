@@ -4,19 +4,10 @@ import { FC } from "react"
 import { CtaButton } from "app/(components)/generic/CtaButton"
 import { NoComponentsMessage } from "app/(components)/NoComponentsMessage"
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
-import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import {
-  calculateTotalMetricValuesForProject,
-  ProjectMetricValues,
-} from "lib/domain-logic/circularity/utils/calculateTotalMetricValues"
-import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
-import CircularityIndexBreakdownByMaterialType, {
-  ProcessCategory,
-} from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
-import CircularityIndexTotalNumber from "../CircularityIndexTotalNumber"
-import CircularityIndexBreakdownByDin from "../CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
+import { ProcessCategory } from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
+import CircularityData from "./CircularityData"
 
 const MissingCircularityIndexDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) => {
   const t = await getTranslations("CircularityTool.sections.overview")
@@ -39,47 +30,6 @@ const MissingCircularityIndexDataMessage: FC<{ catalogPath: string }> = async ({
   )
 }
 
-const CircularityData: FC<{
-  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
-  projectName: string
-  catalogPath: string
-  dimensionalFieldName: DimensionalFieldName
-}> = async ({ circularityData, catalogPath, projectName, dimensionalFieldName }) => {
-  const totalMetricValues: ProjectMetricValues = calculateTotalMetricValuesForProject(
-    circularityData,
-    dimensionalFieldName
-  )
-
-  const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
-
-  // This would typically come from user selection or URL params
-  const selectedMetricType: MetricType = "eolBuiltPoints"
-
-  return (
-    <>
-      <div>
-        <CircularityIndexTotalNumber circularityIndexPoints={totalMetricValues[selectedMetricType]} />
-      </div>
-      <CircularityIndexBreakdownByDin
-        dimensionalFieldName={dimensionalFieldName}
-        circularityData={circularityData}
-        projectName={projectName}
-        catalogPath={catalogPath}
-        metricType={selectedMetricType}
-      />
-      <CircularityIndexBreakdownByMaterialType
-        dimensionalFieldName={dimensionalFieldName}
-        catalogPath={catalogPath}
-        projectName={projectName}
-        processCategories={processCategories}
-        circularityData={circularityData}
-        margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
-        metricType={selectedMetricType}
-      />
-    </>
-  )
-}
-
 type BuildingOverviewProps = {
   projectId: number
   projectName: string
@@ -98,6 +48,7 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
 
   const catalogPath = `/projects/${projectId}/variants/${variantId}/catalog`
   const t = await getTranslations("CircularityTool.sections.overview")
+  const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
 
   const renderBody = () => {
     if (noBuildingComponents) {
@@ -112,6 +63,7 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
         projectName={projectName}
         catalogPath={catalogPath}
         dimensionalFieldName={dimensionalFieldName}
+        processCategories={processCategories}
       />
     )
   }
