@@ -5,7 +5,10 @@ import { CtaButton } from "app/(components)/generic/CtaButton"
 import { NoComponentsMessage } from "app/(components)/NoComponentsMessage"
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { calculateTotalCircularityIndexForProject } from "lib/domain-logic/circularity/utils/calculateTotalCircularityIndex"
+import {
+  calculateTotalMetricValuesForProject,
+  ProjectMetricValues,
+} from "lib/domain-logic/circularity/utils/calculateTotalMetricValues"
 import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
@@ -42,7 +45,7 @@ const CircularityData: FC<{
   catalogPath: string
   dimensionalFieldName: DimensionalFieldName
 }> = async ({ circularityData, catalogPath, projectName, dimensionalFieldName }) => {
-  const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(
+  const totalMetricValues: ProjectMetricValues = calculateTotalMetricValuesForProject(
     circularityData,
     dimensionalFieldName
   )
@@ -52,7 +55,7 @@ const CircularityData: FC<{
   return (
     <>
       <div>
-        <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
+        <CircularityIndexTotalNumber circularityIndexPoints={totalMetricValues.circularityIndex} />
       </div>
       <CircularityIndexBreakdownByDin
         dimensionalFieldName={dimensionalFieldName}

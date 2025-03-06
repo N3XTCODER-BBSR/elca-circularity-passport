@@ -1,8 +1,8 @@
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { CalculateCircularityDataForLayerReturnType } from "./calculate-circularity-data-for-layer"
-import { calculateTotalCircularityIndexForProject } from "./calculateTotalCircularityIndex"
+import { calculateTotalMetricValuesForProject } from "./calculateTotalMetricValues"
 
-describe("calculateTotalCircularityIndexForProject", () => {
+describe("calculateTotalMetricValuesForProject", () => {
   // Test that verifies the fix for considering component quantity in CI calculation
   test("should correctly consider component quantity when calculating total circularity index", () => {
     const mockCircularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] = [
@@ -118,10 +118,10 @@ describe("calculateTotalCircularityIndexForProject", () => {
 
     // Act
     // Test with volume as dimensional field
-    const resultWithVolume = calculateTotalCircularityIndexForProject(mockCircularityData, "volume")
+    const resultWithVolume = calculateTotalMetricValuesForProject(mockCircularityData, "volume")
 
     // Test with mass as dimensional field
-    const resultWithMass = calculateTotalCircularityIndexForProject(mockCircularityData, "mass")
+    const resultWithMass = calculateTotalMetricValuesForProject(mockCircularityData, "mass")
 
     // Assert
     // Expected calculations for volume:
@@ -129,13 +129,13 @@ describe("calculateTotalCircularityIndexForProject", () => {
     // Element 2: quantity = 3, volume = 0.05, CI = 0.6
     // Total volume = (2 * 0.1) + (3 * 0.05) = 0.2 + 0.15 = 0.35
     // Weighted CI = ((2 * 0.1 * 0.8) + (3 * 0.05 * 0.6)) / 0.35 = (0.16 + 0.09) / 0.35 = 0.25 / 0.35 = 0.714...
-    expect(resultWithVolume).toBeCloseTo(0.7143, 4)
+    expect(resultWithVolume.circularityIndex).toBeCloseTo(0.7143, 4)
 
     // Expected calculations for mass:
     // Element 1: quantity = 2, mass = 100, CI = 0.8
     // Element 2: quantity = 3, mass = 50, CI = 0.6
     // Total mass = (2 * 100) + (3 * 50) = 200 + 150 = 350
     // Weighted CI = ((2 * 100 * 0.8) + (3 * 50 * 0.6)) / 350 = (160 + 90) / 350 = 250 / 350 = 0.714...
-    expect(resultWithMass).toBeCloseTo(0.7143, 4)
+    expect(resultWithMass.circularityIndex).toBeCloseTo(0.7143, 4)
   })
 })
