@@ -45,7 +45,7 @@ export const mapCircularityDataToCsv = (
       eolPointsBuilt: layer.eolBuilt?.points ?? 0,
       eolClassUnbuilt: layer.eolUnbuilt?.className ?? "",
       eolPointsUnbuilt: layer.eolUnbuilt?.points ?? 0,
-      rebuildClass: layer.dismantlingPotentialClassId ? `Class ${layer.dismantlingPotentialClassId}` : "",
+      rebuildClass: layer.dismantlingPotentialClassId ?? "",
       rebuildPoints: layer.dismantlingPoints ?? 0,
       componentId: layer.component_id,
       elementUuid: layer.element_uuid,
