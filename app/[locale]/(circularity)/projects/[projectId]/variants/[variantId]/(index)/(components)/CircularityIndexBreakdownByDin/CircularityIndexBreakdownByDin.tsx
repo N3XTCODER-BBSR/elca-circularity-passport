@@ -36,24 +36,11 @@ export default function CircularityIndexBreakdownByDin(props: CircularityIndexBr
     props.metricType
   )
 
-  // Get the appropriate title based on the metric type
-  const getMetricTitle = () => {
-    switch (props.metricType) {
-      case "eolBuiltPoints":
-        return t("eolBuiltPointsTitle", { fallback: "End of Life (Built) Points by Cost Group" })
-      case "dismantlingPoints":
-        return t("dismantlingPointsTitle", { fallback: "Dismantling Points by Cost Group" })
-      case "circularityIndex":
-      default:
-        return t("title")
-    }
-  }
-
   return (
     <ChartAndBreadCrumbComponent
       rootChartDataNode={chartData}
       leafClickHandler={exampleLeafClickHandler}
-      title={getMetricTitle()}
+      title={t("title")}
       labelTotalDimensionalValue={t(`totalDimensionValue.${props.dimensionalFieldName}`)}
       unitNameTotalDimensionalValue={tUnits(`${props.dimensionalFieldName === "mass" ? "Kg" : "M3"}.short`)}
       metricType={props.metricType}
