@@ -117,10 +117,8 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
   return (
     <div className="mx-8 my-24 h-[370px]">
       <div className="flex flex-col items-center">
-        <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400">{title}</h2>
-          {actionElement && actionElement}
-        </div>
+        <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400">{title}</h2>
+        {actionElement && <div className="my-4">{actionElement}</div>}
         <div className="mt-2">
           {`${labelTotalDimensionalValue}: `}
           {format.number(currentNode.dimensionalValue, { maximumFractionDigits: 2 })} {unitNameTotalDimensionalValue}
