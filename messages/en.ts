@@ -419,7 +419,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           title: "No relevant building components found",
           body: "The circularity index is calculated for building components in the cost groups: 320, 330, 340, 350 and 360. Please go to eLCA and add building components in one of these groups to get started.",
         },
-        title: "Circularity Index",
+        title: "Circularity Inventory",
         moduleTotal: {
           title: "Total",
           label: "total",
