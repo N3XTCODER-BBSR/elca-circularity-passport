@@ -418,6 +418,11 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           title: "No se encontraron componentes de construcción relevantes",
           body: "El índice de circularidad se calcula para los componentes de construcción en los grupos de costos: 320, 330, 340, 350 y 360. Por favor, vaya a eLCA y agregue componentes de construcción en uno de estos grupos para comenzar.",
         },
+        metricTypeSelectorOptions: {
+          circularityIndex: "Índice de Circularidad",
+          eolBuiltPoints: "Puntos de EOL (Construido)",
+          dismantlingPoints: "Potencial de Desmontaje (Puntos)",
+        },
         title: "Índice de Circularidad",
         moduleTotal: {
           title: "Total",

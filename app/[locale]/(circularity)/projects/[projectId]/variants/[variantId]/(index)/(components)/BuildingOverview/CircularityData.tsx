@@ -22,23 +22,22 @@ const CircularityData: FC<{
   dimensionalFieldName: DimensionalFieldName
   processCategories: ProcessCategory[]
 }> = ({ circularityData, catalogPath, projectName, dimensionalFieldName, processCategories }) => {
-  // Use state to manage the selected metric type
-  const [selectedMetricType, setSelectedMetricType] = useState<MetricType>("eolBuiltPoints")
+  const [selectedMetricType, setSelectedMetricType] = useState<MetricType>("circularityIndex")
 
   const totalMetricValues: ProjectMetricValues = calculateTotalMetricValuesForProject(
     circularityData,
     dimensionalFieldName
   )
 
-  // Handle metric type change from the selector
   const handleMetricTypeChange = (metricType: MetricType) => {
     setSelectedMetricType(metricType)
   }
 
   return (
     <>
-      {/* Add the MetricSelector component */}
-      <MetricSelector selectedMetricType={selectedMetricType} onMetricTypeChange={handleMetricTypeChange} />
+      <div className="mt-4">
+        <MetricSelector selectedMetricType={selectedMetricType} onMetricTypeChange={handleMetricTypeChange} />
+      </div>
 
       <div>
         <CircularityIndexTotalNumber circularityIndexPoints={totalMetricValues[selectedMetricType]} />
