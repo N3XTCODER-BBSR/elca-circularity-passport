@@ -103,7 +103,7 @@ function buildDinCodeToLeafNodesMap(
   for (const element of data) {
     // TODO: review / check whether the fallback to 1 for quantity is valid
     // TODO: also check codebase for other instances of fallback values and check if they are valid
-    const { din_code, element_name, element_uuid, quantity = 1 } = element
+    const { din_code, element_name, element_uuid, quantity } = element
 
     let totalDimensionalValue = 0
     let weightedSumCI = 0

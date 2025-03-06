@@ -47,6 +47,7 @@ export type ElcaProjectComponentRow = {
   oekobaudat_process_db_uuid: string | undefined
   element_name: string
   unit: string | null
+  // TODO: consider to remove this and instead always use the quantity field from the element (not the component/layer)
   quantity: number
   layer_size: number | null
   layer_length: number | null

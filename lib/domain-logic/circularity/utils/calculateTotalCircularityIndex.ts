@@ -24,7 +24,7 @@ export const calculateTotalCircularityIndexForProject = (
   for (const component of circularityData) {
     for (const layer of component.layers) {
       // Get the dimensional value of the layer
-      const dimensionalValue = layer[dimensionalFieldName]
+      const dimensionalValue = (layer[dimensionalFieldName] ?? 0) * component.quantity
       if (dimensionalValue == null) {
         continue
       }
