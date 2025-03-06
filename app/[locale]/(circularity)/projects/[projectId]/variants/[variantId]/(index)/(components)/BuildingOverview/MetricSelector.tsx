@@ -1,58 +1,47 @@
-const MetricSelector = () => {
-  return (
-    <div className="flex">
-      <div className="w-1/3 pr-6">
-        <ul className="mx-2 space-y-1">
-          {din276WithComponents.map((group) => {
-            return (
-              <li className="mb-8" key={group.groupNumber}>
-                <h2 className="mb-4 text-sm uppercase">{tCostGroups(group.groupNumber.toString())}</h2>
-                <nav aria-label="Sidebar" className="flex flex-1 flex-col">
-                  <ul className="-mx-2 space-y-1">
-                    {group.categories.map((componentsByCategory) => {
-                      const hasAnyCircularityMissingData1 =
-                        !!showIncompleteCompleteLabels &&
-                        componentsByCategory.componentTypes.some((componentType) =>
-                          componentType.components.some((component) => {
-                            return componentUuiddsWithMissingCircularityIndexForAnyProduct?.includes(component.uuid)
-                          })
-                        )
-                      return (
-                        <li key={componentsByCategory.categoryNumber}>
-                          <button
-                            onClick={() => onUpdateCateogryClick(componentsByCategory.categoryNumber)}
-                            type="button"
-                            className={twMerge(
-                              selectedCategoryNumber === componentsByCategory.categoryNumber
-                                ? "bg-gray-50 text-indigo-600"
-                                : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
-                              "group flex w-full gap-x-3 rounded-md p-2 pl-3 text-sm font-semibold leading-6"
-                            )}
-                          >
-                            <div className="flex w-full items-center gap-x-3">
-                              <div className="text-left">
-                                {componentsByCategory.categoryNumber}{" "}
-                                {tCostGroups(componentsByCategory.categoryNumber.toString())}
-                              </div>
+import { useTranslations } from "next-intl"
+import React from "react"
+import { twMerge } from "tailwind-merge"
+import { MetricType } from "lib/domain-logic/shared/basic-types"
 
-                              {componentsByCategory.numberOfComponents !== 0 && (
-                                <NumberOfChildComponents
-                                  numberOfComponents={componentsByCategory.numberOfComponents}
-                                  hasAnyCircularityMissingData={hasAnyCircularityMissingData1}
-                                />
-                              )}
-                            </div>
-                          </button>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </nav>
-              </li>
-            )
-          })}
+interface MetricSelectorProps {
+  selectedMetricType: MetricType
+  onMetricTypeChange: (metricType: MetricType) => void
+}
+
+const MetricSelector: React.FC<MetricSelectorProps> = ({ selectedMetricType, onMetricTypeChange }) => {
+  const t = useTranslations("CircularityTool.sections.overview")
+
+  // Define the metric options with their display names and values
+  const metricOptions: { value: MetricType; label: string }[] = [
+    { value: "circularityIndex", label: t("circularityIndexLabel", { fallback: "Circularity Index" }) },
+    { value: "eolBuiltPoints", label: t("eolBuiltPointsLabel", { fallback: "End of Life (Built) Points" }) },
+    { value: "dismantlingPoints", label: t("dismantlingPointsLabel", { fallback: "Dismantling Points" }) },
+  ]
+
+  return (
+    <div className="mb-6 flex justify-center">
+      <nav aria-label="Metric Selector" className="flex max-w-md flex-1 flex-col">
+        <ul className="space-y-1">
+          {metricOptions.map((option) => (
+            <li key={option.value}>
+              <button
+                onClick={() => onMetricTypeChange(option.value)}
+                type="button"
+                className={twMerge(
+                  selectedMetricType === option.value
+                    ? "bg-gray-50 text-indigo-600"
+                    : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                  "group flex w-full gap-x-3 rounded-md p-2 pl-3 text-sm font-semibold leading-6"
+                )}
+              >
+                <div className="flex w-full items-center gap-x-3">
+                  <div className="text-left">{option.label}</div>
+                </div>
+              </button>
+            </li>
+          ))}
         </ul>
-      </div>
+      </nav>
     </div>
   )
 }
