@@ -4,6 +4,7 @@ import { ResponsiveBar } from "@nivo/bar"
 import { useFormatter } from "next-intl"
 import React, { useState } from "react"
 import { circularityBarCharColorMapping } from "constants/styleConstants"
+import { MetricType } from "./CircularityIndexBreakdownByDin"
 
 export type ChartDataLeaf = {
   isLeaf: true
@@ -29,6 +30,7 @@ export type ChartAndBreadCrumbComponentProps = {
   title: string
   labelTotalDimensionalValue: string
   unitNameTotalDimensionalValue: string
+  metricType?: MetricType
 }
 
 function standardAxisProps() {
@@ -67,6 +69,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
   title,
   labelTotalDimensionalValue,
   unitNameTotalDimensionalValue,
+  metricType = "circularityIndex",
 }) => {
   const [path, setPath] = useState<ChartDataNode[]>([rootChartDataNode])
   const format = useFormatter()
@@ -158,7 +161,19 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
               },
             }}
             margin={margin}
-            colors={(datum) => circularityBarCharColorMapping(datum.data.datum)}
+            colors={(datum) => {
+              // Use different color mappings based on metric type
+              if (metricType === "eolBuiltPoints" || metricType === "dismantlingPoints") {
+                // Simple blue gradient for non-circularity metrics
+                const value = datum.data.datum
+                if (value < 0.3) return "#c6dbef"
+                if (value < 0.6) return "#6baed6"
+                if (value < 0.8) return "#3182bd"
+                return "#08519c"
+              }
+              // Use default circularity color mapping
+              return circularityBarCharColorMapping(datum.data.datum)
+            }}
             padding={0.2}
             groupMode="grouped"
             layout="horizontal"
@@ -169,19 +184,31 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
             maxValue={140}
             axisTop={null}
             tooltipLabel={(d) => d.data.identifier}
-            tooltip={(d) => (
-              <div
-                style={{
-                  background: "white",
-                  padding: "9px 12px",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                }}
-              >
-                <b>{d.data.identifier}</b>:{" "}
-                {format.number(d.data.datum, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}
-              </div>
-            )}
+            tooltip={(d) => {
+              // Get the appropriate metric label based on the metric type
+              let metricLabel = "Circularity Index"
+              if (metricType === "eolBuiltPoints") {
+                metricLabel = "End of Life (Built) Points"
+              } else if (metricType === "dismantlingPoints") {
+                metricLabel = "Dismantling Points"
+              }
+
+              return (
+                <div
+                  style={{
+                    background: "white",
+                    padding: "9px 12px",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                  }}
+                >
+                  <b>{d.data.identifier}</b>
+                  <div>
+                    {metricLabel}: {format.number(d.data.datum, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}
+                  </div>
+                </div>
+              )
+            }}
             axisRight={null}
             axisBottom={standardAxisProps()}
             axisLeft={customAxisLeftProps(handleBarLabelClick)}

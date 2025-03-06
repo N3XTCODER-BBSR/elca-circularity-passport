@@ -12,7 +12,9 @@ import {
 import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
-import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
+import CircularityIndexBreakdownByDin, {
+  MetricType,
+} from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
 import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
 } from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
@@ -52,20 +54,20 @@ const CircularityData: FC<{
 
   const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
 
-  type MetricType = "circularityIndex" | "eolBuiltPoints" | "dismantlingPoints"
-
-  const FOO_selectedMetric: MetricType = "circularityIndex"
+  // This would typically come from user selection or URL params
+  const selectedMetricType: MetricType = "eolBuiltPoints"
 
   return (
     <>
       <div>
-        <CircularityIndexTotalNumber circularityIndexPoints={totalMetricValues[FOO_selectedMetric]} />
+        <CircularityIndexTotalNumber circularityIndexPoints={totalMetricValues[selectedMetricType]} />
       </div>
       <CircularityIndexBreakdownByDin
         dimensionalFieldName={dimensionalFieldName}
         circularityData={circularityData}
         projectName={projectName}
         catalogPath={catalogPath}
+        metricType={selectedMetricType}
       />
       <CircularityIndexBreakdownByMaterialType
         dimensionalFieldName={dimensionalFieldName}
