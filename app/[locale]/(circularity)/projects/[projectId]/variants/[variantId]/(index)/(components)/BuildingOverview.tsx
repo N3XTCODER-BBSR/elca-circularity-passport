@@ -52,10 +52,14 @@ const CircularityData: FC<{
 
   const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
 
+  type MetricType = "circularityIndex" | "eolBuiltPoints" | "dismantlingPoints"
+
+  const FOO_selectedMetric: MetricType = "circularityIndex"
+
   return (
     <>
       <div>
-        <CircularityIndexTotalNumber circularityIndexPoints={totalMetricValues.circularityIndex} />
+        <CircularityIndexTotalNumber circularityIndexPoints={totalMetricValues[FOO_selectedMetric]} />
       </div>
       <CircularityIndexBreakdownByDin
         dimensionalFieldName={dimensionalFieldName}
