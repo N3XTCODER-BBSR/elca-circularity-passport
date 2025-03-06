@@ -434,7 +434,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           totalMass: "Total Mass",
         },
         materialExport: {
-          exportMaterialsToCsv: "Export Materials as CSV",
+          exportMaterialsToCsv: "Export (csv)",
           fields: {
             processName: "Process Name",
             amount: "Amount",

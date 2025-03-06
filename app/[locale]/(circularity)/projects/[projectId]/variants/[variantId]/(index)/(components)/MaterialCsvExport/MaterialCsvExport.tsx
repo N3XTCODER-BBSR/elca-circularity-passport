@@ -83,8 +83,9 @@ export default function MaterialCsvExport(props: MaterialCsvExportProps) {
 
   return (
     <button
+      type="button"
+      className="h-8 rounded-md bg-indigo-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
       onClick={downloadCSV}
-      className="py-2inline-flex inline-flex size-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2  text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
     >
       {t("exportMaterialsToCsv")}
     </button>
