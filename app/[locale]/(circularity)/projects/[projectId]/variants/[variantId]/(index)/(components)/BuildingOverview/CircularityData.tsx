@@ -45,6 +45,7 @@ const CircularityData: FC<{
       </div>
 
       <CircularityIndexBreakdownByDin
+        key={`din-breakdown-${selectedMetricType}`}
         dimensionalFieldName={dimensionalFieldName}
         circularityData={circularityData}
         projectName={projectName}
@@ -53,6 +54,7 @@ const CircularityData: FC<{
       />
 
       <CircularityIndexBreakdownByMaterialType
+        key={`material-breakdown-${selectedMetricType}`}
         dimensionalFieldName={dimensionalFieldName}
         catalogPath={catalogPath}
         projectName={projectName}
