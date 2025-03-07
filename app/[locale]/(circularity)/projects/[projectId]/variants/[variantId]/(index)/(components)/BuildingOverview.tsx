@@ -14,7 +14,7 @@ import CircularityIndexBreakdownByMaterialType, {
 } from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
 import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
 
-const MissingCircularityIndexDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) => {
+const MissingDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) => {
   const t = await getTranslations("CircularityTool.sections.overview")
 
   return (
@@ -78,6 +78,10 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
     component.layers.some((layer) => layer.circularityIndex == null)
   )
 
+  const isVolumeMissingForAnyProduct = circularityData.some((component) =>
+    component.layers.some((layer) => layer.volume === null)
+  )
+
   const noBuildingComponents = circularityData.length === 0
 
   const catalogPath = `/projects/${projectId}/variants/${variantId}/catalog`
@@ -87,8 +91,8 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
     if (noBuildingComponents) {
       return <NoComponentsMessage />
     }
-    if (isCircularityIndexMissingForAnyProduct) {
-      return <MissingCircularityIndexDataMessage catalogPath={catalogPath} />
+    if (isCircularityIndexMissingForAnyProduct || isVolumeMissingForAnyProduct) {
+      return <MissingDataMessage catalogPath={catalogPath} />
     }
     return <CircularityData circularityData={circularityData} projectName={projectName} catalogPath={catalogPath} />
   }
