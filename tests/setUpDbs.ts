@@ -23,9 +23,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { PostgreSqlContainer } from "@testcontainers/postgresql"
+import { StartedNetwork } from "testcontainers"
 import { exec } from "node:child_process"
 import { promisify } from "node:util"
-import { StartedNetwork } from "testcontainers"
 
 /**
  * set up elca and passport DB using testcontainers, run migrations for both DBs and creates read-only user for elca DB
