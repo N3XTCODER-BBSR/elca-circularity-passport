@@ -144,6 +144,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
             })} m3`
           : "N/A",
       isRequired: true,
+      testId: "volume",
     },
   ]
 
