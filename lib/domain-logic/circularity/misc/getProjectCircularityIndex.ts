@@ -35,7 +35,7 @@ type RawComponent = Awaited<
   ReturnType<typeof legacyDbDalInstance.getElcaComponentsWithElementsForProjectAndVariantId>
 >[number]["element_components"][number]
 
-export function mapLegacyComponentToProjectComponentRow(
+function mapLegacyComponentToProjectComponentRow(
   elementBaseData: ElcaVariantElementBaseData,
   rawComponent: RawComponent
 ): ElcaProjectComponentRow {
@@ -45,6 +45,8 @@ export function mapLegacyComponentToProjectComponentRow(
     layer_position: rawComponent.layer_position || -1,
     is_layer: rawComponent.is_layer,
     process_name: rawComponent.process_configs.name,
+    productUnit: rawComponent.process_conversions.in_unit,
+    productQuantity: Number(rawComponent.quantity),
     oekobaudat_process_uuid: rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.uuid,
     pdb_name: rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.process_dbs.name,
     pdb_version: rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.process_dbs.version,

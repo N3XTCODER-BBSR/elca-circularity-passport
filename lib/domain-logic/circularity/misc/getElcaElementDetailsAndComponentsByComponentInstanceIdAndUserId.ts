@@ -103,12 +103,14 @@ async function enrichLayerData(
 
     const mass = productMassMap.get(component.component_id) || null
 
-    const volume = calculateVolumeForProduct(
-      component.layer_length,
-      component.layer_width,
-      component.layer_size,
-      component.layer_area_ratio
-    )
+    const volume = calculateVolumeForProduct({
+      layerLength: component.layer_length,
+      layerWidth: component.layer_width,
+      layerSize: component.layer_size,
+      share: component.layer_area_ratio,
+      quantity: component.productQuantity,
+      unit: component.productUnit,
+    })
 
     return {
       ...component,

@@ -85,6 +85,7 @@ export class LegacyDbDal {
         },
       },
       include: {
+        process_conversions: true,
         elements: {
           include: {
             element_types: true,
@@ -128,6 +129,7 @@ export class LegacyDbDal {
 
     const process = assignment.processes
     const processDb = process.process_dbs
+    const processConversions = data.process_conversions
 
     // Flattening the nested structure into a single object that matches the `want` shape
     const result = {
@@ -138,6 +140,7 @@ export class LegacyDbDal {
       process_name: process.name,
       // process_ref_unit: process.ref_unit,
       oekobaudat_process_uuid: process.uuid,
+      productUnit: processConversions.in_unit,
       oekobaudat_process_db_uuid: processDb?.uuid || null,
       element_component_id: data.id,
       quantity: data.quantity ? Number(data.quantity) : null,
@@ -188,6 +191,7 @@ export class LegacyDbDal {
       include: {
         element_components: {
           include: {
+            process_conversions: true,
             process_configs: {
               select: {
                 name: true,
@@ -235,6 +239,8 @@ export class LegacyDbDal {
           oekobaudat_process_db_uuid: pdb?.uuid,
           element_name: element.name,
           unit: element.ref_unit,
+          productUnit: ec.process_conversions.in_unit,
+          productQuantity: Number(ec.quantity),
           element_component_id: ec.id,
           quantity: Number(element.quantity),
           layer_size: ec.layer_size ? Number(ec.layer_size) : null,
@@ -282,6 +288,7 @@ export class LegacyDbDal {
         },
         element_components: {
           include: {
+            process_conversions: true,
             process_configs: {
               select: {
                 name: true,
@@ -674,9 +681,16 @@ export class LegacyDbDal {
     })
   }
 
-  getProductById = (productId: number) => {
+  getProductByIdWithUnit = (productId: number) => {
     return prismaLegacy.elca_element_components.findUnique({
       where: { id: productId },
+      include: {
+        process_conversions: {
+          select: {
+            in_unit: true,
+          },
+        },
+      },
     })
   }
 
