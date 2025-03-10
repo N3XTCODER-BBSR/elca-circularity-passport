@@ -1,6 +1,13 @@
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 
+/**
+ * Converts an array of objects to a CSV string format
+ *
+ * @param {any[]} data - The array of objects to convert to CSV
+ * @param {Record<string, string>} fieldTranslations - Object mapping field names to their translated headers
+ * @returns {string} Formatted CSV string with headers and data rows
+ */
 const convertToCSV = (data: any[], fieldTranslations: Record<string, string>) => {
   if (data.length === 0) return ""
 
@@ -25,6 +32,13 @@ const convertToCSV = (data: any[], fieldTranslations: Record<string, string>) =>
   return [headerRow, ...dataRows].join("\n")
 }
 
+/**
+ * Maps circularity data to a CSV format for export
+ *
+ * @param {ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]} circularityData - Array of building components with circularity data
+ * @param {Record<string, string>} fieldTranslations - Object mapping field names to their translated headers
+ * @returns {string} Formatted CSV string containing the mapped circularity data
+ */
 export const mapCircularityDataToCsv = (
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
   fieldTranslations: Record<string, string>
@@ -55,6 +69,12 @@ export const mapCircularityDataToCsv = (
   return convertToCSV(mappedProducts, fieldTranslations)
 }
 
+/**
+ * Generates a standardized filename for the circularity inventory CSV export
+ *
+ * @param {string} projectName - The name of the project
+ * @returns {string} Formatted filename with date and sanitized project name
+ */
 export const generateCsvFilename = (projectName: string) => {
   // Generate a filename with the pattern YYYYMMDD-Zirkulaeritaetsinventar-[PROJECT_NAME]
   const date = new Date()
