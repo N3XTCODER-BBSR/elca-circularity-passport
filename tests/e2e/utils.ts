@@ -146,7 +146,7 @@ export const fillOutAllCircularityDetails = async (
 
   await page.waitForLoadState("networkidle")
   await page.goto(overviewPageUrl)
-  await expect(page.locator("[data-testid=circularity-index-total-number__points-div]")).toHaveText(/-0,6 Punkte/)
+  await expect(page.locator("[data-testid=circularity-index-total-number__points-div]")).toHaveText(/3,08 Punkte/)
 
   await page.waitForLoadState("networkidle")
   await page.goto(componentPageUrl1)
