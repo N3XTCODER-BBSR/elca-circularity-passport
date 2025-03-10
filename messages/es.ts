@@ -151,6 +151,10 @@ const translationsGrpPlattformGeneric = {
         },
       },
     },
+    moduleByMaterialCategory: {
+      title: "Por Categoría de Material",
+      totalMass: "Masa total",
+    },
   },
   projectsPage: {
     yourProjects: "Tus proyectos",
@@ -418,7 +422,7 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           title: "No se encontraron componentes de construcción relevantes",
           body: "El índice de circularidad se calcula para los componentes de construcción en los grupos de costos: 320, 330, 340, 350 y 360. Por favor, vaya a eLCA y agregue componentes de construcción en uno de estos grupos para comenzar.",
         },
-        title: "Índice de Circularidad",
+        title: "Inventario de circularidad",
         moduleTotal: {
           title: "Total",
           label: "total",
@@ -436,6 +440,17 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           totalDimensionValue: {
             mass: "Masa Total",
             volume: "Volumen Total",
+          },
+        },
+        materialExport: {
+          exportMaterialsToCsv: "Exportar (csv)",
+          fields: {
+            processName: "Nombre del proceso",
+            amount: "Cantidad",
+            unit: "Unidad",
+            thickness: "Espesor",
+            share: "Proporción",
+            componentId: "ID del componente",
           },
         },
       },

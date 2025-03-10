@@ -56,9 +56,9 @@ function mapLegacyComponentToProjectComponentRow(
     unit: elementBaseData.unit,
     quantity: elementBaseData.quantity,
     layer_size: rawComponent.layer_size === null ? null : Number(rawComponent.layer_size),
+    layer_area_ratio: rawComponent.layer_area_ratio === null ? null : Number(rawComponent.layer_area_ratio),
     layer_length: rawComponent.layer_length === null ? null : Number(rawComponent.layer_length),
     layer_width: rawComponent.layer_width === null ? null : Number(rawComponent.layer_width),
-    layer_area_ratio: rawComponent.layer_area_ratio === null ? null : Number(rawComponent.layer_area_ratio),
     process_config_density:
       rawComponent.process_configs.density === null ? null : Number(rawComponent.process_configs.density),
     process_config_id: rawComponent.process_configs.id,

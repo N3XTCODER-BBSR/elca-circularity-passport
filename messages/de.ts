@@ -148,6 +148,10 @@ const translationsGrpPlattformGeneric = {
         },
       },
     },
+    moduleByMaterialCategory: {
+      title: "Nach Materialkategorie",
+      totalMass: "Gesamtmasse",
+    },
   },
   projectsPage: {
     yourProjects: "Deine Projekte",
@@ -392,7 +396,7 @@ const translationsPlattformGeneric = {
           title: "Keine relevanten Bauprodukte gefunden",
           body: "Der Zirkularitätsindex wird für Bauprodukte in den Kostengruppen 320, 330, 340, 350 und 360 berechnet. Bitte gehen Sie zu eLCA und fügen Sie Bauprodukte in einer dieser Gruppen hinzu, um zu beginnen.",
         },
-        title: "Zirkularitätsindex",
+        title: "Zirkularitätsinventar",
         moduleTotal: {
           title: "Gesamt",
           label: "gesamt",
@@ -410,6 +414,17 @@ const translationsPlattformGeneric = {
           totalDimensionValue: {
             mass: "Gesamtmasse",
             volume: "Gesamtvolumen",
+          },
+        },
+        materialExport: {
+          exportMaterialsToCsv: "Exportieren (csv)",
+          fields: {
+            processName: "Prozessname",
+            amount: "Menge",
+            unit: "Einheit",
+            thickness: "Dicke",
+            share: "Anteil",
+            componentId: "Komponenten-ID",
           },
         },
       },

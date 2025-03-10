@@ -149,6 +149,10 @@ const translationsGrpPlatformGeneric = {
         },
       },
     },
+    moduleByMaterialCategory: {
+      title: "By Material Category",
+      totalMass: "Total mass",
+    },
   },
   projectsPage: {
     yourProjects: "Your Projects",
@@ -415,7 +419,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           title: "No relevant building components found",
           body: "The circularity index is calculated for building components in the cost groups: 320, 330, 340, 350 and 360. Please go to eLCA and add building components in one of these groups to get started.",
         },
-        title: "Circularity Index",
+        title: "Circularity Inventory",
         moduleTotal: {
           title: "Total",
           label: "total",
@@ -433,6 +437,17 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           totalDimensionValue: {
             mass: "Total Mass",
             volume: "Total Volume",
+          },
+        },
+        materialExport: {
+          exportMaterialsToCsv: "Export (csv)",
+          fields: {
+            processName: "Process Name",
+            amount: "Amount",
+            unit: "Unit",
+            thickness: "Thickness",
+            share: "Share",
+            componentId: "Component ID",
           },
         },
       },
