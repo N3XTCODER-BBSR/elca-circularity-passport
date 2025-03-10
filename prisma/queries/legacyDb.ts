@@ -233,7 +233,6 @@ export class LegacyDbDal {
           component_id: ec.id,
           // TODO (XL): Check whether this is proper handling of null values in DB
           layer_position: ec.layer_position || -1,
-          layer_area_ratio: Number(ec.layer_area_ratio),
           is_layer: ec.is_layer,
           process_name: pc.name,
           oekobaudat_process_uuid: process?.uuid,

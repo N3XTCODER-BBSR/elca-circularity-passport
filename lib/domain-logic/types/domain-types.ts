@@ -75,7 +75,6 @@ export type ElcaProjectComponentRow = {
   productQuantity: number | null
   quantity: number
   layer_size: number | null
-  layer_area_ratio: number | null
   layer_length: number | null
   layer_width: number | null
   layer_area_ratio: number | null
