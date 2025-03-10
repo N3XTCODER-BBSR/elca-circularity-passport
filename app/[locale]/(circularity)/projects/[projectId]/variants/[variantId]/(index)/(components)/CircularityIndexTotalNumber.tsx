@@ -25,9 +25,16 @@
 "use client"
 
 import { useFormatter, useTranslations } from "next-intl"
+import { MetricType } from "lib/domain-logic/shared/basic-types"
 import CircularityIndexTotalBarChart from "./CircularityIndexTotalBarChart"
 
-const CircularityIndexTotalNumber = ({ circularityIndexPoints }: { circularityIndexPoints: number }) => {
+const CircularityIndexTotalNumber = ({
+  circularityIndexPoints,
+  metricType,
+}: {
+  circularityIndexPoints: number
+  metricType: MetricType
+}) => {
   const format = useFormatter()
   const t = useTranslations("CircularityTool.sections.overview.moduleTotal")
 
@@ -49,6 +56,7 @@ const CircularityIndexTotalNumber = ({ circularityIndexPoints }: { circularityIn
       </div>
       <div className="m-8 h-[100px]">
         <CircularityIndexTotalBarChart
+          metricType={metricType}
           circularityTotalIndexPoints={circularityIndexPoints}
           margin={{ top: 0, right: 30, bottom: 50, left: 150 }}
         />

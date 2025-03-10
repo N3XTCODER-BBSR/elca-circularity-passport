@@ -7,13 +7,12 @@ import {
 } from "lib/domain-logic/circularity/utils/calculateTotalMetricValues"
 import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
-import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import MetricSelector from "./MetricSelector"
+import CircularityIndexBreakdownByDin from "../CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
 import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
 } from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
 import CircularityIndexTotalNumber from "../CircularityIndexTotalNumber"
-import CircularityIndexBreakdownByDin from "../CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
-import MetricSelector from "./MetricSelector"
 
 const CircularityData: FC<{
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
@@ -40,7 +39,10 @@ const CircularityData: FC<{
       </div>
 
       <div>
-        <CircularityIndexTotalNumber circularityIndexPoints={totalMetricValues[selectedMetricType]} />
+        <CircularityIndexTotalNumber
+          circularityIndexPoints={totalMetricValues[selectedMetricType]}
+          metricType={selectedMetricType}
+        />
       </div>
 
       <CircularityIndexBreakdownByDin

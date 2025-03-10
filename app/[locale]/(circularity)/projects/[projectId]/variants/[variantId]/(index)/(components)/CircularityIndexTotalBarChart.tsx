@@ -23,18 +23,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { ResponsiveBar } from "@nivo/bar"
-import { useFormatter, useTranslations } from "next-intl"
-import { circularityBarCharColorMapping } from "constants/styleConstants"
+import { useFormatter } from "next-intl"
+import { circularityMetricBarCharColorMapping } from "constants/styleConstants"
+import { MetricType } from "lib/domain-logic/shared/basic-types"
 
 const CircularityIndexTotalBarChart = ({
   circularityTotalIndexPoints,
+  metricType,
   margin,
 }: {
   circularityTotalIndexPoints: number
   margin: { top: number; right: number; bottom: number; left: number }
+  metricType: MetricType
 }) => {
   const format = useFormatter()
-  const t = useTranslations("CircularityTool.sections.overview.moduleTotal")
 
   return (
     <>
@@ -52,7 +54,7 @@ const CircularityIndexTotalBarChart = ({
         indexBy="identifier"
         margin={margin}
         keys={["datum"]}
-        colors={(datum) => circularityBarCharColorMapping(datum.data.datum)}
+        colors={(datum) => circularityMetricBarCharColorMapping(datum.data.datum, metricType)}
         padding={0.2}
         groupMode="grouped"
         layout="horizontal"

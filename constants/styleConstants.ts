@@ -1,8 +1,10 @@
+import { getEolClassNameByPoints } from "lib/domain-logic/circularity/utils/circularityMappings"
 import {
   LifeCycleSubPhaseId,
   MaterialResourceTypeNames,
   MaterialResourceTypeNamesSchema,
 } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
+import { MetricType } from "lib/domain-logic/shared/basic-types"
 
 export const rmiColorsMapper = (resourceTypeName: MaterialResourceTypeNames) => {
   const colorsMapping = {
@@ -47,10 +49,22 @@ export const eolClassColorsMapper = (eolClass: string) => {
   return colors[eolClass] || "black"
 }
 
-export const circularityBarCharColorMapping = (value: number): string => {
+const circularityIndexBarChartColorMapping = (value: number): string => {
   if (value > 60) return "#2B663B"
   if (value >= 40) return "#7CBB6D"
   if (value >= 20) return "#F9E196"
   if (value < 20) return "#C64032"
   return "#FF0000"
+}
+
+const blueHexCode = "#08519c"
+export const circularityMetricBarCharColorMapping = (datum: number, metricType: MetricType) => {
+  switch (metricType) {
+    case "eolBuiltPoints":
+      return eolClassColorsMapper(getEolClassNameByPoints(datum))
+    case "dismantlingPoints":
+      return blueHexCode
+    default:
+      return circularityIndexBarChartColorMapping(datum)
+  }
 }

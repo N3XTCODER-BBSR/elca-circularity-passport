@@ -27,7 +27,7 @@
 import { ResponsiveBar } from "@nivo/bar"
 import { useFormatter } from "next-intl"
 import React, { useState } from "react"
-import { circularityBarCharColorMapping } from "constants/styleConstants"
+import { circularityMetricBarCharColorMapping } from "constants/styleConstants"
 import { MetricType } from "lib/domain-logic/shared/basic-types"
 
 export type ChartDataLeaf = {
@@ -184,19 +184,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
               },
             }}
             margin={margin}
-            colors={(datum) => {
-              // Use different color mappings based on metric type
-              if (metricType === "eolBuiltPoints" || metricType === "dismantlingPoints") {
-                // Simple blue gradient for non-circularity metrics
-                const value = datum.data.datum
-                if (value < 0.3) return "#c6dbef"
-                if (value < 0.6) return "#6baed6"
-                if (value < 0.8) return "#3182bd"
-                return "#08519c"
-              }
-              // Use default circularity color mapping
-              return circularityBarCharColorMapping(datum.data.datum)
-            }}
+            colors={(datum) => circularityMetricBarCharColorMapping(datum.data.datum, metricType)}
             padding={0.2}
             groupMode="grouped"
             layout="horizontal"
