@@ -151,6 +151,10 @@ const translationsGrpPlattformGeneric = {
         },
       },
     },
+    moduleByMaterialCategory: {
+      title: "Por Categoría de Material",
+      totalMass: "Masa total",
+    },
   },
   projectsPage: {
     yourProjects: "Tus proyectos",
@@ -423,7 +427,7 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           eolBuiltPoints: "Puntos de EOL (Construido)",
           dismantlingPoints: "Potencial de Desmontaje (Puntos)",
         },
-        title: "Índice de Circularidad",
+        title: "Inventario de circularidad",
         moduleTotal: {
           title: "Total",
           label: "total",
@@ -441,6 +445,17 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           totalDimensionValue: {
             mass: "Masa Total",
             volume: "Volumen Total",
+          },
+        },
+        materialExport: {
+          exportMaterialsToCsv: "Exportar (csv)",
+          fields: {
+            processName: "Nombre del proceso",
+            amount: "Cantidad",
+            unit: "Unidad",
+            thickness: "Espesor",
+            share: "Proporción",
+            componentId: "ID del componente",
           },
         },
       },

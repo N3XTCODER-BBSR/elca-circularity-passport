@@ -1,3 +1,27 @@
+/**
+ * This file is part of the "eLCA Circularity Index and Building Resource Passport" project.
+ *
+ * Circularity Index
+ * A web-based add-on to eLCA, to calculate the circularity index of a building according to "BNB-Steckbrief 07 Kreislauffähigkeit".
+ *
+ * Building Resource Passport
+ * A website for exploring and downloading normed sustainability indicators of a building.
+ *
+ * Copyright (c) 2024 N3xtcoder <info@n3xtcoder.org>
+ * Nextcoder Softwareentwicklungs GmbH - http://n3xtcoder.org/
+ *
+ * Primary License:
+ * This project is licensed under the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * Additional Notice:
+ * This file also contains code originally licensed under the MIT License.
+ * Please see the LICENSE file in the root of the repository for details.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
+ */
 import Image from "next/image"
 import { getTranslations } from "next-intl/server"
 import { FC } from "react"
@@ -6,10 +30,11 @@ import { NoComponentsMessage } from "app/(components)/NoComponentsMessage"
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
 import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
-import { ProcessCategory } from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
 import CircularityData from "./CircularityData"
+import { ProcessCategory } from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
+import MaterialCsvExportButton from "../CircularityIndexBreakdownByMaterialType/MaterialCsvExport/MaterialCsvExportButton"
 
-const MissingCircularityIndexDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) => {
+const MissingDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) => {
   const t = await getTranslations("CircularityTool.sections.overview")
 
   return (
@@ -39,23 +64,27 @@ type BuildingOverviewProps = {
 const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingOverviewProps) => {
   const dimensionalFieldName: DimensionalFieldName = "volume"
   const circularityData = await getProjectCircularityIndexData(variantId, projectId)
+  const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
 
   const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
     component.layers.some((layer) => layer.circularityIndex == null)
+  )
+
+  const isVolumeMissingForAnyProduct = circularityData.some((component) =>
+    component.layers.some((layer) => layer.volume === null)
   )
 
   const noBuildingComponents = circularityData.length === 0
 
   const catalogPath = `/projects/${projectId}/variants/${variantId}/catalog`
   const t = await getTranslations("CircularityTool.sections.overview")
-  const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
 
   const renderBody = () => {
     if (noBuildingComponents) {
       return <NoComponentsMessage />
     }
-    if (isCircularityIndexMissingForAnyProduct) {
-      return <MissingCircularityIndexDataMessage catalogPath={catalogPath} />
+    if (isCircularityIndexMissingForAnyProduct || isVolumeMissingForAnyProduct) {
+      return <MissingDataMessage catalogPath={catalogPath} />
     }
     return (
       <CircularityData
@@ -75,6 +104,12 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
           <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
             {t("title")}
           </h1>
+          <MaterialCsvExportButton
+            catalogPath={catalogPath}
+            projectName={projectName}
+            processCategories={processCategories}
+            circularityData={circularityData}
+          />
         </div>
         <h2 className="max-w-[50%]">
           <span className="text-2xl">{projectName}</span>
