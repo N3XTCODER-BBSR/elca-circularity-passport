@@ -75,6 +75,7 @@ export type ElcaProjectComponentRow = {
   layer_size: number | null
   layer_length: number | null
   layer_width: number | null
+  layer_area_ratio: number | null
   process_config_density: number | null
   process_config_id: number | null
   process_config_name: string

@@ -240,6 +240,7 @@ export class LegacyDbDal {
           layer_size: ec.layer_size ? Number(ec.layer_size) : null,
           layer_length: ec.layer_length ? Number(ec.layer_length) : null,
           layer_width: ec.layer_width ? Number(ec.layer_width) : null,
+          layer_area_ratio: ec.layer_area_ratio ? Number(ec.layer_area_ratio) : null,
           process_config_density: pc.density ? Number(pc.density) : null,
           process_config_id: pc.id ? Number(pc.id) : null,
           process_config_name: pc.name,

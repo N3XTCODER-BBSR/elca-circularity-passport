@@ -78,7 +78,12 @@ async function processProjectComponent(
 
   const productData = getTBaustoffProductData(userDefinedData, mappingEntry, product)
 
-  const volume = calculateVolumeForProduct(componentRow.layer_length, componentRow.layer_width, componentRow.layer_size)
+  const volume = calculateVolumeForProduct(
+    componentRow.layer_length,
+    componentRow.layer_width,
+    componentRow.layer_size,
+    componentRow.layer_area_ratio
+  )
 
   const isExcluded = await dbDalInstance.getExcludedProductId(componentRow.component_id)
   const enrichedComponent: EnrichedElcaElementComponent = {
