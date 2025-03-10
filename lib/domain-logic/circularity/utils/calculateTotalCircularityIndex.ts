@@ -22,11 +22,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
+import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { CalculateCircularityDataForLayerReturnType } from "./calculate-circularity-data-for-layer"
 
 export const calculateTotalCircularityIndexForProject = (
-  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
+  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
+  dimensionalFieldName: DimensionalFieldName
 ) => {
   // TODO (XL): ensure to exlude
   // 1. components which don't fall into our selection of DIN categories
@@ -36,35 +38,33 @@ export const calculateTotalCircularityIndexForProject = (
   // all entries in circulartiyData
   //   and within each entry, summing the
   //     circularity index of each component
-  //     calculate the mass of each component
-  // At the end, divide the total circularity index by the total mass of the project
+  //     calculate the volume or mass (depending on dimensionalFieldName) of each component
+  // At the end, divide the total circularity index by the total volume/mass of the project
   // to get the total circularity index of the project
 
-  let circularityIndexTimesMassSumOverAllComponentLayers = 0
-  let totalMass = 0
+  let circularityIndexTimesDimensionalValueSumOverAllComponentLayers = 0
+  let totalDimensionalValue = 0
 
   for (const component of circularityData) {
     for (const layer of component.layers) {
-      // Await the asynchronous function
-      const { mass } = layer
-      if (mass == null) {
-        continue
-      }
+      // Get the dimensional value of the layer
+      const dimensionalValue = (layer[dimensionalFieldName] ?? 0) * component.quantity
 
-      // Accumulate total mass
-      totalMass += mass
+      // Accumulate total dimensional value
+      totalDimensionalValue += dimensionalValue
 
       // Only proceed if circularityIndex is not null
       if (layer.circularityIndex == null) {
         continue
       }
 
-      // Accumulate the product of circularityIndex and mass
-      circularityIndexTimesMassSumOverAllComponentLayers += layer.circularityIndex * mass
+      // Accumulate the product of circularityIndex and dimensionalValue
+      circularityIndexTimesDimensionalValueSumOverAllComponentLayers += layer.circularityIndex * dimensionalValue
     }
   }
   // Calculate the total circularity index for the project
 
-  const totalCircularityIndexForProject = circularityIndexTimesMassSumOverAllComponentLayers / totalMass
+  const totalCircularityIndexForProject =
+    circularityIndexTimesDimensionalValueSumOverAllComponentLayers / totalDimensionalValue
   return totalCircularityIndexForProject
 }

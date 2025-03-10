@@ -30,6 +30,7 @@ import { NoComponentsMessage } from "app/(components)/NoComponentsMessage"
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { calculateTotalCircularityIndexForProject } from "lib/domain-logic/circularity/utils/calculateTotalCircularityIndex"
+import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
@@ -65,20 +66,25 @@ const CircularityData: FC<{
   projectName: string
   catalogPath: string
   processCategories: ProcessCategory[]
-}> = async ({ circularityData, catalogPath, projectName, processCategories }) => {
-  const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(circularityData)
-
+  dimensionalFieldName: DimensionalFieldName
+}> = async ({ circularityData, catalogPath, projectName, processCategories, dimensionalFieldName }) => {
+  const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(
+    circularityData,
+    dimensionalFieldName
+  )
   return (
     <>
       <div>
         <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
       </div>
       <CircularityIndexBreakdownByDin
+        dimensionalFieldName={dimensionalFieldName}
         circularityData={circularityData}
         projectName={projectName}
         catalogPath={catalogPath}
       />
       <CircularityIndexBreakdownByMaterialType
+        dimensionalFieldName={dimensionalFieldName}
         catalogPath={catalogPath}
         projectName={projectName}
         processCategories={processCategories}
@@ -96,6 +102,7 @@ type BuildingOverviewProps = {
 }
 
 const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingOverviewProps) => {
+  const dimensionalFieldName: DimensionalFieldName = "volume"
   const circularityData = await getProjectCircularityIndexData(variantId, projectId)
   const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
 
@@ -124,6 +131,7 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
         circularityData={circularityData}
         projectName={projectName}
         catalogPath={catalogPath}
+        dimensionalFieldName={dimensionalFieldName}
         processCategories={processCategories}
       />
     )

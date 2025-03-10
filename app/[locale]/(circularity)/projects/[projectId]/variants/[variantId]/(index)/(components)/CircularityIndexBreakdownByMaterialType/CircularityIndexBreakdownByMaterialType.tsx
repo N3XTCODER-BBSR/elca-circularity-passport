@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import React from "react"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { transformCircularityDataAndMaterialTypesToChartData } from "./transformCircularityDataAndMaterialTypeDataToChartData"
 import {
@@ -47,13 +48,15 @@ export type MaterialNode = {
   product_id: number
   name: string
   process_category_node_id: number
-  weight: number
+  volume: number
+  mass: number
   circularityIndex: number
 }
 
 type CircularityIndexBreakdownByMaterialTypeProps = {
   catalogPath: string
   projectName: string
+  dimensionalFieldName: DimensionalFieldName
   processCategories: ProcessCategory[]
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   margin: { top: number; right: number; bottom: number; left: number }
@@ -73,7 +76,8 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
       name: layer.process_name,
       process_category_node_id: layer.process_category_node_id,
       // TODO (L): check whether this should actually fall back 'silently' to 0
-      weight: (layer.mass ?? 0) * (layer.quantity ?? 0) || 0, // if weight might be null, default to 0 or handle upstream
+      volume: (layer.volume ?? 0) * (layer.quantity ?? 0) || 0, // if volume might be null, default to 0 or handle upstream
+      mass: (layer.mass ?? 0) * (layer.quantity ?? 0) || 0, // if mass might be null, default to 0 or handle upstream
       circularityIndex: layer.circularityIndex ?? 0,
     }))
   )
@@ -86,6 +90,7 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
   const chartData: ChartDataNode = transformCircularityDataAndMaterialTypesToChartData(
     props.processCategories,
     products,
+    props.dimensionalFieldName,
     props.projectName,
     true
   )
@@ -95,8 +100,8 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
       rootChartDataNode={chartData}
       leafClickHandler={leafClickHandler}
       title={t("title")}
-      labelTotalDimensionalValue={t("totalMass")}
-      unitNameTotalDimensionalValue={tUnits("Kg.short")}
+      labelTotalDimensionalValue={t(`totalDimensionValue.${props.dimensionalFieldName}`)}
+      unitNameTotalDimensionalValue={tUnits(`${props.dimensionalFieldName === "mass" ? "Kg" : "M3"}.short`)}
     />
   )
 }

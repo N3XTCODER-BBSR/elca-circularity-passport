@@ -404,11 +404,17 @@ const translationsPlattformGeneric = {
         },
         moduleByCostGroup: {
           title: "Nach Kostengruppe (DIN 276)",
-          totalMass: "Gesamtmasse",
+          totalDimensionValue: {
+            mass: "Gesamtmasse",
+            volume: "Gesamtvolumen",
+          },
         },
         moduleByMaterialCategory: {
           title: "Nach Materialkategorie",
-          totalMass: "Gesamtmasse",
+          totalDimensionValue: {
+            mass: "Gesamtmasse",
+            volume: "Gesamtvolumen",
+          },
         },
         materialExport: {
           exportMaterialsToCsv: "Exportieren (csv)",
@@ -464,6 +470,10 @@ const translationsPlattformGeneric = {
     Tons: {
       short: "t",
       long: "Tonnen",
+    },
+    M3: {
+      short: "m3",
+      long: "Kubikmeter",
     },
     KgCo2Eq: {
       short: "kg Co2eq",

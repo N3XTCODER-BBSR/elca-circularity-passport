@@ -137,7 +137,12 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
   test("skipRootNode=true flattens single top-level node", () => {
     // Filter so we only have DIN code 341 (Tragende Innenwände)
     const singleCategoryData = circularityData.filter((d) => d.din_code === 341)
-    const root = transformCircularityDataAndDinHierachyToChartTree(singleCategoryData, "Single Category Project", true)
+    const root = transformCircularityDataAndDinHierachyToChartTree(
+      singleCategoryData,
+      "mass",
+      "Single Category Project",
+      true
+    )
     expect(root.label).toBe("Single Category Project")
     expect(root.isLeaf).toBe(false)
     const children = (root as ChartDataInternalNode).children
@@ -152,7 +157,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
 
   test("handles scenario with no matching DIN codes (empty after filtering)", () => {
     const noMatchData = circularityData.filter((d) => d.din_code === 9999) // A DIN code that doesn't exist
-    const root = transformCircularityDataAndDinHierachyToChartTree(noMatchData, "No Matches", true)
+    const root = transformCircularityDataAndDinHierachyToChartTree(noMatchData, "mass", "No Matches", true)
     expect(root.label).toBe("No Matches")
     expect(root.isLeaf).toBe(false)
     expect((root as ChartDataInternalNode).children.length).toBe(0)
@@ -165,7 +170,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       ...d,
       layers: d.layers.map((l) => ({ ...l, circularityIndex: null })),
     }))
-    const root = transformCircularityDataAndDinHierachyToChartTree(modifiedData, "Null Circularity", false)
+    const root = transformCircularityDataAndDinHierachyToChartTree(modifiedData, "mass", "Null Circularity", false)
     // Expect zero metric because null is treated as 0
     expect(root.metricValue).toBe(0)
   })
@@ -175,14 +180,19 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       ...d,
       layers: d.layers.map((l) => ({ ...l, mass: 0 })),
     }))
-    const root = transformCircularityDataAndDinHierachyToChartTree(zeroMassData, "Zero Mass Project", false)
+    const root = transformCircularityDataAndDinHierachyToChartTree(zeroMassData, "mass", "Zero Mass Project", false)
     // Expect no meaningful average if all masses are zero
     expect(root.metricValue).toBe(0)
     expect(root.dimensionalValue).toBe(0)
   })
 
   test("handles multiple top-level categories with skipRootNode=true (no flattening)", () => {
-    const root = transformCircularityDataAndDinHierachyToChartTree(circularityData, "Multiple Categories Project", true)
+    const root = transformCircularityDataAndDinHierachyToChartTree(
+      circularityData,
+      "mass",
+      "Multiple Categories Project",
+      true
+    )
     // Expect multiple top-level categories, so no flattening:
     expect(root.label).toBe("Multiple Categories Project")
     const children = (root as ChartDataInternalNode).children
@@ -195,7 +205,12 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       layers: d.layers.map((l) => ({ ...l, circularityIndex: 0.7 })),
       quantity: 2,
     }))
-    const root = transformCircularityDataAndDinHierachyToChartTree(uniformIndexData, "Uniform Circularity", false)
+    const root = transformCircularityDataAndDinHierachyToChartTree(
+      uniformIndexData,
+      "mass",
+      "Uniform Circularity",
+      false
+    )
     // If all are the same, the metricValue at top should match 0.7
     expect(root.metricValue).toBeCloseTo(0.7)
     const children = (root as ChartDataInternalNode).children
@@ -238,7 +253,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       },
     ]
 
-    const root = transformCircularityDataAndDinHierachyToChartTree(customData, "DupCheck Project", false)
+    const root = transformCircularityDataAndDinHierachyToChartTree(customData, "mass", "DupCheck Project", false)
     expect(root.label).toBe("DupCheck Project")
 
     // We'll gather all leaves from the entire tree

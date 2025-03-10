@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import React from "react"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { ChartAndBreadCrumbComponent } from "./ChartAndBreadCrumbComponent"
 import { transformCircularityDataAndDinHierachyToChartTree } from "./transformCircularityDataAndDinHierachyToChartTree"
@@ -37,6 +38,7 @@ type CircularityIndexBreakdownByDin = {
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   projectName: string
   catalogPath: string
+  dimensionalFieldName: DimensionalFieldName
 }
 
 export default function CircularityIndexBreakdownByDin(props: CircularityIndexBreakdownByDin) {
@@ -48,15 +50,19 @@ export default function CircularityIndexBreakdownByDin(props: CircularityIndexBr
     const detailLink = `${props.catalogPath}/components/${resourceId}`
     if (detailLink) router.push(detailLink)
   }
-  const chartData = transformCircularityDataAndDinHierachyToChartTree(props.circularityData, props.projectName)
+  const chartData = transformCircularityDataAndDinHierachyToChartTree(
+    props.circularityData,
+    props.dimensionalFieldName,
+    props.projectName
+  )
 
   return (
     <ChartAndBreadCrumbComponent
       rootChartDataNode={chartData}
       leafClickHandler={exampleLeafClickHandler}
       title={t("title")}
-      labelTotalDimensionalValue={t("totalMass")}
-      unitNameTotalDimensionalValue={tUnits("Kg.short")}
+      labelTotalDimensionalValue={t(`totalDimensionValue.${props.dimensionalFieldName}`)}
+      unitNameTotalDimensionalValue={tUnits(`${props.dimensionalFieldName === "mass" ? "Kg" : "M3"}.short`)}
     />
   )
 }
