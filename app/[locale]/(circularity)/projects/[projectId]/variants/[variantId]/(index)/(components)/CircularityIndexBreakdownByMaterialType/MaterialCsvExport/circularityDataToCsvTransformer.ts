@@ -8,11 +8,26 @@ import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
  * @param {Record<string, string>} fieldTranslations - Object mapping field names to their translated headers
  * @returns {string} Formatted CSV string with headers and data rows
  */
-const convertToCSV = (data: any[], fieldTranslations: Record<string, string>) => {
+/**
+ * Type for objects that can be converted to CSV
+ * All values must be convertible to string
+ */
+type CsvConvertible = Record<string, string | number | boolean | null | undefined>
+
+/**
+ * Converts an array of objects to a CSV string format
+ *
+ * @param {T[]} data - The array of objects to convert to CSV
+ * @param {Record<string, string>} fieldTranslations - Object mapping field names to their translated headers
+ * @returns {string} Formatted CSV string with headers and data rows
+ */
+const convertToCSV = <T extends CsvConvertible>(data: T[], fieldTranslations: Record<string, string>) => {
   if (data.length === 0) return ""
 
   // Get headers from the first object's keys and translate them
-  const headers = Object.keys(data[0])
+  // We can safely access data[0] since we've checked data.length !== 0
+  const firstItem = data[0] as T // Type assertion since we know it exists
+  const headers = Object.keys(firstItem)
   const translatedHeaders = headers.map((header) => fieldTranslations[header] || header)
 
   // Create CSV header row
