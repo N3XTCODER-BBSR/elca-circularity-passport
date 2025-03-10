@@ -205,6 +205,7 @@ function generateSingleMaterial(): Material {
     serviceLifeTableVersion: "Version 2024",
     serviceLifeInYears: faker.number.int({ min: 1, max: 100 }),
     trade: faker.helpers.arrayElement(materialTradeDetails),
+    volume: faker.number.float({ min: 2, max: 500 }),
     materialGeometry: {
       unit: faker.helpers.arrayElement(["m", "m2", "m3", "pieces"]),
       amount: faker.number.float({ min: 1, max: 500 }),

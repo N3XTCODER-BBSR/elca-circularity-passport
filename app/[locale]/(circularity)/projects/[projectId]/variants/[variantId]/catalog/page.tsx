@@ -54,7 +54,7 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
       await getProjectCircularityIndexData(variantId, projectId)
 
     const componentUuiddsWithMissingCircularityIndexForAnyProduct: string[] = circularityData
-      .filter((component) => component.layers.some((layer) => layer.circularityIndex == null))
+      .filter((component) => component.layers.some((layer) => layer.circularityIndex == null || layer.volume == null))
       .map((component) => component.element_uuid)
 
     return (

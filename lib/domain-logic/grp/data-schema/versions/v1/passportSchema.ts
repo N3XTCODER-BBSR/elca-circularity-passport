@@ -198,6 +198,7 @@ export const MaterialSchema = z.object({
   layerIndex: z.number(),
   name: z.string(),
   massInKg: z.number().nonnegative(),
+  volume: z.number().nonnegative(),
   materialGeometry: MaterialGeometrySchema,
   // ressources: RessourcesSchema.optional(),
   circularity: CircularitySchema.optional(),

@@ -71,6 +71,7 @@ const createMaterialForComponent = async (
     layerIndex: layer.layer_position,
     name: layer.process_name,
     massInKg,
+    volume: layer.volume,
     // TODO (M): move this one level up to component?
     materialGeometry: {
       unit: unit as MaterialGeometry["unit"],

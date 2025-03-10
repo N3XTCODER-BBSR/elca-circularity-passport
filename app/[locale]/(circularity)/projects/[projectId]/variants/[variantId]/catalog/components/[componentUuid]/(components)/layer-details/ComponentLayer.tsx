@@ -143,6 +143,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
               maximumFractionDigits: 2,
             })} m3`
           : "N/A",
+      isRequired: true,
     },
   ]
 
@@ -183,7 +184,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
           testId={layerData.component_id.toString()}
           header={
             !currentLayerData.isExcluded &&
-            !circulartyEnrichedLayerData.circularityIndex && (
+            (!circulartyEnrichedLayerData.circularityIndex || !currentLayerData.volume) && (
               <div className="flex">
                 <Badge>{layerTranslations("incomplete")}</Badge>
               </div>

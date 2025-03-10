@@ -23,8 +23,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { FullConfig } from "@playwright/test"
-import { authenticateAs } from "tests/utils"
 import { z, ZodError } from "zod"
+import { authenticateAs } from "tests/utils"
 import { users } from "./constants"
 
 const password = process.env.PERFORMANCE_TEST_USER_PASSWORD
