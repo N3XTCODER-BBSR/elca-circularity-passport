@@ -32,7 +32,7 @@ describe("calculateVolumeForProduct", () => {
     [5, 0.3],
     [6, 0.115],
     [7, 0.302],
-    [17, null], // other material
+    [17, 10], // other material with unit m3
     [18, null], // other material
     [19, null], // other material
     [22, 0.154],
@@ -44,17 +44,20 @@ describe("calculateVolumeForProduct", () => {
       productId,
     }))
   )("should return the correct volume for product $productId ", async ({ productId }) => {
-    const product = await legacyDbDalInstance.getProductById(productId)
+    const product = await legacyDbDalInstance.getProductByIdWithUnit(productId)
     if (!product) {
       throw new Error(`Product with id ${productId} not found`)
     }
 
-    const volume = calculateVolumeForProduct(
-      product.layer_length?.toNumber() || null,
-      product.layer_width?.toNumber() || null,
-      product.layer_size?.toNumber() || null,
-      product.layer_area_ratio?.toNumber() || null
-    )
+    const volume = calculateVolumeForProduct({
+      layerLength: product.layer_length?.toNumber() || null,
+      layerWidth: product.layer_width?.toNumber() || null,
+      layerSize: product.layer_size?.toNumber() || null,
+      share: product.layer_area_ratio?.toNumber() || null,
+      quantity: product.quantity?.toNumber() || null,
+      unit: product.process_conversions.in_unit || null,
+    })
+
     const expectedVolume = productIdExpectedVolumeMap.get(productId)!
 
     expect(volume).toBe(expectedVolume)

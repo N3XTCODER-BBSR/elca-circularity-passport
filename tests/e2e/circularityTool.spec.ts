@@ -74,27 +74,32 @@ test.describe("Circularity tool", () => {
       await resetDb()
     })
 
-    test.beforeEach(async ({ page }) => {
-      const componentUuid = "32af2f0b-d7d8-4fb1-8354-1e9736d4f513"
+    test.describe("Component Page 4", () => {
+      test.beforeEach(async ({ page }) => {
+        await page.goto(componentPageUrl4)
+      })
 
-      const componentPageUrl = getComponentsPageUrl(1, componentUuid)
-
-      await page.goto(componentPageUrl)
+      test("displays volume for other material with m3 unit correctly", async ({ page }) => {
+        await expect(
+          page.locator("[data-testid=component-layer__div__17]").locator("[data-testid=volume-value__dd]")
+        ).toHaveText("10 m3")
+      })
     })
+    test.describe("Component Page 1", () => {
+      test.beforeEach(async ({ page }) => {
+        await page.goto(componentPageUrl1)
+      })
 
-    test("displays component overview correctly", async ({ page }) => {
-      await expect(page.locator("[data-testid=component-page-overview__dd__number-installed]")).toHaveText("1")
-      await expect(page.locator("[data-testid=component-page-overview__dd__ref-unit]")).toHaveText("m2")
-    })
+      test("displays component overview correctly", async ({ page }) => {
+        await expect(page.locator("[data-testid=component-page-overview__dd__number-installed]")).toHaveText("1")
+        await expect(page.locator("[data-testid=component-page-overview__dd__ref-unit]")).toHaveText("m2")
+      })
 
-    test.describe("Component Layer 5", () => {
       test("displays material basic information (mass) correctly", async ({ page }) => {
         await expect(
           page.locator("[data-testid=component-layer__div__5]").locator("[data-testid=mass-value__dd]")
         ).toHaveText("720 kg")
       })
-    })
-    test.describe("Component Layer 7", () => {
       test('if the tBaustoff field is set, the Circularity Potential - Unbuilt - "EOL Total points" has the correct value', async ({
         page,
       }) => {

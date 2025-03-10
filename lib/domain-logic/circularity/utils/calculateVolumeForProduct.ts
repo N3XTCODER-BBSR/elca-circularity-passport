@@ -23,23 +23,36 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 
+export type VolumeCalculationData = {
+  layerLength: number | null
+  layerWidth: number | null
+  layerSize: number | null
+  share: number | null
+  quantity: number | null
+  unit: string | null
+}
+
 const calculateVolumeForLayer = (layerLength: number, layerWidth: number, layerSize: number, share: number) => {
   return layerLength * layerWidth * layerSize * share
 }
 
-export const calculateVolumeForProduct = (
-  layerLength: number | null,
-  layerWidth: number | null,
-  layerSize: number | null,
-  share: number | null
-) => {
-  if (layerLength === null || layerWidth === null || layerSize === null) {
-    return null
+const calculateVolumeForOtherProduct = (quantity: number | null, unit: string | null) => {
+  if (unit === "m3" && quantity !== null) {
+    return quantity
   }
 
-  if (share === null) {
-    share = 1
+  return null
+}
+
+export const calculateVolumeForProduct = (data: VolumeCalculationData) => {
+  if (data.share === null) {
+    data.share = 1
   }
 
-  return calculateVolumeForLayer(layerLength, layerWidth, layerSize, share)
+  const isLayer = data.layerLength !== null && data.layerWidth !== null && data.layerSize !== null
+  if (isLayer) {
+    return calculateVolumeForLayer(data.layerLength!, data.layerWidth!, data.layerSize!, data.share)
+  }
+
+  return calculateVolumeForOtherProduct(data.quantity, data.unit)
 }
