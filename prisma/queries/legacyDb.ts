@@ -1,3 +1,27 @@
+/**
+ * This file is part of the "eLCA Circularity Index and Building Resource Passport" project.
+ *
+ * Circularity Index
+ * A web-based add-on to eLCA, to calculate the circularity index of a building according to "BNB-Steckbrief 07 Kreislauffähigkeit".
+ *
+ * Building Resource Passport
+ * A website for exploring and downloading normed sustainability indicators of a building.
+ *
+ * Copyright (c) 2024 N3xtcoder <info@n3xtcoder.org>
+ * Nextcoder Softwareentwicklungs GmbH - http://n3xtcoder.org/
+ *
+ * Primary License:
+ * This project is licensed under the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * Additional Notice:
+ * This file also contains code originally licensed under the MIT License.
+ * Please see the LICENSE file in the root of the repository for details.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
+ */
 import { costGroupyDinNumbersToInclude } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
 import { Prisma } from "prisma/generated/client-legacy"
@@ -61,6 +85,7 @@ export class LegacyDbDal {
         },
       },
       include: {
+        process_conversions: true,
         elements: {
           include: {
             element_types: true,
@@ -104,6 +129,7 @@ export class LegacyDbDal {
 
     const process = assignment.processes
     const processDb = process.process_dbs
+    const processConversions = data.process_conversions
 
     // Flattening the nested structure into a single object that matches the `want` shape
     const result = {
@@ -114,12 +140,15 @@ export class LegacyDbDal {
       process_name: process.name,
       // process_ref_unit: process.ref_unit,
       oekobaudat_process_uuid: process.uuid,
+      productUnit: processConversions.in_unit,
+      productQuantity: Number(data.quantity),
       oekobaudat_process_db_uuid: processDb?.uuid || null,
       element_component_id: data.id,
       quantity: data.quantity ? Number(data.quantity) : null,
       layer_size: data.layer_size ? Number(data.layer_size) : null,
       layer_length: data.layer_length ? Number(data.layer_length) : null,
       layer_width: data.layer_width ? Number(data.layer_width) : null,
+      layer_area_ratio: data.layer_area_ratio ? Number(data.layer_area_ratio) : null,
       process_config_density: data.process_configs.density ? Number(data.process_configs.density) : null,
       process_config_id: data.process_configs.id,
       process_config_name: data.process_configs.name,
@@ -164,6 +193,7 @@ export class LegacyDbDal {
       include: {
         element_components: {
           include: {
+            process_conversions: true,
             process_configs: {
               select: {
                 name: true,
@@ -212,11 +242,14 @@ export class LegacyDbDal {
           oekobaudat_process_db_uuid: pdb?.uuid,
           element_name: element.name,
           unit: element.ref_unit,
+          productUnit: ec.process_conversions.in_unit,
+          productQuantity: Number(ec.quantity),
           element_component_id: ec.id,
           quantity: Number(element.quantity),
           layer_size: ec.layer_size ? Number(ec.layer_size) : null,
           layer_length: ec.layer_length ? Number(ec.layer_length) : null,
           layer_width: ec.layer_width ? Number(ec.layer_width) : null,
+          layer_area_ratio: ec.layer_area_ratio ? Number(ec.layer_area_ratio) : null,
           process_config_density: pc.density ? Number(pc.density) : null,
           process_config_id: pc.id ? Number(pc.id) : null,
           process_config_name: pc.name,
@@ -258,6 +291,7 @@ export class LegacyDbDal {
         },
         element_components: {
           include: {
+            process_conversions: true,
             process_configs: {
               select: {
                 name: true,
@@ -650,9 +684,16 @@ export class LegacyDbDal {
     })
   }
 
-  getProductById = (productId: number) => {
+  getProductByIdWithUnit = (productId: number) => {
     return prismaLegacy.elca_element_components.findUnique({
       where: { id: productId },
+      include: {
+        process_conversions: {
+          select: {
+            in_unit: true,
+          },
+        },
+      },
     })
   }
 

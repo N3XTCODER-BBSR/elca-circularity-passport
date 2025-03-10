@@ -1,4 +1,3 @@
--- Create read-only user elca with SELECT priviliges to all tables of all schemas
 BEGIN;
 
 CREATE USER elca_read_only WITH PASSWORD 'password';
