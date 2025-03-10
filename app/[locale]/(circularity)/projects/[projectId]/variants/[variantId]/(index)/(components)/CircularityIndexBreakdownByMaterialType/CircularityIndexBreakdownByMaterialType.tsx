@@ -67,14 +67,12 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
   )
 
   return (
-    <div>
-      <ChartAndBreadCrumbComponent
-        rootChartDataNode={chartData}
-        leafClickHandler={leafClickHandler}
-        title={t("title")}
-        labelTotalDimensionalValue={t("totalMass")}
-        unitNameTotalDimensionalValue={tUnits("Kg.short")}
-      />
-    </div>
+    <ChartAndBreadCrumbComponent
+      rootChartDataNode={chartData}
+      leafClickHandler={leafClickHandler}
+      title={t("title")}
+      labelTotalDimensionalValue={t("totalMass")}
+      unitNameTotalDimensionalValue={tUnits("Kg.short")}
+    />
   )
 }

@@ -12,7 +12,7 @@ import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/Cir
 import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
 } from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
-import MaterialCsvExport from "./CircularityIndexBreakdownByMaterialType/MaterialCsvExport/MaterialCsvExport"
+import MaterialCsvExportButton from "./CircularityIndexBreakdownByMaterialType/MaterialCsvExport/MaterialCsvExportButton"
 import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
 
 const MissingCircularityIndexDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) => {
@@ -108,7 +108,7 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
           <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
             {t("title")}
           </h1>
-          <MaterialCsvExport
+          <MaterialCsvExportButton
             catalogPath={catalogPath}
             projectName={projectName}
             processCategories={processCategories}

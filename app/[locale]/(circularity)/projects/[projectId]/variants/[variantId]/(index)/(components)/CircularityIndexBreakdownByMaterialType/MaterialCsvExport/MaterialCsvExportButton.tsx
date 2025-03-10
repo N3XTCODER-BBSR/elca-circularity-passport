@@ -29,7 +29,7 @@ type MaterialCsvExportProps = {
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
 }
 
-export default function MaterialCsvExport(props: MaterialCsvExportProps) {
+export default function MaterialCsvExportButton(props: MaterialCsvExportProps) {
   const t = useTranslations("CircularityTool.sections.overview.materialExport")
   const tFields = useTranslations("CircularityTool.sections.overview.materialExport.fields")
   const tCircularity = useTranslations("Circularity.Components.Layers.CircularityInfo")
