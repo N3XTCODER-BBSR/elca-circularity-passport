@@ -107,21 +107,92 @@ export function getEolClassNameByPoints(points?: number): EolClasses {
   return EolClasses.J
 }
 
+export const eolClassMapping = {
+  [EolClasses.A]: {
+    badgeBgHexColorCode: "2B663B",
+    badgeTextHexColorCode: "ffffff",
+  },
+  [EolClasses.B]: {
+    badgeBgHexColorCode: "479657",
+    badgeTextHexColorCode: "001C06",
+  },
+  [EolClasses.C]: {
+    badgeBgHexColorCode: "B1D878",
+    badgeTextHexColorCode: "001C06",
+  },
+  [EolClasses.CD]: {
+    badgeBgHexColorCode: "DDEE97",
+    badgeTextHexColorCode: "001C06",
+  },
+  [EolClasses.D]: {
+    badgeBgHexColorCode: "FFFFC6",
+    badgeTextHexColorCode: "001C06",
+  },
+  [EolClasses.DE]: {
+    badgeBgHexColorCode: "F9E196",
+    badgeTextHexColorCode: "001C06",
+  },
+  [EolClasses.E]: {
+    badgeBgHexColorCode: "F2B26E",
+    badgeTextHexColorCode: "001C06",
+  },
+  [EolClasses.EF]: {
+    badgeBgHexColorCode: "E3754F",
+    badgeTextHexColorCode: "001C06",
+  },
+  [EolClasses.F]: {
+    badgeBgHexColorCode: "C64032",
+    badgeTextHexColorCode: "ffffff",
+  },
+  [EolClasses.FG]: {
+    badgeBgHexColorCode: "A43A45",
+    badgeTextHexColorCode: "ffffff",
+  },
+  [EolClasses.G]: {
+    badgeBgHexColorCode: "7E0C19",
+    badgeTextHexColorCode: "ffffff",
+  },
+  [EolClasses.H]: {
+    badgeBgHexColorCode: "7E0C19",
+    badgeTextHexColorCode: "ffffff",
+  },
+  [EolClasses.I]: {
+    badgeBgHexColorCode: "7E0C19",
+    badgeTextHexColorCode: "ffffff",
+  },
+  [EolClasses.J]: {
+    badgeBgHexColorCode: "7E0C19",
+    badgeTextHexColorCode: "ffffff",
+  },
+  [EolClasses.NA]: {
+    badgeBgHexColorCode: "7E0C19",
+    badgeTextHexColorCode: "ffffff",
+  },
+}
+
 export const dismantlingPotentialClassIdMapping = {
   [DismantlingPotentialClassId.I]: {
     translationKey: 1,
     points: 100,
+    badgeBgHexColorCode: "586632",
+    badgeTextHexColorCode: "FFFFFF",
   },
   [DismantlingPotentialClassId.II]: {
     translationKey: 2,
     points: 75,
+    badgeBgHexColorCode: "899D59",
+    badgeTextHexColorCode: "001C06",
   },
   [DismantlingPotentialClassId.III]: {
     translationKey: 3,
     points: 50,
+    badgeBgHexColorCode: "C6D5A1",
+    badgeTextHexColorCode: "001C06",
   },
   [DismantlingPotentialClassId.IV]: {
     translationKey: 4,
     points: 0,
+    badgeBgHexColorCode: "F5C242",
+    badgeTextHexColorCode: "001C06",
   },
 }

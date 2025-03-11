@@ -6,7 +6,8 @@ export const getTotalWeightedDismantlingPotential = (layers: EnrichedElcaElement
     if (
       layer.dismantlingPotentialClassId === null ||
       layer.dismantlingPotentialClassId === undefined ||
-      !layer.volume
+      !layer.volume ||
+      layer.isExcluded
     ) {
       return acc
     }
