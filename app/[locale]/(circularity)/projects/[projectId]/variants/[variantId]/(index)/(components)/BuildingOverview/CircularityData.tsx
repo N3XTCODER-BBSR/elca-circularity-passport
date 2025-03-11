@@ -16,6 +16,21 @@ import CircularityIndexBreakdownByMaterialType, {
 } from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
 import CircularityIndexTotalNumber from "../CircularityIndexTotalNumber"
 
+/**
+ * CircularityData component
+ *
+ * Displays circularity data for a project with metric selection functionality.
+ * Renders various circularity visualizations including total numbers, breakdown by DIN categories,
+ * and breakdown by material types based on the selected metric type.
+ *
+ * @param {Object} props - Component props
+ * @param {ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]} props.circularityData - Array of elements with circularity data
+ * @param {string} props.projectName - Name of the project
+ * @param {string} props.catalogPath - Path to the catalog
+ * @param {DimensionalFieldName} props.dimensionalFieldName - Name of the dimensional field to use for calculations
+ * @param {ProcessCategory[]} props.processCategories - Array of process categories for material type breakdown
+ * @returns {JSX.Element} - Rendered component
+ */
 const CircularityData: FC<{
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
   projectName: string
