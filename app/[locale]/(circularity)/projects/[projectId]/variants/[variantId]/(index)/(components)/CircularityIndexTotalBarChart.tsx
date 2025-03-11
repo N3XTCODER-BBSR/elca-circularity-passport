@@ -24,7 +24,7 @@
  */
 import { ResponsiveBar } from "@nivo/bar"
 import { useFormatter } from "next-intl"
-import { circularityMetricBarCharColorMapping } from "constants/styleConstants"
+import { circularityMetricBarChartColorMapping } from "constants/styleConstants"
 import { MetricType } from "lib/domain-logic/shared/basic-types"
 
 const CircularityIndexTotalBarChart = ({
@@ -54,7 +54,7 @@ const CircularityIndexTotalBarChart = ({
         indexBy="identifier"
         margin={margin}
         keys={["datum"]}
-        colors={(datum) => circularityMetricBarCharColorMapping(datum.data.datum, metricType)}
+        colors={(datum) => circularityMetricBarChartColorMapping(datum.data.datum, metricType)}
         padding={0.2}
         groupMode="grouped"
         layout="horizontal"

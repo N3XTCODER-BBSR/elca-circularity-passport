@@ -386,7 +386,6 @@ const translationsPlattformGeneric = {
   CircularityTool: {
     sections: {
       overview: {
-        selectedMetricLabel: "Gewählte Metrik",
         projectNotFound: "Projekt mit dieser ID für den aktuellen Benutzer nicht gefunden.",
         emptyState: {
           title: "Für die Anzeige des Zirkularitätsindex werden Daten benötigt",

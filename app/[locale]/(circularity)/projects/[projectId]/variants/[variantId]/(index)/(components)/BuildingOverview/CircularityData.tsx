@@ -8,7 +8,8 @@ import {
 } from "lib/domain-logic/circularity/utils/calculateTotalMetricValues"
 import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
-import MetricSelector, { useMetricOptions } from "./MetricSelector"
+import MetricSelector from "./MetricSelector"
+import { useMetricOptions } from "../../(utils)/useMetricOptions"
 import CircularityIndexBreakdownByDin from "../CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
 import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
@@ -44,8 +45,8 @@ const CircularityData: FC<{
         <MetricSelector selectedMetricType={selectedMetricType} onMetricTypeChange={handleMetricTypeChange} />
       </div>
 
-      <h2 className="my-16 text-center text-2xl font-bold text-gray-600 dark:text-gray-400">
-        {t("selectedMetricLabel")}: <i>{selectedMetricOptionName}</i>
+      <h2 className="my-14 text-center text-2xl">
+        <span className="">{selectedMetricOptionName}</span>
       </h2>
 
       <div>

@@ -27,8 +27,9 @@
 import { ResponsiveBar } from "@nivo/bar"
 import { useFormatter } from "next-intl"
 import React, { useState } from "react"
-import { circularityMetricBarCharColorMapping } from "constants/styleConstants"
+import { circularityMetricBarChartColorMapping } from "constants/styleConstants"
 import { MetricType } from "lib/domain-logic/shared/basic-types"
+import { useMetricOptions } from "../../(utils)/useMetricOptions"
 
 export type ChartDataLeaf = {
   isLeaf: true
@@ -54,7 +55,7 @@ export type ChartAndBreadCrumbComponentProps = {
   title: string
   labelTotalDimensionalValue: string
   unitNameTotalDimensionalValue: string
-  metricType?: MetricType
+  metricType: MetricType
 }
 
 function standardAxisProps() {
@@ -93,10 +94,11 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
   title,
   labelTotalDimensionalValue,
   unitNameTotalDimensionalValue,
-  metricType = "circularityIndex",
+  metricType,
 }) => {
   const [path, setPath] = useState<ChartDataNode[]>([rootChartDataNode])
   const format = useFormatter()
+  const metricOptions = useMetricOptions()
 
   // TODO (M): consider to add proper logic checks so that this
   // exclamation mark is actually safe to use
@@ -184,7 +186,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
               },
             }}
             margin={margin}
-            colors={(datum) => circularityMetricBarCharColorMapping(datum.data.datum, metricType)}
+            colors={(datum) => circularityMetricBarChartColorMapping(datum.data.datum, metricType)}
             padding={0.2}
             groupMode="grouped"
             layout="horizontal"
@@ -196,13 +198,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
             axisTop={null}
             tooltipLabel={(d) => d.data.identifier}
             tooltip={(d) => {
-              // Get the appropriate metric label based on the metric type
-              let metricLabel = "Circularity Index"
-              if (metricType === "eolBuiltPoints") {
-                metricLabel = "End of Life (Built) Points"
-              } else if (metricType === "dismantlingPoints") {
-                metricLabel = "Dismantling Points"
-              }
+              const metricLabel = metricOptions.find((option) => option.value === metricType)?.label
 
               return (
                 <div

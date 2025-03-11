@@ -58,7 +58,7 @@ const circularityIndexBarChartColorMapping = (value: number): string => {
 }
 
 const blueHexCode = "#08519c"
-export const circularityMetricBarCharColorMapping = (datum: number, metricType: MetricType) => {
+export const circularityMetricBarChartColorMapping = (datum: number, metricType: MetricType) => {
   switch (metricType) {
     case "eolBuiltPoints":
       return eolClassColorsMapper(getEolClassNameByPoints(datum))
