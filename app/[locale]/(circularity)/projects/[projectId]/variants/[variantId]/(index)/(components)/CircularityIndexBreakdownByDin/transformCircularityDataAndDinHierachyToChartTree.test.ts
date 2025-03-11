@@ -29,17 +29,6 @@ import { DisturbingSubstanceSelection } from "prisma/generated/client"
 import { ChartDataInternalNode, ChartDataLeaf } from "./ChartAndBreadCrumbComponent"
 import { transformCircularityDataAndDinHierachyToChartTree } from "./transformCircularityDataAndDinHierachyToChartTree"
 
-// // Define a custom type for our test elements
-// type MockElementType = {
-//   element_uuid: string;
-//   element_name: string;
-//   element_type_name: string;
-//   din_code: number;
-//   quantity: number;
-//   unit: string;
-//   layers: CalculateCircularityDataForLayerReturnType[];
-// }
-
 /**
  * Helper to create a mock layer object for testing.
  * We allow partial overrides to set things like mass, circularityIndex, etc.
@@ -262,7 +251,6 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
    * that there's exactly ONE leaf node in the final tree for that element.
    */
   test("merges multiple layers for the same element into a single leaf node (no duplicates)", () => {
-    // Create a custom data set with a single element that has multiple layers
     const customData = [
       {
         element_uuid: "dbdec081-20c9-4432-b47c-29f5c7b170eb",
