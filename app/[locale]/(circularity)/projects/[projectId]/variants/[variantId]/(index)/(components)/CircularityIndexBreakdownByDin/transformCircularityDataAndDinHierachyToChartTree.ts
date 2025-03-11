@@ -110,6 +110,11 @@ function filterDataByCostGroup(
 }
 
 function getMetricValue(layer: CalculateCircularityDataForLayerReturnType, metricType: MetricType): number {
+  // TODO (L): when doing the type refactoring:
+  // this is another place where we have to check for proper fallback handling
+  // (or ideally even use a stricter input type)
+  // Also, be aware that we have a getMetricValue defined twice atm, for different input types
+  // (MaterialNode vs CalculateCircularityDataForLayerReturnType)
   switch (metricType) {
     case "eolBuiltPoints":
       return layer.eolBuilt?.points ?? 0
@@ -151,9 +156,6 @@ function buildDinCodeToLeafNodesMap(
       const dimensionalValue = (layer[dimensionalFieldName] ?? 0) * quantity
       totalDimensionalValue += dimensionalValue
 
-      // TODO (L): when doing the type refactoring:
-      // this is another place where we have to check for proper fallback handling
-      // (or ideally even use a stricter input type)
       const metricValue = getMetricValue(layer, metricType)
 
       weightedSumMetric += metricValue * dimensionalValue

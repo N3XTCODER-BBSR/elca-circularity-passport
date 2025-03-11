@@ -196,6 +196,11 @@ function buildLeavesAggregatedByUuid(
  * Helper function to get the appropriate metric value based on the metric type
  */
 function getMetricValue(material: MaterialNode, metricType: MetricType): number {
+  // TODO (L): when doing the type refactoring:
+  // this is another place where we have to check for proper fallback handling
+  // (or ideally even use a stricter input type)
+  // Also, be aware that we have a getMetricValue defined twice atm, for different input types
+  // (MaterialNode vs CalculateCircularityDataForLayerReturnType)
   switch (metricType) {
     case "eolBuiltPoints":
       return material.eolBuiltPoints ?? 0
