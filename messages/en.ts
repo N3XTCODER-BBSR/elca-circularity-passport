@@ -237,6 +237,8 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
       numberInstalled: "Number Installed",
       referenceUnit: "Reference Unit",
       noBuildingMaterials: "Nothing here. Add a building material in elca to get started",
+      circularityPotential: "Circularity Potential",
+      dismantlingPotential: "Dismantling Potential",
       buildingMaterialsHeading: "Materials (relative to 1 {refUnit})",
       layersHeading: "Layers (from interior to exterior)",
       nonLayersHeading: "Other Materials",

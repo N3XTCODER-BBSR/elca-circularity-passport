@@ -26,6 +26,7 @@ import _ from "lodash"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import { getFormatter, getTranslations } from "next-intl/server"
+import { FC } from "react"
 import { Heading3, Heading4 } from "app/(components)/generic/layout-elements"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/misc/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
@@ -36,6 +37,8 @@ import { ensureUserAuthorizationToElementByUuid } from "lib/ensureAuthorized"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
+import { getTotalWeightedCircularityPotential } from "./utils/getTotalWeightedCircularityPotential"
+import { getTotalWeightedDismantlingPotential } from "./utils/getTotalWeightedDismantlingPotential"
 
 const Page = async ({
   params,
@@ -109,6 +112,14 @@ const Page = async ({
       value: el.name,
     }))
 
+    const totalVolume = componentData.layers.reduce((acc, layer) => {
+      return (layer.volume ?? 0) + acc
+    }, 0)
+
+    const totalWeightedCircularityPotential = getTotalWeightedCircularityPotential(componentData.layers, totalVolume)
+
+    const totalWeightedDismantlingPotential = getTotalWeightedDismantlingPotential(componentData.layers, totalVolume)
+
     return (
       <div>
         <HistoryBackButton />
@@ -122,42 +133,29 @@ const Page = async ({
             <div className="overflow-hidden">
               <div className="border border-gray-200">
                 <dl>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">{t("name")}</dt>
-                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {componentData.element_name}
-                    </dd>
-                  </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">{t("uuid")}</dt>
-                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {componentData.element_uuid}
-                    </dd>
-                  </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">{t("costGroup")}</dt>
-                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {dinGroupLevelNumber}
-                    </dd>
-                  </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">{t("numberInstalled")}</dt>
-                    <dd
-                      className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
-                      data-testid="component-page-overview__dd__number-installed"
-                    >
-                      {format.number(componentData.quantity, { maximumFractionDigits: 2 })}
-                    </dd>
-                  </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">{t("referenceUnit")}</dt>
-                    <dd
-                      className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
-                      data-testid="component-page-overview__dd__ref-unit"
-                    >
-                      {componentData.unit}
-                    </dd>
-                  </div>
+                  <DescriptionItem label={t("name")} value={componentData.element_name} testId="name" />
+                  <DescriptionItem label={t("uuid")} value={componentData.element_uuid} testId="uuid" />
+                  <DescriptionItem label={t("costGroup")} value={dinGroupLevelNumber} testId="cost-group" />
+                  <DescriptionItem
+                    label={t("numberInstalled")}
+                    value={format.number(componentData.quantity, { maximumFractionDigits: 2 })}
+                    testId="number-installed"
+                  />
+                  <DescriptionItem label={t("referenceUnit")} value={componentData.unit} testId="ref-unit" />
+                  {totalWeightedCircularityPotential !== null && (
+                    <DescriptionItem
+                      label={t("circularityPotential")}
+                      value={format.number(totalWeightedCircularityPotential, { maximumFractionDigits: 2 })}
+                      testId="circularity-potential"
+                    />
+                  )}
+                  {totalWeightedDismantlingPotential !== null && (
+                    <DescriptionItem
+                      label={t("dismantlingPotential")}
+                      value={format.number(totalWeightedDismantlingPotential, { maximumFractionDigits: 2 })}
+                      testId="circularity-potential"
+                    />
+                  )}
                 </dl>
               </div>
             </div>
@@ -185,4 +183,19 @@ const Page = async ({
     )
   })
 }
+
+const DescriptionItem: FC<{ label: string; value: string | number; testId: string }> = ({ label, value, testId }) => {
+  return (
+    <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+      <dt className="text-sm font-medium text-gray-900">{label}</dt>
+      <dd
+        className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+        data-testid={`description-item__dd__${testId}`}
+      >
+        {value}
+      </dd>
+    </div>
+  )
+}
+
 export default Page

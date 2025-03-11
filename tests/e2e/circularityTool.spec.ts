@@ -91,8 +91,8 @@ test.describe("Circularity tool", () => {
       })
 
       test("displays component overview correctly", async ({ page }) => {
-        await expect(page.locator("[data-testid=component-page-overview__dd__number-installed]")).toHaveText("1")
-        await expect(page.locator("[data-testid=component-page-overview__dd__ref-unit]")).toHaveText("m2")
+        await expect(page.locator("[data-testid=description-item__dd__number-installed]")).toHaveText("1")
+        await expect(page.locator("[data-testid=description-item__dd__ref-unit]")).toHaveText("m2")
       })
 
       test("displays material basic information (mass) correctly", async ({ page }) => {

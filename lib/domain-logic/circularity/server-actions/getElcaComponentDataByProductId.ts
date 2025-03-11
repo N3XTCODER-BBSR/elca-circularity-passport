@@ -29,6 +29,7 @@ import { withServerActionErrorHandling } from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
+import calculateCircularityDataForLayer from "../utils/calculate-circularity-data-for-layer"
 import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 
 const getElcaComponentDataByProductId = async (variantId: number, projectId: number, productId: number) => {
@@ -45,7 +46,7 @@ const getElcaComponentDataByProductId = async (variantId: number, projectId: num
     const isExcluded = await dbDalInstance.getExcludedProductId(newElcaElementComponentData.component_id)
     newElcaElementComponentData.isExcluded = !!isExcluded
 
-    return newElcaElementComponentData
+    return calculateCircularityDataForLayer(newElcaElementComponentData)
   })
 }
 
