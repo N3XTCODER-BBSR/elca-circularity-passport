@@ -141,6 +141,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       singleCategoryData,
       "mass",
       "Single Category Project",
+      "circularityIndex",
       true
     )
     expect(root.label).toBe("Single Category Project")
@@ -157,7 +158,13 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
 
   test("handles scenario with no matching DIN codes (empty after filtering)", () => {
     const noMatchData = circularityData.filter((d) => d.din_code === 9999) // A DIN code that doesn't exist
-    const root = transformCircularityDataAndDinHierachyToChartTree(noMatchData, "mass", "No Matches", true)
+    const root = transformCircularityDataAndDinHierachyToChartTree(
+      noMatchData,
+      "mass",
+      "No Matches",
+      "circularityIndex",
+      true
+    )
     expect(root.label).toBe("No Matches")
     expect(root.isLeaf).toBe(false)
     expect((root as ChartDataInternalNode).children.length).toBe(0)
@@ -170,7 +177,13 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       ...d,
       layers: d.layers.map((l) => ({ ...l, circularityIndex: null })),
     }))
-    const root = transformCircularityDataAndDinHierachyToChartTree(modifiedData, "mass", "Null Circularity", false)
+    const root = transformCircularityDataAndDinHierachyToChartTree(
+      modifiedData,
+      "mass",
+      "Null Circularity",
+      "circularityIndex",
+      false
+    )
     // Expect zero metric because null is treated as 0
     expect(root.metricValue).toBe(0)
   })
@@ -180,7 +193,13 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       ...d,
       layers: d.layers.map((l) => ({ ...l, mass: 0 })),
     }))
-    const root = transformCircularityDataAndDinHierachyToChartTree(zeroMassData, "mass", "Zero Mass Project", false)
+    const root = transformCircularityDataAndDinHierachyToChartTree(
+      zeroMassData,
+      "mass",
+      "Zero Mass Project",
+      "circularityIndex",
+      false
+    )
     // Expect no meaningful average if all masses are zero
     expect(root.metricValue).toBe(0)
     expect(root.dimensionalValue).toBe(0)
@@ -191,6 +210,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       circularityData,
       "mass",
       "Multiple Categories Project",
+      "circularityIndex",
       true
     )
     // Expect multiple top-level categories, so no flattening:
@@ -209,6 +229,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       uniformIndexData,
       "mass",
       "Uniform Circularity",
+      "circularityIndex",
       false
     )
     // If all are the same, the metricValue at top should match 0.7
@@ -253,7 +274,13 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       },
     ]
 
-    const root = transformCircularityDataAndDinHierachyToChartTree(customData, "mass", "DupCheck Project", false)
+    const root = transformCircularityDataAndDinHierachyToChartTree(
+      customData,
+      "mass",
+      "DupCheck Project",
+      "circularityIndex",
+      false
+    )
     expect(root.label).toBe("DupCheck Project")
 
     // We'll gather all leaves from the entire tree
