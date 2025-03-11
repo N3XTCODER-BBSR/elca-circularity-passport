@@ -409,6 +409,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
         creatingPassport: "Pass creation in progress...",
       },
       overview: {
+        selectedMetricLabel: "Selected Metric",
         projectNotFound: "Project with this ID for the current user not found.",
         emptyState: {
           title: "Data is needed to display the Circularity Index",

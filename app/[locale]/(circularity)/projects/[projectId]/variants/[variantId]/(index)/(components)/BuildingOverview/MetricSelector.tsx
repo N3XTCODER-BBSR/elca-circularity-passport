@@ -8,15 +8,17 @@ interface MetricSelectorProps {
   onMetricTypeChange: (metricType: MetricType) => void
 }
 
-const MetricSelector: React.FC<MetricSelectorProps> = ({ selectedMetricType, onMetricTypeChange }) => {
+export const useMetricOptions = (): { value: MetricType; label: string }[] => {
   const t = useTranslations("CircularityTool.sections.overview.metricTypeSelectorOptions")
-
-  // Define the metric options with their display names and values
-  const metricOptions: { value: MetricType; label: string }[] = [
+  return [
     { value: "circularityIndex", label: t("circularityIndex", { fallback: "Circularity Index" }) },
     { value: "eolBuiltPoints", label: t("eolBuiltPoints", { fallback: "End of Life (Built) Points" }) },
     { value: "dismantlingPoints", label: t("dismantlingPoints", { fallback: "Dismantling Points" }) },
   ]
+}
+
+const MetricSelector: React.FC<MetricSelectorProps> = ({ selectedMetricType, onMetricTypeChange }) => {
+  const metricOptions = useMetricOptions()
 
   return (
     <div className="mb-6 flex justify-start">

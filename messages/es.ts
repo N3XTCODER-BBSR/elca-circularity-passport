@@ -412,6 +412,7 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
         },
       },
       overview: {
+        selectedMetricLabel: "Seleccionada Métrica",
         projectNotFound: "Proyecto con esta ID para el usuario actual no encontrado.",
         emptyState: {
           title: "Se necesitan datos para mostrar el Índice de Circularidad",

@@ -46,7 +46,7 @@ const CircularityIndexTotalNumber = ({
   return (
     <div className="mx-8 mb-0 mt-8 h-[250px]">
       <div className="flex flex-col items-center">
-        <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400">{t("title")}</h2>
+        <h3 className="text-2xl font-bold text-gray-600 dark:text-gray-400">{t("title")}</h3>
         <div
           className="mt-4 rounded-lg border-2 px-8 py-4 text-3xl font-bold"
           data-testid="circularity-index-total-number__points-div"
