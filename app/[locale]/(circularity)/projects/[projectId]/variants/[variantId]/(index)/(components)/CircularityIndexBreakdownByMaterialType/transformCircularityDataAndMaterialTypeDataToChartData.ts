@@ -22,6 +22,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
+import { groupBy } from "lodash"
 import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
 import { MaterialNode, ProcessCategory } from "./CircularityIndexBreakdownByMaterialType"
 import {
@@ -131,7 +132,7 @@ function buildProductGroupChildren(
 
   const productGroups: ChartDataInternalNode[] = []
 
-  for (const [materialName, itemsInThisGroup] of Array.from(groupedByName.entries())) {
+  for (const [materialName, itemsInThisGroup] of Object.entries(groupedByName)) {
     // For each group, build leaves aggregated by component_uuid:
     const leafChildren = buildLeavesAggregatedByUuid(itemsInThisGroup, dimensionalFieldName, metricType)
 
@@ -165,7 +166,7 @@ function buildLeavesAggregatedByUuid(
 
   const leaves: ChartDataLeaf[] = []
 
-  for (const [uuid, items] of Array.from(groupedByUuid.entries())) {
+  for (const [uuid, items] of Object.entries(groupedByUuid)) {
     // Sum total volume/mass (dimensionalValue), weighted-sum for metricValue:
     const { totalDimensionalValue, weightedMetric } = items.reduce(
       (acc: { totalDimensionalValue: number; weightedMetric: number }, mat: MaterialNode) => {
@@ -210,22 +211,6 @@ function getMetricValue(material: MaterialNode, metricType: MetricType): number 
     default:
       return material.circularityIndex ?? 0
   }
-}
-
-// TODO: consider to replace this with lodash groupBy
-/**
- * Simple groupBy helper. Returns a Map of key -> array of items that share that key.
- */
-function groupBy<T, K>(items: T[], keyFn: (item: T) => K): Map<K, T[]> {
-  const map = new Map<K, T[]>()
-  for (const item of items) {
-    const key = keyFn(item)
-    if (!map.has(key)) {
-      map.set(key, [])
-    }
-    map.get(key)!.push(item)
-  }
-  return map
 }
 
 /**
