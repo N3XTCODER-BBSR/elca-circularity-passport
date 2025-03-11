@@ -109,6 +109,19 @@ function filterDataByCostGroup(
   })
 }
 
+function getMetricValue(layer: CalculateCircularityDataForLayerReturnType, metricType: MetricType): number {
+  switch (metricType) {
+    case "eolBuiltPoints":
+      return layer.eolBuilt?.points ?? 0
+    case "dismantlingPoints":
+      return layer.dismantlingPoints ?? 0
+    case "circularityIndex":
+      return layer.circularityIndex ?? 0
+    default:
+      return 0
+  }
+}
+
 /**
  * Builds a map from DIN code → an array of *aggregated* leaf nodes, with exactly one leaf per element.
  *
@@ -138,20 +151,10 @@ function buildDinCodeToLeafNodesMap(
       const dimensionalValue = (layer[dimensionalFieldName] ?? 0) * quantity
       totalDimensionalValue += dimensionalValue
 
-      // Get the appropriate metric value based on the selected metric type
-      let metricValue = 0
-      switch (metricType) {
-        case "eolBuiltPoints":
-          metricValue = layer.eolBuilt?.points ?? 0
-          break
-        case "dismantlingPoints":
-          metricValue = layer.dismantlingPoints ?? 0
-          break
-        case "circularityIndex":
-        default:
-          metricValue = layer.circularityIndex ?? 0
-          break
-      }
+      // TODO (L): when doing the type refactoring:
+      // this is another place where we have to check for proper fallback handling
+      // (or ideally even use a stricter input type)
+      const metricValue = getMetricValue(layer, metricType)
 
       weightedSumMetric += metricValue * dimensionalValue
     }
