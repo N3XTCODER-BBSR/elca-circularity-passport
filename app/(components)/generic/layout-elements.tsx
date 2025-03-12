@@ -49,7 +49,7 @@ export const Badge = ({ children, color = "orange" }: LayoutElementProps & { col
   return (
     <div
       className={twMerge(
-        `ml-4 flex h-[20px] items-center rounded-md px-4 py-1 text-xs font-medium`,
+        `flex items-center rounded-sm px-3 py-0.5 text-xs font-medium leading-4`,
         color === "green" ? "bg-green-100 text-green-700" : "bg-rose-200 text-rose-800"
       )}
     >
