@@ -188,11 +188,11 @@ const ComponentDescription = async ({
           labelValuePairs={[
             {
               label: headersTranslations("metrics.mass"),
-              value: `${format.number(totalMass, { maximumFractionDigits: 2 })} t`,
+              value: totalMass ? `${format.number(totalMass, { maximumFractionDigits: 2 })} t` : "-",
             },
             {
               label: headersTranslations("metrics.volume"),
-              value: `${format.number(totalVolume, { maximumFractionDigits: 2 })} m3`,
+              value: totalVolume ? `${format.number(totalVolume, { maximumFractionDigits: 2 })} m3` : "-",
             },
           ]}
         />

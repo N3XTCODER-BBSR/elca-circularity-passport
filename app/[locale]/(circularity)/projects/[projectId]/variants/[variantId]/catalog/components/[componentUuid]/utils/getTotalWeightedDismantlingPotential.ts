@@ -20,9 +20,9 @@ export const getTotalWeightedDismantlingPotential = (layers: EnrichedElcaElement
 
   const totalVolume = filteredData.reduce((sum, { volume }) => sum + volume, 0)
 
-  return filteredData.reduce((acc, { volume, dismantlingPotential }) => {
+  return filteredData.reduce<number | null>((acc, { volume, dismantlingPotential }) => {
     const weightedDismantlingPotential = dismantlingPotential * (volume / totalVolume)
 
     return weightedDismantlingPotential + (acc || 0)
-  }, 0)
+  }, null)
 }

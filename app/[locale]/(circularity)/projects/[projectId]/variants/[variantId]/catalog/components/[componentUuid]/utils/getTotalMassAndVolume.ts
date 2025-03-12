@@ -3,11 +3,11 @@ import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-type
 export const getTotalMassAndVolume = (layers: EnrichedElcaElementComponent[]) => {
   return layers
     .filter((layer) => !layer.isExcluded)
-    .reduce(
+    .reduce<{ totalMass: number | null; totalVolume: number | null }>(
       (acc, layer) => ({
-        totalMass: acc.totalMass + (layer.mass || 0),
-        totalVolume: acc.totalVolume + (layer.volume || 0),
+        totalMass: acc.totalMass ?? 0 + (layer.mass || 0),
+        totalVolume: acc.totalVolume ?? 0 + (layer.volume || 0),
       }),
-      { totalMass: 0, totalVolume: 0 }
+      { totalMass: null, totalVolume: null }
     )
 }

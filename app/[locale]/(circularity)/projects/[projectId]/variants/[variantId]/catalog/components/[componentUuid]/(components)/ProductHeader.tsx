@@ -74,6 +74,9 @@ const ProductHeader: FC<{
         .join(", ")
     : "-"
 
+  const materialCompatibility =
+    circularityPotential !== null && notBuildEol !== null ? circularityPotential - notBuildEol : null
+
   return (
     <div>
       <div className="flex justify-between gap-4">
@@ -128,7 +131,13 @@ const ProductHeader: FC<{
           title={productTranslations("materialCompatibility")}
           hasBorderRight
           labelValuePairs={[
-            { label: "Punkte", value: "71.11" },
+            {
+              label: "Punkte",
+              value:
+                materialCompatibility !== null
+                  ? format.number(materialCompatibility, { maximumFractionDigits: 2 })
+                  : "-",
+            },
             { label: "Klasse", value: disturbingSubstances },
           ]}
         />
