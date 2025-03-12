@@ -59,6 +59,7 @@ const Page = async ({
     const componentUuid = params.componentUuid
     const userId = Number(session.user.id)
     const t = await getTranslations("Circularity.Components")
+    const headersTranslations = await getTranslations("Circularity.Components.headers")
 
     await ensureUserAuthorizationToElementByUuid(userId, componentUuid)
 
@@ -118,13 +119,8 @@ const Page = async ({
       value: el.name,
     }))
 
-    const totalVolume = componentData.layers.reduce((acc, layer) => {
-      return (layer.volume === null || layer.isExcluded ? 0 : layer.volume) + acc
-    }, 0)
-
-    const totalWeightedCircularityPotential = getTotalWeightedCircularityPotential(componentData.layers, totalVolume)
-
-    const totalWeightedDismantlingPotential = getTotalWeightedDismantlingPotential(componentData.layers, totalVolume)
+    const totalWeightedCircularityPotential = getTotalWeightedCircularityPotential(componentData.layers)
+    const totalWeightedDismantlingPotential = getTotalWeightedDismantlingPotential(componentData.layers)
 
     return (
       <div>
@@ -151,42 +147,42 @@ const Page = async ({
                 </dl>
                 <div className="border-gray-20 grid grid-cols-3 border-t">
                   <HorizontalDescriptionItem
-                    title="Material per m²:"
+                    title={headersTranslations("materialDensity")}
                     hasBorderRight
                     labelValuePairs={[
-                      { label: "Punkte", value: "71.11" },
-                      { label: "Klasse", value: "2000 m3" },
+                      { label: headersTranslations("metrics.mass"), value: "71.11" },
+                      { label: headersTranslations("metrics.volume"), value: "2000 m3" },
                     ]}
                   />
                   <HorizontalDescriptionItem
-                    title={`${t("dismantlingPotential")}:`}
+                    title={`${headersTranslations("dismantlingPotential")}:`}
                     hasBorderRight
                     labelValuePairs={[
                       {
-                        label: "Punkte",
+                        label: headersTranslations("metrics.points"),
                         value:
                           totalWeightedDismantlingPotential !== null
                             ? format.number(totalWeightedDismantlingPotential, { maximumFractionDigits: 2 })
                             : "-",
                       },
                       {
-                        label: "Klasse",
+                        label: headersTranslations("metrics.class"),
                         valueItem: <DismantlingPotentialBadge value={totalWeightedDismantlingPotential} />,
                       },
                     ]}
                   />
                   <HorizontalDescriptionItem
-                    title={`${t("circularityPotential")}:`}
+                    title={`${headersTranslations("circularityPotential")}:`}
                     labelValuePairs={[
                       {
-                        label: "Punkte",
+                        label: headersTranslations("metrics.points"),
                         value:
                           totalWeightedCircularityPotential !== null
                             ? format.number(totalWeightedCircularityPotential, { maximumFractionDigits: 2 })
                             : "-",
                       },
                       {
-                        label: "Klasse",
+                        label: headersTranslations("metrics.class"),
                         valueItem: <CircularityPotentialBadge value={totalWeightedCircularityPotential} />,
                       },
                     ]}

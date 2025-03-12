@@ -237,14 +237,33 @@ const translationsPlattformGeneric = {
       numberInstalled: "Installierte Anzahl",
       referenceUnit: "Referenzeinheit",
       noBuildingMaterials: "Hier gibts noch nichts. Fügen Sie Baustoffe in elca hinzu, um loszulegen",
-      circularityPotential: "Zirkularitätspotenzial",
-      dismantlingPotential: "Rückbaupotenzial",
+      headers: {
+        metrics: {
+          mass: "Masse",
+          volume: "Volumen",
+          points: "Punkte",
+          class: "Klasse",
+        },
+        materialDensity: "Material per m2",
+        circularityPotential: "Zirkularitätspotenzial",
+        dismantlingPotential: "Rückbaupotenzial",
+      },
       buildingMaterialsHeading: "Materialien (relativ zu 1 {refUnit})",
       layersHeading: "Schichten (von innen nach aussen)",
       nonLayersHeading: "Andere Materialien",
       Layers: {
         mass: "Masse",
         volume: "Volumen",
+        headers: {
+          metrics: {
+            points: "Punkte",
+            class: "Klasse",
+          },
+          dismantlingPotential: "Rückbaupotenzial",
+          eolUnbuilt: "EOL (unverbaut)",
+          materialCompatibility: "Materialverträglichkeit",
+          circularityPotential: "Zirkularitätspotenzial",
+        },
         incomplete: "Unvollständig",
         excludedFromCalculation: "Von der Berechnung ausgeschlossen",
         CircularityInfo: {

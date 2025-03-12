@@ -19,7 +19,7 @@ export const CircularityPotentialBadge: FC<{ value: number | null }> = ({ value 
 
   return (
     <div
-      className="rounded-sm px-1 py-0.5 text-center text-sm font-semibold"
+      className="w-12 rounded-sm px-1 py-0.5 text-center text-sm font-semibold"
       style={{
         backgroundColor: bgColor,
         color: textColor,
@@ -43,7 +43,7 @@ export const DismantlingPotentialBadge: FC<{ value: number | null }> = ({ value 
 
   return (
     <div
-      className="rounded-sm px-1 py-0.5 text-center text-sm font-semibold"
+      className="inline-block w-12 rounded-sm py-0.5 text-center text-sm font-semibold"
       style={{
         backgroundColor: `#${dismantlingPotentialClassIdMapping[dismantlingPotentialClass].badgeBgHexColorCode}`,
         color: `#${dismantlingPotentialClassIdMapping[dismantlingPotentialClass].badgeTextHexColorCode}`,
@@ -56,7 +56,7 @@ export const DismantlingPotentialBadge: FC<{ value: number | null }> = ({ value 
 
 type LabelValuePair = { label: string; value?: string; valueItem?: ReactNode }
 
-export const CircularityLabelValuePair: FC<LabelValuePair> = ({ label, value, valueItem }) => {
+const CircularityLabelValuePair: FC<LabelValuePair> = ({ label, value, valueItem }) => {
   const valueElement = valueItem ? (
     valueItem
   ) : (
@@ -66,7 +66,7 @@ export const CircularityLabelValuePair: FC<LabelValuePair> = ({ label, value, va
   return (
     <dl className="flex flex-col gap-0.5">
       <dt className="text-sm font-normal">{label}</dt>
-      <dd>{valueElement}</dd>
+      <dd className="inline-block">{valueElement}</dd>
     </dl>
   )
 }
@@ -79,7 +79,7 @@ export const HorizontalDescriptionItem: FC<{
   return (
     <article className={twMerge("border-gray-20 px-6 py-2", hasBorderRight && "border-r")}>
       <h3 className="mb-3 text-base font-medium text-gray-900">{title}</h3>
-      <div className="flex justify-between gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {labelValuePairs.map((pair, index) => (
           <CircularityLabelValuePair key={index} label={pair.label} value={pair.value} valueItem={pair.valueItem} />
         ))}

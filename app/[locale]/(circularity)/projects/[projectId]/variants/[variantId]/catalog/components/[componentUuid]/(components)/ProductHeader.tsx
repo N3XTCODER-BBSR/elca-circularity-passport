@@ -25,7 +25,7 @@ const ProductHeader: FC<{
 }> = ({ layerData, layerNumber, refetchLayerData }) => {
   const t = useTranslations()
   const layerTranslations = useTranslations("Circularity.Components.Layers")
-  const componentsTranslations = useTranslations("Circularity.Components")
+  const productTranslations = useTranslations("Circularity.Components.Layers.headers")
   const format = useFormatter()
 
   const router = useRouter()
@@ -96,7 +96,7 @@ const ProductHeader: FC<{
       </div>
       <div className="border-gray-20 my-6 grid grid-cols-4 border">
         <HorizontalDescriptionItem
-          title={`${componentsTranslations("dismantlingPotential")}:`}
+          title={productTranslations("dismantlingPotential")}
           hasBorderRight
           labelValuePairs={[
             {
@@ -111,7 +111,7 @@ const ProductHeader: FC<{
           ]}
         />
         <HorizontalDescriptionItem
-          title="EOL (unverbaut)"
+          title={productTranslations("eolUnbuilt")}
           hasBorderRight
           labelValuePairs={[
             {
@@ -125,7 +125,7 @@ const ProductHeader: FC<{
           ]}
         />
         <HorizontalDescriptionItem
-          title="Material per m²:"
+          title={productTranslations("materialCompatibility")}
           hasBorderRight
           labelValuePairs={[
             { label: "Punkte", value: "71.11" },
@@ -133,7 +133,7 @@ const ProductHeader: FC<{
           ]}
         />
         <HorizontalDescriptionItem
-          title={`${componentsTranslations("circularityPotential")}:`}
+          title={productTranslations("circularityPotential")}
           labelValuePairs={[
             {
               label: "Punkte",
