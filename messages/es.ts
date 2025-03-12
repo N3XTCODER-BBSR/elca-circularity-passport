@@ -445,11 +445,14 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
         materialExport: {
           exportMaterialsToCsv: "Exportar (csv)",
           fields: {
+            componentUuid: "UUID del componente",
+            volumePerUnit: "Volumen por unidad",
+            massPerUnit: "Masa por unidad",
             processName: "Nombre del proceso",
             amount: "Cantidad",
             unit: "Unidad",
-            thickness: "Espesor",
-            share: "Proporción",
+            thickness: "Espesor (mm)",
+            share: "Proporción (%)",
             componentId: "ID del componente",
           },
         },
