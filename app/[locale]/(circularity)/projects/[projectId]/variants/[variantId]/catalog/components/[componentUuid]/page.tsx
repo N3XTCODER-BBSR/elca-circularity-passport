@@ -39,7 +39,7 @@ import {
   CircularityPotentialBadge,
   DescriptionItem,
   DismantlingPotentialBadge,
-  SubDescriptionItem,
+  HorizontalDescriptionItem,
 } from "./(components)/CircularityIndication"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
@@ -150,15 +150,17 @@ const Page = async ({
                   <DescriptionItem label={t("referenceUnit")} value={componentData.unit} testId="ref-unit" />
                 </dl>
                 <div className="border-gray-20 grid grid-cols-3 border-t">
-                  <SubDescriptionItem
+                  <HorizontalDescriptionItem
                     title="Material per m²:"
+                    hasBorderRight
                     labelValuePairs={[
                       { label: "Punkte", value: "71.11" },
                       { label: "Klasse", value: "2000 m3" },
                     ]}
                   />
-                  <SubDescriptionItem
+                  <HorizontalDescriptionItem
                     title={`${t("dismantlingPotential")}:`}
+                    hasBorderRight
                     labelValuePairs={[
                       {
                         label: "Punkte",
@@ -173,7 +175,7 @@ const Page = async ({
                       },
                     ]}
                   />
-                  <SubDescriptionItem
+                  <HorizontalDescriptionItem
                     title={`${t("circularityPotential")}:`}
                     labelValuePairs={[
                       {

@@ -1,4 +1,5 @@
 import { FC, ReactNode } from "react"
+import { twMerge } from "tailwind-merge"
 import {
   dismantlingPotentialClassIdMapping,
   eolClassMapping,
@@ -70,12 +71,13 @@ export const CircularityLabelValuePair: FC<LabelValuePair> = ({ label, value, va
   )
 }
 
-export const SubDescriptionItem: FC<{
+export const HorizontalDescriptionItem: FC<{
   title: string
   labelValuePairs: LabelValuePair[]
-}> = ({ labelValuePairs, title }) => {
+  hasBorderRight?: boolean
+}> = ({ labelValuePairs, title, hasBorderRight }) => {
   return (
-    <article className="border-gray-20 border-r px-6 py-2">
+    <article className={twMerge("border-gray-20 px-6 py-2", hasBorderRight && "border-r")}>
       <h3 className="mb-3 text-base font-medium text-gray-900">{title}</h3>
       <div className="flex justify-between gap-2">
         {labelValuePairs.map((pair, index) => (
