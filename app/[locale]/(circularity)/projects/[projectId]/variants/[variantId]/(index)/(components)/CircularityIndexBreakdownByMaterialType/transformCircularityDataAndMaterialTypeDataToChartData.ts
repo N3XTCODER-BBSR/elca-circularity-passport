@@ -22,7 +22,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
+import { groupBy } from "lodash"
+import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
 import { MaterialNode, ProcessCategory } from "./CircularityIndexBreakdownByMaterialType"
 import {
   ChartDataInternalNode,
@@ -54,6 +55,7 @@ export function transformCircularityDataAndMaterialTypesToChartData(
   products: MaterialNode[],
   dimensionalFieldName: DimensionalFieldName,
   rootLabel: string,
+  metricType: MetricType,
   skipRootNode: boolean
 ): ChartDataNode {
   // 1) Build the hierarchical tree:
@@ -66,7 +68,7 @@ export function transformCircularityDataAndMaterialTypesToChartData(
     metricValue: 0,
     dimensionalValue: 0,
     children: categoryTree
-      .map((categoryTreeNode) => toChartDataNode(categoryTreeNode, dimensionalFieldName))
+      .map((categoryTreeNode) => toChartDataNode(categoryTreeNode, dimensionalFieldName, metricType))
       .filter((n): n is ChartDataInternalNode => n !== null),
   }
 
@@ -88,15 +90,16 @@ export function transformCircularityDataAndMaterialTypesToChartData(
  */
 function toChartDataNode(
   node: CategoryTreeNode,
-  dimensionalFieldName: DimensionalFieldName
+  dimensionalFieldName: DimensionalFieldName,
+  metricType: MetricType
 ): ChartDataInternalNode | null {
   // Recursively map subcategories into ChartDataNodes:
   const childCategoryNodes = node.subcategories
-    .map((subCat) => toChartDataNode(subCat, dimensionalFieldName))
+    .map((subCat) => toChartDataNode(subCat, dimensionalFieldName, metricType))
     .filter((n): n is ChartDataInternalNode => n !== null)
 
   // Build intermediate "product-group" nodes from node.materials:
-  const productGroupChildren = buildProductGroupChildren(node.materials, dimensionalFieldName)
+  const productGroupChildren = buildProductGroupChildren(node.materials, dimensionalFieldName, metricType)
 
   // Combine subcategory children with these product-group children:
   const allChildren = [...childCategoryNodes, ...productGroupChildren]
@@ -122,15 +125,16 @@ function toChartDataNode(
  */
 function buildProductGroupChildren(
   materials: MaterialNode[],
-  dimensionalFieldName: DimensionalFieldName
+  dimensionalFieldName: DimensionalFieldName,
+  metricType: MetricType
 ): ChartDataInternalNode[] {
   const groupedByName = groupBy(materials, (m) => m.name)
 
   const productGroups: ChartDataInternalNode[] = []
 
-  for (const [materialName, itemsInThisGroup] of Array.from(groupedByName.entries())) {
+  for (const [materialName, itemsInThisGroup] of Object.entries(groupedByName)) {
     // For each group, build leaves aggregated by component_uuid:
-    const leafChildren = buildLeavesAggregatedByUuid(itemsInThisGroup, dimensionalFieldName)
+    const leafChildren = buildLeavesAggregatedByUuid(itemsInThisGroup, dimensionalFieldName, metricType)
 
     if (leafChildren.length === 0) {
       continue
@@ -155,18 +159,21 @@ function buildProductGroupChildren(
  */
 function buildLeavesAggregatedByUuid(
   materials: MaterialNode[],
-  dimensionalFieldName: DimensionalFieldName
+  dimensionalFieldName: DimensionalFieldName,
+  metricType: MetricType
 ): ChartDataLeaf[] {
   const groupedByUuid = groupBy(materials, (m) => m.component_uuid)
 
   const leaves: ChartDataLeaf[] = []
 
-  for (const [uuid, items] of Array.from(groupedByUuid.entries())) {
+  for (const [uuid, items] of Object.entries(groupedByUuid)) {
     // Sum total volume/mass (dimensionalValue), weighted-sum for metricValue:
     const { totalDimensionalValue, weightedMetric } = items.reduce(
       (acc: { totalDimensionalValue: number; weightedMetric: number }, mat: MaterialNode) => {
         acc.totalDimensionalValue += mat[dimensionalFieldName]
-        acc.weightedMetric += mat.circularityIndex * mat[dimensionalFieldName]
+        // Use the appropriate metric based on metricType
+        const metricValue = getMetricValue(mat, metricType)
+        acc.weightedMetric += metricValue * mat[dimensionalFieldName]
         return acc
       },
       { totalDimensionalValue: 0, weightedMetric: 0 }
@@ -186,20 +193,24 @@ function buildLeavesAggregatedByUuid(
   return leaves
 }
 
-// TODO: consider to replace this with lodash groupBy
 /**
- * Simple groupBy helper. Returns a Map of key -> array of items that share that key.
+ * Helper function to get the appropriate metric value based on the metric type
  */
-function groupBy<T, K>(items: T[], keyFn: (item: T) => K): Map<K, T[]> {
-  const map = new Map<K, T[]>()
-  for (const item of items) {
-    const key = keyFn(item)
-    if (!map.has(key)) {
-      map.set(key, [])
-    }
-    map.get(key)!.push(item)
+function getMetricValue(material: MaterialNode, metricType: MetricType): number {
+  // TODO (L): when doing the type refactoring:
+  // this is another place where we have to check for proper fallback handling
+  // (or ideally even use a stricter input type)
+  // Also, be aware that we have a getMetricValue defined twice atm, for different input types
+  // (MaterialNode vs CalculateCircularityDataForLayerReturnType)
+  switch (metricType) {
+    case "eolBuiltPoints":
+      return material.eolBuiltPoints ?? 0
+    case "dismantlingPoints":
+      return material.dismantlingPoints ?? 0
+    case "circularityIndex":
+    default:
+      return material.circularityIndex ?? 0
   }
-  return map
 }
 
 /**

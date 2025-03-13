@@ -30,7 +30,7 @@ import {
   costGroupCategoryNumbersToInclude,
   din276Hierarchy,
 } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
-import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
+import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { ChartDataInternalNode, ChartDataLeaf, ChartDataNode } from "./ChartAndBreadCrumbComponent"
 
@@ -55,13 +55,14 @@ export function transformCircularityDataAndDinHierachyToChartTree(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
   dimensionalFieldName: DimensionalFieldName,
   rootLabel: string,
+  metricType: MetricType,
   skipRootNode = true
 ): ChartDataNode {
   // 1. Filter data by cost group
   const filteredData = filterDataByCostGroup(circularityData)
 
   // 2. Build a map: DIN code -> array of single-leaf nodes (aggregated per element)
-  const dinCodeToLeaves = buildDinCodeToLeafNodesMap(filteredData, dimensionalFieldName)
+  const dinCodeToLeaves = buildDinCodeToLeafNodesMap(filteredData, dimensionalFieldName, metricType)
 
   // 3. Build the hierarchy from `din276Hierarchy`
   const children = din276Hierarchy
@@ -108,6 +109,24 @@ function filterDataByCostGroup(
   })
 }
 
+function getMetricValue(layer: CalculateCircularityDataForLayerReturnType, metricType: MetricType): number {
+  // TODO (L): when doing the type refactoring:
+  // this is another place where we have to check for proper fallback handling
+  // (or ideally even use a stricter input type)
+  // Also, be aware that we have a getMetricValue defined twice atm, for different input types
+  // (MaterialNode vs CalculateCircularityDataForLayerReturnType)
+  switch (metricType) {
+    case "eolBuiltPoints":
+      return layer.eolBuilt?.points ?? 0
+    case "dismantlingPoints":
+      return layer.dismantlingPoints ?? 0
+    case "circularityIndex":
+      return layer.circularityIndex ?? 0
+    default:
+      return 0
+  }
+}
+
 /**
  * Builds a map from DIN code → an array of *aggregated* leaf nodes, with exactly one leaf per element.
  *
@@ -120,7 +139,8 @@ function filterDataByCostGroup(
  */
 function buildDinCodeToLeafNodesMap(
   data: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
-  dimensionalFieldName: DimensionalFieldName
+  dimensionalFieldName: DimensionalFieldName,
+  metricType: MetricType
 ): Map<number, ChartDataLeaf[]> {
   const map = new Map<number, ChartDataLeaf[]>()
 
@@ -130,23 +150,25 @@ function buildDinCodeToLeafNodesMap(
     const { din_code, element_name, element_uuid, quantity } = element
 
     let totalDimensionalValue = 0
-    let weightedSumCI = 0
+    let weightedSumMetric = 0
 
     for (const layer of element.layers) {
       const dimensionalValue = (layer[dimensionalFieldName] ?? 0) * quantity
-      const ci = layer.circularityIndex ?? 0
       totalDimensionalValue += dimensionalValue
-      weightedSumCI += ci * dimensionalValue
+
+      const metricValue = getMetricValue(layer, metricType)
+
+      weightedSumMetric += metricValue * dimensionalValue
     }
 
-    const avgCI = totalDimensionalValue > 0 ? weightedSumCI / totalDimensionalValue : 0
+    const avgMetricValue = totalDimensionalValue > 0 ? weightedSumMetric / totalDimensionalValue : 0
 
     // Create exactly one leaf for this element
     const leaf: ChartDataLeaf = {
       isLeaf: true,
       label: element_name,
       resourceId: element_uuid,
-      metricValue: avgCI,
+      metricValue: avgMetricValue,
       dimensionalValue: totalDimensionalValue,
     }
 

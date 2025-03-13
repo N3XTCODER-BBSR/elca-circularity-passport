@@ -397,6 +397,11 @@ const translationsPlattformGeneric = {
           body: "Der Zirkularitätsindex wird für Bauprodukte in den Kostengruppen 320, 330, 340, 350 und 360 berechnet. Bitte gehen Sie zu eLCA und fügen Sie Bauprodukte in einer dieser Gruppen hinzu, um zu beginnen.",
         },
         title: "Zirkularitätsinventar",
+        metricTypeSelectorOptions: {
+          circularityIndex: "Zirkularitätsindex (ZI)",
+          eolBuiltPoints: "Zirkularitätspotential (Z)",
+          dismantlingPoints: "Rückbaupotential (R)",
+        },
         moduleTotal: {
           title: "Gesamt",
           label: "gesamt",
