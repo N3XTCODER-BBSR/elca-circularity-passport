@@ -425,8 +425,8 @@ const translationsPlattformGeneric = {
           exportMaterialsToCsv: "Exportieren (csv)",
           fields: {
             componentUuid: "Komponenten-UUID",
-            volumePerUnit: "Volumen pro Einheit",
-            massPerUnit: "Masse pro Einheit",
+            volumePerUnit: "Volume (m3) pro Einheit",
+            massPerUnit: "Masse (kg) pro Einheit",
             processName: "Prozessname",
             amount: "Menge",
             unit: "Einheit",

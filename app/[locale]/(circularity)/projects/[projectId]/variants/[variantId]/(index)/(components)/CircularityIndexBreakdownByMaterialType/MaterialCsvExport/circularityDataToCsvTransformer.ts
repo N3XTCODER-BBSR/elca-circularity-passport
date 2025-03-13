@@ -90,8 +90,8 @@ export const mapCircularityDataToCsv = (
       amount: layer.quantity ?? "",
       unit: layer.unit ?? "",
       tBaustoffMaterial: layer.tBaustoffProductData?.name ?? "",
-      thickness: layer.layer_size ?? "",
-      share: layer.layer_area_ratio ? layer.layer_area_ratio * 100 : "",
+      thickness: layer.layer_size ? layer.layer_size * 1000 : "", // * 1000 for thickness in mm
+      share: layer.layer_area_ratio ? layer.layer_area_ratio * 100 : "", // * 100 for percentage
       volumePerUnit: layer.volume ?? "",
       massPerUnit: layer.mass ?? "",
       circularityIndex: layer.circularityIndex ?? "",
