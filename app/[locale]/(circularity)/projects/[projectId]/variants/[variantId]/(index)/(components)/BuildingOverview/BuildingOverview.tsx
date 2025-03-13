@@ -28,17 +28,11 @@ import { FC } from "react"
 import { CtaButton } from "app/(components)/generic/CtaButton"
 import { NoComponentsMessage } from "app/(components)/NoComponentsMessage"
 import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
-import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { calculateTotalCircularityIndexForProject } from "lib/domain-logic/circularity/utils/calculateTotalCircularityIndex"
 import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
-import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
-import CircularityIndexBreakdownByMaterialType, {
-  ProcessCategory,
-} from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
-import MaterialCsvExportButton from "./CircularityIndexBreakdownByMaterialType/MaterialCsvExport/MaterialCsvExportButton"
-import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
+import CircularityData from "./CircularityData"
+import { ProcessCategory } from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
+import MaterialCsvExportButton from "../CircularityIndexBreakdownByMaterialType/MaterialCsvExport/MaterialCsvExportButton"
 
 const MissingDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) => {
   const t = await getTranslations("CircularityTool.sections.overview")
@@ -58,40 +52,6 @@ const MissingDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) 
       <div className="mb-8">{t("emptyState.body")}</div>
       <CtaButton href={catalogPath} text={t("emptyState.cta")} />
     </div>
-  )
-}
-
-const CircularityData: FC<{
-  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
-  projectName: string
-  catalogPath: string
-  processCategories: ProcessCategory[]
-  dimensionalFieldName: DimensionalFieldName
-}> = async ({ circularityData, catalogPath, projectName, processCategories, dimensionalFieldName }) => {
-  const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(
-    circularityData,
-    dimensionalFieldName
-  )
-  return (
-    <>
-      <div>
-        <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
-      </div>
-      <CircularityIndexBreakdownByDin
-        dimensionalFieldName={dimensionalFieldName}
-        circularityData={circularityData}
-        projectName={projectName}
-        catalogPath={catalogPath}
-      />
-      <CircularityIndexBreakdownByMaterialType
-        dimensionalFieldName={dimensionalFieldName}
-        catalogPath={catalogPath}
-        projectName={projectName}
-        processCategories={processCategories}
-        circularityData={circularityData}
-        margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
-      />
-    </>
   )
 }
 
