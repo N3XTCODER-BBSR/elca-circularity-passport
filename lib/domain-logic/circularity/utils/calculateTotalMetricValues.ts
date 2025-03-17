@@ -153,11 +153,6 @@ export const calculateTotalMetricValuesForProject = (
   circularityData: Component[],
   dimensionalFieldName: DimensionalFieldName
 ): ProjectMetricValues => {
-  // TODO (XL): ensure to exclude
-  // 1. components which don't fall into our selection of DIN categories
-  // 2. components without any layers
-  // (even though they don't affect the metric calculation anyway since all metric relevant data is on layers)
-
   // Process all components and their layers
   const accumulatedMetrics = circularityData.reduce(
     (acc, component) => combineAccumulators(acc, processComponentLayers(component, dimensionalFieldName)),
