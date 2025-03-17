@@ -39,8 +39,6 @@ const CircularityData: FC<{
 }> = ({ circularityData, catalogPath, projectName, dimensionalFieldName, processCategories }) => {
   const [selectedMetricType, setSelectedMetricType] = useState<MetricType>("circularityIndex")
 
-  const circularityDataWithoutComponentsWithNoLayers = circularityData.filter((element) => element.layers.length > 0)
-
   const totalMetricValues: ProjectMetricValues = calculateTotalMetricValuesForProject(
     circularityData,
     dimensionalFieldName
@@ -74,7 +72,7 @@ const CircularityData: FC<{
       <CircularityIndexBreakdownByDin
         key={`din-breakdown-${selectedMetricType}`}
         dimensionalFieldName={dimensionalFieldName}
-        circularityData={circularityDataWithoutComponentsWithNoLayers}
+        circularityData={circularityData}
         projectName={projectName}
         catalogPath={catalogPath}
         metricType={selectedMetricType}
@@ -86,7 +84,7 @@ const CircularityData: FC<{
         catalogPath={catalogPath}
         projectName={projectName}
         processCategories={processCategories}
-        circularityData={circularityDataWithoutComponentsWithNoLayers}
+        circularityData={circularityData}
         margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
         metricType={selectedMetricType}
       />

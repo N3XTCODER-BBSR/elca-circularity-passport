@@ -68,7 +68,7 @@ function mapLegacyComponentToProjectComponentRow(
   }
 }
 
-export const getProjectCircularityIndexData = async (
+export const getProjectCircularityData = async (
   variantId: number,
   projectId: number
 ): Promise<ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]> => {
@@ -94,7 +94,7 @@ export const getProjectCircularityIndexData = async (
 
   const preloadedData = await preloadCircularityData(mappedComponents)
 
-  return await Promise.all(
+  const circularityData = await Promise.all(
     elementsWithComponents.map(async (element) => {
       const elementBaseData: ElcaVariantElementBaseData = {
         uuid: element.uuid,
@@ -127,4 +127,8 @@ export const getProjectCircularityIndexData = async (
       } as ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>
     })
   )
+
+  const circularityDataWithoutComponentsWithNoLayers = circularityData.filter((element) => element.layers.length > 0)
+
+  return circularityDataWithoutComponentsWithNoLayers
 }

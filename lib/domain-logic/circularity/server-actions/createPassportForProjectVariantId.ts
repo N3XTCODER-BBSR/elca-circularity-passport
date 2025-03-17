@@ -35,7 +35,7 @@ import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
-import { getProjectCircularityIndexData } from "../misc/getProjectCircularityIndex"
+import { getProjectCircularityData } from "../misc/getProjectCircularityData"
 import { CalculateCircularityDataForLayerReturnType } from "../utils/calculate-circularity-data-for-layer"
 
 const getCircularityForMaterial = (layer: CalculateCircularityDataForLayerReturnType) => {
@@ -117,7 +117,7 @@ export async function createPassportForProjectVariantId(projectVariantId: number
     const uuid = crypto.randomUUID()
 
     const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
-      await getProjectCircularityIndexData(Number(projectVariantId), Number(projectId))
+      await getProjectCircularityData(Number(projectVariantId), Number(projectId))
 
     const buildingComponents = await Promise.all(
       circularityData.map(async (component) => {

@@ -27,8 +27,10 @@ import { getTranslations } from "next-intl/server"
 import { FC } from "react"
 import { CtaButton } from "app/(components)/generic/CtaButton"
 import { NoComponentsMessage } from "app/(components)/NoComponentsMessage"
-import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
+import { getProjectCircularityData } from "lib/domain-logic/circularity/misc/getProjectCircularityData"
+import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
+import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import CircularityData from "./CircularityData"
 import { ProcessCategory } from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
@@ -63,7 +65,8 @@ type BuildingOverviewProps = {
 
 const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingOverviewProps) => {
   const dimensionalFieldName: DimensionalFieldName = "volume"
-  const circularityData = await getProjectCircularityIndexData(variantId, projectId)
+  const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
+    await getProjectCircularityData(variantId, projectId)
   const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
 
   const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
