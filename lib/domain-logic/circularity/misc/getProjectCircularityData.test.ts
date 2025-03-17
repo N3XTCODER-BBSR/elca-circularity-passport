@@ -260,14 +260,10 @@ describe("getProjectCircularityData", () => {
       mockElementsWithComponents
     )
 
-    // The semicolon at the beginning of this line is a safety measure to prevent
-    // Automatic Semicolon Insertion (ASI) issues. Without it, JavaScript might
-    // interpret this line as a continuation of the previous line.
     // The "as jest.Mock" is a TypeScript type assertion that tells the compiler
     // this function is a Jest mock and has mock methods available.
     ;(preloadCircularityData as jest.Mock).mockResolvedValue(mockPreloadedData)
 
-    // Similarly, this semicolon prevents ASI issues.
     // Here we're setting up the mock to return different values on consecutive calls:
     ;(getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId as jest.Mock)
       // First call will return data for element 1
