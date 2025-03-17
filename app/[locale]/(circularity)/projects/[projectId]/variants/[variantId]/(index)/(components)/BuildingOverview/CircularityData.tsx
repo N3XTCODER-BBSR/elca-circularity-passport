@@ -1,5 +1,4 @@
 "use client"
-import { useTranslations } from "next-intl"
 import { FC, useState } from "react"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import {
@@ -39,7 +38,6 @@ const CircularityData: FC<{
   processCategories: ProcessCategory[]
 }> = ({ circularityData, catalogPath, projectName, dimensionalFieldName, processCategories }) => {
   const [selectedMetricType, setSelectedMetricType] = useState<MetricType>("circularityIndex")
-  const t = useTranslations("CircularityTool.sections.overview")
 
   const totalMetricValues: ProjectMetricValues = calculateTotalMetricValuesForProject(
     circularityData,
