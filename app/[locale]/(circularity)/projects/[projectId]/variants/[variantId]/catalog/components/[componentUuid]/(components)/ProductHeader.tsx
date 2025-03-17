@@ -50,6 +50,7 @@ const ProductHeader: FC<{
   const t = useTranslations()
   const layerTranslations = useTranslations("Circularity.Components.Layers")
   const productTranslations = useTranslations("Circularity.Components.Layers.headers")
+  const metricsTranslations = useTranslations("Circularity.Components.Layers.headers.metrics")
   const format = useFormatter()
 
   const router = useRouter()
@@ -117,7 +118,7 @@ const ProductHeader: FC<{
             testId={layerData.component_id.toString()}
             isEnabled={optimisticProductIsExcluded}
             setEnabled={setProductIsExcluded}
-            label="Exclude from calculation"
+            label={layerTranslations("excludedFromCalculation")}
           />
         </div>
       </div>
@@ -127,12 +128,12 @@ const ProductHeader: FC<{
           hasBorderRight
           labelValuePairs={[
             {
-              label: "Punkte",
+              label: metricsTranslations("points"),
               value:
                 dismantlingPotential !== null ? format.number(dismantlingPotential, { maximumFractionDigits: 2 }) : "-",
             },
             {
-              label: "Klasse",
+              label: metricsTranslations("class"),
               valueItem: <DismantlingPotentialBadge value={dismantlingPotential} />,
             },
           ]}
@@ -142,11 +143,11 @@ const ProductHeader: FC<{
           hasBorderRight
           labelValuePairs={[
             {
-              label: "Punkte",
+              label: metricsTranslations("points"),
               value: notBuildEol !== null ? format.number(notBuildEol, { maximumFractionDigits: 2 }) : "-",
             },
             {
-              label: "Klasse",
+              label: metricsTranslations("class"),
               valueItem: <CircularityPotentialBadge value={notBuildEol} />,
             },
           ]}
@@ -156,25 +157,25 @@ const ProductHeader: FC<{
           hasBorderRight
           labelValuePairs={[
             {
-              label: "Punkte",
+              label: metricsTranslations("points"),
               value:
                 materialCompatibility !== null
                   ? format.number(materialCompatibility, { maximumFractionDigits: 2 })
                   : "-",
             },
-            { label: "Klasse", value: disturbingSubstances },
+            { label: metricsTranslations("class"), value: disturbingSubstances },
           ]}
         />
         <HorizontalDescriptionItem
           title={productTranslations("circularityPotential")}
           labelValuePairs={[
             {
-              label: "Punkte",
+              label: metricsTranslations("points"),
               value:
                 circularityPotential !== null ? format.number(circularityPotential, { maximumFractionDigits: 2 }) : "-",
             },
             {
-              label: "Klasse",
+              label: metricsTranslations("class"),
               valueItem: <CircularityPotentialBadge value={circularityPotential} />,
             },
           ]}
