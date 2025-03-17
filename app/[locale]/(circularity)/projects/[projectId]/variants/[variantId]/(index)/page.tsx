@@ -28,7 +28,7 @@ import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
-import BuildingOverview from "./(components)/BuildingOverview"
+import BuildingOverview from "./(components)/BuildingOverview/BuildingOverview"
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
   return withServerComponentErrorHandling(async () => {

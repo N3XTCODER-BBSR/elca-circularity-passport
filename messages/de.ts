@@ -415,9 +415,14 @@ const translationsPlattformGeneric = {
         },
         noComponentsState: {
           title: "Keine relevanten Bauprodukte gefunden",
-          body: "Der Zirkularitätsindex wird für Bauprodukte in den Kostengruppen 320, 330, 340, 350 und 360 berechnet. Bitte gehen Sie zu eLCA und fügen Sie Bauprodukte in einer dieser Gruppen hinzu, um zu beginnen.",
+          body: "Der Zirkularitätsindex wird für Bauprodukte in den Kostengruppen 320, 330, 340, 350 und 360 berechnet. Bitte gehen Sie zu eLCA und fügen Sie Bauprodukte in einer dieser Gruppen hinzu, um zu beginnen, und stellen Sie sicher, dass sie nicht von der Berechnung ausgeschlossen sind.",
         },
         title: "Zirkularitätsinventar",
+        metricTypeSelectorOptions: {
+          circularityIndex: "Zirkularitätsindex (ZI)",
+          eolBuiltPoints: "Zirkularitätspotential (Z)",
+          dismantlingPoints: "Rückbaupotential (R)",
+        },
         moduleTotal: {
           title: "Gesamt",
           label: "gesamt",
@@ -440,11 +445,14 @@ const translationsPlattformGeneric = {
         materialExport: {
           exportMaterialsToCsv: "Exportieren (csv)",
           fields: {
+            componentUuid: "Komponenten-UUID",
+            volumePerUnit: "Volume (m3) pro Einheit",
+            massPerUnit: "Masse (kg) pro Einheit",
             processName: "Prozessname",
             amount: "Menge",
             unit: "Einheit",
-            thickness: "Dicke",
-            share: "Anteil",
+            thickness: "Dicke (mm)",
+            share: "Anteil (%)",
             componentId: "Komponenten-ID",
           },
         },

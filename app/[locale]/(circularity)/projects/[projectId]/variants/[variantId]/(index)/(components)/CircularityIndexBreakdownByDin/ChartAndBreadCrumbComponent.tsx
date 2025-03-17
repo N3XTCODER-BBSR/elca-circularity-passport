@@ -27,7 +27,9 @@
 import { ResponsiveBar } from "@nivo/bar"
 import { useFormatter } from "next-intl"
 import React, { useState } from "react"
-import { circularityBarCharColorMapping } from "constants/styleConstants"
+import { circularityMetricBarChartColorMapping } from "constants/styleConstants"
+import { MetricType } from "lib/domain-logic/shared/basic-types"
+import { useMetricOptions } from "../../(utils)/useMetricOptions"
 
 export type ChartDataLeaf = {
   isLeaf: true
@@ -53,6 +55,7 @@ export type ChartAndBreadCrumbComponentProps = {
   title: string
   labelTotalDimensionalValue: string
   unitNameTotalDimensionalValue: string
+  metricType: MetricType
 }
 
 function standardAxisProps() {
@@ -91,9 +94,11 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
   title,
   labelTotalDimensionalValue,
   unitNameTotalDimensionalValue,
+  metricType,
 }) => {
   const [path, setPath] = useState<ChartDataNode[]>([rootChartDataNode])
   const format = useFormatter()
+  const metricOptions = useMetricOptions()
 
   // TODO (M): consider to add proper logic checks so that this
   // exclamation mark is actually safe to use
@@ -139,7 +144,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
   return (
     <div className="mx-8 my-24 h-[370px]">
       <div className="flex flex-col items-center">
-        <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400">{title}</h2>
+        <h3 className="text-2xl font-bold text-gray-600 dark:text-gray-400">{title}</h3>
         <div className="mt-2">
           {`${labelTotalDimensionalValue}: `}
           {format.number(currentNode.dimensionalValue, { maximumFractionDigits: 2 })} {unitNameTotalDimensionalValue}
@@ -181,7 +186,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
               },
             }}
             margin={margin}
-            colors={(datum) => circularityBarCharColorMapping(datum.data.datum)}
+            colors={(datum) => circularityMetricBarChartColorMapping(datum.data.datum, metricType)}
             padding={0.2}
             groupMode="grouped"
             layout="horizontal"
@@ -192,19 +197,25 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
             maxValue={140}
             axisTop={null}
             tooltipLabel={(d) => d.data.identifier}
-            tooltip={(d) => (
-              <div
-                style={{
-                  background: "white",
-                  padding: "9px 12px",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                }}
-              >
-                <b>{d.data.identifier}</b>:{" "}
-                {format.number(d.data.datum, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}
-              </div>
-            )}
+            tooltip={(d) => {
+              const metricLabel = metricOptions.find((option) => option.value === metricType)?.label
+
+              return (
+                <div
+                  style={{
+                    background: "white",
+                    padding: "9px 12px",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                  }}
+                >
+                  <b>{d.data.identifier}</b>
+                  <div>
+                    {metricLabel}: {format.number(d.data.datum, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}
+                  </div>
+                </div>
+              )
+            }}
             axisRight={null}
             axisBottom={standardAxisProps()}
             axisLeft={customAxisLeftProps(handleBarLabelClick)}

@@ -42,4 +42,5 @@ export interface ActionResponse<T = unknown> {
   details?: unknown
 }
 
+export type MetricType = "circularityIndex" | "eolBuiltPoints" | "dismantlingPoints"
 export type DimensionalFieldName = "mass" | "volume"

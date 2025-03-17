@@ -58,7 +58,6 @@ export default function MaterialCsvExportButton(props: MaterialCsvExportProps) {
   const tFields = useTranslations("CircularityTool.sections.overview.materialExport.fields")
   const tCircularity = useTranslations("Circularity.Components.Layers.CircularityInfo")
   const tComponents = useTranslations("Circularity.Components")
-  const tLayers = useTranslations("Circularity.Components.Layers")
   const tRebuild = useTranslations("Circularity.Components.Layers.CircularityInfo.RebuildSection")
   const tEolBuilt = useTranslations("Circularity.Components.Layers.CircularityInfo.EolBuiltSection")
   const tEolUnbuiltClass = useTranslations(
@@ -77,8 +76,8 @@ export default function MaterialCsvExportButton(props: MaterialCsvExportProps) {
     tBaustoffMaterial: tCircularity("tBaustoffMaterial"),
     thickness: tFields("thickness"),
     share: tFields("share"),
-    volumePerUnit: tLayers("volume"),
-    massPerUnit: tLayers("mass"),
+    volumePerUnit: tFields("volumePerUnit"),
+    massPerUnit: tFields("massPerUnit"),
     circularityIndex: tCircularity("circularityIndex"),
     eolClassBuilt: tEolBuilt("class"),
     eolPointsBuilt: tEolBuilt("points"),
@@ -86,8 +85,8 @@ export default function MaterialCsvExportButton(props: MaterialCsvExportProps) {
     eolPointsUnbuilt: tEolUnbuiltPoints("points"),
     rebuildClass: tRebuild("rebuildClass"),
     rebuildPoints: tRebuild("rebuildPoints"),
+    elementUuid: tFields("componentUuid"),
     componentId: tFields("componentId"),
-    elementUuid: tComponents("uuid"),
   }
 
   const downloadCSV = () => {

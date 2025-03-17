@@ -27,18 +27,14 @@ import { getTranslations } from "next-intl/server"
 import { FC } from "react"
 import { CtaButton } from "app/(components)/generic/CtaButton"
 import { NoComponentsMessage } from "app/(components)/NoComponentsMessage"
-import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
+import { getProjectCircularityData } from "lib/domain-logic/circularity/misc/getProjectCircularityData"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { calculateTotalCircularityIndexForProject } from "lib/domain-logic/circularity/utils/calculateTotalCircularityIndex"
 import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
-import CircularityIndexBreakdownByDin from "./CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
-import CircularityIndexBreakdownByMaterialType, {
-  ProcessCategory,
-} from "./CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
-import MaterialCsvExportButton from "./CircularityIndexBreakdownByMaterialType/MaterialCsvExport/MaterialCsvExportButton"
-import CircularityIndexTotalNumber from "./CircularityIndexTotalNumber"
+import CircularityData from "./CircularityData"
+import { ProcessCategory } from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
+import MaterialCsvExportButton from "../CircularityIndexBreakdownByMaterialType/MaterialCsvExport/MaterialCsvExportButton"
 
 const MissingDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) => {
   const t = await getTranslations("CircularityTool.sections.overview")
@@ -61,40 +57,6 @@ const MissingDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) 
   )
 }
 
-const CircularityData: FC<{
-  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
-  projectName: string
-  catalogPath: string
-  processCategories: ProcessCategory[]
-  dimensionalFieldName: DimensionalFieldName
-}> = async ({ circularityData, catalogPath, projectName, processCategories, dimensionalFieldName }) => {
-  const totalCircularityIndexForProject = calculateTotalCircularityIndexForProject(
-    circularityData,
-    dimensionalFieldName
-  )
-  return (
-    <>
-      <div>
-        <CircularityIndexTotalNumber circularityIndexPoints={totalCircularityIndexForProject} />
-      </div>
-      <CircularityIndexBreakdownByDin
-        dimensionalFieldName={dimensionalFieldName}
-        circularityData={circularityData}
-        projectName={projectName}
-        catalogPath={catalogPath}
-      />
-      <CircularityIndexBreakdownByMaterialType
-        dimensionalFieldName={dimensionalFieldName}
-        catalogPath={catalogPath}
-        projectName={projectName}
-        processCategories={processCategories}
-        circularityData={circularityData}
-        margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
-      />
-    </>
-  )
-}
-
 type BuildingOverviewProps = {
   projectId: number
   projectName: string
@@ -103,7 +65,8 @@ type BuildingOverviewProps = {
 
 const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingOverviewProps) => {
   const dimensionalFieldName: DimensionalFieldName = "volume"
-  const circularityData = await getProjectCircularityIndexData(variantId, projectId)
+  const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
+    await getProjectCircularityData(variantId, projectId)
   const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
 
   const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>

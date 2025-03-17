@@ -28,9 +28,6 @@ import { EOLScenarioMap } from "lib/domain-logic/circularity/utils/circularityMa
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 
 const EolScenarioInfoBox = ({ layerData }: { layerData: EnrichedElcaElementComponent }) => {
-  // TODO: use i18n
-  // const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
-
   const isSpecific = layerData.eolUnbuiltSpecificScenario != null
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo.EolDataSection.EolUnbuilt")
 

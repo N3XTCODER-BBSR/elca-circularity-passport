@@ -41,7 +41,9 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     process_category_node_id: number,
     volume: number,
     mass: number,
-    circularityIndex: number
+    circularityIndex: number,
+    eolBuiltPoints: number,
+    dismantlingPoints: number
   ): MaterialNode {
     return {
       component_uuid,
@@ -52,6 +54,8 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       volume,
       mass,
       circularityIndex,
+      eolBuiltPoints,
+      dismantlingPoints,
     }
   }
 
@@ -64,6 +68,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       products,
       "mass",
       "Root",
+      "circularityIndex",
       false
     )
 
@@ -77,13 +82,16 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
   test("single category with single product using decimal ref_num", () => {
     // Make Bindemittel a top-level category by using "1"
     const processCategories: ProcessCategory[] = [createProcessCategory(614, "Bindemittel", "1")]
-    const products: MaterialNode[] = [createMaterialNode("uuid-1", "Comp: 1", 101, "Cement Product", 614, 50, 100, 0.8)]
+    const products: MaterialNode[] = [
+      createMaterialNode("uuid-1", "Comp: 1", 101, "Cement Product", 614, 50, 100, 0.8, 0, 0),
+    ]
 
     const result = transformCircularityDataAndMaterialTypesToChartData(
       processCategories,
       products,
       "mass",
       "Root",
+      "circularityIndex",
       false
     )
 
@@ -134,10 +142,10 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     ]
 
     const products: MaterialNode[] = [
-      createMaterialNode("uuid-1", "Comp: 1", 101, "Concrete Mix A", 617, 50, 100, 0.8),
-      createMaterialNode("uuid-2", "Comp: 2", 102, "Mineral Wool A", 620, 25, 50, 0.9),
-      createMaterialNode("uuid-3", "Comp: 3", 103, "Steel Beam A", 646, 60, 120, 0.7),
-      createMaterialNode("uuid-4", "Comp: 4", 104, "Steel Beam B", 646, 40, 80, 0.6),
+      createMaterialNode("uuid-1", "Comp: 1", 101, "Concrete Mix A", 617, 50, 100, 0.8, 0, 0),
+      createMaterialNode("uuid-2", "Comp: 2", 102, "Mineral Wool A", 620, 25, 50, 0.9, 0, 0),
+      createMaterialNode("uuid-3", "Comp: 3", 103, "Steel Beam A", 646, 60, 120, 0.7, 0, 0),
+      createMaterialNode("uuid-4", "Comp: 4", 104, "Steel Beam B", 646, 40, 80, 0.6, 0, 0),
     ]
 
     const result = transformCircularityDataAndMaterialTypesToChartData(
@@ -145,6 +153,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       products,
       "mass",
       "Root",
+      "circularityIndex",
       false
     )
     expect(result.isLeaf).toBe(false)
@@ -262,7 +271,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     // Only one top-level category "Bindemittel" (1)
     const processCategories: ProcessCategory[] = [createProcessCategory(614, "Bindemittel", "1")]
     const products: MaterialNode[] = [
-      createMaterialNode("uuid-binder", "Comp: binder", 501, "Binder Product", 614, 30, 60, 0.95),
+      createMaterialNode("uuid-binder", "Comp: binder", 501, "Binder Product", 614, 30, 60, 0.95, 0, 0),
     ]
 
     const result = transformCircularityDataAndMaterialTypesToChartData(
@@ -270,6 +279,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       products,
       "mass",
       "Artificial Root",
+      "circularityIndex",
       true
     )
 
@@ -302,8 +312,8 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       createProcessCategory(617, "Mörtel und Beton", "2"),
     ]
     const products: MaterialNode[] = [
-      createMaterialNode("uuid-binder", "Comp: binder", 501, "Binder Product", 614, 20, 40, 0.8),
-      createMaterialNode("uuid-concrete", "Comp: concrete", 502, "Concrete Product", 617, 50, 100, 0.7),
+      createMaterialNode("uuid-binder", "Comp: binder", 501, "Binder Product", 614, 20, 40, 0.8, 0, 0),
+      createMaterialNode("uuid-concrete", "Comp: concrete", 502, "Concrete Product", 617, 50, 100, 0.7, 0, 0),
     ]
 
     const result = transformCircularityDataAndMaterialTypesToChartData(
@@ -311,6 +321,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       products,
       "mass",
       "Artificial Root",
+      "circularityIndex",
       true
     )
     // Because multiple top-level categories exist, we keep the artificial root
@@ -333,6 +344,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       products,
       "mass",
       "Root",
+      "circularityIndex",
       false
     )
     // Since the category has no products, it won't appear as a child
@@ -348,7 +360,18 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     ]
 
     const products: MaterialNode[] = [
-      createMaterialNode("uuid-specialsteel", "Comp: specialsteel", 9999, "Special Steel Product", 999, 15, 30, 0.85),
+      createMaterialNode(
+        "uuid-specialsteel",
+        "Comp: specialsteel",
+        9999,
+        "Special Steel Product",
+        999,
+        15,
+        30,
+        0.85,
+        0,
+        0
+      ),
     ]
 
     const result = transformCircularityDataAndMaterialTypesToChartData(
@@ -356,6 +379,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       products,
       "mass",
       "Root",
+      "circularityIndex",
       false
     )
 

@@ -25,7 +25,7 @@
 import { ensureVariantAccessible } from "app/(utils)/ensureAccessible"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { getElcaElementsForVariantId } from "lib/domain-logic/circularity/misc/getElcaElementsForProjectId"
-import { getProjectCircularityIndexData } from "lib/domain-logic/circularity/misc/getProjectCircularityIndex"
+import { getProjectCircularityData } from "lib/domain-logic/circularity/misc/getProjectCircularityData"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
@@ -51,7 +51,7 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
     }
 
     const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
-      await getProjectCircularityIndexData(variantId, projectId)
+      await getProjectCircularityData(variantId, projectId)
 
     const componentUuiddsWithMissingCircularityIndexForAnyProduct: string[] = circularityData
       .filter((component) => component.layers.some((layer) => layer.circularityIndex == null || layer.volume == null))

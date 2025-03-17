@@ -441,7 +441,12 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
         },
         noComponentsState: {
           title: "No se encontraron componentes de construcción relevantes",
-          body: "El índice de circularidad se calcula para los componentes de construcción en los grupos de costos: 320, 330, 340, 350 y 360. Por favor, vaya a eLCA y agregue componentes de construcción en uno de estos grupos para comenzar.",
+          body: "El índice de circularidad se calcula para los componentes de construcción en los grupos de costos: 320, 330, 340, 350 y 360. Por favor, vaya a eLCA y agregue componentes de construcción en uno de estos grupos para comenzar, y asegúrese de que no estén excluidos del cálculo.",
+        },
+        metricTypeSelectorOptions: {
+          circularityIndex: "Índice de circularidad (ZI)",
+          eolBuiltPoints: "Potencial de circularidad (Z)",
+          dismantlingPoints: "Potencial de disminución (R)",
         },
         title: "Inventario de circularidad",
         moduleTotal: {
@@ -466,11 +471,14 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
         materialExport: {
           exportMaterialsToCsv: "Exportar (csv)",
           fields: {
+            componentUuid: "UUID del componente",
+            volumePerUnit: "Volumen (m3) por unidad",
+            massPerUnit: "Masa (kg) por unidad",
             processName: "Nombre del proceso",
             amount: "Cantidad",
             unit: "Unidad",
-            thickness: "Espesor",
-            share: "Proporción",
+            thickness: "Espesor (mm)",
+            share: "Proporción (%)",
             componentId: "ID del componente",
           },
         },

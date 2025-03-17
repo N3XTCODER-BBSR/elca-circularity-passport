@@ -438,7 +438,12 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
         },
         noComponentsState: {
           title: "No relevant building components found",
-          body: "The circularity index is calculated for building components in the cost groups: 320, 330, 340, 350 and 360. Please go to eLCA and add building components in one of these groups to get started.",
+          body: "The circularity index is calculated for building components in the cost groups: 320, 330, 340, 350 and 360. Please go to eLCA and add building components in one of these groups to get started, and ensure they are not excluded from the calculation.",
+        },
+        metricTypeSelectorOptions: {
+          circularityIndex: "Circularity index (ZI)",
+          eolBuiltPoints: "Circularity potential (Z)",
+          dismantlingPoints: "Dismantling potential (R)",
         },
         title: "Circularity Inventory",
         moduleTotal: {
@@ -463,11 +468,14 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
         materialExport: {
           exportMaterialsToCsv: "Export (csv)",
           fields: {
+            componentUuid: "Component UUID",
+            volumePerUnit: "Volume (m3) per Unit",
+            massPerUnit: "Mass (kg) per Unit",
             processName: "Process Name",
             amount: "Amount",
             unit: "Unit",
-            thickness: "Thickness",
-            share: "Share",
+            thickness: "Thickness (mm)",
+            share: "Share (%)",
             componentId: "Component ID",
           },
         },
