@@ -234,7 +234,9 @@ const CircularityInfo = (props: CircularityInfoProps) => {
 
       <div className="flex flex-row">
         <Heading3>{circularityInfoTranslations("title")}</Heading3>
-        <Badge>Unvollständig</Badge>
+        <div className="ml-4">
+          <Badge>Unvollständig</Badge>
+        </div>
       </div>
       <Area>
         <TwoColGrid>

@@ -30,12 +30,22 @@ import { Heading3, Heading4 } from "app/(components)/generic/layout-elements"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/misc/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import { preloadCircularityData } from "lib/domain-logic/circularity/misc/preloadCircularityData"
+
 import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
 import { ensureUserAuthorizationToElementByUuid } from "lib/ensureAuthorized"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import {
+  CircularityPotentialBadge,
+  DescriptionItem,
+  DismantlingPotentialBadge,
+  HorizontalDescriptionItem,
+} from "./(components)/CircularityIndication"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
+import { getTotalMassAndVolume } from "./utils/getTotalMassAndVolume"
+import { getTotalWeightedCircularityPotential } from "./utils/getTotalWeightedCircularityPotential"
+import { getTotalWeightedDismantlingPotential } from "./utils/getTotalWeightedDismantlingPotential"
 
 const Page = async ({
   params,
@@ -44,7 +54,6 @@ const Page = async ({
 }) => {
   return withServerComponentErrorHandling(async () => {
     const session = await ensureUserIsAuthenticated()
-    const format = await getFormatter()
     const projectId = Number(params.projectId)
     const variantId = Number(params.variantId)
     const componentUuid = params.componentUuid
@@ -101,8 +110,6 @@ const Page = async ({
       notFound()
     }
 
-    const dinGroupLevelNumber = Math.floor(componentData.din_code / 100) * 100
-
     const availableTBaustoffProducts = await dbDalInstance.getAvailableTBaustoffProducts()
     const availableTBaustoffProductIdAndNames = availableTBaustoffProducts.map((el) => ({
       id: `${el.id}`,
@@ -119,48 +126,7 @@ const Page = async ({
             <Image src="/component_placeholder_lg.png" alt={componentData?.element_name} width={400} height={400} />
           </div>
           <div className="w-full md:w-2/3 md:p-4">
-            <div className="overflow-hidden">
-              <div className="border border-gray-200">
-                <dl>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">{t("name")}</dt>
-                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {componentData.element_name}
-                    </dd>
-                  </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">{t("uuid")}</dt>
-                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {componentData.element_uuid}
-                    </dd>
-                  </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">{t("costGroup")}</dt>
-                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {dinGroupLevelNumber}
-                    </dd>
-                  </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">{t("numberInstalled")}</dt>
-                    <dd
-                      className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
-                      data-testid="component-page-overview__dd__number-installed"
-                    >
-                      {format.number(componentData.quantity, { maximumFractionDigits: 2 })}
-                    </dd>
-                  </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">{t("referenceUnit")}</dt>
-                    <dd
-                      className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
-                      data-testid="component-page-overview__dd__ref-unit"
-                    >
-                      {componentData.unit}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-            </div>
+            <ComponentDescription componentData={componentData} />
           </div>
         </div>
         <div className="mb-12 flex flex-col gap-2">
@@ -185,4 +151,87 @@ const Page = async ({
     )
   })
 }
+
+const ComponentDescription = async ({
+  componentData,
+}: {
+  componentData: ElcaElementWithComponents<EnrichedElcaElementComponent>
+}) => {
+  const format = await getFormatter()
+  const t = await getTranslations("Circularity.Components")
+  const headersTranslations = await getTranslations("Circularity.Components.headers")
+
+  const dinGroupLevelNumber = Math.floor(componentData.din_code / 100) * 100
+
+  const totalWeightedCircularityPotential = getTotalWeightedCircularityPotential(componentData.layers)
+  const totalWeightedDismantlingPotential = getTotalWeightedDismantlingPotential(componentData.layers)
+
+  const { totalMass, totalVolume } = getTotalMassAndVolume(componentData.layers)
+
+  return (
+    <div className="overflow-hidden border border-gray-200">
+      <dl className="mb-3 py-2">
+        <DescriptionItem label={t("name")} value={componentData.element_name} testId="name" />
+        <DescriptionItem label={t("uuid")} value={componentData.element_uuid} testId="uuid" />
+        <DescriptionItem label={t("costGroup")} value={dinGroupLevelNumber} testId="cost-group" />
+        <DescriptionItem
+          label={t("numberInstalled")}
+          value={format.number(componentData.quantity, { maximumFractionDigits: 2 })}
+          testId="number-installed"
+        />
+        <DescriptionItem label={t("referenceUnit")} value={componentData.unit} testId="ref-unit" />
+      </dl>
+      <div className="border-gray-20 grid grid-cols-3 border-t">
+        <HorizontalDescriptionItem
+          title={headersTranslations("materialDensity")}
+          hasBorderRight
+          labelValuePairs={[
+            {
+              label: headersTranslations("metrics.mass"),
+              value: totalMass ? `${format.number(totalMass, { maximumFractionDigits: 2 })} t` : "-",
+            },
+            {
+              label: headersTranslations("metrics.volume"),
+              value: totalVolume ? `${format.number(totalVolume, { maximumFractionDigits: 2 })} m3` : "-",
+            },
+          ]}
+        />
+        <HorizontalDescriptionItem
+          title={`${headersTranslations("dismantlingPotential")}:`}
+          hasBorderRight
+          labelValuePairs={[
+            {
+              label: headersTranslations("metrics.points"),
+              value:
+                totalWeightedDismantlingPotential !== null
+                  ? format.number(totalWeightedDismantlingPotential, { maximumFractionDigits: 2 })
+                  : "-",
+            },
+            {
+              label: headersTranslations("metrics.class"),
+              valueItem: <DismantlingPotentialBadge value={totalWeightedDismantlingPotential} />,
+            },
+          ]}
+        />
+        <HorizontalDescriptionItem
+          title={`${headersTranslations("circularityPotential")}:`}
+          labelValuePairs={[
+            {
+              label: headersTranslations("metrics.points"),
+              value:
+                totalWeightedCircularityPotential !== null
+                  ? format.number(totalWeightedCircularityPotential, { maximumFractionDigits: 2 })
+                  : "-",
+            },
+            {
+              label: headersTranslations("metrics.class"),
+              valueItem: <CircularityPotentialBadge value={totalWeightedCircularityPotential} />,
+            },
+          ]}
+        />
+      </div>
+    </div>
+  )
+}
+
 export default Page

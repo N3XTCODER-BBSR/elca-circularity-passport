@@ -25,24 +25,20 @@
 "use client"
 
 import { Accordion } from "@szhsin/react-accordion"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
+import { useQuery } from "@tanstack/react-query"
 import { useFormatter, useTranslations } from "next-intl"
-import toast from "react-hot-toast"
 import { AccordionItemFullSimple } from "app/(components)/generic/AccordionItem"
 import { Badge } from "app/(components)/generic/layout-elements"
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
-import Toggle from "app/(components)/generic/Toggle"
 import getElcaComponentDataByProductId from "lib/domain-logic/circularity/server-actions/getElcaComponentDataByProductId"
-import updateExludedProduct from "lib/domain-logic/circularity/server-actions/toggleExcludedProject"
 import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { SelectOption } from "lib/domain-logic/types/helper-types"
 import { CallServerActionError } from "lib/errors"
 import CircularityInfo from "./circularity-info/CircularityInfo"
+import ProductHeader from "../ProductHeader"
 
 type ComponentLayerProps = {
   projectId: number
@@ -70,37 +66,9 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
 
   const unitsTranslations = useTranslations("Units")
   const layerTranslations = useTranslations("Circularity.Components.Layers")
-  const t = useTranslations()
-  const router = useRouter()
   const format = useFormatter()
 
   const { data: currentLayerData, refetch: refetchLayerData } = layerDataQuery
-
-  const updateExcludedProductMutation = useMutation({
-    mutationFn: async (productId: number) => {
-      const result = await updateExludedProduct(productId)
-      if (!result.success) {
-        throw new CallServerActionError(result.errorI18nKey)
-      }
-    },
-    onSuccess: async () => {
-      await refetchLayerData()
-      router.refresh()
-    },
-    onError: (error: Error) => {
-      if (error instanceof CallServerActionError) {
-        toast.error(t(error.errorI18nKey))
-      }
-    },
-  })
-
-  const setProductIsExcluded = () => {
-    updateExcludedProductMutation.mutate(currentLayerData.component_id)
-  }
-
-  const optimisticProductIsExcluded = updateExcludedProductMutation.isPending
-    ? !currentLayerData.isExcluded
-    : currentLayerData.isExcluded
 
   // TODO: consider to do this calucation on the server side
   // (or at least be consistent with the other calculation in the conext of the overview page / project circularity index)
@@ -162,36 +130,14 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
       className="mb-6 overflow-hidden border border-gray-200 bg-white p-6"
       data-testid={`component-layer__div__${layerData.component_id}`}
     >
-      <div className="flex justify-between gap-4">
-        <div className="flex items-start">
-          <Image src="/component-layer.svg" alt="layer-icon" width={20} height={20} />
-          <h2 className="ml-2 text-2xl font-semibold leading-6 text-gray-900">
-            {layerNumber != null && layerNumber > 0 ? `${layerNumber} - ` : ""} {currentLayerData.process_name}
-          </h2>
+      {!currentLayerData.isExcluded && (!circulartyEnrichedLayerData.circularityIndex || !currentLayerData.volume) && (
+        <div className="mb-6 flex">
+          <Badge>{layerTranslations("incomplete")}</Badge>
         </div>
-        <div className="flex items-center gap-1 text-sm font-medium leading-5 sm:gap-2">
-          <div>{layerTranslations("excludedFromCalculation")}</div>
-          <Toggle
-            disabled={updateExcludedProductMutation.isPending}
-            testId={layerData.component_id.toString()}
-            isEnabled={optimisticProductIsExcluded}
-            setEnabled={setProductIsExcluded}
-            label="Exclude from calculation"
-          />
-        </div>
-      </div>
+      )}
+      <ProductHeader layerData={currentLayerData} layerNumber={layerNumber} refetchLayerData={refetchLayerData} />
       <Accordion transition transitionTimeout={200}>
-        <AccordionItemFullSimple
-          testId={layerData.component_id.toString()}
-          header={
-            !currentLayerData.isExcluded &&
-            (!circulartyEnrichedLayerData.circularityIndex || !currentLayerData.volume) && (
-              <div className="flex">
-                <Badge>{layerTranslations("incomplete")}</Badge>
-              </div>
-            )
-          }
-        >
+        <AccordionItemFullSimple testId={layerData.component_id.toString()} header={<></>}>
           <div className="mt-8 overflow-hidden">
             <div className="">
               <SideBySideDescriptionListsWithHeadline data={layerKeyValues} />
@@ -203,4 +149,5 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     </div>
   )
 }
+
 export default ComponentLayer

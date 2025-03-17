@@ -237,12 +237,33 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
       numberInstalled: "Number Installed",
       referenceUnit: "Reference Unit",
       noBuildingMaterials: "Nothing here. Add a building material in elca to get started",
+      headers: {
+        metrics: {
+          mass: "Mass",
+          volume: "Volume",
+          points: "Points",
+          class: "Class",
+        },
+        materialDensity: "Material Density",
+        circularityPotential: "Circularity Potential",
+        dismantlingPotential: "Dismantling Potential",
+      },
       buildingMaterialsHeading: "Materials (relative to 1 {refUnit})",
       layersHeading: "Layers (from interior to exterior)",
       nonLayersHeading: "Other Materials",
       Layers: {
         mass: "Mass",
         volume: "Volume",
+        headers: {
+          metrics: {
+            points: "Points",
+            class: "Class",
+          },
+          dismantlingPotential: "Dismantling Potential",
+          eolUnbuilt: "EOL (unbuilt)",
+          materialCompatibility: "Material Compatibility",
+          circularityPotential: "Circularity Potential",
+        },
         incomplete: "Incomplete",
         excludedFromCalculation: "Excluded from calculation",
         CircularityInfo: {

@@ -250,9 +250,13 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
                       <h3 className="pl-4 text-[16px] font-semibold">{component.name}</h3>
                       {showIncompleteCompleteLabels &&
                         (hasAnyCircularityMissingData3 ? (
-                          <Badge>{t("incomplete")}</Badge>
+                          <div className="ml-4">
+                            <Badge>{t("incomplete")}</Badge>
+                          </div>
                         ) : (
-                          <Badge color="green">{t("complete")}</Badge>
+                          <div className="ml-4">
+                            <Badge color="green">{t("complete")}</Badge>
+                          </div>
                         ))}
                     </div>
                   </Box>
