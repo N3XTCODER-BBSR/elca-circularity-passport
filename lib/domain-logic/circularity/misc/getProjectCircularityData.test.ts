@@ -362,7 +362,6 @@ describe("getProjectCircularityData", () => {
       mockElementsWithComponents
     )
 
-    // The semicolon prevents ASI issues and "as jest.Mock" is a TypeScript type assertion
     ;(preloadCircularityData as jest.Mock).mockResolvedValue(mockPreloadedData)
 
     // Configure the mock to return different values for consecutive calls
@@ -385,5 +384,185 @@ describe("getProjectCircularityData", () => {
     )
     expect(preloadCircularityData).toHaveBeenCalled()
     expect(getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId).toHaveBeenCalledTimes(2)
+  })
+
+  test("should filter out elements where all layers are excluded", async () => {
+    // Mock data setup
+    const mockVariantId = 123
+    const mockProjectId = 456
+
+    // Mock the elements with components from legacy DB
+    const mockElementsWithComponents = [
+      {
+        uuid: "element-1",
+        name: "Element 1",
+        ref_unit: "m²",
+        quantity: "2",
+        element_types: {
+          din_code: 123,
+          name: "Type 1",
+        },
+        element_components: [
+          {
+            id: 1,
+            layer_position: 1,
+            is_layer: true,
+            quantity: "1",
+            layer_size: "10",
+            layer_length: "10",
+            layer_width: "1",
+            layer_area_ratio: null,
+            process_configs: {
+              id: 1,
+              name: "Process 1",
+              density: "1000",
+              process_category_node_id: 1,
+              process_categories: {
+                ref_num: "1",
+              },
+              process_life_cycle_assignments: [
+                {
+                  processes: {
+                    uuid: "process-uuid-1",
+                    process_dbs: {
+                      name: "PDB 1",
+                      version: "1.0",
+                      uuid: "db-uuid-1",
+                    },
+                  },
+                },
+              ],
+            },
+            process_conversions: {
+              in_unit: "m²",
+            },
+          },
+        ],
+      },
+      {
+        uuid: "element-2",
+        name: "Element 2",
+        ref_unit: "m²",
+        quantity: "3",
+        element_types: {
+          din_code: 456,
+          name: "Type 2",
+        },
+        element_components: [
+          {
+            id: 2,
+            layer_position: 1,
+            is_layer: true,
+            quantity: "1",
+            layer_size: "5",
+            layer_length: "5",
+            layer_width: "1",
+            layer_area_ratio: null,
+            process_configs: {
+              id: 2,
+              name: "Process 2",
+              density: "1500",
+              process_category_node_id: 2,
+              process_categories: {
+                ref_num: "2",
+              },
+              process_life_cycle_assignments: [
+                {
+                  processes: {
+                    uuid: "process-uuid-2",
+                    process_dbs: {
+                      name: "PDB 2",
+                      version: "1.0",
+                      uuid: "db-uuid-2",
+                    },
+                  },
+                },
+              ],
+            },
+            process_conversions: {
+              in_unit: "m²",
+            },
+          },
+        ],
+      },
+    ]
+
+    // Mock the preloaded circularity data with element-2's component ID in the excluded set
+    const mockPreloadedData = {
+      // This is the key part: component ID 2 is in the excluded set
+      excludedProductIdsSet: new Set([2]),
+      userEnrichedMap: new Map(),
+      tBaustoffMappingEntriesMap: new Map(),
+      tBaustoffProductMap: new Map(),
+      productMassMap: new Map(),
+    }
+
+    // Mock the element details with products for each element
+    const mockElementDetailsWithProducts1 = {
+      element_uuid: "element-1",
+      element_type_name: "Type 1",
+      element_name: "Element 1",
+      din_code: 123,
+      unit: "m²",
+      quantity: 2,
+      layers: [
+        {
+          component_id: 1,
+          element_uuid: "element-1",
+          is_layer: true,
+          layer_position: 1,
+          process_name: "Process 1",
+          // ... other properties
+        },
+      ],
+    }
+
+    const mockElementDetailsWithProducts2 = {
+      element_uuid: "element-2",
+      element_type_name: "Type 2",
+      element_name: "Element 2",
+      din_code: 456,
+      unit: "m²",
+      quantity: 3,
+      layers: [
+        {
+          component_id: 2, // This component is in the excluded set
+          element_uuid: "element-2",
+          is_layer: true,
+          layer_position: 1,
+          process_name: "Process 2",
+          // ... other properties
+        },
+      ],
+    }
+
+    // Setup the mocks
+    mockLegacyDbDalInstance.getElcaComponentsWithElementsForProjectAndVariantId.mockResolvedValue(
+      mockElementsWithComponents
+    )
+    ;(preloadCircularityData as jest.Mock).mockResolvedValue(mockPreloadedData)
+    ;(getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId as jest.Mock)
+      .mockResolvedValueOnce(mockElementDetailsWithProducts1)
+      .mockResolvedValueOnce(mockElementDetailsWithProducts2)
+
+    // Call the function
+    const result = await getProjectCircularityData(mockVariantId, mockProjectId)
+
+    // Assertions
+    expect(result).toHaveLength(1) // Should only include element 1, not element 2 (which has all layers excluded)
+    expect(result[0]!.element_uuid).toBe("element-1")
+
+    // Verify element 2 (with excluded layers) is not included
+    const element2Included = result.some((element) => element.element_uuid === "element-2")
+    expect(element2Included).toBe(false)
+
+    // Verify the function calls
+    expect(mockLegacyDbDalInstance.getElcaComponentsWithElementsForProjectAndVariantId).toHaveBeenCalledWith(
+      mockVariantId,
+      mockProjectId
+    )
+    expect(preloadCircularityData).toHaveBeenCalled()
+    expect(getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId).toHaveBeenCalledTimes(2)
+    expect(calculateCircularityDataForLayer).toHaveBeenCalled()
   })
 })
