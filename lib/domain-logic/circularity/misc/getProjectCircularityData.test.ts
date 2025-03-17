@@ -361,7 +361,6 @@ describe("getProjectCircularityData", () => {
     mockLegacyDbDalInstance.getElcaComponentsWithElementsForProjectAndVariantId.mockResolvedValue(
       mockElementsWithComponents
     )
-
     ;(preloadCircularityData as jest.Mock).mockResolvedValue(mockPreloadedData)
 
     // Configure the mock to return different values for consecutive calls
