@@ -1,3 +1,23 @@
+## [Release 0.2.2] - 2025-03-17
+
+### Added
+
+- **Circularity Index Indicators:** Added display of circularity index indicators on component pages, providing more detailed circularity metrics at the component level.
+- **EOL and Dismantling Potential Metrics:** Implemented end-of-life (EOL) and dismantling potential metrics for the overview page, including a metric selector for different visualization options.
+- **Materials CSV Export:** Added functionality to export materials data to CSV format with improved translations and correct unit display (thickness in mm).
+- **License Information:** Added license file headers to source code files and updated the LICENSE file.
+
+### Fixed
+
+- **Component Filtering for Charts:** Fixed chart data by excluding components without any included materials, ensuring more accurate visualization.
+- **Volume-based Aggregation:** Parameterized circularity index calculation to use volume for project overview instead of mass, fixing issues with project-wide calculations that didn't consider quantity.
+- **Internationalization:** Improved translations across the application, including the ProductHeader component.
+
+### Improved / Refactored
+
+- **UI Enhancements:** Added styling improvements for circularity descriptions on component level and implemented description items for products in non-extended state.
+- **Display Improvements:** Enhanced display of product material compatibility with proper handling of null values and added display of total component mass and volume values.
+
 ## [Release 0.2.1] - 2025-03-04
 
 ### Added
