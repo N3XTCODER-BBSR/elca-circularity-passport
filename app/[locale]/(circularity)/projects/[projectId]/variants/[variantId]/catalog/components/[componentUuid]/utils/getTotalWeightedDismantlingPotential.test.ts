@@ -60,6 +60,24 @@ describe("getTotalWeightedDismantlingPotential", () => {
     expect(result).toBeNull()
   })
 
+  test("returns null when at least 1 layer does not have a volume", () => {
+    const result = getTotalWeightedDismantlingPotential([
+      { ...layers[0], volume: null } as EnrichedElcaElementComponent,
+      { ...layers[1] } as EnrichedElcaElementComponent,
+    ])
+
+    expect(result).toBeNull()
+  })
+
+  test("returns data for layer 1 when layer 2 is excluded and does not have a volume", () => {
+    const result = getTotalWeightedDismantlingPotential([
+      { ...layers[0] } as EnrichedElcaElementComponent,
+      { ...layers[1], isExcluded: true, volume: null } as EnrichedElcaElementComponent,
+    ])
+
+    expect(result).toBe(dismantlingPotentialClassIdMapping[layers[0]!.dismantlingPotentialClassId!].points)
+  })
+
   test("returns null for layers when dismantlingPotentialClassId is null", () => {
     const result = getTotalWeightedDismantlingPotential([
       {

@@ -42,6 +42,24 @@ describe("getTotalWeightedCircularityPotential", () => {
     expect(result).toBe(-60)
   })
 
+  test("returns data for layer 1 when layer 2 is excluded and doesn't have a volume", () => {
+    const result = getTotalWeightedCircularityPotential([
+      { ...layers[0] } as EnrichedElcaElementComponent,
+      { ...layers[1], isExcluded: true, volume: null } as EnrichedElcaElementComponent,
+    ])
+
+    expect(result).toBe(-60)
+  })
+
+  test("returns null when at least one layer does not have a volume", () => {
+    const result = getTotalWeightedCircularityPotential([
+      { ...layers[0], volume: null } as EnrichedElcaElementComponent,
+      { ...layers[1] } as EnrichedElcaElementComponent,
+    ])
+
+    expect(result).toBeNull()
+  })
+
   test("returns null for empty layers", () => {
     const result = getTotalWeightedCircularityPotential([])
 

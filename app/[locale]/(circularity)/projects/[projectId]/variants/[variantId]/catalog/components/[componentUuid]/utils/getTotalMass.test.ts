@@ -22,34 +22,38 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { dismantlingPotentialClassIdMapping } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
+import { getTotalMass } from "./getTotalMass"
+import { layers } from "./testFixtures"
 
-export const getTotalWeightedDismantlingPotential = (layers: EnrichedElcaElementComponent[]) => {
-  const filteredData = layers
-    .filter((layer) => {
-      return (
-        layer.dismantlingPotentialClassId !== null &&
-        layer.dismantlingPotentialClassId !== undefined &&
-        !layer.isExcluded
-      )
-    })
-    .map((layer) => {
-      return {
-        volume: layer.volume,
-        dismantlingPotential: dismantlingPotentialClassIdMapping[layer.dismantlingPotentialClassId!].points,
-      }
-    })
+describe("getTotalMass", () => {
+  test("returns total volume for valid layers", () => {
+    const result = getTotalMass(layers)
 
-  if (filteredData.length === 0 || filteredData.some(({ volume }) => volume === null)) {
-    return null
-  }
+    expect(result).toBeCloseTo(1604.25, 2)
+  })
 
-  const totalVolume = filteredData.reduce((sum, { volume }) => sum + volume!, 0)
+  test("returns data for layer 1 when layer 2 is excluded from calculation", () => {
+    const result = getTotalMass([
+      { ...layers[0] } as EnrichedElcaElementComponent,
+      { ...layers[1], isExcluded: true } as EnrichedElcaElementComponent,
+    ])
 
-  return filteredData.reduce<number | null>((acc, { volume, dismantlingPotential }) => {
-    const weightedDismantlingPotential = dismantlingPotential * (volume! / totalVolume)
+    expect(result).toBe(layers[0]!.mass)
+  })
 
-    return weightedDismantlingPotential + (acc || 0)
-  }, null)
-}
+  test("returns null for empty layers", () => {
+    const result = getTotalMass([])
+
+    expect(result).toBeNull()
+  })
+
+  test("ignores layer when its mass value is null", () => {
+    const result = getTotalMass([
+      { ...layers[0], mass: null } as EnrichedElcaElementComponent,
+      { ...layers[1] } as EnrichedElcaElementComponent,
+    ])
+
+    expect(result).toBeCloseTo(layers[1]!.mass!, 2)
+  })
+})

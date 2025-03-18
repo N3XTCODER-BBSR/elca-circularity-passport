@@ -32,12 +32,10 @@ export const getTotalWeightedCircularityPotential = (layers: EnrichedElcaElement
       const circularityPotential = circularData.eolBuilt?.points ?? null
       return { layer, circularityPotential }
     })
-    .filter(
-      ({ layer, circularityPotential }) => !layer.isExcluded && layer.volume !== null && circularityPotential !== null
-    )
+    .filter(({ layer, circularityPotential }) => !layer.isExcluded && circularityPotential !== null)
     .map(({ layer, circularityPotential }) => ({ volume: layer.volume!, circularityPotential: circularityPotential! }))
 
-  if (filteredData.length === 0) {
+  if (filteredData.length === 0 || filteredData.some(({ volume }) => volume === null)) {
     return null
   }
 

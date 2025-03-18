@@ -54,16 +54,23 @@ export const CircularityPotentialBadge: FC<{ value: number | null }> = ({ value 
   )
 }
 
+const getClosestDismantlingPotentialClass = (value: number) => {
+  return Object.entries(dismantlingPotentialClassIdMapping).reduce<DismantlingPotentialClassId>(
+    (acc, [dismantlingPotentialClass, { points }]) => {
+      return Math.abs(value - points) < Math.abs(value - dismantlingPotentialClassIdMapping[acc].points)
+        ? (dismantlingPotentialClass as DismantlingPotentialClassId)
+        : (acc as DismantlingPotentialClassId)
+    },
+    DismantlingPotentialClassId.IV
+  )
+}
+
 export const DismantlingPotentialBadge: FC<{ value: number | null }> = ({ value }) => {
   if (value === null) {
     return <div className="text-base font-semibold">-</div>
   }
 
-  const dismantlingPotentialClass = Object.entries(dismantlingPotentialClassIdMapping)
-    .reverse()
-    .reduce<DismantlingPotentialClassId>((acc, [dismantlingPotentialClass, { points }]) => {
-      return value >= points ? (dismantlingPotentialClass as DismantlingPotentialClassId) : acc
-    }, DismantlingPotentialClassId.IV)
+  const dismantlingPotentialClass = getClosestDismantlingPotentialClass(value)
 
   return (
     <div
@@ -101,7 +108,9 @@ export const HorizontalDescriptionItem: FC<{
   hasBorderRight?: boolean
 }> = ({ labelValuePairs, title, hasBorderRight }) => {
   return (
-    <article className={twMerge("border-gray-20 px-6 py-2", hasBorderRight && "border-r")}>
+    <article
+      className={twMerge("border-gray-20 flex flex-col justify-between px-6 py-2", hasBorderRight && "border-r")}
+    >
       <h3 className="mb-3 text-base font-medium text-gray-900">{title}</h3>
       <div className="grid grid-cols-2 gap-2">
         {labelValuePairs.map((pair, index) => (

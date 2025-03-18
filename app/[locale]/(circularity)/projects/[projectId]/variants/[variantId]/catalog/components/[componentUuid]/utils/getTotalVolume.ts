@@ -23,15 +23,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
+import { MissingVolumeError } from "./errors"
 
-export const getTotalMassAndVolume = (layers: EnrichedElcaElementComponent[]) => {
-  return layers
-    .filter((layer) => !layer.isExcluded)
-    .reduce<{ totalMass: number | null; totalVolume: number | null }>(
-      (acc, layer) => ({
-        totalMass: (acc.totalMass ?? 0) + (layer.mass || 0),
-        totalVolume: (acc.totalVolume ?? 0) + (layer.volume || 0),
-      }),
-      { totalMass: null, totalVolume: null }
-    )
+export const getTotalVolume = (layers: EnrichedElcaElementComponent[]) => {
+  const filteredLayers = layers.filter((layer) => !layer.isExcluded)
+  if (filteredLayers.some((layer) => layer.volume === null)) {
+    throw new MissingVolumeError()
+  }
+
+  return filteredLayers.reduce<number | null>((acc, layer) => (acc ?? 0) + (layer.volume || 0), null)
 }

@@ -43,7 +43,9 @@ import {
 } from "./(components)/CircularityIndication"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
-import { getTotalMassAndVolume } from "./utils/getTotalMassAndVolume"
+import { MissingVolumeError } from "./utils/errors"
+import { getTotalMass } from "./utils/getTotalMass"
+import { getTotalVolume } from "./utils/getTotalVolume"
 import { getTotalWeightedCircularityPotential } from "./utils/getTotalWeightedCircularityPotential"
 import { getTotalWeightedDismantlingPotential } from "./utils/getTotalWeightedDismantlingPotential"
 
@@ -160,13 +162,24 @@ const ComponentDescription = async ({
   const format = await getFormatter()
   const t = await getTranslations("Circularity.Components")
   const headersTranslations = await getTranslations("Circularity.Components.headers")
+  const unitsTranslations = await getTranslations("Units")
 
   const dinGroupLevelNumber = Math.floor(componentData.din_code / 100) * 100
 
   const totalWeightedCircularityPotential = getTotalWeightedCircularityPotential(componentData.layers)
   const totalWeightedDismantlingPotential = getTotalWeightedDismantlingPotential(componentData.layers)
 
-  const { totalMass, totalVolume } = getTotalMassAndVolume(componentData.layers)
+  const totalMass = getTotalMass(componentData.layers)
+
+  let totalVolumeString = ""
+  try {
+    const totalVolume = getTotalVolume(componentData.layers)
+    totalVolumeString = totalVolume ? `${format.number(totalVolume, { maximumFractionDigits: 2 })} m3` : "-"
+  } catch (error) {
+    if (error instanceof MissingVolumeError) {
+      totalVolumeString = "N/A"
+    }
+  }
 
   return (
     <div className="overflow-hidden border border-gray-200">
@@ -188,11 +201,17 @@ const ComponentDescription = async ({
           labelValuePairs={[
             {
               label: headersTranslations("metrics.mass"),
-              value: totalMass ? `${format.number(totalMass, { maximumFractionDigits: 2 })} t` : "-",
+              value: totalMass
+                ? `${format.number(totalMass, { maximumFractionDigits: 2 })} ${unitsTranslations("Kg.short")}`
+                : "-",
             },
             {
               label: headersTranslations("metrics.volume"),
-              value: totalVolume ? `${format.number(totalVolume, { maximumFractionDigits: 2 })} m3` : "-",
+              valueItem:
+                totalVolumeString === "N/A" ? (
+                  <span className="text-base font-semibold text-red">{totalVolumeString}</span>
+                ) : undefined,
+              value: totalVolumeString !== "N/A" ? totalVolumeString : undefined,
             },
           ]}
         />
