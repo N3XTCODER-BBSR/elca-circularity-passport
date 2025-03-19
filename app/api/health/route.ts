@@ -23,6 +23,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { NextResponse } from "next/server"
+import { getRequestId } from "app/(utils)/getRequestId"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 
 export async function GET() {
@@ -37,12 +38,14 @@ export async function GET() {
   try {
     await legacyDbDalInstance.healthCheck()
   } catch (error) {
+    console.error(`Error in /api/health route handler  (requestId: ${getRequestId()})`, error)
     healthResponse.databases.legacyDb = "error"
   }
 
   try {
     await dbDalInstance.healthCheck()
   } catch (error) {
+    console.error(`Error in /api/health route handler  (requestId: ${getRequestId()})`, error)
     healthResponse.databases.newDb = "error"
   }
 

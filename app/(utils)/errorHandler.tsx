@@ -26,9 +26,9 @@ import { notFound } from "next/navigation"
 import { ZodError } from "zod"
 import UnauthenticatedRedirect from "app/[locale]/(circularity)/(components)/UnauthenticatedRedirect"
 import { ActionResponse } from "lib/domain-logic/shared/basic-types"
+import { getRequestId } from "./getRequestId"
 import { DatabaseError, NotFoundError, UnauthenticatedError, UnauthorizedError } from "../../lib/errors"
 import Unauthorized from "../[locale]/(circularity)/(components)/Unauthorized"
-import { getRequestId } from "./getRequestId"
 
 export const withServerComponentErrorHandling = async (fn: () => Promise<React.ReactNode>) => {
   try {

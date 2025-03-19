@@ -22,10 +22,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
+import { getRequestId } from "app/(utils)/getRequestId"
 import { DatabaseError } from "lib/errors"
 import { DbDal } from "./db"
 import { LegacyDbDal } from "./legacyDb"
-import { getRequestId } from "app/(utils)/getRequestId"
 
 export const buildDalProxyInstance = <T extends LegacyDbDal | DbDal>(dal: T) => {
   let database: string
