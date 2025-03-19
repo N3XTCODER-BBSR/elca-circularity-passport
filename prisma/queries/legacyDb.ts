@@ -177,6 +177,7 @@ export class LegacyDbDal {
               process_life_cycle_assignments: {
                 some: {
                   processes: {
+                    life_cycle_ident: "A1-3",
                     life_cycles: {
                       phase: "prod",
                     },
@@ -219,43 +220,48 @@ export class LegacyDbDal {
     })
 
     return elements.flatMap((element) => {
-      return element.element_components.map((ec) => {
-        const pc = ec.process_configs
-        const assignments = pc.process_life_cycle_assignments
-        // Assuming each component/process_config has at least one relevant process:
-        const processes = assignments.flatMap((a) => a.processes)
-        const process = processes[0] // If multiple processes apply, adjust your logic here
-        const pdb = process?.process_dbs
+      return element.element_components
+        .map((ec) => {
+          const pc = ec.process_configs
+          const assignment = pc.process_life_cycle_assignments.find((a) => a.processes?.life_cycle_ident === "A1-3")
 
-        return {
-          access_group_id: element.access_group_id,
-          element_uuid: element.uuid,
-          component_id: ec.id,
-          // TODO (XL): Check whether this is proper handling of null values in DB
-          layer_position: ec.layer_position || -1,
-          is_layer: ec.is_layer,
-          process_name: pc.name,
-          oekobaudat_process_uuid: process?.uuid,
-          pdb_name: pdb?.name,
-          pdb_version: pdb?.version,
-          oekobaudat_process_db_uuid: pdb?.uuid,
-          element_name: element.name,
-          unit: element.ref_unit,
-          productUnit: ec.process_conversions.in_unit,
-          productQuantity: Number(ec.quantity),
-          element_component_id: ec.id,
-          quantity: Number(element.quantity),
-          layer_size: ec.layer_size ? Number(ec.layer_size) : null,
-          layer_length: ec.layer_length ? Number(ec.layer_length) : null,
-          layer_width: ec.layer_width ? Number(ec.layer_width) : null,
-          layer_area_ratio: ec.layer_area_ratio ? Number(ec.layer_area_ratio) : null,
-          process_config_density: pc.density ? Number(pc.density) : null,
-          process_config_id: pc.id ? Number(pc.id) : null,
-          process_config_name: pc.name,
-          process_category_node_id: pc.process_category_node_id,
-          process_category_ref_num: pc.process_categories.ref_num,
-        }
-      })
+          if (!assignment) {
+            return null
+          }
+          // Assuming each component/process_config has at least one relevant process:
+          const process = assignment?.processes // If multiple processes apply, adjust your logic here
+          const pdb = process?.process_dbs
+
+          return {
+            access_group_id: element.access_group_id,
+            element_uuid: element.uuid,
+            component_id: ec.id,
+            // TODO (XL): Check whether this is proper handling of null values in DB
+            layer_position: ec.layer_position || -1,
+            is_layer: ec.is_layer,
+            process_name: pc.name,
+            oekobaudat_process_uuid: process?.uuid,
+            pdb_name: pdb?.name,
+            pdb_version: pdb?.version,
+            oekobaudat_process_db_uuid: pdb?.uuid,
+            element_name: element.name,
+            unit: element.ref_unit,
+            productUnit: ec.process_conversions.in_unit,
+            productQuantity: Number(ec.quantity),
+            element_component_id: ec.id,
+            quantity: Number(element.quantity),
+            layer_size: ec.layer_size ? Number(ec.layer_size) : null,
+            layer_length: ec.layer_length ? Number(ec.layer_length) : null,
+            layer_width: ec.layer_width ? Number(ec.layer_width) : null,
+            layer_area_ratio: ec.layer_area_ratio ? Number(ec.layer_area_ratio) : null,
+            process_config_density: pc.density ? Number(pc.density) : null,
+            process_config_id: pc.id ? Number(pc.id) : null,
+            process_config_name: pc.name,
+            process_category_node_id: pc.process_category_node_id,
+            process_category_ref_num: pc.process_categories.ref_num,
+          }
+        })
+        .filter((x) => x !== null)
     })
   }
 
