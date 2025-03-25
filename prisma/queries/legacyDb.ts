@@ -72,6 +72,7 @@ export class LegacyDbDal {
           process_life_cycle_assignments: {
             some: {
               processes: {
+                // TODO: extract A1-3 out into a constant
                 life_cycle_ident: "A1-3",
               },
             },
@@ -120,10 +121,12 @@ export class LegacyDbDal {
 
     // Find the specific process that has life_cycle_ident = 'A1-3'
     const assignment = data.process_configs.process_life_cycle_assignments.find(
+      // TODO: extract A1-3 out into a constant
       (a) => a.processes?.life_cycle_ident === "A1-3"
     )
 
     if (!assignment) {
+      // TODO: extract A1-3 out into a constant
       throw new Error(`No process with life_cycle_ident='A1-3' found for layerId=${layerId}`)
     }
 
@@ -177,6 +180,7 @@ export class LegacyDbDal {
               process_life_cycle_assignments: {
                 some: {
                   processes: {
+                    // TODO: extract A1-3 out into a constant
                     life_cycle_ident: "A1-3",
                     life_cycles: {
                       phase: "prod",
@@ -223,6 +227,7 @@ export class LegacyDbDal {
       return element.element_components
         .map((ec) => {
           const pc = ec.process_configs
+          // TODO: extract A1-3 out into a constant
           const assignment = pc.process_life_cycle_assignments.find((a) => a.processes?.life_cycle_ident === "A1-3")
 
           if (!assignment) {
@@ -309,6 +314,7 @@ export class LegacyDbDal {
                   where: {
                     processes: {
                       life_cycles: {
+                        // TODO: extract A1-3 out into a constant
                         ident: "A1-3",
                       },
                     },
