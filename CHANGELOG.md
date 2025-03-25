@@ -1,3 +1,19 @@
+## [Release 0.2.3] - 2025-03-25
+
+### Added
+
+- **Circularity Component Improvements:** Enhanced circularity component functionality with updated unit of mass display and improved handling of missing volume data.
+
+### Fixed
+
+- **Security:** Updated Next.js to address security vulnerability CVE-2025-29927.
+- **Circularity Indication:** Fixed volume display to show N/A and empty indicator values when at least one included product has missing volume.
+- **Classification Logic:** Improved rebuild class calculation to be closest to point aggregate.
+
+### Improved / Refactored
+
+- **Tests:** Updated tests for circularity calculations including total mass, total volume, and weighted circularity and dismantling potential.
+
 ## [Release 0.2.2] - 2025-03-17
 
 ### Added
