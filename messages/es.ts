@@ -482,6 +482,14 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
             componentId: "ID del componente",
           },
         },
+        aggregatedInventoryExport: {
+          tBaustoffAndEolClassColTitle: "tBaustoff / Clase EoL",
+          volumeSection: "Datos de Volumen (m³)",
+          massSection: "Datos de Masa (kg)",
+          exportAggregatedInventoryToCsv: "Exportar (csv)",
+          total: "Total",
+          percentagePerClass: "% por clase",
+        },
       },
       catalog: {
         back: "Atrás",

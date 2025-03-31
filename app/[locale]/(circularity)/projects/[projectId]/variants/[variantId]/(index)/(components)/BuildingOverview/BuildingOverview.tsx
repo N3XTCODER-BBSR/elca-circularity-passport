@@ -82,6 +82,9 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
   const catalogPath = `/projects/${projectId}/variants/${variantId}/catalog`
   const t = await getTranslations("CircularityTool.sections.overview")
 
+  const allDataAvailable =
+    !isCircularityIndexMissingForAnyProduct && !isVolumeMissingForAnyProduct && !noBuildingComponents
+
   const renderBody = () => {
     if (noBuildingComponents) {
       return <NoComponentsMessage />
@@ -107,12 +110,14 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
           <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
             {t("title")}
           </h1>
-          <MaterialCsvExportButton
-            catalogPath={catalogPath}
-            projectName={projectName}
-            processCategories={processCategories}
-            circularityData={circularityData}
-          />
+          {allDataAvailable && (
+            <MaterialCsvExportButton
+              catalogPath={catalogPath}
+              projectName={projectName}
+              processCategories={processCategories}
+              circularityData={circularityData}
+            />
+          )}
         </div>
         <h2 className="max-w-[50%]">
           <span className="text-2xl">{projectName}</span>

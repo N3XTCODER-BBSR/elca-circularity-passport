@@ -26,9 +26,11 @@
 
 import { useTranslations } from "next-intl"
 import React from "react"
+import { generateCsvFilename } from "app/(utils)/csvExportUtils"
+import { downloadCsvFile } from "app/(utils)/downloadCsvFile"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
-import { generateCsvFilename, mapCircularityDataToCsv } from "./circularityDataToCsvTransformer"
+import { mapCircularityDataToMaterialCsvTransformer } from "./mapCircularityDataToMaterialCsvTransformer"
 
 export type ProcessCategory = {
   node_id: number
@@ -89,26 +91,16 @@ export default function MaterialCsvExportButton(props: MaterialCsvExportProps) {
     componentId: tFields("componentId"),
   }
 
-  const downloadCSV = () => {
-    const csv = mapCircularityDataToCsv(props.circularityData, fieldTranslations)
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.setAttribute("href", url)
-
-    const filename = generateCsvFilename(props.projectName)
-    link.setAttribute("download", filename)
-    link.style.visibility = "hidden"
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+  const generateAndDownloadCsv = () => {
+    const csvContent = mapCircularityDataToMaterialCsvTransformer(props.circularityData, fieldTranslations)
+    downloadCsvFile(generateCsvFilename(props.projectName, "Zirkulaeritaetsinventar"), csvContent)
   }
 
   return (
     <button
       type="button"
       className="h-8 rounded-md bg-indigo-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-      onClick={downloadCSV}
+      onClick={generateAndDownloadCsv}
     >
       {t("exportMaterialsToCsv")}
     </button>

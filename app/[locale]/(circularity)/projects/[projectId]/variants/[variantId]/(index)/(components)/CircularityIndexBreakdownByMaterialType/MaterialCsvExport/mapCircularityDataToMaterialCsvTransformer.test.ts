@@ -27,7 +27,7 @@ import {
   SpecificOrTotal,
 } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { DismantlingPotentialClassId, DisturbingSubstanceSelection } from "prisma/generated/client"
-import { generateCsvFilename, mapCircularityDataToCsv } from "./circularityDataToCsvTransformer"
+import { mapCircularityDataToMaterialCsvTransformer } from "./mapCircularityDataToMaterialCsvTransformer"
 
 /**
  * Helper to create a mock layer object for testing.
@@ -148,7 +148,7 @@ const mockTranslations = {
 describe("circularityDataToCsvTransformer", () => {
   describe("mapCircularityDataToCsv", () => {
     test("transforms circularity data to CSV format with translated headers", () => {
-      const csv = mapCircularityDataToCsv(mockCircularityData, mockTranslations)
+      const csv = mapCircularityDataToMaterialCsvTransformer(mockCircularityData, mockTranslations)
 
       // Check that CSV contains header row with translated field names
       expect(
@@ -169,7 +169,7 @@ describe("circularityDataToCsvTransformer", () => {
 
     test("handles empty circularity data", () => {
       const emptyData: typeof mockCircularityData = []
-      const csv = mapCircularityDataToCsv(emptyData, mockTranslations)
+      const csv = mapCircularityDataToMaterialCsvTransformer(emptyData, mockTranslations)
 
       // Should return an empty string for empty data
       expect(csv).toBe("")
@@ -188,7 +188,7 @@ describe("circularityDataToCsvTransformer", () => {
         },
       ]
 
-      const csv = mapCircularityDataToCsv(dataWithNoLayers, mockTranslations)
+      const csv = mapCircularityDataToMaterialCsvTransformer(dataWithNoLayers, mockTranslations)
 
       // Should return an empty string when there are no layers
       expect(csv).toBe("")
@@ -214,7 +214,7 @@ describe("circularityDataToCsvTransformer", () => {
         },
       ]
 
-      const csv = mapCircularityDataToCsv(dataWithCommas, mockTranslations)
+      const csv = mapCircularityDataToMaterialCsvTransformer(dataWithCommas, mockTranslations)
 
       // Check that values with commas are properly quoted
       expect(csv).toContain('"Material, with comma"')
@@ -229,52 +229,10 @@ describe("circularityDataToCsvTransformer", () => {
         // Other translations missing
       }
 
-      const csv = mapCircularityDataToCsv(mockCircularityData, partialTranslations)
+      const csv = mapCircularityDataToMaterialCsvTransformer(mockCircularityData, partialTranslations)
 
       // Should use the original key names for missing translations
       expect(csv).toContain("Process Name,Component Name,amount,unit")
-    })
-  })
-
-  describe("generateCsvFilename", () => {
-    // Mock the Date object for consistent testing
-    const originalDate = global.Date
-
-    beforeEach(() => {
-      // Mock date to return a fixed date (2025-03-04)
-      const mockDate = new Date(2025, 2, 4) // Month is 0-indexed
-      global.Date = class extends Date {
-        constructor() {
-          super()
-          return mockDate
-        }
-      } as DateConstructor
-    })
-
-    afterEach(() => {
-      // Restore the original Date
-      global.Date = originalDate
-    })
-
-    test("generates filename with the correct format", () => {
-      const filename = generateCsvFilename("Test Project")
-
-      // Should follow the pattern YYYYMMDD-Zirkulaeritaetsinventar-[PROJECT_NAME].csv
-      expect(filename).toBe("20250304-Zirkulaeritaetsinventar-Test Project.csv")
-    })
-
-    test("sanitizes project name by replacing invalid filename characters", () => {
-      const filename = generateCsvFilename("Test/Project:With*Invalid?Chars")
-
-      // Should replace invalid characters with hyphens
-      expect(filename).toBe("20250304-Zirkulaeritaetsinventar-Test-Project-With-Invalid-Chars.csv")
-    })
-
-    test("handles empty project name", () => {
-      const filename = generateCsvFilename("")
-
-      // Should work with an empty project name
-      expect(filename).toBe("20250304-Zirkulaeritaetsinventar-.csv")
     })
   })
 })

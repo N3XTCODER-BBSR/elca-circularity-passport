@@ -442,6 +442,14 @@ const translationsPlattformGeneric = {
             volume: "Gesamtvolumen",
           },
         },
+        aggregatedInventoryExport: {
+          tBaustoffAndEolClassColTitle: "tBaustoff / eOL-Klasse",
+          volumeSection: "By Volume (m³)",
+          massSection: "By Mass (kg)",
+          exportAggregatedInventoryToCsv: "Exportieren (csv)",
+          total: "Total",
+          percentagePerClass: "% per class",
+        },
         materialExport: {
           exportMaterialsToCsv: "Exportieren (csv)",
           fields: {

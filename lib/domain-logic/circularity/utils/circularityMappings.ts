@@ -26,6 +26,8 @@ import { DismantlingPotentialClassId } from "prisma/generated/client"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "../../../../prisma/generated/client"
 
 export enum EolClasses {
+  // NOTE: Order of enum values is important,
+  // e.g. for the CSV export (so that the columns are in the correct order)
   NA = "N/A",
   A = "A",
   B = "B",

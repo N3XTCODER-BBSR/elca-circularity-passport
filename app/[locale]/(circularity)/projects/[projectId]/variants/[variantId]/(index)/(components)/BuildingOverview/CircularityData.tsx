@@ -7,6 +7,7 @@ import {
 } from "lib/domain-logic/circularity/utils/calculateTotalMetricValues"
 import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import AggregatedInventoryCsvExportButton from "./CircularityDataCsvExport/AggregatedInventoryCsvExportButton"
 import MetricSelector from "./MetricSelector"
 import { useMetricOptions } from "../../(utils)/useMetricOptions"
 import CircularityIndexBreakdownByDin from "../CircularityIndexBreakdownByDin/CircularityIndexBreakdownByDin"
@@ -58,9 +59,17 @@ const CircularityData: FC<{
         <MetricSelector selectedMetricType={selectedMetricType} onMetricTypeChange={handleMetricTypeChange} />
       </div>
 
-      <h2 className="my-14 text-center text-2xl">
-        <span className="">{selectedMetricOptionName}</span>
-      </h2>
+      <div className="flex items-center justify-between">
+        <div className="w-1/4"></div> {/* Empty div for spacing */}
+        <h2 className="my-14 w-2/4 text-center text-2xl">
+          <span>{selectedMetricOptionName}</span>
+        </h2>
+        <div className="flex w-1/4 justify-end">
+          {selectedMetricType === "eolBuiltPoints" && (
+            <AggregatedInventoryCsvExportButton projectName={projectName} circularityData={circularityData} />
+          )}
+        </div>
+      </div>
 
       <div>
         <CircularityIndexTotalNumber
