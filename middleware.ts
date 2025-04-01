@@ -22,16 +22,22 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
+import { NextRequest } from "next/server"
 import createMiddleware from "next-intl/middleware"
 import { routing } from "./i18n/routing"
-import { NextRequest } from "next/server"
 
 const intlMiddleware = createMiddleware(routing)
 
 const middleware = (request: NextRequest) => {
-  const response = intlMiddleware(request)
-
+  // Log the request with minimal information
+  const { pathname, search } = request.nextUrl
+  const method = request.method
   const requestId = crypto.randomUUID()
+
+  console.log(`[${new Date().toISOString()}] ${method} ${pathname}${search} - Request ID: ${requestId}`)
+
+  // Call the intl middleware
+  const response = intlMiddleware(request)
 
   response.headers.set("X-Request-ID", requestId)
 
