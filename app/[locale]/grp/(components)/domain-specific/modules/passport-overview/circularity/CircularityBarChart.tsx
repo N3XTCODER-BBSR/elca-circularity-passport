@@ -26,7 +26,7 @@
 
 import { ResponsiveBar } from "@nivo/bar"
 import CustomTooltip from "app/(components)/generic/CustomToolTip"
-import { eolClassColorsMapper } from "constants/styleConstants"
+import { eolClassColorsMapper } from "lib/domain-logic/shared/styleConstants"
 
 const replaceWhiteSpaceWithLineBreak = (label: string) => label.replace(/\s+/g, "\n")
 

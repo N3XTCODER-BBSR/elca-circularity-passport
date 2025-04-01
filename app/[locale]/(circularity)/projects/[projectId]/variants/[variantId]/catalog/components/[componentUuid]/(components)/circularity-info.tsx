@@ -41,15 +41,15 @@ import {
   TwoColGrid,
 } from "app/(components)/generic/layout-elements"
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
-import { updateDismantlingPotentialClassId } from "lib/domain-logic/circularity/server-actions/updateDismantlingPotentialClassId"
-import { updateSpecificEolScenario } from "lib/domain-logic/circularity/server-actions/updateSpecificScenario"
+import { updateDismantlingPotentialClassId } from "app/[locale]/(circularity)/(server-actions)/updateDismantlingPotentialClassId"
+import { updateSpecificEolScenario } from "app/[locale]/(circularity)/(server-actions)/updateSpecificScenario"
+import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import {
   dismantlingPotentialClassIdMapping,
   getEolClassNameByPoints,
   getEolPointsByScenario,
 } from "lib/domain-logic/circularity/utils/circularityMappings"
-import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
-import { SelectOption } from "lib/domain-logic/types/helper-types"
+import { SelectOption } from "lib/presentation-logic/helper-types"
 import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import EOLScenarioEditButton from "./layer-details/circularity-info/circularity-details/EOLScenarioEditButton"
 import EolScenarioInfoBox from "./layer-details/circularity-info/circularity-details/EolScenarioInfoBox"

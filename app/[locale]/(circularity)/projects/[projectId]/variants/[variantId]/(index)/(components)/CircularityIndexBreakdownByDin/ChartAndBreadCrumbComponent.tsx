@@ -27,8 +27,8 @@
 import { ResponsiveBar } from "@nivo/bar"
 import { useFormatter } from "next-intl"
 import React, { useState } from "react"
-import { circularityMetricBarChartColorMapping } from "constants/styleConstants"
-import { MetricType } from "lib/domain-logic/shared/basic-types"
+import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
+import { circularityMetricBarChartColorMapping } from "lib/domain-logic/shared/styleConstants"
 import { useMetricOptions } from "../../(utils)/useMetricOptions"
 
 export type ChartDataLeaf = {

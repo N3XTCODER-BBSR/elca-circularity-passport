@@ -41,10 +41,11 @@ import {
   StyledDt,
 } from "app/(components)/generic/layout-elements"
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
-import { addOrUpdateDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/addOrUpdateDisturbingSubstance"
-import { removeDisturbingSubstanceSelection } from "lib/domain-logic/circularity/server-actions/removeDisturbingSubstances"
-import { updateDismantlingPotentialClassId } from "lib/domain-logic/circularity/server-actions/updateDismantlingPotentialClassId"
-import { updateDisturbingEolScenarioForS4 } from "lib/domain-logic/circularity/server-actions/updateDisturbingEolScenarioForS4"
+import { addOrUpdateDisturbingSubstanceSelection } from "app/[locale]/(circularity)/(server-actions)/addOrUpdateDisturbingSubstance"
+import { removeDisturbingSubstanceSelection } from "app/[locale]/(circularity)/(server-actions)/removeDisturbingSubstances"
+import { updateDismantlingPotentialClassId } from "app/[locale]/(circularity)/(server-actions)/updateDismantlingPotentialClassId"
+import { updateDisturbingEolScenarioForS4 } from "app/[locale]/(circularity)/(server-actions)/updateDisturbingEolScenarioForS4"
+import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/circularity/misc/domain-types"
 import {
   CalculateCircularityDataForLayerReturnType,
   EolUnbuiltData,
@@ -54,7 +55,6 @@ import {
   dismantlingPotentialClassIdMapping,
   EOLScenarioMap,
 } from "lib/domain-logic/circularity/utils/circularityMappings"
-import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/types/domain-types"
 import { CallServerActionError } from "lib/errors"
 import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import BuiltS4SpecificScenarioModal from "./disturbing-substances/BuiltS4SpecificScenarioModal"

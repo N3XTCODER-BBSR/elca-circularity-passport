@@ -22,12 +22,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
+
+import { notFound } from "next/navigation"
 import { getTranslations } from "next-intl/server"
 import ListItemLink from "app/(components)/generic/ListItemLink"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
-import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
+import { ensureUserAuthorizationToProject } from "lib/auth/ensureAuthorized"
+import { getProjectDataWithVariants } from "lib/domain-logic/circularity/projects/getProjectDataWithVariants"
 import ProjectLayout from "../../(components)/ProjectLayout"
 
 const Page = async ({ params }: { params: { projectId: string } }) => {
@@ -41,7 +43,11 @@ const Page = async ({ params }: { params: { projectId: string } }) => {
 
     const t = await getTranslations("Grp.Web.sections.variants")
 
-    const projectData = await legacyDbDalInstance.getProjectDataWithVariants(projectId)
+    const projectData = await getProjectDataWithVariants(projectId)
+    if (!projectData) {
+      notFound()
+    }
+
     const variants = projectData?.project_variants_project_variants_project_idToprojects || []
 
     const displayVariants = variants.map((variant) => {
@@ -60,7 +66,7 @@ const Page = async ({ params }: { params: { projectId: string } }) => {
     return (
       <div>
         <h4 className="mb-1 text-sm font-semibold uppercase text-bbsr-blue-600">{t("project")}:</h4>
-        <h1 className="mb-4 text-2xl font-bold text-gray-900">{projectData?.name || "unnamed"}</h1>
+        <h1 className="mb-4 text-2xl font-bold text-gray-900">{projectData.name || "unnamed"}</h1>
         {displayVariants}
       </div>
     )

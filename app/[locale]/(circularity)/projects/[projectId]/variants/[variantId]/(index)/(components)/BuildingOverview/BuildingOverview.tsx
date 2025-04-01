@@ -27,13 +27,16 @@ import { getTranslations } from "next-intl/server"
 import { FC } from "react"
 import { CtaButton } from "app/(components)/generic/CtaButton"
 import { NoComponentsMessage } from "app/(components)/NoComponentsMessage"
+import { DimensionalFieldName } from "lib/domain-logic/circularity/misc/domain-types"
+import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { getProjectCircularityData } from "lib/domain-logic/circularity/misc/getProjectCircularityData"
+import { getAllProcessCategories, ProcessCategory } from "lib/domain-logic/circularity/process/getProcessCategories"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
-import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import {
+  hasCircularityIndexMissingForAnyProduct,
+  hasVolumeMissingForAnyProduct,
+} from "lib/domain-logic/circularity/utils/validateCircularityData"
 import CircularityData from "./CircularityData"
-import { ProcessCategory } from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
 import MaterialCsvExportButton from "../CircularityIndexBreakdownByMaterialType/MaterialCsvExport/MaterialCsvExportButton"
 
 const MissingDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) => {
@@ -67,15 +70,10 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
   const dimensionalFieldName: DimensionalFieldName = "volume"
   const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
     await getProjectCircularityData(variantId, projectId)
-  const processCategories: ProcessCategory[] = await legacyDbDalInstance.getAllProcessCategories()
+  const processCategories: ProcessCategory[] = await getAllProcessCategories()
 
-  const isCircularityIndexMissingForAnyProduct = circularityData.some((component) =>
-    component.layers.some((layer) => layer.circularityIndex == null)
-  )
-
-  const isVolumeMissingForAnyProduct = circularityData.some((component) =>
-    component.layers.some((layer) => layer.volume === null)
-  )
+  const isCircularityIndexMissingForAnyProduct = hasCircularityIndexMissingForAnyProduct(circularityData)
+  const isVolumeMissingForAnyProduct = hasVolumeMissingForAnyProduct(circularityData)
 
   const noBuildingComponents = circularityData.length === 0
 

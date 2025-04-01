@@ -26,8 +26,8 @@ import { getTranslations } from "next-intl/server"
 import { FC } from "react"
 import ListItemLink from "app/(components)/generic/ListItemLink"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
-import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import { getProjectsByOwnerId, ProjectWithVariants } from "lib/domain-logic/circularity/projects/getProjectsByOwnerId"
+import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
 
 const Page = async () => {
   return withServerComponentErrorHandling(async () => {
@@ -35,7 +35,7 @@ const Page = async () => {
 
     const userId = Number(session.user.id)
 
-    const projects = await legacyDbDalInstance.getProjectsByOwnerId(userId)
+    const projects = await getProjectsByOwnerId(userId)
 
     const t = await getTranslations("Grp.Web.sections.projects")
 
@@ -54,9 +54,7 @@ const Page = async () => {
   })
 }
 
-const ProjectList: FC<{ projects: Awaited<ReturnType<typeof legacyDbDalInstance.getProjectsByOwnerId>> }> = async ({
-  projects,
-}) => {
+const ProjectList: FC<{ projects: ProjectWithVariants[] }> = async ({ projects }) => {
   const t = await getTranslations("Grp.Web.sections.projects")
 
   return (

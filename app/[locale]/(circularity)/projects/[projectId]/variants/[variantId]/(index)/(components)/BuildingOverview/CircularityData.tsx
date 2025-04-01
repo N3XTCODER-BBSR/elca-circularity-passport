@@ -1,12 +1,12 @@
 "use client"
 import { FC, useState } from "react"
+import { DimensionalFieldName, MetricType } from "lib/domain-logic/circularity/misc/domain-types"
+import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import {
   calculateTotalMetricValuesForProject,
   ProjectMetricValues,
 } from "lib/domain-logic/circularity/utils/calculateTotalMetricValues"
-import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 import AggregatedInventoryCsvExportButton from "./CircularityDataCsvExport/AggregatedInventoryCsvExportButton"
 import MetricSelector from "./MetricSelector"
 import { useMetricOptions } from "../../(utils)/useMetricOptions"

@@ -29,7 +29,7 @@ import React from "react"
 import { generateCsvFilename } from "app/(utils)/csvExportUtils"
 import { downloadCsvFile } from "app/(utils)/downloadCsvFile"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { mapCircularityDataToMaterialCsvTransformer } from "./mapCircularityDataToMaterialCsvTransformer"
 
 export type ProcessCategory = {

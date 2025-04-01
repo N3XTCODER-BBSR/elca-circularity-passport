@@ -24,7 +24,8 @@
  */
 import { NextResponse } from "next/server"
 import { getRequestId } from "app/(utils)/getRequestId"
-import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import { legacyDbHealthCheck } from "lib/domain-logic/system/healthCheck"
+import { dbDalInstance } from "prisma/queries/dalSingletons"
 
 export async function GET() {
   const healthResponse = {
@@ -36,7 +37,7 @@ export async function GET() {
   }
 
   try {
-    await legacyDbDalInstance.healthCheck()
+    await legacyDbHealthCheck()
   } catch (error) {
     console.error(`Error in /api/health route handler  (requestId: ${getRequestId()})`, error)
     healthResponse.databases.legacyDb = "error"

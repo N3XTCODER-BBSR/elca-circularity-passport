@@ -23,7 +23,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { costGroupyDinNumbersToInclude } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
-import { ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
+import { ElcaProjectComponentRow } from "lib/domain-logic/circularity/misc/domain-types"
 import { Prisma } from "prisma/generated/client-legacy"
 import { prismaLegacy } from "prisma/prismaClient"
 

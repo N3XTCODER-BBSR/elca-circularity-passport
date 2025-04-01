@@ -23,11 +23,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { getTranslations } from "next-intl/server"
-import { ensureVariantAccessible } from "app/(utils)/ensureAccessible"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
-import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import { ensureVariantAccessible } from "app/[locale]/(circularity)/(utils)/ensureAccessible"
+import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
+import { ensureUserAuthorizationToProject } from "lib/auth/ensureAuthorized"
+import { getProjectById } from "lib/domain-logic/circularity/projects/getProjectById"
 import BuildingOverview from "./(components)/BuildingOverview/BuildingOverview"
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
@@ -43,7 +43,7 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
 
     await ensureVariantAccessible(variantId, projectId)
 
-    const projectInfo = await legacyDbDalInstance.getProjectById(projectId)
+    const projectInfo = await getProjectById(projectId)
 
     if (!projectInfo) {
       return <div>{t("projectNotFound")}</div>

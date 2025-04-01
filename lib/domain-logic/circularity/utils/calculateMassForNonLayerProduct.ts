@@ -25,7 +25,7 @@
 import Decimal from "decimal.js"
 import { mergeMaps } from "app/(utils)/map"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
-import { MassInKg, ProductId } from "../misc/types"
+import { MassInKg, ProductId } from "../misc/domain-types"
 
 const allowedUnits = ["m", "m2", "m3", "kg"]
 

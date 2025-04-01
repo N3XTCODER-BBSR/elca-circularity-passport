@@ -28,13 +28,26 @@ import { notFound } from "next/navigation"
 import { getFormatter, getTranslations } from "next-intl/server"
 import { Heading3, Heading4 } from "app/(components)/generic/layout-elements"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
+import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
+import { ensureUserAuthorizationToElementByUuid } from "lib/auth/ensureAuthorized"
+import {
+  getAvailableTBaustoffProducts,
+  getElcaVariantComponentsByInstanceId,
+  getElcaVariantElementBaseDataByUuid,
+} from "lib/domain-logic/circularity/components/getComponentsData"
+import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "lib/domain-logic/circularity/misc/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
 import { preloadCircularityData } from "lib/domain-logic/circularity/misc/preloadCircularityData"
+import { getTotalMass } from "lib/domain-logic/circularity/utils/getTotalsForEnrichedElcaElementComponent/getTotalMass"
+import {
+  getTotalVolume,
+  MissingVolumeError,
+} from "lib/domain-logic/circularity/utils/getTotalsForEnrichedElcaElementComponent/getTotalVolume"
+import { getTotalWeightedCircularityPotential } from "lib/domain-logic/circularity/utils/getTotalsForEnrichedElcaElementComponent/getTotalWeightedCircularityPotential"
+import { getTotalWeightedDismantlingPotential } from "lib/domain-logic/circularity/utils/getTotalsForEnrichedElcaElementComponent/getTotalWeightedDismantlingPotential"
+import { getDinCodeGroupLevel } from "lib/presentation-logic/circularity/formatDinCode"
+import { formatVolumeWithUnit } from "lib/presentation-logic/circularity/formatVolumeWithUnit"
 
-import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
-import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { ensureUserAuthorizationToElementByUuid } from "lib/ensureAuthorized"
-import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import {
   CircularityPotentialBadge,
   DescriptionItem,
@@ -43,11 +56,6 @@ import {
 } from "./(components)/CircularityIndication"
 import HistoryBackButton from "./(components)/HistoryBackButton"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
-import { MissingVolumeError } from "./utils/errors"
-import { getTotalMass } from "./utils/getTotalMass"
-import { getTotalVolume } from "./utils/getTotalVolume"
-import { getTotalWeightedCircularityPotential } from "./utils/getTotalWeightedCircularityPotential"
-import { getTotalWeightedDismantlingPotential } from "./utils/getTotalWeightedDismantlingPotential"
 
 const Page = async ({
   params,
@@ -55,44 +63,22 @@ const Page = async ({
   params: { projectId: string; variantId: string; componentUuid: string; locale: string }
 }) => {
   return withServerComponentErrorHandling(async () => {
-    const session = await ensureUserIsAuthenticated()
+    const { componentUuid } = params
     const projectId = Number(params.projectId)
     const variantId = Number(params.variantId)
-    const componentUuid = params.componentUuid
-    const userId = Number(session.user.id)
-    const t = await getTranslations("Circularity.Components")
 
-    await ensureUserAuthorizationToElementByUuid(userId, componentUuid)
+    // Ensure the user is authenticated
+    const session = await ensureUserIsAuthenticated()
 
-    const ProductsList = ({ products }: { products: EnrichedElcaElementComponent[] }) => (
-      <ul>
-        {products.map((product) => (
-          <li key={product.component_id}>
-            <ComponentLayer
-              projectId={projectId}
-              variantId={variantId}
-              layerData={product}
-              // TODO: check/update logic here (and other places where laufende nummer is used) once we decided about the semantics of it
-              layerNumber={product.layer_position}
-              //unitName={componentData.unit}
-              tBaustoffProducts={availableTBaustoffProductIdAndNames}
-            />
-          </li>
-        ))}
-      </ul>
-    )
+    // Ensure the user has access to the element
+    await ensureUserAuthorizationToElementByUuid(Number(session.user.id), componentUuid)
 
-    const elementBaseData = await legacyDbDalInstance.getElcaVariantElementBaseDataByUuid(
-      componentUuid,
-      variantId,
-      projectId
-    )
+    // Get element base data
+    const elementBaseData = await getElcaVariantElementBaseDataByUuid(componentUuid, variantId, projectId)
 
-    const projectComponents = await legacyDbDalInstance.getElcaVariantComponentsByInstanceId(
-      componentUuid,
-      variantId,
-      projectId
-    )
+    // Get component data
+    const projectComponents = await getElcaVariantComponentsByInstanceId(elementBaseData.uuid, variantId, projectId)
+
     const preloadedData = await preloadCircularityData(projectComponents)
 
     const componentData: ElcaElementWithComponents<EnrichedElcaElementComponent> =
@@ -112,11 +98,13 @@ const Page = async ({
       notFound()
     }
 
-    const availableTBaustoffProducts = await dbDalInstance.getAvailableTBaustoffProducts()
+    const availableTBaustoffProducts = await getAvailableTBaustoffProducts()
     const availableTBaustoffProductIdAndNames = availableTBaustoffProducts.map((el) => ({
       id: `${el.id}`,
       value: el.name,
     }))
+
+    const t = await getTranslations("Circularity.Components")
 
     return (
       <div>
@@ -139,19 +127,63 @@ const Page = async ({
           {layers.length > 0 && (
             <div className="mb-12 flex flex-col gap-2">
               <Heading4>{t("layersHeading")}</Heading4>
-              <ProductsList products={layers} />
+              <ProductsList
+                products={layers}
+                projectId={projectId}
+                variantId={variantId}
+                availableTBaustoffProductIdAndNames={availableTBaustoffProductIdAndNames}
+              />
             </div>
           )}
           {nonLayers.length > 0 && (
             <div className="mb-12 flex flex-col gap-2">
               <Heading4>{t("nonLayersHeading")}</Heading4>
-              <ProductsList products={nonLayers} />
+              <ProductsList
+                products={nonLayers}
+                projectId={projectId}
+                variantId={variantId}
+                availableTBaustoffProductIdAndNames={availableTBaustoffProductIdAndNames}
+              />
             </div>
           )}
         </div>
       </div>
     )
   })
+}
+
+const ProductsList = ({
+  products,
+  projectId,
+  variantId,
+  availableTBaustoffProductIdAndNames,
+}: {
+  products: EnrichedElcaElementComponent[]
+  projectId: number
+  variantId: number
+  availableTBaustoffProductIdAndNames: { id: string | number; value: string }[]
+}) => {
+  // Convert the id to string to match the SelectOption type
+  const formattedProducts = availableTBaustoffProductIdAndNames.map((product) => ({
+    id: String(product.id),
+    value: product.value,
+  }))
+
+  return (
+    <ul>
+      {products.map((product) => (
+        <li key={product.component_id}>
+          <ComponentLayer
+            projectId={projectId}
+            variantId={variantId}
+            layerData={product}
+            layerNumber={product.layer_position}
+            tBaustoffProducts={formattedProducts}
+          />
+        </li>
+      ))}
+    </ul>
+  )
 }
 
 const ComponentDescription = async ({
@@ -164,7 +196,7 @@ const ComponentDescription = async ({
   const headersTranslations = await getTranslations("Circularity.Components.headers")
   const unitsTranslations = await getTranslations("Units")
 
-  const dinGroupLevelNumber = Math.floor(componentData.din_code / 100) * 100
+  const dinGroupLevelNumber = getDinCodeGroupLevel(componentData.din_code)
 
   const totalWeightedCircularityPotential = getTotalWeightedCircularityPotential(componentData.layers)
   const totalWeightedDismantlingPotential = getTotalWeightedDismantlingPotential(componentData.layers)
@@ -174,7 +206,7 @@ const ComponentDescription = async ({
   let totalVolumeString = ""
   try {
     const totalVolume = getTotalVolume(componentData.layers)
-    totalVolumeString = totalVolume ? `${format.number(totalVolume, { maximumFractionDigits: 2 })} m3` : "-"
+    totalVolumeString = formatVolumeWithUnit(totalVolume, format)
   } catch (error) {
     if (error instanceof MissingVolumeError) {
       totalVolumeString = "N/A"

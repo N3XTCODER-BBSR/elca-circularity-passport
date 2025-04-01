@@ -31,10 +31,10 @@ import { useFormatter, useTranslations } from "next-intl"
 import { FC } from "react"
 import toast from "react-hot-toast"
 import Toggle from "app/(components)/generic/Toggle"
-import updateExludedProduct from "lib/domain-logic/circularity/server-actions/toggleExcludedProject"
+import { toggleExcludedProduct } from "app/[locale]/(circularity)/(server-actions)/toggleExcludedProduct"
+import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { dismantlingPotentialClassIdMapping } from "lib/domain-logic/circularity/utils/circularityMappings"
-import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
 import { CallServerActionError } from "lib/errors"
 import {
   CircularityPotentialBadge,
@@ -57,7 +57,7 @@ const ProductHeader: FC<{
 
   const updateExcludedProductMutation = useMutation({
     mutationFn: async (productId: number) => {
-      const result = await updateExludedProduct(productId)
+      const result = await toggleExcludedProduct(productId)
       if (!result.success) {
         throw new CallServerActionError(result.errorI18nKey)
       }

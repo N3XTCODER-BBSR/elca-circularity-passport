@@ -1,6 +1,6 @@
 import React from "react"
 import { twMerge } from "tailwind-merge"
-import { MetricType } from "lib/domain-logic/shared/basic-types"
+import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
 import { useMetricOptions } from "../../(utils)/useMetricOptions"
 
 /**

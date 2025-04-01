@@ -22,11 +22,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { ensureVariantAccessible } from "app/(utils)/ensureAccessible"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
-import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { dbDalInstance } from "prisma/queries/dalSingletons"
+import { ensureVariantAccessible } from "app/[locale]/(circularity)/(utils)/ensureAccessible"
+import { getPassportsMetadataForProjectVariant } from "lib/domain-logic/circularity/passport/managePassport"
+import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
+import { ensureUserAuthorizationToProject } from "lib/auth/ensureAuthorized"
 import { PassportMetadata } from "prisma/queries/db"
 import ProjectPassports from "./(components)/ProjectPassports"
 
@@ -43,7 +43,7 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
     await ensureVariantAccessible(variantId, projectId)
 
     const passportsMetadataForProjectVariant: PassportMetadata[] =
-      await dbDalInstance.getMetaDataForAllPassportsForProjectVariantId(variantId)
+      await getPassportsMetadataForProjectVariant(variantId)
 
     return (
       <ProjectPassports

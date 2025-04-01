@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl"
-import { MetricType } from "lib/domain-logic/shared/basic-types"
+import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
 
 /**
  * Custom hook that provides metric options with translated labels

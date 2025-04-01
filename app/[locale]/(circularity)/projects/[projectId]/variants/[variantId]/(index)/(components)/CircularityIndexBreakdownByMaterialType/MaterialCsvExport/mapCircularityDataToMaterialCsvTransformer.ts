@@ -25,7 +25,7 @@
 
 import { convertToCSV } from "app/(utils)/csvExportUtils"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 
 /**
  * Maps circularity data to a CSV format for export

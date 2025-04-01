@@ -22,14 +22,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { ensureVariantAccessible } from "app/(utils)/ensureAccessible"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
+import { ensureVariantAccessible } from "app/[locale]/(circularity)/(utils)/ensureAccessible"
+import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { getElcaElementsForVariantId } from "lib/domain-logic/circularity/misc/getElcaElementsForProjectId"
 import { getProjectCircularityData } from "lib/domain-logic/circularity/misc/getProjectCircularityData"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
-import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
+import { getComponentUuidsWithMissingCircularityData } from "lib/domain-logic/circularity/utils/getComponentsWithMissingCircularityData"
+import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
+import { ensureUserAuthorizationToProject } from "lib/auth/ensureAuthorized"
 import ProjectCatalog from "./(components)/ProjectCatalog"
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
@@ -53,9 +54,8 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
     const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
       await getProjectCircularityData(variantId, projectId)
 
-    const componentUuiddsWithMissingCircularityIndexForAnyProduct: string[] = circularityData
-      .filter((component) => component.layers.some((layer) => layer.circularityIndex == null || layer.volume == null))
-      .map((component) => component.element_uuid)
+    const componentUuiddsWithMissingCircularityIndexForAnyProduct =
+      getComponentUuidsWithMissingCircularityData(circularityData)
 
     return (
       <ProjectCatalog

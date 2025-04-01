@@ -22,13 +22,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import "styles/global.css"
+
 import { getTranslations } from "next-intl/server"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
-import ensureUserIsAuthenticated from "lib/ensureAuthenticated"
-import { ensureUserAuthorizationToProject } from "lib/ensureAuthorized"
-import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import { getProjectDataWithVariants } from "lib/domain-logic/circularity/projects/getProjectDataWithVariants"
+import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
+import { ensureUserAuthorizationToProject } from "lib/auth/ensureAuthorized"
 import NavBar from "./NavBar"
+import "styles/global.css"
 
 const ProjectLayout = async ({
   children,
@@ -56,7 +57,7 @@ const ProjectLayout = async ({
 
     await ensureUserAuthorizationToProject(userId, projectId)
 
-    const projectData = await legacyDbDalInstance.getProjectDataWithVariants(projectId)
+    const projectData = await getProjectDataWithVariants(projectId)
     const variantName =
       projectData?.project_variants_project_variants_project_idToprojects.find((v) => v.id === variantId)?.name || ""
 

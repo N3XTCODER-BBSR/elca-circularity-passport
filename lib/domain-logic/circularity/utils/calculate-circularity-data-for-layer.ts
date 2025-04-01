@@ -28,7 +28,7 @@ import {
   getEolClassNameByPoints,
   getEolPointsByScenario,
 } from "lib/domain-logic/circularity/utils/circularityMappings"
-import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
+import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import { DisturbingSubstanceClassId } from "prisma/generated/client"
 
 export enum SpecificOrTotal {

@@ -24,8 +24,8 @@
  */
 import { ResponsiveBar } from "@nivo/bar"
 import { useFormatter } from "next-intl"
-import { circularityMetricBarChartColorMapping } from "constants/styleConstants"
-import { MetricType } from "lib/domain-logic/shared/basic-types"
+import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
+import { circularityMetricBarChartColorMapping } from "lib/domain-logic/shared/styleConstants"
 
 const CircularityIndexTotalBarChart = ({
   circularityTotalIndexPoints,

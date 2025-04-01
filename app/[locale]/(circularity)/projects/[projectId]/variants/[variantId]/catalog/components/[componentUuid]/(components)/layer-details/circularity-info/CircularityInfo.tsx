@@ -27,7 +27,7 @@
 import { useTranslations } from "next-intl"
 import { Area, Heading3, Required, StyledDd, StyledDt, TwoColGrid } from "app/(components)/generic/layout-elements"
 import type { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { SelectOption } from "lib/domain-logic/types/helper-types"
+import { SelectOption } from "lib/presentation-logic/helper-types"
 import CircularityDetails from "./circularity-details/CircularityDetails"
 import TBaustoffProductNameOrSelectorButton from "./TBaustoffProductNameOrSelectorButton"
 

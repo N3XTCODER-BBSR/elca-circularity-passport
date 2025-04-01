@@ -23,7 +23,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { createMap } from "app/(utils)/map"
-import { ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
+import { ElcaProjectComponentRow } from "lib/domain-logic/circularity/misc/domain-types"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
 import { getMassForProducts } from "./getMassForProducts"
 

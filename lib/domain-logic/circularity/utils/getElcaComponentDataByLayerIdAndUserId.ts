@@ -27,7 +27,7 @@ import {
   EnrichedElcaElementComponent,
   TBaustoffProductData,
   UserEnrichedProductDataWithDisturbingSubstanceSelection,
-} from "lib/domain-logic/types/domain-types"
+} from "lib/domain-logic/circularity/misc/domain-types"
 import { Prisma, TBs_OekobaudatMapping } from "prisma/generated/client"
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { calculateEolDataByEolCateogryData } from "./calculateEolDataByEolCateogryData"

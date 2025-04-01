@@ -1,6 +1,6 @@
-import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { CalculateCircularityDataForLayerReturnType } from "./calculate-circularity-data-for-layer"
+import { DimensionalFieldName } from "../misc/domain-types"
 
 /**
  * Project metric values type definition

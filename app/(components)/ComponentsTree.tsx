@@ -33,6 +33,7 @@ import { twMerge } from "tailwind-merge"
 import { Box } from "app/[locale]/grp/(components)/generic/layout-elements"
 import mergeDin276HierarchyWithBuildingComponents from "lib/domain-logic/grp/data-schema/versions/v1/mergeDin276HierarchyWithBuildingComponents"
 import { ComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
+import { getDinCodeGroupLevel, getDinCodeSubGroupLevel } from "lib/presentation-logic/circularity/formatDinCode"
 import { Badge } from "./generic/layout-elements"
 
 const NumberOfChildComponents = ({
@@ -79,7 +80,7 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
   const din276WithComponents = mergeDin276HierarchyWithBuildingComponents(components, categoryNumbersToInclude)
 
   const [selectedCategoryNumber, setSelectedCategoryNumber] = useState<number | null>(null)
-  const groupNumberOfSelectedCategory = Math.floor((selectedCategoryNumber || 0) / 100) * 100
+  const groupNumberOfSelectedCategory = selectedCategoryNumber ? getDinCodeGroupLevel(selectedCategoryNumber) : 0
   const groupOfSelectedCategoryNumber = din276WithComponents.find(
     (el) => el.groupNumber === groupNumberOfSelectedCategory
   )
@@ -111,7 +112,7 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
           setSelectedCategoryNumber(numberFromFragment)
           setSelectedComponentsTypeNumber(null)
         } else {
-          setSelectedCategoryNumber(Math.floor(numberFromFragment / 10) * 10)
+          setSelectedCategoryNumber(getDinCodeSubGroupLevel(numberFromFragment))
           setSelectedComponentsTypeNumber(numberFromFragment)
         }
       }

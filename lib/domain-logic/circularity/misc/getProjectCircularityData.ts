@@ -22,7 +22,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { ElcaElementWithComponents, ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
+import { ElcaElementWithComponents, ElcaProjectComponentRow } from "lib/domain-logic/circularity/misc/domain-types"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { ElcaVariantElementBaseData } from "prisma/queries/legacyDb"
 import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "./getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"

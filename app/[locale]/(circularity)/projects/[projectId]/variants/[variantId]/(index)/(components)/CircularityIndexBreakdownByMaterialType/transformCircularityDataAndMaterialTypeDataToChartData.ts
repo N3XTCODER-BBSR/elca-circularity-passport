@@ -23,7 +23,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { groupBy } from "lodash"
-import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
+import { DimensionalFieldName, MetricType } from "lib/domain-logic/circularity/misc/domain-types"
 import { MaterialNode, ProcessCategory } from "./CircularityIndexBreakdownByMaterialType"
 import {
   ChartDataInternalNode,

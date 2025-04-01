@@ -24,7 +24,7 @@
  */
 import Decimal from "decimal.js"
 import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
-import { MassInKg, ProductId } from "./types"
+import { MassInKg, ProductId } from "./domain-types"
 
 export const getMassForLayers = async (productIds: number[]) => {
   const productData = await legacyDbDalInstance.getDataForMassCalculationByProductId(productIds)

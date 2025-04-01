@@ -32,11 +32,11 @@ import { Badge } from "app/(components)/generic/layout-elements"
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
-import getElcaComponentDataByProductId from "lib/domain-logic/circularity/server-actions/getElcaComponentDataByProductId"
+import getElcaComponentDataByProductId from "app/[locale]/(circularity)/(server-actions)/getElcaComponentDataByProductId"
+import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { EnrichedElcaElementComponent } from "lib/domain-logic/types/domain-types"
-import { SelectOption } from "lib/domain-logic/types/helper-types"
 import { CallServerActionError } from "lib/errors"
+import { SelectOption } from "lib/presentation-logic/helper-types"
 import CircularityInfo from "./circularity-info/CircularityInfo"
 import ProductHeader from "../ProductHeader"
 

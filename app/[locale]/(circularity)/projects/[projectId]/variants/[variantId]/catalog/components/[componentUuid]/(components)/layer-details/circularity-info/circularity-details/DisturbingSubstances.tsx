@@ -29,7 +29,7 @@ import { useTranslations } from "next-intl"
 import { useEffect, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { Area, Heading4, Required } from "app/(components)/generic/layout-elements"
-import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/types/domain-types"
+import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/circularity/misc/domain-types"
 import { DisturbingSubstanceClassId, DisturbingSubstanceSelection } from "prisma/generated/client"
 
 type DisturbingSubstanceRowProps = {

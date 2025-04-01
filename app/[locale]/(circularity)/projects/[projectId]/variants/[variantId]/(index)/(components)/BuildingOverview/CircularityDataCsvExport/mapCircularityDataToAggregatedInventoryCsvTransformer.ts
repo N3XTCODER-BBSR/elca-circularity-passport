@@ -23,10 +23,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 
+import { DimensionalFieldName } from "lib/domain-logic/circularity/misc/domain-types"
+import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { EolClasses } from "lib/domain-logic/circularity/utils/circularityMappings"
-import { DimensionalFieldName } from "lib/domain-logic/shared/basic-types"
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
 
 interface TBaustoffEolData {
   tBaustoffName: string

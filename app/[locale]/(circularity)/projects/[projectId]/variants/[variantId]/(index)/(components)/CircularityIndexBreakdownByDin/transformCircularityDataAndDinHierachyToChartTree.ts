@@ -22,6 +22,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
+import { DimensionalFieldName, MetricType } from "lib/domain-logic/circularity/misc/domain-types"
+import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import {
   ComponentCategory,
@@ -30,8 +32,7 @@ import {
   costGroupCategoryNumbersToInclude,
   din276Hierarchy,
 } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
-import { DimensionalFieldName, MetricType } from "lib/domain-logic/shared/basic-types"
-import { ElcaElementWithComponents } from "lib/domain-logic/types/domain-types"
+import { getDinCodeSubGroupLevel } from "lib/presentation-logic/circularity/formatDinCode"
 import { ChartDataInternalNode, ChartDataLeaf, ChartDataNode } from "./ChartAndBreadCrumbComponent"
 
 /**
@@ -47,7 +48,9 @@ import { ChartDataInternalNode, ChartDataLeaf, ChartDataNode } from "./ChartAndB
  * 5. Recursively compute dimensionalValue (sum of children's volume/mass) and metricValue (weighted avg).
  *
  * @param circularityData  A list of elements, each having one or more layers with circularity data
+ * @param dimensionalFieldName  The dimensional field name
  * @param rootLabel        The label to give the top-level (root) node in the hierarchy
+ * @param metricType       The metric type
  * @param skipRootNode     If true, removes the artificial top-level node if it has only one child
  * @returns                The fully built hierarchy of chart data, with internal nodes for DIN groups and leaves for elements
  */
@@ -56,7 +59,7 @@ export function transformCircularityDataAndDinHierachyToChartTree(
   dimensionalFieldName: DimensionalFieldName,
   rootLabel: string,
   metricType: MetricType,
-  skipRootNode = true
+  skipRootNode: boolean = true
 ): ChartDataNode {
   // 1. Filter data by cost group
   const filteredData = filterDataByCostGroup(circularityData)
@@ -66,7 +69,7 @@ export function transformCircularityDataAndDinHierachyToChartTree(
 
   // 3. Build the hierarchy from `din276Hierarchy`
   const children = din276Hierarchy
-    .map((group) => buildNodeFromGroup(group, dinCodeToLeaves))
+    .map((group: ComponentGroup) => buildNodeFromGroup(group, dinCodeToLeaves))
     .filter((node): node is ChartDataInternalNode => node !== null) // Type predicate
 
   // Create the top-level root node
@@ -103,8 +106,8 @@ function filterDataByCostGroup(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
 ): ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] {
   return circularityData.filter((elem) => {
-    // e.g. if din_code=331 -> floor(331/10)*10=330
-    const level2Din = Math.floor(elem.din_code / 10) * 10
+    // e.g. if din_code=331 -> getDinCodeSubGroupLevel(331)=330
+    const level2Din = getDinCodeSubGroupLevel(elem.din_code)
     return costGroupCategoryNumbersToInclude.includes(level2Din)
   })
 }
@@ -135,6 +138,8 @@ function getMetricValue(layer: CalculateCircularityDataForLayerReturnType, metri
  * - Compute a weighted average circularity index based on those volumes/masses.
  *
  * @param data  List of elements to be aggregated
+ * @param dimensionalFieldName  The dimensional field name
+ * @param metricType       The metric type
  * @returns     A Map where each DIN code points to a list of ChartDataLeaf nodes
  */
 function buildDinCodeToLeafNodesMap(
@@ -194,7 +199,7 @@ function buildNodeFromGroup(
   dinCodeToLeaves: Map<number, ChartDataLeaf[]>
 ): ChartDataInternalNode | null {
   const childrenNodes = group.children
-    .map((category) => buildNodeFromCategory(category, dinCodeToLeaves))
+    .map((category: ComponentCategory) => buildNodeFromCategory(category, dinCodeToLeaves))
     .filter((node): node is ChartDataInternalNode => node !== null)
 
   if (childrenNodes.length === 0) {
@@ -223,7 +228,7 @@ function buildNodeFromCategory(
   dinCodeToLeaves: Map<number, ChartDataLeaf[]>
 ): ChartDataInternalNode | null {
   const childrenNodes = category.children
-    .map((type) => buildNodeFromType(type, dinCodeToLeaves))
+    .map((type: ComponentType) => buildNodeFromType(type, dinCodeToLeaves))
     .filter((node): node is ChartDataInternalNode => node !== null)
 
   if (childrenNodes.length === 0) {

@@ -25,7 +25,7 @@
 "use client"
 
 import { useFormatter, useTranslations } from "next-intl"
-import { MetricType } from "lib/domain-logic/shared/basic-types"
+import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
 import CircularityIndexTotalBarChart from "./CircularityIndexTotalBarChart"
 
 const CircularityIndexTotalNumber = ({
