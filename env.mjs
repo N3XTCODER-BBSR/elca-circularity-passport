@@ -81,7 +81,5 @@ export const env = createEnv({
     S3_REGION: process.env.S3_REGION,
     S3_ENDPOINT: process.env.S3_ENDPOINT,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-    APPSIGNAL_PUSH_API_KEY: process.env.APPSIGNAL_PUSH_API_KEY,
-    APPSIGNAL_LOG_LEVEL: process.env.APPSIGNAL_LOG_LEVEL
   },
 })
