@@ -50,17 +50,13 @@ export const buildDalProxyInstance = <T extends LegacyDbDal | DbDal>(dal: T) => 
             const result = await originalProperty.apply(target, args)
             const duration = Date.now() - start
             console.log(
-              `[${new Date().toISOString()}] [${database} DB]: Call to ${String(
-                propKey
-              )} succeeded in ${duration}ms (requestId: ${requestId})`
+              `[${database} DB]: Call to ${String(propKey)} succeeded in ${duration}ms (requestId: ${requestId})`
             )
             return result
           } catch (error: unknown) {
             const duration = Date.now() - start
             console.error(
-              `[${new Date().toISOString()}] [${database} DB]: Call to ${String(
-                propKey
-              )} failed in ${duration}ms (requestId: ${requestId})`
+              `[${database} DB]: Call to ${String(propKey)} failed in ${duration}ms (requestId: ${requestId})`
             )
             throw new DatabaseError(error)
           }
