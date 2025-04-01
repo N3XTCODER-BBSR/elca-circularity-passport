@@ -1,6 +1,6 @@
-const appsignal = require("@appsignal/nodejs");
+import { Appsignal } from "@appsignal/nodejs";
 
-new appsignal.Appsignal({
+new Appsignal({
   active: true,
   name: "elca-app",
   disableDefaultInstrumentations: [
