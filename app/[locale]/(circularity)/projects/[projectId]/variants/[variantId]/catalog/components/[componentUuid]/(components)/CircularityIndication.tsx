@@ -31,7 +31,7 @@ import {
 } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { DismantlingPotentialClassId } from "prisma/generated/client"
 
-export const CircularityPotentialBadge: FC<{ value: number | null }> = ({ value }) => {
+export const CircularityPotentialBadge: FC<{ value: number | null | undefined }> = ({ value }) => {
   if (value === null) {
     return <div className="text-base font-semibold">-</div>
   }

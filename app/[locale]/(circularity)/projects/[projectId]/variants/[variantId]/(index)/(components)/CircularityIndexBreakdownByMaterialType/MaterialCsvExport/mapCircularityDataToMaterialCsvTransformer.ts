@@ -24,8 +24,12 @@
  */
 
 import { convertToCSV } from "app/(utils)/csvExportUtils"
-import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
+import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import {
+  calculateMaterialCompatibility,
+  getDisturbingSubstancesString,
+} from "lib/domain-logic/circularity/utils/getDisturbingSubstancesString"
 
 /**
  * Maps circularity data to a CSV format for export
@@ -39,26 +43,35 @@ export const mapCircularityDataToMaterialCsvTransformer = (
   fieldTranslations: Record<string, string>
 ) => {
   const mappedProducts = circularityData.flatMap((buildingComponent) =>
-    buildingComponent.layers.map((layer) => ({
-      processName: layer.process_name,
-      buildingComponent: buildingComponent.element_name,
-      amount: layer.quantity ?? "",
-      unit: layer.unit ?? "",
-      tBaustoffMaterial: layer.tBaustoffProductData?.name ?? "",
-      thickness: layer.layer_size ? layer.layer_size * 1000 : "", // * 1000 for thickness in mm
-      share: layer.layer_area_ratio ? layer.layer_area_ratio * 100 : "", // * 100 for percentage
-      volumePerUnit: layer.volume ?? "",
-      massPerUnit: layer.mass ?? "",
-      circularityIndex: layer.circularityIndex ?? "",
-      eolClassBuilt: layer.eolBuilt?.className ?? "",
-      eolPointsBuilt: layer.eolBuilt?.points ?? "",
-      eolClassUnbuilt: layer.eolUnbuilt?.className ?? "",
-      eolPointsUnbuilt: layer.eolUnbuilt?.points ?? "",
-      rebuildClass: layer.dismantlingPotentialClassId ?? "",
-      rebuildPoints: layer.dismantlingPoints ?? "",
-      componentId: layer.component_id,
-      elementUuid: layer.element_uuid,
-    }))
+    buildingComponent.layers.map((layer) => {
+      const materialCompatibilityClass = getDisturbingSubstancesString(layer)
+
+      const materialCompatibility = calculateMaterialCompatibility(layer)
+      const materialCompatibilityPoints = materialCompatibility !== null ? materialCompatibility.toFixed(2) : "-"
+
+      return {
+        processName: layer.process_name,
+        buildingComponent: buildingComponent.element_name,
+        amount: layer.quantity ?? "",
+        unit: layer.unit ?? "",
+        tBaustoffMaterial: layer.tBaustoffProductData?.name ?? "",
+        thickness: layer.layer_size ? layer.layer_size * 1000 : "", // * 1000 for thickness in mm
+        share: layer.layer_area_ratio ? layer.layer_area_ratio * 100 : "", // * 100 for percentage
+        volumePerUnit: layer.volume ?? "",
+        massPerUnit: layer.mass ?? "",
+        circularityIndex: layer.circularityIndex ?? "",
+        eolClassBuilt: layer.eolBuilt?.className ?? "",
+        eolPointsBuilt: layer.eolBuilt?.points ?? "",
+        eolClassUnbuilt: layer.eolUnbuilt?.className ?? "",
+        eolPointsUnbuilt: layer.eolUnbuilt?.points ?? "",
+        rebuildClass: layer.dismantlingPotentialClassId ?? "",
+        rebuildPoints: layer.dismantlingPoints ?? "",
+        componentId: layer.component_id,
+        elementUuid: layer.element_uuid,
+        materialCompatibilityClass,
+        materialCompatibilityPoints,
+      }
+    })
   )
 
   return convertToCSV(mappedProducts, fieldTranslations)

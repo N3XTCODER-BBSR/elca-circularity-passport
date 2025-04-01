@@ -204,11 +204,11 @@ const CircularityInfo = (props: CircularityInfoProps) => {
   const eolUnbuiltDataSecondary = [
     // POTENTIAL
     {
-      key: "Klasse Rückbau", //t("..."), // TODO: i18n
+      key: "Rückbaupotenzial Klasse", //t("..."), // TODO: i18n
       value: props.layerData.dismantlingPotentialClassId ?? "-",
     },
     {
-      key: "Punkte Rückbau", //t("..."), // TODO: i18n
+      key: "Rückbaupotenzial Punkte", //t("..."), // TODO: i18n
       value: props.layerData.dismantlingPotentialClassId
         ? dismantlingPotentialClassIdMapping[props.layerData.dismantlingPotentialClassId].points
         : "-",

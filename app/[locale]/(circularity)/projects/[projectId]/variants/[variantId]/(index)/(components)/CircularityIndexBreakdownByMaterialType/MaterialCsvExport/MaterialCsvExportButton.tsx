@@ -89,6 +89,8 @@ export default function MaterialCsvExportButton(props: MaterialCsvExportProps) {
     rebuildPoints: tRebuild("rebuildPoints"),
     elementUuid: tFields("componentUuid"),
     componentId: tFields("componentId"),
+    materialCompatibilityClass: tFields("materialCompatibilityClass"),
+    materialCompatibilityPoints: tFields("materialCompatibilityPoints"),
   }
 
   const generateAndDownloadCsv = () => {

@@ -34,7 +34,10 @@ import Toggle from "app/(components)/generic/Toggle"
 import { toggleExcludedProduct } from "app/[locale]/(circularity)/(server-actions)/toggleExcludedProduct"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { dismantlingPotentialClassIdMapping } from "lib/domain-logic/circularity/utils/circularityMappings"
+import {
+  calculateMaterialCompatibility,
+  getDisturbingSubstancesString,
+} from "lib/domain-logic/circularity/utils/getDisturbingSubstancesString"
 import { CallServerActionError } from "lib/errors"
 import {
   CircularityPotentialBadge,
@@ -81,26 +84,11 @@ const ProductHeader: FC<{
     ? !layerData.isExcluded
     : layerData.isExcluded
 
-  const dismantlingPotential =
-    layerData.dismantlingPotentialClassId === null || layerData.dismantlingPotentialClassId === undefined
-      ? null
-      : dismantlingPotentialClassIdMapping[layerData.dismantlingPotentialClassId].points
-
   const circulartyEnrichedLayerData = calculateCircularityDataForLayer(layerData)
 
-  const circularityPotential = circulartyEnrichedLayerData.eolBuilt?.points ?? null
+  const materialCompatibility = calculateMaterialCompatibility(circulartyEnrichedLayerData)
 
-  const notBuildEol = circulartyEnrichedLayerData.eolUnbuilt?.points ?? null
-
-  const disturbingSubstances = layerData.disturbingSubstanceSelections.length
-    ? layerData.disturbingSubstanceSelections
-        .filter((selection) => !!selection.disturbingSubstanceClassId)
-        .map((selection) => selection.disturbingSubstanceClassId)
-        .join(", ")
-    : "-"
-
-  const materialCompatibility =
-    circularityPotential !== null && notBuildEol !== null ? circularityPotential - notBuildEol : null
+  const disturbingSubstancesClassStr = getDisturbingSubstancesString(layerData)
 
   return (
     <div>
@@ -124,31 +112,36 @@ const ProductHeader: FC<{
       </div>
       <div className="border-gray-20 my-6 grid grid-cols-4 border">
         <HorizontalDescriptionItem
+          title={productTranslations("eolUnbuilt")}
+          hasBorderRight
+          labelValuePairs={[
+            {
+              label: metricsTranslations("points"),
+              value:
+                circulartyEnrichedLayerData.eolUnbuilt?.points != null
+                  ? format.number(circulartyEnrichedLayerData.eolUnbuilt?.points, { maximumFractionDigits: 2 })
+                  : "-",
+            },
+            {
+              label: metricsTranslations("class"),
+              valueItem: <CircularityPotentialBadge value={circulartyEnrichedLayerData.eolUnbuilt?.points} />,
+            },
+          ]}
+        />
+        <HorizontalDescriptionItem
           title={productTranslations("dismantlingPotential")}
           hasBorderRight
           labelValuePairs={[
             {
               label: metricsTranslations("points"),
               value:
-                dismantlingPotential !== null ? format.number(dismantlingPotential, { maximumFractionDigits: 2 }) : "-",
+                circulartyEnrichedLayerData.dismantlingPoints != null
+                  ? format.number(circulartyEnrichedLayerData.dismantlingPoints, { maximumFractionDigits: 2 })
+                  : "-",
             },
             {
               label: metricsTranslations("class"),
-              valueItem: <DismantlingPotentialBadge value={dismantlingPotential} />,
-            },
-          ]}
-        />
-        <HorizontalDescriptionItem
-          title={productTranslations("eolUnbuilt")}
-          hasBorderRight
-          labelValuePairs={[
-            {
-              label: metricsTranslations("points"),
-              value: notBuildEol !== null ? format.number(notBuildEol, { maximumFractionDigits: 2 }) : "-",
-            },
-            {
-              label: metricsTranslations("class"),
-              valueItem: <CircularityPotentialBadge value={notBuildEol} />,
+              valueItem: <DismantlingPotentialBadge value={circulartyEnrichedLayerData.dismantlingPoints || null} />,
             },
           ]}
         />
@@ -163,7 +156,7 @@ const ProductHeader: FC<{
                   ? format.number(materialCompatibility, { maximumFractionDigits: 2 })
                   : "-",
             },
-            { label: metricsTranslations("class"), value: disturbingSubstances },
+            { label: metricsTranslations("class"), value: disturbingSubstancesClassStr },
           ]}
         />
         <HorizontalDescriptionItem
@@ -172,11 +165,13 @@ const ProductHeader: FC<{
             {
               label: metricsTranslations("points"),
               value:
-                circularityPotential !== null ? format.number(circularityPotential, { maximumFractionDigits: 2 }) : "-",
+                circulartyEnrichedLayerData.eolBuilt?.points != null
+                  ? format.number(circulartyEnrichedLayerData.eolBuilt?.points, { maximumFractionDigits: 2 })
+                  : "-",
             },
             {
               label: metricsTranslations("class"),
-              valueItem: <CircularityPotentialBadge value={circularityPotential} />,
+              valueItem: <CircularityPotentialBadge value={circulartyEnrichedLayerData.eolBuilt?.points} />,
             },
           ]}
         />
