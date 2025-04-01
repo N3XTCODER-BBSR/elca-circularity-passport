@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "cross-env FORCE_COLOR=1 NODE_OPTIONS='--require source-map-support/register' next dev",
-    "build": "NODE_OPTIONS='--require source-map-support/register' next build",
-    "start": "NODE_OPTIONS='--require source-map-support/register --require ./appsignal.cjs --enable-source-maps' next start -p $PORT",
+    "build": "cross-env NODE_OPTIONS='--require source-map-support/register' next build",
+    "start": "cross-env NODE_OPTIONS='--require source-map-support/register --require ./appsignal.cjs --enable-source-maps' next start -p $PORT",
     "start:docker-e2e-test": "docker compose --env-file .env.e2e_tests up --build app-e2e-tests",
     "db:dev": "docker compose up db",
     "lint": "next lint",
