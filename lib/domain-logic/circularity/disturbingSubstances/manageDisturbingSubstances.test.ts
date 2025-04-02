@@ -35,6 +35,9 @@ describe("addOrUpdateDisturbingSubstance", () => {
   beforeAll(async () => {
     await resetDb()
   })
+  afterAll(async () => {
+    await resetDb()
+  })
 
   it("should create a new disturbing substance selection with class S1", async () => {
     const newDisturbingSubstanceSelection = {

@@ -207,7 +207,19 @@ async function main() {
   }
 
   try {
+    const consoleLog = console.log
+    const consoleWarn = console.warn
+    if (process.env.NODE_ENV === "test") {
+      console.log = () => {}
+      console.warn = () => {}
+    }
+
     await seedCircularityTool()
+
+    if (process.env.NODE_ENV === "test") {
+      console.log = consoleLog
+      console.warn = consoleWarn
+    }
     console.log("Init data seeding completed successfully.")
   } catch (error) {
     console.error("Error during init data seeding:", error)

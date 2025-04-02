@@ -22,8 +22,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { EolClasses } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
+import { EolClasses } from "lib/domain-logic/circularity/utils/circularityMappings"
 
 export const layers: EnrichedElcaElementComponent[] = [
   {
