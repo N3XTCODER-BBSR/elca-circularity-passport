@@ -63,20 +63,6 @@ export async function upsertUserEnrichedProductData(layerId: number) {
 }
 
 /**
- * Updates an existing disturbing substance selection
- *
- * @param disturbingSubstanceSelectionId The ID of the selection to update
- * @param updateData The data to update
- * @returns Promise with the updated disturbing substance selection
- */
-export async function updateDisturbingSubstanceSelection(
-  disturbingSubstanceSelectionId: number,
-  updateData: Prisma.DisturbingSubstanceSelectionUpdateInput
-) {
-  return dbDalInstance.updateDisturbingSubstanceSelection(disturbingSubstanceSelectionId, updateData)
-}
-
-/**
  * Creates a new disturbing substance selection
  *
  * @param createData The data for the new selection
@@ -156,7 +142,7 @@ export async function addOrUpdateDisturbingSubstance(
       updateData.disturbingSubstanceName = null
     }
 
-    await updateDisturbingSubstanceSelection(disturbingSubstanceSelectionWithNullableId.id, updateData)
+    await dbDalInstance.updateDisturbingSubstanceSelection(disturbingSubstanceSelectionWithNullableId.id, updateData)
   }
   // Handle creating a new selection
   else {
