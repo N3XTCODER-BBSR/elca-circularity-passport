@@ -22,13 +22,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
+import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import calculateEolBuiltData from "lib/domain-logic/circularity/utils/calculateEolBuiltPoints"
 import {
   dismantlingPotentialClassIdMapping,
   getEolClassNameByPoints,
   getEolPointsByScenario,
 } from "lib/domain-logic/circularity/utils/circularityMappings"
-import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import { DisturbingSubstanceClassId } from "prisma/generated/client"
 
 export enum SpecificOrTotal {
@@ -76,6 +76,7 @@ export type CalculateCircularityDataForLayerReturnType = EnrichedElcaElementComp
     className: string
   } | null
 }
+
 const calculateCircularityDataForLayer = (
   layerData: EnrichedElcaElementComponent
 ): CalculateCircularityDataForLayerReturnType => {
