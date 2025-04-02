@@ -48,48 +48,16 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
   >,
   productMassMap: Map<number, number | null>
 ): Promise<ElcaElementWithComponents<EnrichedElcaElementComponent>> => {
-  const layers = await enrichLayerData(
-    excludedProductIdsSet,
-    elementComponents,
-    userDefinedTBaustoffDataMap,
-    tBaustoffMappingEntriesMap,
-    tBaustoffProductMap,
-    productMassMap
-  )
-  return {
-    element_uuid: elementBaseData.uuid,
-    element_name: elementBaseData.element_name,
-    element_type_name: elementBaseData.element_type_name,
-    din_code: elementBaseData.din_code!,
-    unit: elementBaseData.unit!,
-    quantity: elementBaseData.quantity,
-    layers,
-  }
-}
-
-async function enrichLayerData(
-  excludedProductIdsSet: Set<number>,
-  components: ElcaProjectComponentRow[],
-  userDefinedMap: Map<number, UserEnrichedProductDataWithDisturbingSubstanceSelection>,
-  mappingEntriesMap: Map<string, TBs_OekobaudatMapping>,
-  productMap: Map<
-    number,
-    Prisma.TBs_ProductDefinitionGetPayload<{
-      include: { tBs_ProductDefinitionEOLCategory: true }
-    }>
-  >,
-  productMassMap: Map<number, number | null>
-): Promise<EnrichedElcaElementComponent[]> {
-  const enrichedComponents = components.map(async (component) => {
-    const userDefinedData = userDefinedMap.get(component.component_id)
+  const enrichedComponents = elementComponents.map(async (component) => {
+    const userDefinedData = userDefinedTBaustoffDataMap.get(component.component_id)
     const oekobaudatUuid = component.oekobaudat_process_uuid
 
-    const mappedEntry = oekobaudatUuid ? mappingEntriesMap.get(oekobaudatUuid) : null
+    const mappedEntry = oekobaudatUuid ? tBaustoffMappingEntriesMap.get(oekobaudatUuid) : null
     const productId = userDefinedData?.tBaustoffProductDefinitionId ?? mappedEntry?.tBs_productId
 
     let tBaustoffProductData: TBaustoffProductData | undefined
     if (productId !== null && productId !== undefined) {
-      const product = productMap.get(productId)
+      const product = tBaustoffProductMap.get(productId)
       if (product) {
         const eolCategory = product.tBs_ProductDefinitionEOLCategory
         const eolData = calculateEolDataByEolCateogryData(eolCategory)
@@ -127,5 +95,16 @@ async function enrichLayerData(
       disturbingEolScenarioForS4: userDefinedData?.disturbingEolScenarioForS4,
     }
   })
-  return (await Promise.all(enrichedComponents)).sort((a, b) => a.layer_position - b.layer_position)
+
+  const layers = (await Promise.all(enrichedComponents)).sort((a, b) => a.layer_position - b.layer_position)
+
+  return {
+    element_uuid: elementBaseData.uuid,
+    element_name: elementBaseData.element_name,
+    element_type_name: elementBaseData.element_type_name,
+    din_code: elementBaseData.din_code!,
+    unit: elementBaseData.unit!,
+    quantity: elementBaseData.quantity,
+    layers,
+  }
 }
