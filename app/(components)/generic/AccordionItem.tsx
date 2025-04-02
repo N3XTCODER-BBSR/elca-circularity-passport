@@ -27,7 +27,7 @@ import Image from "next/image"
 
 interface CustomAccordionItemProps extends Omit<AccordionItemProps, "header"> {
   header: React.ReactNode
-  rest?: any
+  rest?: unknown
 }
 
 export const AccordionItem: React.FC<CustomAccordionItemProps> = ({ header, ...rest }) => (

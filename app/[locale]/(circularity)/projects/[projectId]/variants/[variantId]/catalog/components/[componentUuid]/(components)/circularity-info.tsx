@@ -42,7 +42,6 @@ import {
 } from "app/(components)/generic/layout-elements"
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { updateDismantlingPotentialClassId } from "app/[locale]/(circularity)/(server-actions)/updateDismantlingPotentialClassId"
-import { updateSpecificEolScenario } from "app/[locale]/(circularity)/(server-actions)/updateSpecificScenario"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import {
   dismantlingPotentialClassIdMapping,
@@ -50,18 +49,13 @@ import {
   getEolPointsByScenario,
 } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { SelectOption } from "lib/presentation-logic/helper-types"
-import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
+import { DismantlingPotentialClassId } from "prisma/generated/client"
 import EOLScenarioEditButton from "./layer-details/circularity-info/circularity-details/EOLScenarioEditButton"
 import EolScenarioInfoBox from "./layer-details/circularity-info/circularity-details/EolScenarioInfoBox"
 import TBaustoffProductNameOrSelectorButton from "./layer-details/circularity-info/TBaustoffProductNameOrSelectorButton"
 
 type EolDataSectionProps = {
   layerData: EnrichedElcaElementComponent
-  isUpdating: boolean
-  onSaveSpecificEolScenario: (
-    selectedEolScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined,
-    proofText: string
-  ) => void
 }
 
 const getEolUnbuiltKeyValues = (layerData: EnrichedElcaElementComponent) => {
@@ -93,7 +87,7 @@ const getEolUnbuiltKeyValues = (layerData: EnrichedElcaElementComponent) => {
   }
 }
 
-const EolDataSection = ({ layerData, isUpdating, onSaveSpecificEolScenario }: EolDataSectionProps) => {
+const EolDataSection = ({ layerData }: EolDataSectionProps) => {
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
   if (layerData.tBaustoffProductData == null) {
     return null
@@ -167,26 +161,6 @@ const CircularityInfo = (props: CircularityInfoProps) => {
     try {
       const newIdOrNull = props.layerData.dismantlingPotentialClassId === id ? null : id
       const result = await updateDismantlingPotentialClassId(props.layerData.component_id, newIdOrNull)
-      if (!result.success) {
-        toast.error(t(result.errorI18nKey))
-        setError(result.errorI18nKey || null)
-      }
-    } catch (err: any) {
-      console.error("Error saving selection:", err)
-      setError(err.message || "An unexpected error occurred")
-    } finally {
-      setIsUpdating(false)
-    }
-  }
-
-  const onSaveSpecificEolScenario = async (
-    selectedEolScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined,
-    proofText: string
-  ) => {
-    setIsUpdating(true)
-    setError(null)
-    try {
-      const result = await updateSpecificEolScenario(props.layerData.component_id, selectedEolScenario, proofText)
       if (!result.success) {
         toast.error(t(result.errorI18nKey))
         setError(result.errorI18nKey || null)
@@ -293,11 +267,7 @@ const CircularityInfo = (props: CircularityInfoProps) => {
         </Area>
       )}
 
-      <EolDataSection
-        isUpdating={isUpdating}
-        layerData={props.layerData}
-        onSaveSpecificEolScenario={onSaveSpecificEolScenario}
-      />
+      <EolDataSection layerData={props.layerData} />
     </div>
   )
 }

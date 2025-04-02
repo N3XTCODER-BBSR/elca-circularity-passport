@@ -32,7 +32,7 @@ describe("aggregateCircularityData", () => {
     return {
       layerIndex: 1,
       name: "Layer",
-      massInKg: mass as any,
+      massInKg: mass ?? 0,
       materialGeometry: {
         unit: "m2",
         amount: 10,

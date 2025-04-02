@@ -25,7 +25,6 @@
 "use client"
 
 import { ResponsiveBar } from "@nivo/bar"
-import { useTranslations } from "next-intl"
 
 export type MaterialsBarChartDatum = {
   groupName: string
@@ -44,7 +43,6 @@ type MaterialsBarChartProps = {
 const replaceWhiteSpaceWithLineBreak = (label: string) => label?.replace(/\s+/g, "\n")
 
 const MaterialsBarChart = ({ data, labelFormatter, isPdf = false }: MaterialsBarChartProps) => {
-  const t = useTranslations("Grp.Web.sections.overview.module1Materials")
   const pdfMargins = { top: 0, right: 20, bottom: 20, left: 100 }
   const webMargins = { top: 0, right: 150, bottom: 50, left: 300 }
 
