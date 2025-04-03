@@ -49,7 +49,9 @@ describe("manageProductData", () => {
   describe("getProductCircularityData with circularity index", () => {
     beforeAll(async () => {
       await seedDb()
+    })
 
+    beforeAll(async () => {
       await updateProductTBaustoffAndRemoveDisturbingSubstances(5, 3)
       await upsertUserEnrichedProductDataByLayerId(5, DismantlingPotentialClassId.II)
       await addOrUpdateDisturbingSubstance(5, 1, 1, {
