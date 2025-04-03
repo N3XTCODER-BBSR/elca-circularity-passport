@@ -32,9 +32,6 @@ describe("addOrUpdateDisturbingSubstance", () => {
   const variantId = 1
   const projectId = 1
 
-  beforeAll(async () => {
-    await resetDb()
-  })
   afterAll(async () => {
     await resetDb()
   })

@@ -24,7 +24,7 @@
  */
 import { expect, test } from "@playwright/test"
 import { circularityToolPages } from "tests/constants"
-import { getAuthUserFile, resetDb } from "tests/utils"
+import { getAuthUserFile, resetDb, seedDb } from "tests/utils"
 import { users } from "./constants"
 import { fillOutAllCircularityDetails } from "./utils"
 
@@ -72,6 +72,7 @@ test.describe("Circularity tool", () => {
   test.describe("Component Page", () => {
     test.beforeAll(async () => {
       await resetDb()
+      await seedDb()
     })
 
     test.describe("Component Page 4", () => {
@@ -128,6 +129,7 @@ test.describe("Circularity tool", () => {
   test.describe("Overview Page", () => {
     test.beforeAll(async () => {
       await resetDb()
+      await seedDb()
     })
 
     test("if there is at least one incomplete material, the overview page shows the empty state", async ({ page }) => {
@@ -175,6 +177,7 @@ test.describe("Circularity tool", () => {
       const overviewPageUrl = getOverviewPageUrl(1)
 
       await resetDb()
+      await seedDb()
 
       await fillOutAllCircularityDetails(
         page,

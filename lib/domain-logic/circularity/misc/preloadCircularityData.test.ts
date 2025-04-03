@@ -25,7 +25,7 @@
 
 import { DisturbingSubstanceClassId } from "prisma/generated/client"
 import { DismantlingPotentialClassId } from "prisma/generated/client"
-import { resetDb } from "tests/utils"
+import { resetDb, seedDb } from "tests/utils"
 import { preloadCircularityData } from "./preloadCircularityData"
 import { upsertUserEnrichedProductDataByLayerId } from "../dismantling/updateDismantlingData"
 import { addOrUpdateDisturbingSubstance } from "../disturbingSubstances/manageDisturbingSubstances"
@@ -117,11 +117,13 @@ const components = [
 ]
 
 describe("preloadCircularityData", () => {
-  beforeEach(async () => {
+  afterAll(async () => {
     await resetDb()
   })
-  afterEach(async () => {
+
+  beforeEach(async () => {
     await resetDb()
+    await seedDb()
   })
 
   it("should preload the circularity data", async () => {

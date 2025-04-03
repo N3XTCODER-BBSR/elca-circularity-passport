@@ -24,7 +24,7 @@
  */
 
 import { DismantlingPotentialClassId, DisturbingSubstanceClassId } from "prisma/generated/client"
-import { resetDb } from "tests/utils"
+import { resetDb, seedDb } from "tests/utils"
 import { getProductCircularityData, updateProductTBaustoffAndRemoveDisturbingSubstances } from "./manageProductData"
 import { upsertUserEnrichedProductDataByLayerId } from "../dismantling/updateDismantlingData"
 import { addOrUpdateDisturbingSubstance } from "../disturbingSubstances/manageDisturbingSubstances"
@@ -47,12 +47,8 @@ describe("manageProductData", () => {
     })
   })
   describe("getProductCircularityData with circularity index", () => {
-    afterAll(async () => {
-      await resetDb()
-    })
-
     beforeAll(async () => {
-      await resetDb()
+      await seedDb()
 
       await updateProductTBaustoffAndRemoveDisturbingSubstances(5, 3)
       await upsertUserEnrichedProductDataByLayerId(5, DismantlingPotentialClassId.II)
@@ -62,6 +58,10 @@ describe("manageProductData", () => {
         disturbingSubstanceClassId: DisturbingSubstanceClassId.S2,
         disturbingSubstanceName: "",
       })
+    })
+
+    afterAll(async () => {
+      await resetDb()
     })
     it("should return the circularity data for a product when there is enriched product data", async () => {
       const result = await getProductCircularityData(5, 1, 1)
