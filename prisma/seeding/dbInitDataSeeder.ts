@@ -207,6 +207,7 @@ async function main() {
   }
 
   try {
+    // temporarily deactivate logs and warnings during seeding (to have less noisy test output consoles)
     const consoleLog = console.log
     const consoleWarn = console.warn
     if (process.env.NODE_ENV === "test") {
