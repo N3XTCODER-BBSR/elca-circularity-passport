@@ -103,6 +103,31 @@ test.describe("Circularity tool", () => {
       test('if the tBaustoff field is set, the Circularity Potential - Unbuilt - "EOL Total points" has the correct value', async ({
         page,
       }) => {
+        // First click on the accordion to open it
+        await page
+          .locator("[data-testid=component-layer__div__7]")
+          .locator("[data-testid=accordion__button__7]")
+          .click()
+
+        // Then click on the edit button to open the tBaustoff selector
+        await page
+          .locator("[data-testid=component-layer__div__7]")
+          .locator("[data-testid=edit-button__button__tbaustoff-selector]")
+          .click()
+
+        // Wait for dropdown to be visible
+        await page.locator("[data-testid=select-material-button__select]").waitFor()
+
+        // Select "Kunststoffprofil SBR" from the dropdown
+        // First try by value if you know it, or by visible text otherwise
+        await page
+          .locator("[data-testid=select-material-button__select]")
+          .selectOption({ label: "Kunststoffprofil SBR" })
+
+        // Click the save button
+        await page.locator("[data-testid=select-material-save-button__button]").click()
+
+        // Verify the expected results
         await expect(
           page.locator("[data-testid=component-layer__div__7]").locator("[data-testid=tbaustoff-product-name__span]")
         ).toHaveText("Kunststoffprofil SBR")

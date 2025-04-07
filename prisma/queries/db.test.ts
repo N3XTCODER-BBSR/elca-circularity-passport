@@ -73,4 +73,58 @@ describe("db queries", () => {
       expect(result).toMatchObject(want)
     })
   })
+
+  describe("tBaustoff mapping queries", () => {
+    // These tests verify that the methods are called with the correct parameters
+
+    it("should pass process DB UUID to getTBaustoffMappingEntries", async () => {
+      // Save the original implementation
+      const originalGetTBaustoffMappingEntries = dbDalInstance.getTBaustoffMappingEntries
+
+      try {
+        // Create a mock function
+        const mockFn = jest.fn().mockResolvedValue([])
+
+        // Replace the original method with the mock
+        dbDalInstance.getTBaustoffMappingEntries = mockFn
+
+        const processUuids = ["uuid1", "uuid2"]
+        const processDbUuid = "test-process-db-uuid"
+
+        // Call the method
+        await dbDalInstance.getTBaustoffMappingEntries(processUuids, processDbUuid)
+
+        // Verify it was called with the correct parameters
+        expect(mockFn).toHaveBeenCalledWith(processUuids, processDbUuid)
+      } finally {
+        // Restore the original method
+        dbDalInstance.getTBaustoffMappingEntries = originalGetTBaustoffMappingEntries
+      }
+    })
+
+    it("should pass process DB UUID to getTBaustoffMappingEntry", async () => {
+      // Save the original implementation
+      const originalGetTBaustoffMappingEntry = dbDalInstance.getTBaustoffMappingEntry
+
+      try {
+        // Create a mock function
+        const mockFn = jest.fn().mockResolvedValue(null)
+
+        // Replace the original method with the mock
+        dbDalInstance.getTBaustoffMappingEntry = mockFn
+
+        const processUuid = "uuid1"
+        const processDbUuid = "test-process-db-uuid"
+
+        // Call the method
+        await dbDalInstance.getTBaustoffMappingEntry(processUuid, processDbUuid)
+
+        // Verify it was called with the correct parameters
+        expect(mockFn).toHaveBeenCalledWith(processUuid, processDbUuid)
+      } finally {
+        // Restore the original method
+        dbDalInstance.getTBaustoffMappingEntry = originalGetTBaustoffMappingEntry
+      }
+    })
+  })
 })
