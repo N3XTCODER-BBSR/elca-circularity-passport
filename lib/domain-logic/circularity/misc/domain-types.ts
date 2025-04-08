@@ -66,9 +66,6 @@ export type ElcaProjectComponentRow = {
   // lb_nr: number
   // process_ref_unit: string
   oekobaudat_process_uuid: string | undefined
-  pdb_name: string | undefined
-  pdb_version: string | undefined | null
-  oekobaudat_process_db_uuid: string | undefined
   element_name: string
   unit: string | null
   // TODO: consider to remove this and instead always use the quantity field from the element (not the component/layer)

@@ -1,3 +1,32 @@
+## [Release 0.2.4] - 2025-04-02
+
+### Added
+
+- **Documentation Updates:** Enhanced project documentation with improved README, contribution guide, and license information.
+- **CSV Export:** Added functionality to export aggregated inventory data to CSV format.
+- **Clean Architecture:** Implemented clean architecture principles with clear separation between domain and presentation layers.
+
+### Fixed
+
+- **Wording and Presentation:** Improved various text and translation issues across DE/EN/ES locales.
+- **Unit Corrections:** Fixed unit display issues in component displays.
+- **Product Header Layout:** Updated product header layout and component organization.
+- **CSV Export Transformation:** Enhanced CSV export transformation for material circularity data.
+
+### Improved / Refactored
+
+- **Code Organization:** Reorganized codebase according to clean architecture principles:
+  - Separated domain logic (business rules and calculations)
+  - Moved formatting functions to presentation layer
+  - Improved database access patterns
+  - Enhanced separation of concerns between database modules
+- **Middleware/Query Logging:** Improved logging functionality in middleware and database queries.
+- **Documentation:** Updated and cleaned up project documentation:
+  - Removed boilerplate content
+  - Updated project naming
+  - Synchronized scripts section with package.json
+  - Enhanced contribution guidelines
+
 ## [Release 0.2.3] - 2025-03-25
 
 ### Added

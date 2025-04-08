@@ -24,7 +24,7 @@
  */
 
 import { DisturbingSubstanceClassId } from "prisma/generated/client"
-import { resetDb } from "tests/utils"
+import { resetDb, seedDb } from "tests/utils"
 import { addOrUpdateDisturbingSubstance } from "./manageDisturbingSubstances"
 
 describe("addOrUpdateDisturbingSubstance", () => {
@@ -32,62 +32,63 @@ describe("addOrUpdateDisturbingSubstance", () => {
   const variantId = 1
   const projectId = 1
 
+  beforeEach(async () => {
+    await resetDb()
+    await seedDb()
+  })
+
   afterAll(async () => {
     await resetDb()
+    await seedDb()
   })
 
   it("should create a new disturbing substance selection with class S1", async () => {
     const newDisturbingSubstanceSelection = {
       id: null,
       localId: "local-1",
-      userEnrichedProductDataElcaElementComponentId: 5,
+      userEnrichedProductDataElcaElementComponentId: productId,
       disturbingSubstanceClassId: DisturbingSubstanceClassId.S1,
       disturbingSubstanceName: "",
     }
 
-    const result = await addOrUpdateDisturbingSubstance(
+    let enrichedProductData = await addOrUpdateDisturbingSubstance(
       productId,
       variantId,
       projectId,
       newDisturbingSubstanceSelection
     )
 
-    expect(result.disturbingSubstanceSelections).toEqual([
+    expect(enrichedProductData.disturbingSubstanceSelections).toMatchObject([
       {
-        id: 1,
-        userEnrichedProductDataElcaElementComponentId: 5,
         disturbingSubstanceClassId: "S1",
         disturbingSubstanceName: null,
       },
     ])
-    expect(result.component_id).toEqual(5)
-    expect(result.disturbingEolScenarioForS4).toBeNull()
-  })
-  it("should update an existing disturbing substance selection to remove class and name", async () => {
-    const newDisturbingSubstanceSelection = {
+    expect(enrichedProductData.component_id).toEqual(productId)
+    expect(enrichedProductData.disturbingEolScenarioForS4).toBeNull()
+
+    const removeDisturbingSubstanceSelection = {
       id: 1,
       localId: "local-1",
-      userEnrichedProductDataElcaElementComponentId: 5,
+      userEnrichedProductDataElcaElementComponentId: productId,
       disturbingSubstanceClassId: null,
       disturbingSubstanceName: "",
     }
 
-    const result = await addOrUpdateDisturbingSubstance(
+    enrichedProductData = await addOrUpdateDisturbingSubstance(
       productId,
       variantId,
       projectId,
-      newDisturbingSubstanceSelection
+      removeDisturbingSubstanceSelection
     )
 
-    expect(result.disturbingSubstanceSelections).toEqual([
+    expect(enrichedProductData.disturbingSubstanceSelections).toMatchObject([
       {
-        id: 1,
-        userEnrichedProductDataElcaElementComponentId: 5,
         disturbingSubstanceClassId: null,
         disturbingSubstanceName: "",
       },
     ])
-    expect(result.component_id).toEqual(5)
-    expect(result.disturbingEolScenarioForS4).toBeNull()
+    expect(enrichedProductData.component_id).toEqual(productId)
+    expect(enrichedProductData.disturbingEolScenarioForS4).toBeNull()
   })
 })

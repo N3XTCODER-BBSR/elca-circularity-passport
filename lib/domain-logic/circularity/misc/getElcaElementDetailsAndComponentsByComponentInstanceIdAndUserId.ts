@@ -56,7 +56,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
     const productId = userDefinedData?.tBaustoffProductDefinitionId ?? mappedEntry?.tBs_productId
 
     let tBaustoffProductData: TBaustoffProductData | undefined
-    if (productId !== null && productId !== undefined) {
+    if (productId != null) {
       const product = tBaustoffProductMap.get(productId)
       if (product) {
         const eolCategory = product.tBs_ProductDefinitionEOLCategory

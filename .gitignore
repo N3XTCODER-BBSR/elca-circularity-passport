@@ -43,3 +43,4 @@ generated
 
 playwright/.auth
 performance-summary.json
+.ipynb_checkpoints
