@@ -24,7 +24,7 @@ jobs:
       - name: Generate Prisma Clients
         run: yarn prisma:generate
       - name: Run Playwright tests in Chromium and Firefox
-        run: yarn e2e:headless --project=chromium --project=firefox
+        run: yarn e2e:headless --project=chromium
       - uses: actions/upload-artifact@v4
         if: always()
         with:

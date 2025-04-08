@@ -68,6 +68,11 @@ export const resetDb = async () => {
     const truncateSql = `TRUNCATE TABLE ${tables} RESTART IDENTITY CASCADE;`
     await prisma.$executeRawUnsafe(truncateSql)
   }
+}
 
+/**
+ * seed (new) database with the initial data
+ */
+export const seedDb = async () => {
   execSync(`SEED_INITIAL_DATA=true DATABASE_URL=${process.env.DATABASE_URL} yarn prisma:seed`, { stdio: "inherit" })
 }

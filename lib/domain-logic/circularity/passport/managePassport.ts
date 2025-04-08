@@ -267,13 +267,14 @@ export async function createCompletePassportForProjectVariant(projectVariantId: 
   )
 
   return parsedPassportData
-} /**
+}
+
+/**
  * Retrieves metadata for all passports associated with a project variant.
  *
  * @param variantId The ID of the project variant
  * @returns An array of passport metadata
  */
-
 export async function getPassportsMetadataForProjectVariant(variantId: number): Promise<PassportMetadata[]> {
   return dbDalInstance.getMetaDataForAllPassportsForProjectVariantId(variantId)
 }

@@ -22,95 +22,147 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { ElcaProjectComponentRow } from "lib/domain-logic/types/domain-types"
+
+import { DisturbingSubstanceClassId } from "prisma/generated/client"
+import { DismantlingPotentialClassId } from "prisma/generated/client"
+import { resetDb, seedDb } from "tests/utils"
 import { preloadCircularityData } from "./preloadCircularityData"
+import { upsertUserEnrichedProductDataByLayerId } from "../dismantling/updateDismantlingData"
+import { addOrUpdateDisturbingSubstance } from "../disturbingSubstances/manageDisturbingSubstances"
+import { updateProductTBaustoffAndRemoveDisturbingSubstances } from "../products/manageProductData"
+import { toggleExcludedProduct } from "../products/manageProductExclusion"
 
-// Mock the dependencies
-jest.mock("../../../../prisma/queries/dalSingletons", () => ({
-  dbDalInstance: {
-    getExcludedProductIds: jest.fn(),
-    getUserDefinedTBaustoffData: jest.fn(),
-    getTBaustoffMappingEntries: jest.fn(),
-    getTBaustoffProducts: jest.fn(),
+const components = [
+  {
+    access_group_id: 3,
+    element_uuid: "32af2f0b-d7d8-4fb1-8354-1e9736d4f513",
+    component_id: 5,
+    layer_position: 1,
+    is_layer: true,
+    process_name: "Beton der Druckfestigkeitsklasse C 30/37",
+    oekobaudat_process_uuid: "b6096c9c-1248-4ce1-9c2d-f4a48aade80f",
+    pdb_name: "copy of OBD_2023_I for import in eLCA",
+    pdb_version: "v1",
+    oekobaudat_process_db_uuid: "22885a6e-1765-4ade-a35e-ae668bd07256",
+    element_name: "Fundament 1",
+    unit: "m2",
+    productUnit: "m3",
+    productQuantity: 1,
+    element_component_id: 5,
+    quantity: 1,
+    layer_size: 0.3,
+    layer_length: 1,
+    layer_width: 1,
+    layer_area_ratio: 1,
+    process_config_density: null,
+    process_config_id: 45,
+    process_config_name: "Beton der Druckfestigkeitsklasse C 30/37",
+    process_category_node_id: 617,
+    process_category_ref_num: "1.04",
   },
-  legacyDbDalInstance: {
-    getProcessDbUuidForProject: jest.fn(),
+  {
+    access_group_id: 3,
+    element_uuid: "32af2f0b-d7d8-4fb1-8354-1e9736d4f513",
+    component_id: 6,
+    layer_position: 2,
+    is_layer: true,
+    process_name: "Keramische Fassadenplatte TONALITY®",
+    oekobaudat_process_uuid: "bb51d66a-b04b-4ec7-8947-185e9697e671",
+    pdb_name: "copy of OBD_2023_I for import in eLCA",
+    pdb_version: "v1",
+    oekobaudat_process_db_uuid: "22885a6e-1765-4ade-a35e-ae668bd07256",
+    element_name: "Fundament 1",
+    unit: "m2",
+    productUnit: "m3",
+    productQuantity: 1,
+    element_component_id: 6,
+    quantity: 1,
+    layer_size: 0.5,
+    layer_length: 1,
+    layer_width: 1,
+    layer_area_ratio: 0.23,
+    process_config_density: null,
+    process_config_id: 377,
+    process_config_name: "Keramische Fassadenplatte TONALITY®",
+    process_category_node_id: 616,
+    process_category_ref_num: "1.03",
   },
-}))
-
-jest.mock("./getMassForProducts", () => ({
-  getMassForProducts: jest.fn(),
-}))
+  {
+    access_group_id: 3,
+    element_uuid: "32af2f0b-d7d8-4fb1-8354-1e9736d4f513",
+    component_id: 7,
+    layer_position: 3,
+    is_layer: true,
+    process_name: "Kunststoffprofil SBR",
+    oekobaudat_process_uuid: "1b69b3a2-3164-436b-a934-ed7d926f5f53",
+    pdb_name: "copy of OBD_2023_I for import in eLCA",
+    pdb_version: "v1",
+    oekobaudat_process_db_uuid: "22885a6e-1765-4ade-a35e-ae668bd07256",
+    element_name: "Fundament 1",
+    unit: "m2",
+    productUnit: "m3",
+    productQuantity: 1,
+    element_component_id: 7,
+    quantity: 1,
+    layer_size: 0.302,
+    layer_length: 1,
+    layer_width: 1,
+    layer_area_ratio: 1,
+    process_config_density: null,
+    process_config_id: 410,
+    process_config_name: "Kunststoffprofil SBR",
+    process_category_node_id: 664,
+    process_category_ref_num: "6.04",
+  },
+]
 
 describe("preloadCircularityData", () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
+  afterAll(async () => {
+    await resetDb()
   })
 
-  it("should fetch process DB UUID and pass it to getTBaustoffMappingEntries", async () => {
-    // Arrange
-    const projectId = 123
-    const processDbUuid = "test-process-db-uuid"
-    const components: ElcaProjectComponentRow[] = [
-      {
-        component_id: 1,
-        oekobaudat_process_uuid: "test-uuid-1",
-      } as ElcaProjectComponentRow,
-      {
-        component_id: 2,
-        oekobaudat_process_uuid: "test-uuid-2",
-      } as ElcaProjectComponentRow,
-    ]
-
-    // Mock the dependencies
-    const mockExcludedProductRows = [{ productId: 1 }]
-    const mockUserEnrichedRows = [{ elcaElementComponentId: 1, tBaustoffProductDefinitionId: 101 }]
-    const mockTBaustoffMappingEntries = [{ oebd_processUuid: "test-uuid-1", tBs_productId: 201 }]
-    const mockProductMassMap = new Map([[1, 100]])
-    const mockTBaustoffProducts = [{ id: 101 }, { id: 201 }]
-
-    // Import the mocked modules
-    const dalSingletons = await import("../../../../prisma/queries/dalSingletons")
-    const { dbDalInstance, legacyDbDalInstance } = dalSingletons
-    const massModule = await import("./getMassForProducts")
-    const { getMassForProducts } = massModule
-
-    ;(dbDalInstance.getExcludedProductIds as jest.Mock).mockResolvedValue(mockExcludedProductRows)
-    ;(dbDalInstance.getUserDefinedTBaustoffData as jest.Mock).mockResolvedValue(mockUserEnrichedRows)
-    ;(dbDalInstance.getTBaustoffMappingEntries as jest.Mock).mockResolvedValue(mockTBaustoffMappingEntries)
-    ;(getMassForProducts as jest.Mock).mockResolvedValue(mockProductMassMap)
-    ;(dbDalInstance.getTBaustoffProducts as jest.Mock).mockResolvedValue(mockTBaustoffProducts)
-    ;(legacyDbDalInstance.getProcessDbUuidForProject as jest.Mock).mockResolvedValue(processDbUuid)
-
-    // Act
-    await preloadCircularityData(components, projectId)
-
-    // Assert
-    expect(legacyDbDalInstance.getProcessDbUuidForProject).toHaveBeenCalledWith(projectId)
-    expect(dbDalInstance.getTBaustoffMappingEntries).toHaveBeenCalledWith(
-      expect.arrayContaining(["test-uuid-1", "test-uuid-2"]),
-      processDbUuid
-    )
+  beforeEach(async () => {
+    await resetDb()
+    await seedDb()
   })
 
-  it("should throw an error if no process DB UUID is found", async () => {
-    // Arrange
-    const projectId = 123
-    const components: ElcaProjectComponentRow[] = [
-      {
-        component_id: 1,
-        oekobaudat_process_uuid: "test-uuid-1",
-      } as ElcaProjectComponentRow,
-    ]
+  it("should preload the circularity data", async () => {
+    const result = await preloadCircularityData(components, 1)
 
-    // Import the mocked modules
-    const dalSingletons = await import("../../../../prisma/queries/dalSingletons")
-    const { legacyDbDalInstance } = dalSingletons
+    expect(result.excludedProductIdsSet.size).toBe(0)
+    expect(result.userEnrichedMap.size).toBe(0)
+    expect(result.tBaustoffMappingEntriesMap.size).toBe(0)
+    expect(result.tBaustoffProductMap.size).toBe(0)
+    expect(result.productMassMap.size).toBe(3)
+  })
 
-    // Mock the dependencies to return null for process DB UUID
-    ;(legacyDbDalInstance.getProcessDbUuidForProject as jest.Mock).mockResolvedValue(null)
+  it("should preload the circularity data with user enriched data", async () => {
+    await updateProductTBaustoffAndRemoveDisturbingSubstances(5, 3)
+    await upsertUserEnrichedProductDataByLayerId(5, DismantlingPotentialClassId.II)
+    await addOrUpdateDisturbingSubstance(5, 1, 1, {
+      id: null,
+      userEnrichedProductDataElcaElementComponentId: 5,
+      disturbingSubstanceClassId: DisturbingSubstanceClassId.S2,
+      disturbingSubstanceName: "",
+    })
 
-    // Act & Assert
-    await expect(preloadCircularityData(components, projectId)).rejects.toThrow("No process_db UUID found for project")
+    const result = await preloadCircularityData(components, 1)
+
+    expect(result.excludedProductIdsSet.size).toBe(0)
+    expect(result.userEnrichedMap.size).toBe(1)
+    expect(result.tBaustoffMappingEntriesMap.size).toBe(0)
+    expect(result.tBaustoffProductMap.size).toBe(1)
+    expect(result.productMassMap.size).toBe(3)
+  })
+  it("should preload the circularity data with excluded products", async () => {
+    await toggleExcludedProduct(5)
+
+    const result = await preloadCircularityData(components, 1)
+
+    expect(result.excludedProductIdsSet.size).toBe(1)
+    expect(result.userEnrichedMap.size).toBe(0)
+    expect(result.tBaustoffMappingEntriesMap.size).toBe(0)
+    expect(result.tBaustoffProductMap.size).toBe(0)
+    expect(result.productMassMap.size).toBe(3)
   })
 })
