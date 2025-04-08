@@ -1,3 +1,22 @@
+## [Release 0.2.5] - 2025-04-08
+
+### Added
+
+- **OBD Version Support:** Added notebook for managing new OBD versions.
+- **Database Testing:** Improved test coverage for database queries and interactions.
+
+### Fixed
+
+- **TBaustoff Mapping:** Resolved issues with TBaustoff mapping data and improved accuracy.
+- **Process DB Filtering:** Enhanced filtering logic for process database entries.
+- **Circularity Data Loading:** Improved preloading of circularity data with better error handling.
+
+### Improved / Refactored
+
+- **Database Queries:** Refactored legacy database queries following clean architecture principles.
+- **E2E Testing:** Enhanced end-to-end tests for circularity tools.
+- **Domain Logic:** Improved separation of concerns in circularity data handling.
+
 ## [Release 0.2.4] - 2025-04-02
 
 ### Added
