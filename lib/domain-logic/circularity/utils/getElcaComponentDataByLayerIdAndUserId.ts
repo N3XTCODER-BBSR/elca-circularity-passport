@@ -41,7 +41,10 @@ export const fetchElcaComponentById = async (layerId: number, variantId: number,
 
   const [userDefinedData, mappingEntry] = await Promise.all([
     dbDalInstance.getUserDefinedTBaustoffDataForComponentId(layerId),
-    dbDalInstance.getTBaustoffMappingEntry(projectComponent.oekobaudat_process_uuid, projectComponent.pdb_uuid),
+    dbDalInstance.getTBaustoffMappingEntry(
+      projectComponent.oekobaudat_process_uuid,
+      projectComponent.oekobaudat_process_db_uuid!
+    ),
   ])
 
   const productId = userDefinedData?.tBaustoffProductDefinitionId ?? mappingEntry?.tBs_productId

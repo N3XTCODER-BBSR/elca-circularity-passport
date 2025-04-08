@@ -36,7 +36,7 @@ type CsvRow = {
   oekobaudatUuid____448d1096_2017_4901_a560_f652a83c737e____2020_II: string
   oekobaudatUuid____22885a6e_1765_4ade_a35e_ae668bd07256____2023_I: string
   // TODO (L): Open leftover question from alignment with Austrian team
-  oekobaudatUuid____ca70a7e6_0ea4_4e90_a947_d44585783626____2024_I: string
+  oekobaudatUuid____XXXXXXXXXXXX____2024_I: string
   tBaustoffName: string
   eolCategoryName: string
   eolScenarioReal: string

@@ -26,7 +26,6 @@ import { ElcaProjectComponentRow } from "lib/domain-logic/circularity/misc/domai
 import { costGroupyDinNumbersToInclude } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { Prisma } from "prisma/generated/client-legacy"
 import { prismaLegacy } from "prisma/prismaClient"
-import { LIFECYCLE_IDENT_A1_3 } from "./constants"
 
 // HINT: functions that access data that has authorization requirements specific to projects
 // should have as a parameter the projectId and verify in the where clause of the db query
@@ -65,7 +64,7 @@ export type ElcaVariantElementBaseData = {
 
 export class LegacyDbDal {
   getElcaComponentDataByLayerId = async (layerId: number, variantId: number, projectId: number) => {
-    const data = await prismaLegacy.elca_element_components.findUniqueOrThrow({
+    const data = await prismaLegacy.elca_element_components.findFirstOrThrow({
       where: {
         id: layerId,
         // Ensure we only get processes with the given life_cycle_ident
@@ -73,15 +72,8 @@ export class LegacyDbDal {
           process_life_cycle_assignments: {
             some: {
               processes: {
-                life_cycle_ident: LIFECYCLE_IDENT_A1_3,
-                // Filter for the process database UUID associated with the project
-                process_dbs: {
-                  projects: {
-                    some: {
-                      id: projectId,
-                    },
-                  },
-                },
+                // TODO: extract A1-3 out into a constant
+                life_cycle_ident: "A1-3",
               },
             },
           },
@@ -113,19 +105,6 @@ export class LegacyDbDal {
         process_configs: {
           include: {
             process_life_cycle_assignments: {
-              where: {
-                processes: {
-                  life_cycle_ident: LIFECYCLE_IDENT_A1_3,
-                  // Filter for the process database UUID associated with the project
-                  process_dbs: {
-                    projects: {
-                      some: {
-                        id: projectId,
-                      },
-                    },
-                  },
-                },
-              },
               include: {
                 processes: {
                   include: {
@@ -140,13 +119,16 @@ export class LegacyDbDal {
       },
     })
 
-    if (data.process_configs.process_life_cycle_assignments.length > 1) {
-      const errMsg = `Number of processLifecycleAssignments (${data.process_configs.process_life_cycle_assignments.length}) is greater than 1 for layerId=${data.id}`
-      console.error(errMsg)
-      throw new Error(errMsg)
-    }
+    // Find the specific process that has life_cycle_ident = 'A1-3'
+    const assignment = data.process_configs.process_life_cycle_assignments.find(
+      // TODO: extract A1-3 out into a constant
+      (a) => a.processes?.life_cycle_ident === "A1-3"
+    )
 
-    const assignment = data.process_configs.process_life_cycle_assignments[0]!
+    if (!assignment) {
+      // TODO: extract A1-3 out into a constant
+      throw new Error(`No process with life_cycle_ident='A1-3' found for layerId=${layerId}`)
+    }
 
     const process = assignment.processes
     const processDb = process.process_dbs
@@ -163,7 +145,7 @@ export class LegacyDbDal {
       oekobaudat_process_uuid: process.uuid,
       productUnit: processConversions.in_unit,
       productQuantity: Number(data.quantity),
-      pdb_uuid: processDb.uuid,
+      oekobaudat_process_db_uuid: processDb?.uuid || null,
       element_component_id: data.id,
       quantity: data.quantity ? Number(data.quantity) : null,
       layer_size: data.layer_size ? Number(data.layer_size) : null,
@@ -198,17 +180,10 @@ export class LegacyDbDal {
               process_life_cycle_assignments: {
                 some: {
                   processes: {
-                    life_cycle_ident: LIFECYCLE_IDENT_A1_3,
+                    // TODO: extract A1-3 out into a constant
+                    life_cycle_ident: "A1-3",
                     life_cycles: {
                       phase: "prod",
-                    },
-                    // Filter for the process database UUID associated with the project
-                    process_dbs: {
-                      projects: {
-                        some: {
-                          id: projectId,
-                        },
-                      },
                     },
                   },
                 },
@@ -232,19 +207,6 @@ export class LegacyDbDal {
                 process_category_node_id: true,
                 process_categories: true,
                 process_life_cycle_assignments: {
-                  where: {
-                    processes: {
-                      life_cycle_ident: LIFECYCLE_IDENT_A1_3,
-                      // Filter for the process database UUID associated with the project
-                      process_dbs: {
-                        projects: {
-                          some: {
-                            id: projectId,
-                          },
-                        },
-                      },
-                    },
-                  },
                   include: {
                     processes: {
                       include: {
@@ -262,43 +224,49 @@ export class LegacyDbDal {
     })
 
     return elements.flatMap((element) => {
-      return element.element_components.map((ec) => {
-        const processConfig = ec.process_configs
-        const assignments = processConfig.process_life_cycle_assignments
-        if (assignments.length > 1) {
-          const errMsg = `Number of processLifecycleAssignments (${assignments.length}) is greater than 1 for layerId=${ec.id}`
-          console.error(errMsg)
-          throw new Error(errMsg)
-        }
-        const assignment = assignments[0]!
-        const process = assignment.processes
+      return element.element_components
+        .map((ec) => {
+          const pc = ec.process_configs
+          // TODO: extract A1-3 out into a constant
+          const assignment = pc.process_life_cycle_assignments.find((a) => a.processes?.life_cycle_ident === "A1-3")
 
-        return {
-          access_group_id: element.access_group_id,
-          element_uuid: element.uuid,
-          component_id: ec.id,
-          // TODO (XL): Check whether this is proper handling of null values in DB
-          layer_position: ec.layer_position || -1,
-          is_layer: ec.is_layer,
-          process_name: processConfig.name,
-          oekobaudat_process_uuid: process.uuid,
-          element_name: element.name,
-          unit: element.ref_unit,
-          productUnit: ec.process_conversions.in_unit,
-          productQuantity: Number(ec.quantity),
-          element_component_id: ec.id,
-          quantity: Number(element.quantity),
-          layer_size: ec.layer_size ? Number(ec.layer_size) : null,
-          layer_length: ec.layer_length ? Number(ec.layer_length) : null,
-          layer_width: ec.layer_width ? Number(ec.layer_width) : null,
-          layer_area_ratio: ec.layer_area_ratio ? Number(ec.layer_area_ratio) : null,
-          process_config_density: processConfig.density ? Number(processConfig.density) : null,
-          process_config_id: processConfig.id ? Number(processConfig.id) : null,
-          process_config_name: processConfig.name,
-          process_category_node_id: processConfig.process_category_node_id,
-          process_category_ref_num: processConfig.process_categories.ref_num,
-        }
-      })
+          if (!assignment) {
+            return null
+          }
+          // Assuming each component/process_config has at least one relevant process:
+          const process = assignment?.processes // If multiple processes apply, adjust your logic here
+          const pdb = process?.process_dbs
+
+          return {
+            access_group_id: element.access_group_id,
+            element_uuid: element.uuid,
+            component_id: ec.id,
+            // TODO (XL): Check whether this is proper handling of null values in DB
+            layer_position: ec.layer_position || -1,
+            is_layer: ec.is_layer,
+            process_name: pc.name,
+            oekobaudat_process_uuid: process?.uuid,
+            pdb_name: pdb?.name,
+            pdb_version: pdb?.version,
+            oekobaudat_process_db_uuid: pdb?.uuid,
+            element_name: element.name,
+            unit: element.ref_unit,
+            productUnit: ec.process_conversions.in_unit,
+            productQuantity: Number(ec.quantity),
+            element_component_id: ec.id,
+            quantity: Number(element.quantity),
+            layer_size: ec.layer_size ? Number(ec.layer_size) : null,
+            layer_length: ec.layer_length ? Number(ec.layer_length) : null,
+            layer_width: ec.layer_width ? Number(ec.layer_width) : null,
+            layer_area_ratio: ec.layer_area_ratio ? Number(ec.layer_area_ratio) : null,
+            process_config_density: pc.density ? Number(pc.density) : null,
+            process_config_id: pc.id ? Number(pc.id) : null,
+            process_config_name: pc.name,
+            process_category_node_id: pc.process_category_node_id,
+            process_category_ref_num: pc.process_categories.ref_num,
+          }
+        })
+        .filter((x) => x !== null)
     })
   }
 
@@ -346,15 +314,8 @@ export class LegacyDbDal {
                   where: {
                     processes: {
                       life_cycles: {
-                        ident: LIFECYCLE_IDENT_A1_3,
-                      },
-                      // Filter for the process database UUID associated with the project
-                      process_dbs: {
-                        projects: {
-                          some: {
-                            id: projectId,
-                          },
-                        },
+                        // TODO: extract A1-3 out into a constant
+                        ident: "A1-3",
                       },
                     },
                   },
@@ -380,7 +341,6 @@ export class LegacyDbDal {
     variantId: number,
     projectId: number
   ): Promise<ElcaVariantElementBaseData> => {
-    // TODO (XL): Check whether it's better to use findUniqueOrThrow here
     const element = await prismaLegacy.elca_elements.findFirstOrThrow({
       where: {
         uuid: componentInstanceUuid,
@@ -566,7 +526,6 @@ export class LegacyDbDal {
   }
 
   isUserAuthorizedToElementComponent = async (userId: number, elementComponentId: number) => {
-    // TODO (XL): Check whether it's better to use findUniqueOrThrow here
     return await prismaLegacy.elca_element_components.findFirst({
       where: {
         id: elementComponentId,
@@ -594,7 +553,6 @@ export class LegacyDbDal {
   }
 
   isUserAuthorizedToElementByUuid = async (userId: number, elementUuid: string) => {
-    // TODO (XL): Check whether it's better to use findUniqueOrThrow here
     return await prismaLegacy.elca_elements.findFirst({
       where: {
         uuid: elementUuid,
@@ -618,7 +576,6 @@ export class LegacyDbDal {
   }
 
   isUserAuthorizedToProject = async (userId: number, projectId: number) => {
-    // TODO (XL): Check whether it's better to use findUniqueOrThrow here
     return await prismaLegacy.projects.findFirst({
       where: {
         id: projectId,
@@ -693,7 +650,6 @@ export class LegacyDbDal {
         process_dbs: {
           select: {
             name: true,
-            uuid: true,
           },
         },
       },
@@ -762,19 +718,5 @@ export class LegacyDbDal {
 
   healthCheck = async () => {
     return prismaLegacy.$queryRaw`SELECT 1`
-  }
-
-  getProcessDbUuidForProject = async (projectId: number): Promise<string | null> => {
-    const project = await prismaLegacy.projects.findUnique({
-      where: { id: projectId },
-      select: {
-        process_dbs: {
-          select: {
-            uuid: true,
-          },
-        },
-      },
-    })
-    return project?.process_dbs?.uuid || null
   }
 }
