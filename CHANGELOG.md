@@ -1,3 +1,9 @@
+## [Release 0.2.8] - 2025-04-08
+
+### Fixed
+
+- **Process Lifecycle Validation:** Updated validation logic for process lifecycle assignments to allow components with zero assignments, fixing data processing errors.
+
 ## [Release 0.2.7] - 2025-04-08
 
 ### Added
