@@ -1,3 +1,9 @@
+## [Release 0.2.7] - 2025-04-08
+
+### Added
+
+- **OBD Support:** Updated OBD version references in the notebook to support additional versions (2024-II and 2016). Ran notebook and updated mapping csv file used for seeding.
+
 ## [Release 0.2.6] - 2025-04-08
 
 ### Added
