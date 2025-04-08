@@ -1,3 +1,21 @@
+## [Release 0.2.6] - 2025-04-08
+
+### Added
+
+- **Footer & Imprint:** Added site footer with policy links and imprint page.
+- **Documentation:** Added PDF documentation for circularity index v0.3.
+
+### Fixed
+
+- **TBaustoff Mapping:** Further improvements to TBaustoff mapping data accuracy.
+- **Layout Components:** Various fixes to layout elements and component displays.
+
+### Improved / Refactored
+
+- **Legacy Database Queries:** Enhanced database query structure and test coverage.
+- **Localization:** Added new translation entries for German, English, and Spanish.
+- **Circularity Data Processing:** Improved error handling and data preloading.
+
 ## [Release 0.2.5] - 2025-04-08
 
 ### Added
