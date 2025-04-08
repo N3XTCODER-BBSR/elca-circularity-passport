@@ -22,8 +22,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { costGroupyDinNumbersToInclude } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { ElcaProjectComponentRow } from "lib/domain-logic/circularity/misc/domain-types"
+import { costGroupyDinNumbersToInclude } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { Prisma } from "prisma/generated/client-legacy"
 import { prismaLegacy } from "prisma/prismaClient"
 import { LIFECYCLE_IDENT_A1_3 } from "./constants"
@@ -140,8 +140,8 @@ export class LegacyDbDal {
       },
     })
 
-    if (data.process_configs.process_life_cycle_assignments.length !== 1) {
-      const errMsg = `Number of processLifecycleAssignments (${data.process_configs.process_life_cycle_assignments.length}) is not as expected 1 for layerId=${data.id}`
+    if (data.process_configs.process_life_cycle_assignments.length > 1) {
+      const errMsg = `Number of processLifecycleAssignments (${data.process_configs.process_life_cycle_assignments.length}) is greater than 1 for layerId=${data.id}`
       console.error(errMsg)
       throw new Error(errMsg)
     }
@@ -265,8 +265,8 @@ export class LegacyDbDal {
       return element.element_components.map((ec) => {
         const processConfig = ec.process_configs
         const assignments = processConfig.process_life_cycle_assignments
-        if (assignments.length !== 1) {
-          const errMsg = `Number of processLifecycleAssignments (${assignments.length}) is not as expected 1 for layerId=${ec.id}`
+        if (assignments.length > 1) {
+          const errMsg = `Number of processLifecycleAssignments (${assignments.length}) is greater than 1 for layerId=${ec.id}`
           console.error(errMsg)
           throw new Error(errMsg)
         }
