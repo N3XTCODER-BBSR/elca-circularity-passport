@@ -132,7 +132,7 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     >
       {!currentLayerData.isExcluded && (!circulartyEnrichedLayerData.circularityIndex || !currentLayerData.volume) && (
         <div className="mb-6 flex">
-          <Badge>{layerTranslations("incomplete")}</Badge>
+          <Badge testId={layerData.component_id.toString()}>{layerTranslations("incomplete")}</Badge>
         </div>
       )}
       <ProductHeader layerData={currentLayerData} layerNumber={layerNumber} refetchLayerData={refetchLayerData} />

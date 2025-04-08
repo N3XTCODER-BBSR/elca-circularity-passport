@@ -26,6 +26,7 @@ module.exports = {
         foreground: "hsl(var(--foreground))",
         error: "#991B1B",
         "bbsr-blue": {
+          800: "#00496B",
           700: "#005378",
           600: "#04678C",
           500: "#367D9F",
@@ -35,6 +36,7 @@ module.exports = {
         gray: {
           900: "#111827",
           600: "#6B7280",
+          400: "#D1D5DB",
           200: "#E5E7EB",
           100: "#F3F4F6",
         },

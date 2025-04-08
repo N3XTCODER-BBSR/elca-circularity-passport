@@ -532,6 +532,14 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
       total: "Total",
     },
   },
+  Footer: {
+    links: {
+      userTestingGuide: "Guía de Usuario",
+      privacyPolicy: "Política de Privacidad",
+      imprint: "Aviso legal",
+    },
+    copyright: "BBSR Todos los derechos reservados.",
+  },
   Common: {
     materialClasses: {
       "1": "Productos minerales para la construcción",

@@ -79,7 +79,10 @@ export const fillOutAllCircularityDetails = async (
 ) => {
   await page.goto(componentPageUrl1)
   await page.locator("[data-testid=toggle__switch__5]").click()
+  await expect(page.locator("[data-testid=badge__div__5]")).not.toBeVisible()
+
   await page.locator("[data-testid=toggle__switch__6]").click()
+  await expect(page.locator("[data-testid=badge__div__6]")).not.toBeVisible()
 
   await page.locator("[data-testid=component-layer__div__7]").locator("[data-testid=accordion__button__7]").click()
 
@@ -109,9 +112,12 @@ export const fillOutAllCircularityDetails = async (
     .locator("[data-testid=circularity-details-rebuild-class-button__button__75]")
     .click()
 
-  await page.waitForLoadState("networkidle")
+  await expect(page.locator("[data-testid=badge__div__7]")).not.toBeVisible()
+
   await page.goto(componentPageUrl2)
   await page.locator("[data-testid=toggle__switch__13]").click()
+  await expect(page.locator("[data-testid=badge__div__13]")).not.toBeVisible()
+
   await page.locator("[data-testid=accordion__button__14]").click()
   await page
     .locator("[data-testid=component-layer__div__14]")
@@ -131,43 +137,54 @@ export const fillOutAllCircularityDetails = async (
     .locator("data-testid=disturbing-substance-class__button__S1")
     .click()
 
-  await page.waitForLoadState("networkidle")
+  await expect(page.locator("[data-testid=badge__div__14]")).not.toBeVisible()
+
   await page.goto(componentPageUrl3)
   await page.locator("[data-testid=toggle__switch__15]").click()
-  await page.locator("[data-testid=toggle__switch__16]").click()
+  await expect(page.locator("[data-testid=badge__div__15]")).not.toBeVisible()
 
-  await page.waitForLoadState("networkidle")
+  await page.locator("[data-testid=toggle__switch__16]").click()
+  await expect(page.locator("[data-testid=badge__div__16]")).not.toBeVisible()
+
   await page.goto(componentPageUrl4)
   await page.locator("[data-testid=toggle__switch__17]").click()
-  await page.locator("[data-testid=toggle__switch__18]").click()
-  await page.locator("[data-testid=toggle__switch__19]").click()
-  await page.locator("[data-testid=toggle__switch__20]").click()
-  await page.locator("[data-testid=toggle__switch__21]").click()
+  await expect(page.locator("[data-testid=badge__div__17]")).not.toBeVisible()
 
-  await page.waitForLoadState("networkidle")
+  await page.locator("[data-testid=toggle__switch__18]").click()
+  await expect(page.locator("[data-testid=badge__div__18]")).not.toBeVisible()
+
+  await page.locator("[data-testid=toggle__switch__19]").click()
+  await expect(page.locator("[data-testid=badge__div__19]")).not.toBeVisible()
+
+  await page.locator("[data-testid=toggle__switch__20]").click()
+  await expect(page.locator("[data-testid=badge__div__20]")).not.toBeVisible()
+
+  await page.locator("[data-testid=toggle__switch__21]").click()
+  await expect(page.locator("[data-testid=badge__div__21]")).not.toBeVisible()
+
   await page.goto(componentPageUrl5)
   await page.locator("[data-testid=toggle__switch__22]").click()
+  await expect(page.locator("[data-testid=badge__div__22]")).not.toBeVisible()
 
-  await page.waitForLoadState("networkidle")
   await page.goto(componentPageUrl6)
   await page.locator("[data-testid=toggle__switch__23]").click()
+  await expect(page.locator("[data-testid=badge__div__23]")).not.toBeVisible()
 
-  await page.waitForLoadState("networkidle")
   await page.goto(componentPageUrl7)
   await page.locator("[data-testid=toggle__switch__24]").click()
+  await expect(page.locator("[data-testid=badge__div__24]")).not.toBeVisible()
 
-  await page.waitForLoadState("networkidle")
   await page.goto(componentPageUrl8)
   await page.locator("[data-testid=toggle__switch__25]").click()
-  await page.locator("[data-testid=toggle__switch__26]").click()
+  await expect(page.locator("[data-testid=badge__div__25]")).not.toBeVisible()
 
-  await page.waitForLoadState("networkidle")
+  await page.locator("[data-testid=toggle__switch__26]").click()
+  await expect(page.locator("[data-testid=badge__div__26]")).not.toBeVisible()
+
   await page.goto(overviewPageUrl)
   await expect(page.locator("[data-testid=circularity-index-total-number__points-div]")).toHaveText(/3,08 Punkte/)
 
-  await page.waitForLoadState("networkidle")
   await page.goto(componentPageUrl1)
   await page.locator("[data-testid=toggle__switch__7]").click()
-
-  await page.waitForLoadState("networkidle")
+  await expect(page.locator("[data-testid=badge__div__7]")).not.toBeVisible()
 }

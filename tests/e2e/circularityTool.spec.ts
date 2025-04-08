@@ -223,7 +223,7 @@ test.describe("Circularity tool", () => {
       await page.goto(passportsPage)
       await page.locator("[data-testid=project-passports__create-passport-button]").click()
 
-      await page.waitForLoadState("networkidle")
+      await expect(page.locator("[data-testid=project-passports__passport-link]")).toBeVisible()
 
       await page.locator("[data-testid=project-passports__passport-link]").click()
       await page.waitForURL(/\/grp/, { timeout: 5000 })

@@ -30,6 +30,7 @@ import { getMessages } from "next-intl/server"
 import { Toaster } from "react-hot-toast"
 import { twMerge } from "tailwind-merge"
 import ClientProviders from "app/(utils)/client-providers"
+import Footer from "../../(components)/Footer"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -66,10 +67,13 @@ export default async function RootLayout({
       <body className={twMerge("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
         <ClientProviders>
           <NextIntlClientProvider messages={messages}>
-            <div>
-              <Toaster />
+            <div className="flex min-h-screen flex-col">
+              <div>
+                <Toaster />
+              </div>
+              <main className="flex-1">{children}</main>
+              <Footer />
             </div>
-            {children}
           </NextIntlClientProvider>
         </ClientProviders>
       </body>

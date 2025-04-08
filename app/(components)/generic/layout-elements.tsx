@@ -45,9 +45,14 @@ export const ThreeColGrid = ({ children }: LayoutElementProps) => {
   return <div className="sm:grid sm:grid-cols-3 sm:gap-4">{children}</div>
 }
 
-export const Badge = ({ children, color = "orange" }: LayoutElementProps & { color?: "green" | "orange" }) => {
+export const Badge = ({
+  children,
+  color = "orange",
+  testId,
+}: LayoutElementProps & { color?: "green" | "orange"; testId?: string }) => {
   return (
     <div
+      data-testid={`badge__div__${testId}`}
       className={twMerge(
         `flex items-center rounded-sm px-3 py-0.5 text-xs font-medium leading-4`,
         color === "green" ? "bg-green-100 text-green-700" : "bg-rose-200 text-rose-800"

@@ -28,6 +28,7 @@ import { Inter as FontSans } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
 import { twMerge } from "tailwind-merge"
+import Footer from "app/(components)/Footer"
 import i18nFormattingOptions from "../(utils)/i18nFormattingOptions"
 
 const fontSans = FontSans({
@@ -64,7 +65,10 @@ export default async function RootLayout({
     <html lang={locale}>
       <body className={twMerge("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
         <NextIntlClientProvider formats={i18nFormattingOptions} messages={messages}>
-          {children}
+          <div className="flex min-h-screen flex-col">
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
         </NextIntlClientProvider>
       </body>
     </html>
