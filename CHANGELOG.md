@@ -1,3 +1,14 @@
+## [Release 0.3.0] - 2025-04-09
+
+### Improved / Refactored
+
+- **Revert multiple changes related to OBD->tBaustoff auto-matching:** Since this feature created issues for some projects on production, revert all changes made in previous releases.
+
+### Fixed
+
+- **Circularity Data Handling:** Fixed issues with circularity data processing and validation
+- **Test Coverage:** Fixed and improved test suite for database queries and domain logic
+
 ## [Release 0.2.9] - 2025-04-09
 
 ### Improved / Refactored
