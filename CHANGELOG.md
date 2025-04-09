@@ -1,3 +1,11 @@
+## [Release 0.2.9] - 2025-04-09
+
+### Improved / Refactored
+
+- **Enhanced Debugging:** Added detailed query logging and improved error handling for database queries.
+  - Added structured logging of query configurations for better traceability
+  - Enhanced error reporting with detailed data dumps when process lifecycle assignment errors occur
+
 ## [Release 0.2.8] - 2025-04-08
 
 ### Fixed
