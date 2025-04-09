@@ -65,7 +65,8 @@ export type ElcaVariantElementBaseData = {
 
 export class LegacyDbDal {
   getElcaComponentDataByLayerId = async (layerId: number, variantId: number, projectId: number) => {
-    const data = await prismaLegacy.elca_element_components.findUniqueOrThrow({
+    // Create a query configuration object that we can log
+    const queryConfig = {
       where: {
         id: layerId,
         // Ensure we only get processes with the given life_cycle_ident
@@ -138,11 +139,19 @@ export class LegacyDbDal {
           },
         },
       },
-    })
+    }
+
+    // Log the full query configuration for debugging
+    console.log("Raw Query Configuration:")
+    console.log(JSON.stringify(queryConfig, null, 2))
+
+    const data = await prismaLegacy.elca_element_components.findUniqueOrThrow(queryConfig)
 
     if (data.process_configs.process_life_cycle_assignments.length > 1) {
       const errMsg = `Number of processLifecycleAssignments (${data.process_configs.process_life_cycle_assignments.length}) is greater than 1 for layerId=${data.id}`
       console.error(errMsg)
+      console.error("Received data:")
+      console.error(JSON.stringify(data, null, 2))
       throw new Error(errMsg)
     }
 
@@ -268,6 +277,8 @@ export class LegacyDbDal {
         if (assignments.length > 1) {
           const errMsg = `Number of processLifecycleAssignments (${assignments.length}) is greater than 1 for layerId=${ec.id}`
           console.error(errMsg)
+          console.error("Received data:")
+          console.error(JSON.stringify(ec, null, 2))
           throw new Error(errMsg)
         }
         const assignment = assignments[0]!
@@ -303,7 +314,8 @@ export class LegacyDbDal {
   }
 
   getElcaComponentsWithElementsForProjectAndVariantId = async (variantId: number, projectId: number) => {
-    return await prismaLegacy.elca_elements.findMany({
+    // Create a query configuration object that we can log
+    const queryConfig = {
       where: {
         project_variant_id: variantId,
         project_variants: {
@@ -372,7 +384,13 @@ export class LegacyDbDal {
           },
         },
       },
-    })
+    }
+
+    // Log the full query configuration for debugging
+    console.log("Raw Query Configuration:")
+    console.log(JSON.stringify(queryConfig, null, 2))
+
+    return await prismaLegacy.elca_elements.findMany(queryConfig)
   }
 
   getElcaVariantElementBaseDataByUuid = async (
@@ -381,7 +399,8 @@ export class LegacyDbDal {
     projectId: number
   ): Promise<ElcaVariantElementBaseData> => {
     // TODO (XL): Check whether it's better to use findUniqueOrThrow here
-    const element = await prismaLegacy.elca_elements.findFirstOrThrow({
+    // Create a query configuration object that we can log
+    const queryConfig = {
       where: {
         uuid: componentInstanceUuid,
         element_types: {
@@ -434,7 +453,13 @@ export class LegacyDbDal {
           },
         },
       },
-    })
+    }
+
+    // Log the full query configuration for debugging
+    console.log("Raw Query Configuration:")
+    console.log(JSON.stringify(queryConfig, null, 2))
+
+    const element = await prismaLegacy.elca_elements.findFirstOrThrow(queryConfig)
 
     return {
       uuid: element.uuid,

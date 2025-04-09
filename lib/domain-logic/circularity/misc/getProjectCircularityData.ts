@@ -42,6 +42,8 @@ function mapLegacyComponentToProjectComponentRow(
   if (rawComponent.process_configs.process_life_cycle_assignments.length > 1) {
     const errMsg = `Number of processLifecycleAssignments (${rawComponent.process_configs.process_life_cycle_assignments.length}) is greater than 1 for layerId=${rawComponent.id}`
     console.error(errMsg)
+    console.error("Received data:")
+    console.error(JSON.stringify(rawComponent, null, 2))
     throw new Error(errMsg)
   }
 
