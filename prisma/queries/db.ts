@@ -114,12 +114,13 @@ export class DbDal {
     return await prisma.$executeRaw`TRUNCATE TABLE "ExcludedProduct" RESTART IDENTITY CASCADE;`
   }
 
-  getTBaustoffMappingEntries = async (oekobaudatProcessUuids: string[]) => {
+  getTBaustoffMappingEntries = async (oekobaudatProcessUuids: string[], oebd_versionUuid: string) => {
     return await prisma.tBs_OekobaudatMapping.findMany({
       where: {
         oebd_processUuid: {
           in: oekobaudatProcessUuids,
         },
+        oebd_versionUuid: oebd_versionUuid,
       },
     })
   }
@@ -281,12 +282,12 @@ export class DbDal {
     })
   }
 
-  getTBaustoffMappingEntry = async (oekobaudatProcessUuid: string, oekobaudatProcessDbUuid: string) => {
+  getTBaustoffMappingEntry = async (oekobaudatProcessUuid: string, oebd_versionUuid: string) => {
     return await prisma.tBs_OekobaudatMapping.findUnique({
       where: {
         oebd_processUuid_oebd_versionUuid: {
           oebd_processUuid: oekobaudatProcessUuid,
-          oebd_versionUuid: "448d1096-2017-4901-a560-f652a83c737e", // TODO (XL): this is a hardcoded value, should be changed (could be available in the legacy project table)
+          oebd_versionUuid: oebd_versionUuid,
         },
       },
     })

@@ -39,6 +39,20 @@ function mapLegacyComponentToProjectComponentRow(
   elementBaseData: ElcaVariantElementBaseData,
   rawComponent: RawComponent
 ): ElcaProjectComponentRow {
+  if (rawComponent.process_configs.process_life_cycle_assignments.length > 1) {
+    const errMsg = `Number of processLifecycleAssignments (${rawComponent.process_configs.process_life_cycle_assignments.length}) is greater than 1 for layerId=${rawComponent.id}`
+    console.error(errMsg)
+    throw new Error(errMsg)
+  }
+
+  const processLifecycleAssignmentProcesses = rawComponent.process_configs.process_life_cycle_assignments[0]!.processes
+
+  if (processLifecycleAssignmentProcesses == null) {
+    const errMsg = `processLifecycleAssignments is null for layerId=${rawComponent.id}`
+    console.error(errMsg)
+    throw new Error(errMsg)
+  }
+
   return {
     component_id: rawComponent.id,
     element_uuid: elementBaseData.uuid,
@@ -47,11 +61,7 @@ function mapLegacyComponentToProjectComponentRow(
     process_name: rawComponent.process_configs.name,
     productUnit: rawComponent.process_conversions.in_unit,
     productQuantity: Number(rawComponent.quantity),
-    oekobaudat_process_uuid: rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.uuid,
-    pdb_name: rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.process_dbs.name,
-    pdb_version: rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.process_dbs.version,
-    oekobaudat_process_db_uuid:
-      rawComponent.process_configs.process_life_cycle_assignments[0]?.processes.process_dbs.uuid,
+    oekobaudat_process_uuid: processLifecycleAssignmentProcesses.uuid,
     element_name: elementBaseData.element_name,
     unit: elementBaseData.unit,
     quantity: elementBaseData.quantity,
@@ -92,7 +102,7 @@ export const getProjectCircularityData = async (
     )
   })
 
-  const preloadedData = await preloadCircularityData(mappedComponents)
+  const preloadedData = await preloadCircularityData(mappedComponents, projectId)
 
   const circularityData = await Promise.all(
     elementsWithComponents.map(async (element) => {
