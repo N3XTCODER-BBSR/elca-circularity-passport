@@ -127,12 +127,12 @@ describe("preloadCircularityData", () => {
   })
 
   it("should preload the circularity data", async () => {
-    const result = await preloadCircularityData(components, 1)
+    const result = await preloadCircularityData(components)
 
     expect(result.excludedProductIdsSet.size).toBe(0)
     expect(result.userEnrichedMap.size).toBe(0)
-    expect(result.tBaustoffMappingEntriesMap.size).toBe(0)
-    expect(result.tBaustoffProductMap.size).toBe(0)
+    expect(result.tBaustoffMappingEntriesMap.size).toBe(1)
+    expect(result.tBaustoffProductMap.size).toBe(1)
     expect(result.productMassMap.size).toBe(3)
   })
 
@@ -146,23 +146,23 @@ describe("preloadCircularityData", () => {
       disturbingSubstanceName: "",
     })
 
-    const result = await preloadCircularityData(components, 1)
+    const result = await preloadCircularityData(components)
 
     expect(result.excludedProductIdsSet.size).toBe(0)
     expect(result.userEnrichedMap.size).toBe(1)
-    expect(result.tBaustoffMappingEntriesMap.size).toBe(0)
-    expect(result.tBaustoffProductMap.size).toBe(1)
+    expect(result.tBaustoffMappingEntriesMap.size).toBe(1)
+    expect(result.tBaustoffProductMap.size).toBe(2)
     expect(result.productMassMap.size).toBe(3)
   })
   it("should preload the circularity data with excluded products", async () => {
     await toggleExcludedProduct(5)
 
-    const result = await preloadCircularityData(components, 1)
+    const result = await preloadCircularityData(components)
 
     expect(result.excludedProductIdsSet.size).toBe(1)
     expect(result.userEnrichedMap.size).toBe(0)
-    expect(result.tBaustoffMappingEntriesMap.size).toBe(0)
-    expect(result.tBaustoffProductMap.size).toBe(0)
+    expect(result.tBaustoffMappingEntriesMap.size).toBe(1)
+    expect(result.tBaustoffProductMap.size).toBe(1)
     expect(result.productMassMap.size).toBe(3)
   })
 })
