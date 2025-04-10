@@ -28,8 +28,8 @@ import { useTranslations } from "next-intl"
 import React from "react"
 import { generateCsvFilename } from "app/(utils)/csvExportUtils"
 import { downloadCsvFile } from "app/(utils)/downloadCsvFile"
-import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
+import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { mapCircularityDataToAggregatedInventoryCsvTransformer } from "./mapCircularityDataToAggregatedInventoryCsvTransformer"
 
 type CircularityDataCsvExportProps = {
@@ -42,10 +42,15 @@ const AggregatedInventoryCsvExportButton = ({ projectName, circularityData }: Ci
 
   // Map of field names to their translation keys
   const fieldTranslations: Record<string, string> = {
+    aggregatedInventory: tTable("aggregatedInventory"),
     total: tTable("total"),
     volumeSection: tTable("volumeSection"),
     massSection: tTable("massSection"),
     percentagePerClass: tTable("percentagePerClass"),
+    eolClassLabel: tTable("eolClassLabel"),
+    materialLabel: tTable("materialLabel"),
+    totalVolumePerEolClass: tTable("totalVolumePerEolClass"),
+    totalMassPerEolClass: tTable("totalMassPerEolClass"),
   }
 
   const generateAndDownloadCsv = () => {

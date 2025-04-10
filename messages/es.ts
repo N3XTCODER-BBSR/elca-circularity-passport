@@ -485,12 +485,17 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           },
         },
         aggregatedInventoryExport: {
+          // Aggregated Inventory - Circularity Potential
+          aggregatedInventory: "Inventario Agregado - Potencial de Circularidad",
           tBaustoffAndEolClassColTitle: "tBaustoff / Clase EoL",
-          volumeSection: "Datos de Volumen (m³)",
-          massSection: "Datos de Masa (kg)",
+          volumeSection: "Potencial de Circularidad, datos de Volumen (m³)",
+          massSection: "Potencial de Circularidad, datos de Masa (kg)",
           exportAggregatedInventoryToCsv: "Exportar (csv)",
-          total: "Total",
-          percentagePerClass: "% por clase",
+          totalVolumePerEolClass: "Volumen total (m³) por clase EOL",
+          totalMassPerEolClass: "Masa total (kg) por clase EOL",
+          percentagePerClass: "Porcentaje total (%) por clase EOL",
+          eolClassLabel: "Clase EOL:",
+          materialLabel: "Material:",
         },
       },
       catalog: {

@@ -28,8 +28,8 @@ import { useTranslations } from "next-intl"
 import React from "react"
 import { generateCsvFilename } from "app/(utils)/csvExportUtils"
 import { downloadCsvFile } from "app/(utils)/downloadCsvFile"
-import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
+import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { mapCircularityDataToMaterialCsvTransformer } from "./mapCircularityDataToMaterialCsvTransformer"
 
 export type ProcessCategory = {

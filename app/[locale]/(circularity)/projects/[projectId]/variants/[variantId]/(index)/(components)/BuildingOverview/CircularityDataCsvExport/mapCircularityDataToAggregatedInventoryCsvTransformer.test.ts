@@ -165,8 +165,9 @@ describe("mapCircularityDataToAggregatedInventoryCsvTransformer", () => {
       expect(concreteData?.eolData[EolClasses.B]).toBe(0.8) // From Floor Layer 2
       expect(concreteData?.total).toBe(1.4) // 0.6 + 0.8
 
-      // Check that all EOL classes are included
-      expect(result.eolClasses.length).toBe(Object.values(EolClasses).length)
+      // Check that all EOL classes except NA are included
+      const expectedEolClassesCount = Object.values(EolClasses).filter((eolClass) => eolClass !== EolClasses.NA).length
+      expect(result.eolClasses.length).toBe(expectedEolClassesCount)
 
       // Check that totals are calculated correctly
       expect(result.eolTotals[EolClasses.A]).toBe(0.6) // Only one layer with class A
@@ -282,7 +283,9 @@ describe("mapCircularityDataToAggregatedInventoryCsvTransformer", () => {
 
       // Check that the EOL classes are included as columns
       Object.values(EolClasses).forEach((eolClass) => {
-        expect(csv).toContain(eolClass)
+        if (eolClass !== EolClasses.NA) {
+          expect(csv).toContain(eolClass)
+        }
       })
 
       // Check that the totals row is present

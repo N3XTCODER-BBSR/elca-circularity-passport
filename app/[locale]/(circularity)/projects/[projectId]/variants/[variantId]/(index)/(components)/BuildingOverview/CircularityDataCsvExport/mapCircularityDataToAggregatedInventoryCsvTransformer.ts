@@ -49,7 +49,8 @@ export function processCircularityDataForCsv(
   const tBaustoffMap = new Map<string, TBaustoffEolData>()
 
   // Include all possible EOL classes, not just the ones present in the data
-  const allEolClasses = Object.values(EolClasses)
+  // But leave out the 'N/A' special class
+  const allEolClasses = Object.values(EolClasses).filter((eolClass) => eolClass !== EolClasses.NA)
 
   // Process each element and its layers
   circularityData.forEach((element) => {
@@ -118,18 +119,28 @@ function createCsvSection(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
   dimensionalFieldName: DimensionalFieldName,
   translations: Record<string, string>,
-  sectionTitle: string
+  sectionTitle: string,
+  totalPerEolClassTitle: string
 ): string[][] {
   const { tBaustoffEolData, eolClasses, eolTotals, grandTotal } = processCircularityDataForCsv(
     circularityData,
     dimensionalFieldName
   )
 
-  // Create section title row
-  const titleRow = [sectionTitle]
+  // Create EOL class label row with section title in the first cell
+  const eolClassLabelRow = [
+    sectionTitle,
+    translations.eolClassLabel || "EOL class:",
+    ...eolClasses.slice(1).map(() => ""),
+    "",
+  ]
 
-  // Create CSV header
-  const header = ["", ...eolClasses.map((eolClass) => eolClass), translations.total || "Total"]
+  // Create CSV header with "Material:" in the first cell
+  const header = [
+    translations.materialLabel || "Material:",
+    ...eolClasses.map((eolClass) => eolClass),
+    translations.total || "Total",
+  ]
 
   const transformCell = (cell: number) => (cell === 0 ? "" : cell.toFixed(2))
 
@@ -144,7 +155,7 @@ function createCsvSection(
 
   // Add totals row
   const totalsRow = [
-    translations.total || "Total",
+    totalPerEolClassTitle,
     ...eolClasses.map((eolClass) => transformCell(eolTotals[eolClass])),
     transformCell(grandTotal),
   ]
@@ -157,7 +168,7 @@ function createCsvSection(
   ]
 
   // Combine section rows
-  return [titleRow, header, ...rows, totalsRow, percentageRow]
+  return [eolClassLabelRow, header, ...rows, totalsRow, percentageRow]
 }
 
 /**
@@ -167,31 +178,38 @@ export function mapCircularityDataToAggregatedInventoryCsvTransformer(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
   translations: Record<string, string>
 ): string {
+  // Create main header row
+  const mainHeaderRow = [translations.aggregatedInventory || "Aggregated Inventory - Circularity Potential"]
+
+  // Add empty row after main header
+  const emptyRowAfterHeader = [""]
+
+  // Add empty row as separator
+  const separator = [[""]]
+
   // Create volume section
   const volumeSection = createCsvSection(
     circularityData,
     "volume",
     translations,
-    translations.volumeSection || "Volume Data (m³)"
+    translations.volumeSection || "Volume Data (m³)",
+    translations.totalVolumePerEolClass || "Total volume (m³) per EOL class"
   )
-
-  // Create main header row
-  const mainHeaderRow = [translations.aggregatedInventory || "Aggregated Inventory"]
-
-  // Add empty row as separator
-  const separator = [[""]]
 
   // Create mass section
   const massSection = createCsvSection(
     circularityData,
     "mass",
     translations,
-    translations.massSection || "Mass Data (kg)"
+    translations.massSection || "Mass Data (kg)",
+    translations.totalMassPerEolClass || "Total mass (kg) per EOL class"
   )
 
   // Combine all sections
-  const csvData = [mainHeaderRow, ...volumeSection, ...separator, ...massSection]
+  const csvData = [mainHeaderRow, emptyRowAfterHeader, ...volumeSection, ...separator, ...massSection]
+  // Put quotes around cells that contain commas
+  const escapedCsvData = csvData.map((row) => row.map((cell) => (cell.includes(",") ? `"${cell}"` : cell)))
 
   // Convert to CSV string
-  return csvData.map((row) => row.join(",")).join("\n")
+  return escapedCsvData.map((row) => row.join(",")).join("\n")
 }
