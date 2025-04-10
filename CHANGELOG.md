@@ -1,3 +1,13 @@
+## [Release 0.3.1] - 2025-04-10
+
+### Improved / Refactored
+
+- **CSV Export Enhancement:** Improved aggregated inventory CSV export functionality
+  - Added clearer section headers and descriptive field labels
+  - Enhanced translated text for better clarity in all languages
+  - Improved EOL class filtering to exclude NA class
+  - Added additional data fields to provide more comprehensive export results
+
 ## [Release 0.3.0] - 2025-04-09
 
 ### Improved / Refactored
