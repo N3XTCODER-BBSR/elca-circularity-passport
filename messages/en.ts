@@ -482,6 +482,8 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           },
         },
         aggregatedInventoryExport: {
+          totalVolumePerMaterial: "Total volume (m³) per material",
+          totalMassPerMaterial: "Total mass (kg) per material",
           aggregatedInventory: "Aggregated Inventory - Circularity Potential",
           tBaustoffAndEolClassColTitle: "tBaustoff / EoL Class",
           volumeSection: "Circularity Potential by volume (m³)",

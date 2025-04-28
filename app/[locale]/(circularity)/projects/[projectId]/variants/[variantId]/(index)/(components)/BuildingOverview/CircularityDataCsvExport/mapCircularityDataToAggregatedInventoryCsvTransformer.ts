@@ -120,7 +120,8 @@ function createCsvSection(
   dimensionalFieldName: DimensionalFieldName,
   translations: Record<string, string>,
   sectionTitle: string,
-  totalPerEolClassTitle: string
+  totalPerEolClassTitle: string,
+  totalDimensionPerMaterialLabel: string
 ): string[][] {
   const { tBaustoffEolData, eolClasses, eolTotals, grandTotal } = processCircularityDataForCsv(
     circularityData,
@@ -139,7 +140,7 @@ function createCsvSection(
   const header = [
     translations.materialLabel || "Material:",
     ...eolClasses.map((eolClass) => eolClass),
-    translations.total || "Total",
+    totalDimensionPerMaterialLabel,
   ]
 
   const transformCell = (cell: number) => (cell === 0 ? "" : cell.toFixed(2))
@@ -193,7 +194,8 @@ export function mapCircularityDataToAggregatedInventoryCsvTransformer(
     "volume",
     translations,
     translations.volumeSection || "Volume Data (m³)",
-    translations.totalVolumePerEolClass || "Total volume (m³) per EOL class"
+    translations.totalVolumePerEolClass || "Total volume (m³) per EOL class",
+    translations.totalVolumePerMaterial || "Total volume (m³) per material"
   )
 
   // Create mass section
@@ -202,14 +204,33 @@ export function mapCircularityDataToAggregatedInventoryCsvTransformer(
     "mass",
     translations,
     translations.massSection || "Mass Data (kg)",
-    translations.totalMassPerEolClass || "Total mass (kg) per EOL class"
+    translations.totalMassPerEolClass || "Total mass (kg) per EOL class",
+    translations.totalMassPerMaterial || "Total mass (kg) per material"
   )
 
   // Combine all sections
-  const csvData = [mainHeaderRow, emptyRowAfterHeader, ...volumeSection, ...separator, ...massSection]
-  // Put quotes around cells that contain commas
-  const escapedCsvData = csvData.map((row) => row.map((cell) => (cell.includes(",") ? `"${cell}"` : cell)))
+  const csvData: (string | number)[][] = [
+    mainHeaderRow,
+    emptyRowAfterHeader,
+    ...volumeSection,
+    ...separator,
+    ...massSection,
+  ]
 
-  // Convert to CSV string
+  // Put quotes around all cells and escape inner quotes
+  const escapedCsvData = csvData.map((row) =>
+    row.map((cell) => {
+      // Ensure numbers use dot as decimal separator
+      if (typeof cell === "number") {
+        return `"${cell.toString()}"`
+      }
+      // If string looks like a number with comma decimal, replace with dot
+      if (typeof cell === "string" && /^\d+,\d+$/.test(cell)) {
+        return `"${cell.replace(/,/, ".")}"`
+      }
+      return `"${String(cell).replace(/"/g, '""')}"`
+    })
+  )
+  // Use comma as separator for Finder compatibility
   return escapedCsvData.map((row) => row.join(",")).join("\n")
 }

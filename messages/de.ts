@@ -443,6 +443,8 @@ const translationsPlattformGeneric = {
           },
         },
         aggregatedInventoryExport: {
+          totalVolumePerMaterial: "Gesamtvolumen (m³) pro Material",
+          totalMassPerMaterial: "Gesamtmasse (kg) pro Material",
           aggregatedInventory: "Aggregated Inventory - Zirkularitätspotential",
           tBaustoffAndEolClassColTitle: "tBaustoff / eOL-Klasse",
           volumeSection: "Zirkularitätspotential, bzgl. Volumen (m³)",

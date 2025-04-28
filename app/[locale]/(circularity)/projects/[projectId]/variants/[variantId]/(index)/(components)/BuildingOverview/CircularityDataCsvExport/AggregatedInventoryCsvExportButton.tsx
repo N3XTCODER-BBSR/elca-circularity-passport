@@ -43,7 +43,6 @@ const AggregatedInventoryCsvExportButton = ({ projectName, circularityData }: Ci
   // Map of field names to their translation keys
   const fieldTranslations: Record<string, string> = {
     aggregatedInventory: tTable("aggregatedInventory"),
-    total: tTable("total"),
     volumeSection: tTable("volumeSection"),
     massSection: tTable("massSection"),
     percentagePerClass: tTable("percentagePerClass"),
@@ -51,6 +50,8 @@ const AggregatedInventoryCsvExportButton = ({ projectName, circularityData }: Ci
     materialLabel: tTable("materialLabel"),
     totalVolumePerEolClass: tTable("totalVolumePerEolClass"),
     totalMassPerEolClass: tTable("totalMassPerEolClass"),
+    totalVolumePerMaterial: tTable("totalVolumePerMaterial"),
+    totalMassPerMaterial: tTable("totalMassPerMaterial"),
   }
 
   const generateAndDownloadCsv = () => {
