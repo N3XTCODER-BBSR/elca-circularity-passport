@@ -35,6 +35,7 @@ eLCA Circularity Index is a web-based add-on to eLCA, to calculate the circulari
     - [Run local development server](#run-local-development-server)
   - [Scripts Overview](#scripts-overview)
   - [Environment Variables handling](#environment-variables-handling)
+  - [Release Workflow](#release-workflow)
   - [Contribution](#contribution)
   - [License](#license)
 
@@ -148,6 +149,38 @@ The following scripts are available in the `package.json`:
 We manage environment variables explicitly in the `.env.EXAMPLE` file, which is committed to the repository to serve as a reference. Every new environment variable must be added to this file to ensure consistency across development and deployment environments.
 
 We use `@t3-oss/env-nextjs` with `zod` for validation and type safety. Environment variables are defined in `env.mjs`.
+
+## Release Workflow
+
+To create a new release, follow these steps:
+
+1. **Review Changes**:
+
+   ```bash
+   git fetch origin main:main # or just pull
+   git diff prod..main
+   ```
+
+   This shows all changes since the last production release.
+
+2. **Update CHANGELOG.md**:
+   Add a detailed entry in the CHANGELOG.md file documenting all changes in this release.
+
+3. **Commit the Release**:
+   Create a commit with a message formatted as follows:
+
+   ```
+   release: Version x.x.x
+
+   * Change 1 description
+   * Change 2 description
+   ```
+
+   The commit message should:
+
+   - Start with "release: Version x.x.x"
+   - Include a shorter summary of the changes as bullet points after a new line
+   - Be more concise than the CHANGELOG.md entry but cover the key changes
 
 ## Contribution
 
