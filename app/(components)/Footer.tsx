@@ -45,7 +45,7 @@ function Footer() {
           </li>
           <li>
             <a
-              href="https://bauteileditor.de/privacy/"
+              href="https://beta.bauteileditor.de/privacy/"
               className="text-gray-400 transition-colors hover:text-white"
               target="_blank"
               rel="noopener noreferrer"

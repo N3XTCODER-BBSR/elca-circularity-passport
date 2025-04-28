@@ -27,22 +27,22 @@ import { Area, Heading3, Heading4, Text } from "app/(components)/generic/layout-
 export default function Imprint() {
   return (
     <div className="mx-auto max-w-[1200px] px-12 py-10 lg:px-20">
-      <Heading3>Imprint</Heading3>
+      <Heading3>Impressum</Heading3>
 
       <Area>
-        <Heading4>Operator</Heading4>
+        <Heading4>Betreiber</Heading4>
         <ul className="mb-4 space-y-2 text-gray-600">
           <li>
             Bundesinstitut für Bau-, Stadt- und Raumforschung (BBSR) im Bundesamt für Bauwesen und Raumordnung (BBR)
           </li>
           <li>Referat WB 6 Instrumente des ressourcenschonenden und klimaangepassten Bauens</li>
-          <li>Mailing Address: Straße des 17. Juni 112, 10623 Berlin</li>
-          <li>Visitors: Reichpietschufer 86-90, 10785 Berlin</li>
+          <li>Postanschrift: Straße des 17. Juni 112, 10623 Berlin</li>
+          <li>Besucher: Reichpietschufer 86-90, 10785 Berlin</li>
         </ul>
       </Area>
 
       <Area>
-        <Heading4>Responsible</Heading4>
+        <Heading4>Verantwortlich</Heading4>
         <ul className="mb-4 space-y-2 text-gray-600">
           <li>Alberto Espina</li>
           <li>
@@ -56,16 +56,16 @@ export default function Imprint() {
       </Area>
 
       <Area>
-        <Heading4>Responsibility for the content</Heading4>
+        <Heading4>Verantwortlich für den Inhalt</Heading4>
         <Text>Bundesinstitut für Bau-, Stadt- und Raumforschung Referat WB 6 Bauen und Umwelt</Text>
         <Text className="mt-2">
-          Despite careful control we assume no liability for the content of external links. are solely responsible for
-          the content of linked sites responsible.
+          Trotz sorgfältiger Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. Für den Inhalt der
+          verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.
         </Text>
       </Area>
 
       <Area>
-        <Heading4>Technical support / Development</Heading4>
+        <Heading4>Technischer Support / Entwicklung</Heading4>
         <ul className="mb-4 space-y-2 text-gray-600">
           <li>Nextcoder Softwareentwicklungs GmbH</li>
           <li>Linienstr. 71</li>
@@ -84,20 +84,21 @@ export default function Imprint() {
       </Area>
 
       <Area>
-        <Heading4>Problems / Requests</Heading4>
+        <Heading4>Probleme / Anfragen</Heading4>
         <Text>
-          If you have technical problems or questions about the application, please contact us first by E-Mail to the
-          Referat WB 6 Bauen und Umwelt.
+          Bei technischen Problemen oder Fragen zur Anwendung wenden Sie sich bitte zunächst per E-Mail an das Referat
+          WB 6 Bauen und Umwelt.
         </Text>
       </Area>
 
       <Area>
-        <Heading4>Open Source / Licensing</Heading4>
+        <Heading4>Open Source / Lizenzierung</Heading4>
         <Text>
-          The application eLCA Circularity Index and Building Resource Passport is licensed under the GNU Affero General
-          Public License version 3 (AGPLv3). This guarantees every user the freedom to use, spread and modify the
-          software. The project makes use of a boilerplate originally licensed under the MIT License. A complete version
-          of the license is available in the source code. Source code is available here:{" "}
+          Die Anwendung eLCA Circularity Index und Building Resource Passport ist unter der GNU Affero General Public
+          License Version 3 (AGPLv3) lizenziert. Dies garantiert jedem Nutzer die Freiheit, die Software zu nutzen, zu
+          verbreiten und zu modifizieren. Das Projekt verwendet eine Code-Vorlage, die ursprünglich unter der MIT-Lizenz
+          lizenziert wurde. Eine vollständige Version der Lizenz ist im Quellcode verfügbar. Der Quellcode ist hier
+          verfügbar:{" "}
           <a
             href="https://github.com/n3xtcoder/elca-app"
             target="_blank"
