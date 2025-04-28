@@ -28,7 +28,7 @@ import { useIsMutating, useMutation } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import toast from "react-hot-toast"
 import { EditButton, ErrorText } from "app/(components)/generic/layout-elements"
 import { updateTBaustoffProduct } from "app/[locale]/(circularity)/(server-actions)/updateTBaustoffProductOfLayer"
@@ -58,6 +58,10 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
   const circularityTranslations = useTranslations("Circularity.Components.Layers.CircularityInfo")
   const t = useTranslations()
   const router = useRouter()
+
+  const optionsSortedAlphabetically = useMemo(() => {
+    return [...options].sort((a, b) => a.value.localeCompare(b.value))
+  }, [options])
 
   const queryClient = useQueryClient()
 
@@ -116,7 +120,7 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
             <option value="" disabled>
               -
             </option>
-            {options.map((option) => (
+            {optionsSortedAlphabetically.map((option) => (
               <option key={option.id} value={option.id}>
                 {option.value}
               </option>

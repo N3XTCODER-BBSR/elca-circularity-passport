@@ -448,7 +448,7 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           eolBuiltPoints: "Potencial de circularidad (Z)",
           dismantlingPoints: "Potencial de disminución (R)",
         },
-        title: "Inventario de circularidad",
+        title: "Evaluación de la Circularidad",
         moduleTotal: {
           title: "Total",
           label: "total",
