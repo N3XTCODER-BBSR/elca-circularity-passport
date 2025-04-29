@@ -1,3 +1,24 @@
+## [Release 0.3.2] - 2025-04-29
+
+### Added
+
+- **Release Workflow Documentation:** Added a new section in the README describing the release workflow steps for clarity and consistency.
+
+### Improved / Refactored
+
+- **Footer Privacy Link:** Updated the privacy policy link in the footer to point to the beta domain.
+- **Imprint Page Localization:** Improved German translations and wording for the imprint (Impressum) page.
+- **Aggregated Inventory CSV Export:**
+  - Enhanced section headers and field labels for clarity in all supported languages (DE, EN, ES)
+  - Improved translation strings and export data structure for better usability
+  - Added new fields: total volume/mass per material, and a more descriptive aggregated inventory label
+  - Adjusted EOL class filtering and labels for accuracy
+- **Circularity Assessment Terminology:** Updated translation strings to use "Circularity Assessment" instead of "Circularity Inventory" for improved clarity in EN and ES locales.
+
+### Fixed
+
+- **Translation Consistency:** Fixed inconsistencies in translation keys and improved field naming for CSV exports across DE, EN, and ES message files.
+
 ## [Release 0.3.1] - 2025-04-10
 
 ### Improved / Refactored
