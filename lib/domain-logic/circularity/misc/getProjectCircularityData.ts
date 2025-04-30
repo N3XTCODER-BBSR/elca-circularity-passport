@@ -92,7 +92,7 @@ export const getProjectCircularityData = async (
     )
   })
 
-  const preloadedData = await preloadCircularityData(mappedComponents)
+  const preloadedData = await preloadCircularityData(mappedComponents, projectId)
 
   const circularityData = await Promise.all(
     elementsWithComponents.map(async (element) => {

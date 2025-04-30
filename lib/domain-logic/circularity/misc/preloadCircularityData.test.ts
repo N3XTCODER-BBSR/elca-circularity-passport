@@ -43,7 +43,7 @@ const components = [
     oekobaudat_process_uuid: "b6096c9c-1248-4ce1-9c2d-f4a48aade80f",
     pdb_name: "copy of OBD_2023_I for import in eLCA",
     pdb_version: "v1",
-    oekobaudat_process_db_uuid: "22885a6e-1765-4ade-a35e-ae668bd07256",
+    oekobaudat_process_db_uuid: "448d1096-2017-4901-a560-f652a83c737e",
     element_name: "Fundament 1",
     unit: "m2",
     productUnit: "m3",
@@ -70,7 +70,7 @@ const components = [
     oekobaudat_process_uuid: "bb51d66a-b04b-4ec7-8947-185e9697e671",
     pdb_name: "copy of OBD_2023_I for import in eLCA",
     pdb_version: "v1",
-    oekobaudat_process_db_uuid: "22885a6e-1765-4ade-a35e-ae668bd07256",
+    oekobaudat_process_db_uuid: "448d1096-2017-4901-a560-f652a83c737e",
     element_name: "Fundament 1",
     unit: "m2",
     productUnit: "m3",
@@ -97,7 +97,7 @@ const components = [
     oekobaudat_process_uuid: "1b69b3a2-3164-436b-a934-ed7d926f5f53",
     pdb_name: "copy of OBD_2023_I for import in eLCA",
     pdb_version: "v1",
-    oekobaudat_process_db_uuid: "22885a6e-1765-4ade-a35e-ae668bd07256",
+    oekobaudat_process_db_uuid: "448d1096-2017-4901-a560-f652a83c737e",
     element_name: "Fundament 1",
     unit: "m2",
     productUnit: "m3",
@@ -117,6 +117,9 @@ const components = [
 ]
 
 describe("preloadCircularityData", () => {
+  // Using test project ID 1 for testing purposes
+  const TEST_PROJECT_ID = 1
+
   afterAll(async () => {
     await resetDb()
   })
@@ -127,7 +130,7 @@ describe("preloadCircularityData", () => {
   })
 
   it("should preload the circularity data", async () => {
-    const result = await preloadCircularityData(components)
+    const result = await preloadCircularityData(components, TEST_PROJECT_ID)
 
     expect(result.excludedProductIdsSet.size).toBe(0)
     expect(result.userEnrichedMap.size).toBe(0)
@@ -146,7 +149,7 @@ describe("preloadCircularityData", () => {
       disturbingSubstanceName: "",
     })
 
-    const result = await preloadCircularityData(components)
+    const result = await preloadCircularityData(components, TEST_PROJECT_ID)
 
     expect(result.excludedProductIdsSet.size).toBe(0)
     expect(result.userEnrichedMap.size).toBe(1)
@@ -157,7 +160,7 @@ describe("preloadCircularityData", () => {
   it("should preload the circularity data with excluded products", async () => {
     await toggleExcludedProduct(5)
 
-    const result = await preloadCircularityData(components)
+    const result = await preloadCircularityData(components, TEST_PROJECT_ID)
 
     expect(result.excludedProductIdsSet.size).toBe(1)
     expect(result.userEnrichedMap.size).toBe(0)

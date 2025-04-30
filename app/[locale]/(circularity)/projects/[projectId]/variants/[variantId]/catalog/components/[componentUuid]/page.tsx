@@ -79,7 +79,7 @@ const Page = async ({
     // Get component data
     const projectComponents = await getElcaVariantComponentsByInstanceId(elementBaseData.uuid, variantId, projectId)
 
-    const preloadedData = await preloadCircularityData(projectComponents)
+    const preloadedData = await preloadCircularityData(projectComponents, projectId)
 
     const componentData: ElcaElementWithComponents<EnrichedElcaElementComponent> =
       await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(

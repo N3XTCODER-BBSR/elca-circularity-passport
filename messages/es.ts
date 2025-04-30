@@ -497,6 +497,7 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           percentagePerClass: "Porcentaje total (%) por clase EOL",
           eolClassLabel: "Clase EOL:",
           materialLabel: "Material:",
+          total: "Total",
         },
       },
       catalog: {

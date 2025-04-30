@@ -22,8 +22,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { costGroupyDinNumbersToInclude } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { ElcaProjectComponentRow } from "lib/domain-logic/circularity/misc/domain-types"
+import { costGroupyDinNumbersToInclude } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { Prisma } from "prisma/generated/client-legacy"
 import { prismaLegacy } from "prisma/prismaClient"
 
@@ -67,7 +67,7 @@ export class LegacyDbDal {
     const data = await prismaLegacy.elca_element_components.findFirstOrThrow({
       where: {
         id: layerId,
-        // Ensure we only get processes with the given life_cycle_ident
+        // TODO: we don't need to filter by life_cycle here. Check if we need to filter by life_cycle_ident at other DAL functions and then possibly remove all life_cycle filters
         process_configs: {
           process_life_cycle_assignments: {
             some: {
@@ -706,6 +706,20 @@ export class LegacyDbDal {
         },
       },
     })
+  }
+
+  getProcessDbUuidForProject = async (projectId: number): Promise<string | null> => {
+    const project = await prismaLegacy.projects.findUnique({
+      where: { id: projectId },
+      select: {
+        process_dbs: {
+          select: {
+            uuid: true,
+          },
+        },
+      },
+    })
+    return project?.process_dbs?.uuid || null
   }
 
   getVariantById = async (id: number) => {

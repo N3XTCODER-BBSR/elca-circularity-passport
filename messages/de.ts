@@ -455,6 +455,7 @@ const translationsPlattformGeneric = {
           percentagePerClass: "Gesamtpunkte (%) pro EOL-Klasse",
           eolClassLabel: "EOL-Klasse:",
           materialLabel: "Material:",
+          total: "Total",
         },
         materialExport: {
           exportMaterialsToCsv: "Exportieren (csv)",

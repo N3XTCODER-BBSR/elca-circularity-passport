@@ -24,24 +24,27 @@
  */
 import { createMap } from "app/(utils)/map"
 import { ElcaProjectComponentRow } from "lib/domain-logic/circularity/misc/domain-types"
-import { dbDalInstance } from "prisma/queries/dalSingletons"
+import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
 import { getMassForProducts } from "./getMassForProducts"
 
-export async function preloadCircularityData(components: ElcaProjectComponentRow[]) {
-  const allComponentIds = new Set<number>()
-  const allOekobaudatProcessUuids = new Set<string>()
+export async function preloadCircularityData(components: ElcaProjectComponentRow[], projectId: number) {
+  const allComponentIds: Set<number> = new Set(components.map((c) => c.component_id))
+  const allOekobaudatProcessUuids: Set<string> = new Set(
+    components.map((c) => c.oekobaudat_process_uuid).filter((uuid) => uuid != null)
+  )
 
-  components.forEach((component) => {
-    allComponentIds.add(component.component_id)
-    if (component.oekobaudat_process_uuid) {
-      allOekobaudatProcessUuids.add(component.oekobaudat_process_uuid)
-    }
-  })
+  const processDbUuid = await legacyDbDalInstance.getProcessDbUuidForProject(projectId)
+
+  if (!processDbUuid) {
+    const errorMsg = `No process_db UUID found for project ${projectId}`
+    console.error(errorMsg)
+    throw new Error(errorMsg)
+  }
 
   const [excludedProductRows, userEnrichedRows, tBaustoffMappingEntries, productMassMap] = await Promise.all([
     dbDalInstance.getExcludedProductIds([...Array.from(allComponentIds)]),
     dbDalInstance.getUserDefinedTBaustoffData([...Array.from(allComponentIds)]),
-    dbDalInstance.getTBaustoffMappingEntries([...Array.from(allOekobaudatProcessUuids)]),
+    dbDalInstance.getTBaustoffMappingEntries([...Array.from(allOekobaudatProcessUuids)], processDbUuid),
     getMassForProducts([...Array.from(allComponentIds)]),
   ])
 
