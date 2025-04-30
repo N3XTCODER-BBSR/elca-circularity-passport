@@ -1,3 +1,15 @@
+## [Release 0.3.3] - 2025-04-30
+
+### Improved / Refactored
+
+- **Process-DB Versioning:** Now uses each project's process-db (OBD-version) for querying process-related OBD UUIDs, ensuring version-correct queries throughout the app.
+- **Seeding Data:** Added missing OBD versions to seeding CSV and updated UUIDs in test fixtures and database initialization scripts for consistency with new OBD data.
+- **Notebook:** Added a Jupyter notebook for managing and documenting the addition of new OBD versions.
+
+### Fixed
+
+- **Test Coverage:** Updated and fixed tests to use new OBD process-db UUIDs, improving reliability of domain logic and database queries.
+
 ## [Release 0.3.2] - 2025-04-29
 
 ### Added
