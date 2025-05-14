@@ -23,6 +23,25 @@ jobs:
         run: yarn playwright install --with-deps
       - name: Generate Prisma Clients
         run: yarn prisma:generate
+      - name: Create .env.e2e_tests file
+        run: |
+          echo "ELCA_LEGACY_DATABASE_HAS_SSL=false" >> .env.e2e_tests
+          echo "DOPPIO_API_KEY=${{ secrets.DOPPIO_API_KEY }}" >> .env.e2e_tests
+          echo "HTTP_BASIC_AUTH=username:password" >> .env.e2e_tests
+          echo "NEXTAUTH_SECRET=ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" >> .env.e2e_tests
+          echo "NEXT_PUBLIC_PASSPORT_BASE_URL=https://example.com" >> .env.e2e_tests
+          echo "NEXT_TELEMETRY_DISABLED=1" >> .env.e2e_tests
+          echo "PRISMA_TELEMETRY_DISABLED=1" >> .env.e2e_tests
+          echo "DATABASE_POOL_MAX_CONN=2" >> .env.e2e_tests
+          echo "DATABASE_POOL_TIMEOUT=20000" >> .env.e2e_tests
+          echo "LEGACY_DATABASE_POOL_MAX_CONN=2" >> .env.e2e_tests
+          echo "LEGACY_DATABASE_POOL_TIMEOUT=20000" >> .env.e2e_tests
+          echo "SEED_INITIAL_DATA=true" >> .env.e2e_tests
+          echo "S3_BUCKET_NAME=elca-grp-dev" >> .env.e2e_tests
+          echo "S3_ACCESS_KEY=DUMMY_ACCESS_KEY" >> .env.e2e_tests
+          echo "S3_SECRET_KEY=DUMMY_SECRET_KEY" >> .env.e2e_tests
+          echo "S3_REGION=eu-central-3" >> .env.e2e_tests
+          echo "S3_ENDPOINT=s3.eu-central-3.ionoscloud.com" >> .env.e2e_tests
       - name: Run Playwright tests in Chromium and Firefox
         run: yarn e2e:headless --project=chromium
       - uses: actions/upload-artifact@v4
