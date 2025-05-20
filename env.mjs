@@ -46,6 +46,10 @@ export const env = createEnv({
       .enum(["true", "false"])
       .optional()
       .transform((value) => value === "true"),
+    DELETE_DUPLICATES_FROM_TBAUSTOFF_MAPPING: z
+      .enum(["true", "false"])
+      .optional()
+      .transform((value) => value === "true"),
     NEXT_PUBLIC_PASSPORT_BASE_URL: z.string().url(),
     NEXTAUTH_SECRET: z.string(),
     DATABASE_POOL_MAX_CONN: z.string(),
@@ -81,5 +85,6 @@ export const env = createEnv({
     S3_REGION: process.env.S3_REGION,
     S3_ENDPOINT: process.env.S3_ENDPOINT,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    DELETE_DUPLICATES_FROM_TBAUSTOFF_MAPPING: process.env.DELETE_DUPLICATES_FROM_TBAUSTOFF_MAPPING,
   },
 })

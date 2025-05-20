@@ -25,6 +25,7 @@
 import csv from "csv-parser"
 import fs from "fs"
 import path from "path"
+import { cleanupTbsProductDefinitionDuplicates } from "./cleanupTbsProductDefinitionDuplicates"
 
 import { TBs_ProductDefinitionEOLCategoryScenario } from "../generated/client"
 import { prisma } from "../prismaClient" // needs to be relative path
@@ -158,14 +159,23 @@ async function seedCircularityTool() {
         eolCategoryCache.set(eolCategoryKey, eolCategoryId)
       }
 
-      // Create the TBs_ProductDefinition only if the name doesn't contain " S4"
-      const tBaustoff = await prisma.tBs_ProductDefinition.create({
-        data: {
+      // Create the TBs_ProductDefinition only if it does not exist yet (by name, version, and categoryId)
+      let tBaustoff = await prisma.tBs_ProductDefinition.findFirst({
+        where: {
           name: row.tBaustoffName,
           tBs_version: "2024-Q4",
           tBs_ProductDefinitionEOLCategoryId: eolCategoryId,
         },
       })
+      if (!tBaustoff) {
+        tBaustoff = await prisma.tBs_ProductDefinition.create({
+          data: {
+            name: row.tBaustoffName,
+            tBs_version: "2024-Q4",
+            tBs_ProductDefinitionEOLCategoryId: eolCategoryId,
+          },
+        })
+      }
 
       // Create Oekobaudat Mapping
       for (const [key, value] of Object.entries(row)) {
@@ -204,6 +214,20 @@ async function main() {
   if (process.env.SEED_INITIAL_DATA !== "true") {
     console.log('env variable "SEED_INITIAL_DATA" not set to "true" - will abort seeding...')
     return
+  }
+
+  // Optionally run duplicate cleanup if env var is set
+  if (process.env.DELETE_DUPLICATES_FROM_TBAUSTOFF_MAPPING === "true") {
+    console.log("DELETE_DUPLICATES_FROM_TBAUSTOFF_MAPPING=true: Running tBaustoff duplicate cleanup script...")
+    try {
+      await cleanupTbsProductDefinitionDuplicates()
+      console.log("Duplicate cleanup completed.")
+    } catch (e) {
+      console.error("Duplicate cleanup script failed. Aborting seeding.", e)
+      process.exit(1)
+    }
+  } else {
+    console.log("DELETE_DUPLICATES_FROM_TBAUSTOFF_MAPPING=false: Skipping tBaustoff duplicate cleanup script...")
   }
 
   try {
