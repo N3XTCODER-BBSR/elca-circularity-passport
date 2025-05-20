@@ -1,3 +1,15 @@
+## [Release 0.3.4] - 2025-05-20
+
+### Fixed
+
+- **TBaustoff Duplication Bug:** Fixed a bug in the seeding process that caused duplicate tBaustoff entries. Includes DB-cleanup script for removing duplicates and improves data integrity.
+
+### Chore
+
+- **.env.e2e_tests Ignore:** Added `.env.e2e_tests` to `.gitignore` for better environment separation in E2E testing.
+
+---
+
 ## [Release 0.3.3] - 2025-04-30
 
 ### Improved / Refactored
