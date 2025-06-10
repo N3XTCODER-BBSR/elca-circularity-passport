@@ -1,3 +1,19 @@
+## [Release 0.3.5] - 2025-06-10
+
+### Fixed
+
+- **Accessibility Improvements:**
+  - Added hover state for component cards on the catalog page for better visual feedback
+  - Improved color contrast on the overview page, especially for buttons using indigo tones
+  - Updated various UI elements (buttons, badges, backgrounds, texts) to meet accessibility contrast requirements
+- **Linting and Type Fixes:**
+  - Resolved general linting issues and TypeScript linting errors across the codebase
+  - Fixed minor typing issues and improved error type checking to prevent runtime issues
+
+### Chore
+
+- **E2E Tests:** Adapted end-to-end tests to align with recent UI and logic changes
+
 ## [Release 0.3.4] - 2025-05-20
 
 ### Fixed
