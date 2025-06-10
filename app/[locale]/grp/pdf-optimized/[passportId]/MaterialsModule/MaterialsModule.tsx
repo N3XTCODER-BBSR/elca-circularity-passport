@@ -43,7 +43,6 @@ import {
 } from "lib/domain-logic/grp/modules/passport-overview/materials/materials-data-aggregation"
 
 const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportData: DinEnrichedPassportData }) => {
-  const t = useTranslations("Grp.Web.sections.overview.module1Materials")
   const tCostGroups = useTranslations("Common.costGroups")
   const tMaterialClasses = useTranslations("Common.materialClasses")
   const unitsTranslations = useTranslations("Units")

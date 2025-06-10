@@ -62,7 +62,7 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
         <div
           className={`${
             t.visible ? "animate-enter" : "animate-leave"
-          } pointer-events-auto flex w-full max-w-2xl rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5`}
+          } ring-opacity/5 pointer-events-auto flex w-full max-w-2xl rounded-lg bg-white shadow-lg ring-1 ring-black`}
         >
           <div className="w-0 flex-1 p-4">
             <div className="flex items-start">
@@ -81,7 +81,7 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
           <div className="flex border-l border-gray-200">
             <button
               onClick={() => toast.dismiss(t.id)}
-              className="flex w-full items-center justify-center rounded-none rounded-r-lg border border-transparent p-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="flex w-full items-center justify-center rounded-none rounded-r-lg border border-transparent p-4 text-sm font-medium text-bbsr-blue-700 hover:text-bbsr-blue-500 focus:outline-none focus:ring-2 focus:ring-bbsr-blue-500"
             >
               Close
             </button>
@@ -111,7 +111,7 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
           {passportsMetadata.map((passportInstanceMetadata) => (
             <tr key={passportInstanceMetadata.uuid}>
               <td className="max-w-96 whitespace-normal break-words p-3 py-5 text-left text-sm text-gray-500">
-                <Link href={`/grp/${passportInstanceMetadata.uuid}`} className="text-gray-900">
+                <Link target="_blank" href={`/grp/${passportInstanceMetadata.uuid}`} className="text-gray-900">
                   {format.dateTime(passportInstanceMetadata.issueDate, {
                     year: "numeric",
                     month: "long",
@@ -124,7 +124,11 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
               </td>
               <td className="whitespace-nowrap p-3 py-5 text-sm text-gray-500">
                 <span className={twMerge("inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium")}>
-                  <Link href={`/grp/${passportInstanceMetadata.uuid}`} data-testid={`project-passports__passport-link`}>
+                  <Link
+                    target="_blank"
+                    href={`/grp/${passportInstanceMetadata.uuid}`}
+                    data-testid={`project-passports__passport-link`}
+                  >
                     #{passportInstanceMetadata.uuid}
                   </Link>
                 </span>
@@ -138,9 +142,9 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
         type="button"
         data-testid="project-passports__create-passport-button"
         className={twMerge(
-          `h-8 rounded-md bg-indigo-100 px-2.5 text-sm font-semibold text-indigo-700 shadow-sm 
-          hover:bg-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
-          focus-visible:outline-indigo-200`,
+          `h-8 rounded-md bg-bbsr-blue-200 px-2.5 text-sm font-semibold text-bbsr-blue-700 shadow-sm 
+          hover:bg-bbsr-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
+          focus-visible:outline-bbsr-blue-200`,
           isLoading ? "cursor-not-allowed opacity-70" : ""
         )}
         disabled={isLoading}
@@ -148,7 +152,7 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
         {isLoading ? (
           <div className="flex items-center space-x-2">
             <svg
-              className="size-4 animate-spin text-indigo-700"
+              className="size-4 animate-spin text-bbsr-blue-700"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"

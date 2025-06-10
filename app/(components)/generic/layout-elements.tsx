@@ -45,6 +45,10 @@ export const ThreeColGrid = ({ children }: LayoutElementProps) => {
   return <div className="sm:grid sm:grid-cols-3 sm:gap-4">{children}</div>
 }
 
+export const WhiteContainer = ({ children }: LayoutElementProps) => {
+  return <div className="mb-12 bg-white p-4 pt-8">{children}</div>
+}
+
 export const Badge = ({
   children,
   color = "orange",
@@ -55,7 +59,7 @@ export const Badge = ({
       data-testid={`badge__div__${testId}`}
       className={twMerge(
         `flex items-center rounded-sm px-3 py-0.5 text-xs font-medium leading-4`,
-        color === "green" ? "bg-green-100 text-green-700" : "bg-rose-200 text-rose-800"
+        color === "green" ? "bg-green-100 text-green-900" : "bg-rose-100 text-rose-900"
       )}
     >
       {children}
@@ -74,7 +78,7 @@ export const EditButton: React.FC<ButtonProps> = ({ className, children, testId,
 
   return (
     <button
-      className={`h-8 rounded-md bg-indigo-100 px-2.5 text-sm font-semibold text-indigo-700 shadow-sm hover:bg-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-200 ${className}`}
+      className={`h-8 rounded-md bg-bbsr-blue-200 px-2.5 text-sm font-semibold text-bbsr-blue-700 shadow-sm hover:bg-bbsr-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bbsr-blue-200 ${className}`}
       {...props}
       data-testid={dataTestId}
     >

@@ -24,13 +24,13 @@
  */
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { ensureVariantAccessible } from "app/[locale]/(circularity)/(utils)/ensureAccessible"
+import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
+import { ensureUserAuthorizationToProject } from "lib/auth/ensureAuthorized"
 import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { getElcaElementsForVariantId } from "lib/domain-logic/circularity/misc/getElcaElementsForProjectId"
 import { getProjectCircularityData } from "lib/domain-logic/circularity/misc/getProjectCircularityData"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { getComponentUuidsWithMissingCircularityData } from "lib/domain-logic/circularity/utils/getComponentsWithMissingCircularityData"
-import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
-import { ensureUserAuthorizationToProject } from "lib/auth/ensureAuthorized"
 import ProjectCatalog from "./(components)/ProjectCatalog"
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
@@ -58,14 +58,22 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
       getComponentUuidsWithMissingCircularityData(circularityData)
 
     return (
-      <ProjectCatalog
-        projectId={projectId}
-        variantId={variantId}
-        projectComponents={dataResult}
-        componentUuiddsWithMissingCircularityIndexForAnyProduct={
-          componentUuiddsWithMissingCircularityIndexForAnyProduct
-        }
-      />
+      <div className="w-full">
+        <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
+          <section className="dark:bg-gray-900">
+            <div className="py-8">
+              <ProjectCatalog
+                projectId={projectId}
+                variantId={variantId}
+                projectComponents={dataResult}
+                componentUuiddsWithMissingCircularityIndexForAnyProduct={
+                  componentUuiddsWithMissingCircularityIndexForAnyProduct
+                }
+              />
+            </div>
+          </section>
+        </div>
+      </div>
     )
   })
 }

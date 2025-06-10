@@ -24,9 +24,9 @@
  */
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { ensureVariantAccessible } from "app/[locale]/(circularity)/(utils)/ensureAccessible"
-import { getPassportsMetadataForProjectVariant } from "lib/domain-logic/circularity/passport/managePassport"
 import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/auth/ensureAuthorized"
+import { getPassportsMetadataForProjectVariant } from "lib/domain-logic/circularity/passport/managePassport"
 import { PassportMetadata } from "prisma/queries/db"
 import ProjectPassports from "./(components)/ProjectPassports"
 
@@ -46,11 +46,19 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
       await getPassportsMetadataForProjectVariant(variantId)
 
     return (
-      <ProjectPassports
-        passportsMetadata={passportsMetadataForProjectVariant}
-        projectVariantId={variantId}
-        projectId={projectId}
-      />
+      <div className="w-full">
+        <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
+          <section className="dark:bg-gray-900">
+            <div className="py-8">
+              <ProjectPassports
+                passportsMetadata={passportsMetadataForProjectVariant}
+                projectVariantId={variantId}
+                projectId={projectId}
+              />
+            </div>
+          </section>
+        </div>
+      </div>
     )
   })
 }

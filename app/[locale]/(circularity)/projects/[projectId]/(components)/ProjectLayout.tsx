@@ -25,9 +25,9 @@
 
 import { getTranslations } from "next-intl/server"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
-import { getProjectDataWithVariants } from "lib/domain-logic/circularity/projects/getProjectDataWithVariants"
 import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/auth/ensureAuthorized"
+import { getProjectDataWithVariants } from "lib/domain-logic/circularity/projects/getProjectDataWithVariants"
 import NavBar from "./NavBar"
 import "styles/global.css"
 
@@ -76,24 +76,26 @@ const ProjectLayout = async ({
     ]
 
     return (
-      <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
-        <NavBar
-          projectInfo={
-            showProjectAndVariantInfo
-              ? {
-                  projectName: projectData.name,
-                  variantName: variantName,
-                  projectId: projectData.id,
-                }
-              : undefined
-          }
-          navLinks={showMenu ? navLinks : undefined}
-          showAvatar={showAvatar}
-          backButtonTo={backButtonTo}
-        />
-        <section className="bg-white dark:bg-gray-900">
-          <div className="py-8">{children}</div>
-        </section>
+      <div>
+        <div className="w-full">
+          <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
+            <NavBar
+              projectInfo={
+                showProjectAndVariantInfo
+                  ? {
+                      projectName: projectData.name,
+                      variantName: variantName,
+                      projectId: projectData.id,
+                    }
+                  : undefined
+              }
+              navLinks={showMenu ? navLinks : undefined}
+              showAvatar={showAvatar}
+              backButtonTo={backButtonTo}
+            />
+          </div>
+        </div>
+        {children}
       </div>
     )
   })

@@ -1,5 +1,6 @@
 "use client"
 import { FC, useState } from "react"
+import { WhiteContainer } from "app/(components)/generic/layout-elements"
 import { DimensionalFieldName, MetricType } from "lib/domain-logic/circularity/misc/domain-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
@@ -62,7 +63,9 @@ const CircularityData: FC<{
       <div className="flex items-center justify-between">
         <div className="w-1/4"></div> {/* Empty div for spacing */}
         <h2 className="my-14 w-2/4 text-center text-2xl">
-          <span>{selectedMetricOptionName}</span>
+          <b>
+            <span>{selectedMetricOptionName}</span>
+          </b>
         </h2>
         <div className="flex w-1/4 justify-end">
           {selectedMetricType === "eolBuiltPoints" && (
@@ -71,32 +74,36 @@ const CircularityData: FC<{
         </div>
       </div>
 
-      <div>
+      <WhiteContainer>
         <CircularityIndexTotalNumber
           circularityIndexPoints={totalMetricValues[selectedMetricType]}
           metricType={selectedMetricType}
         />
-      </div>
+      </WhiteContainer>
 
-      <CircularityIndexBreakdownByDin
-        key={`din-breakdown-${selectedMetricType}`}
-        dimensionalFieldName={dimensionalFieldName}
-        circularityData={circularityData}
-        projectName={projectName}
-        catalogPath={catalogPath}
-        metricType={selectedMetricType}
-      />
+      <WhiteContainer>
+        <CircularityIndexBreakdownByDin
+          key={`din-breakdown-${selectedMetricType}`}
+          dimensionalFieldName={dimensionalFieldName}
+          circularityData={circularityData}
+          projectName={projectName}
+          catalogPath={catalogPath}
+          metricType={selectedMetricType}
+        />
+      </WhiteContainer>
 
-      <CircularityIndexBreakdownByMaterialType
-        key={`material-breakdown-${selectedMetricType}`}
-        dimensionalFieldName={dimensionalFieldName}
-        catalogPath={catalogPath}
-        projectName={projectName}
-        processCategories={processCategories}
-        circularityData={circularityData}
-        margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
-        metricType={selectedMetricType}
-      />
+      <WhiteContainer>
+        <CircularityIndexBreakdownByMaterialType
+          key={`material-breakdown-${selectedMetricType}`}
+          dimensionalFieldName={dimensionalFieldName}
+          catalogPath={catalogPath}
+          projectName={projectName}
+          processCategories={processCategories}
+          circularityData={circularityData}
+          margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
+          metricType={selectedMetricType}
+        />
+      </WhiteContainer>
     </>
   )
 }

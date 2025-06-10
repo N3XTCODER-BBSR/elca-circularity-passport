@@ -24,8 +24,8 @@
  */
 import { useTranslations } from "next-intl"
 import { StyledDd, StyledDt } from "app/(components)/generic/layout-elements"
-import { EOLScenarioMap } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
+import { EOLScenarioMap } from "lib/domain-logic/circularity/utils/circularityMappings"
 
 const EolScenarioInfoBox = ({ layerData }: { layerData: EnrichedElcaElementComponent }) => {
   const isSpecific = layerData.eolUnbuiltSpecificScenario != null

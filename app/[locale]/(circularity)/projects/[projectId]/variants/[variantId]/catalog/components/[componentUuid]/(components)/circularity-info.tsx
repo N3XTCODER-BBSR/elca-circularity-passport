@@ -165,9 +165,14 @@ const CircularityInfo = (props: CircularityInfoProps) => {
         toast.error(t(result.errorI18nKey))
         setError(result.errorI18nKey || null)
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error saving selection:", err)
-      setError(err.message || "An unexpected error occurred")
+      if (err instanceof Error) {
+        setError(err.message || "An unexpected error occurred")
+        return
+      }
+
+      setError("An unexpected error occurred")
     } finally {
       setIsUpdating(false)
     }

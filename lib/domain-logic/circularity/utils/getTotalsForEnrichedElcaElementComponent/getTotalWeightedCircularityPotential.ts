@@ -22,8 +22,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
+import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 
 export const getTotalWeightedCircularityPotential = (layers: EnrichedElcaElementComponent[]) => {
   const filteredData = layers

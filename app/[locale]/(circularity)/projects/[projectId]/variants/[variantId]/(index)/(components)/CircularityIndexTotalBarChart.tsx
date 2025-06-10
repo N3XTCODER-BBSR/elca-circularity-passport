@@ -77,8 +77,8 @@ const CircularityIndexTotalBarChart = ({
           truncateTickAt: 0,
         }}
         axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
+          tickSize: 0,
+          tickPadding: 68,
           tickRotation: 0,
           legendPosition: "middle",
           legendOffset: -40,

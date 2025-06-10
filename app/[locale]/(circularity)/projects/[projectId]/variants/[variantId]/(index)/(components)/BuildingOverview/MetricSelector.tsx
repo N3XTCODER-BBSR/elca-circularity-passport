@@ -40,8 +40,8 @@ const MetricSelector: React.FC<MetricSelectorProps> = ({ selectedMetricType, onM
                 type="button"
                 className={twMerge(
                   selectedMetricType === option.value
-                    ? "bg-gray-50 text-indigo-600"
-                    : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                    ? "bg-gray-50 text-bbsr-blue-700"
+                    : "text-gray-700 hover:bg-gray-50 hover:text-bbsr-blue-700",
                   "group flex w-full gap-x-3 rounded-md p-2 pl-3 text-sm font-semibold leading-6"
                 )}
               >

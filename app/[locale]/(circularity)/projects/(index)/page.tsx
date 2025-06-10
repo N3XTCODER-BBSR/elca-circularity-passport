@@ -26,8 +26,8 @@ import { getTranslations } from "next-intl/server"
 import { FC } from "react"
 import ListItemLink from "app/(components)/generic/ListItemLink"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
-import { getProjectsByOwnerId, ProjectWithVariants } from "lib/domain-logic/circularity/projects/getProjectsByOwnerId"
 import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
+import { getProjectsByOwnerId, ProjectWithVariants } from "lib/domain-logic/circularity/projects/getProjectsByOwnerId"
 
 const Page = async () => {
   return withServerComponentErrorHandling(async () => {

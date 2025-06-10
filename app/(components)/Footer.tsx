@@ -36,7 +36,7 @@ function Footer() {
           <li>
             <a
               href="/20250407-elca-circularity-index-v0-3-user-documentation.pdf"
-              className="rounded-md bg-teal-600 px-4 py-2 text-white transition-colors hover:bg-teal-500"
+              className="rounded-md bg-teal-700 px-4 py-2 text-white transition-colors hover:bg-teal-500"
               target="_blank"
               rel="noopener noreferrer"
             >

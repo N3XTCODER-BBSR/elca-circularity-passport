@@ -51,8 +51,8 @@ const VerticalNavigation: React.FC<SidebarProps> = ({ navigation, currentSection
               }}
               className={twMerge(
                 item.id === currentSectionId
-                  ? "bg-gray-50 text-indigo-600"
-                  : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                  ? "bg-gray-50 text-bbsr-blue-700"
+                  : "text-gray-700 hover:bg-gray-50 hover:text-bbsr-blue-700",
                 "group flex cursor-pointer gap-x-3 rounded-md p-2 pl-3 text-sm font-semibold leading-6"
               )}
             >

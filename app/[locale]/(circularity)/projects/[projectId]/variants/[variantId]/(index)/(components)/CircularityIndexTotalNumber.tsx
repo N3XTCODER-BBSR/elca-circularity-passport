@@ -44,17 +44,17 @@ const CircularityIndexTotalNumber = ({
   })
   const circularityIndexPointsStr = `${formattedCircularityIndexPoints} ${t("points")}`
   return (
-    <div className="mx-8 mb-0 mt-8 h-[250px]">
+    <div>
       <div className="flex flex-col items-center">
-        <h3 className="text-2xl font-bold text-gray-600 dark:text-gray-400">{t("title")}</h3>
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-400">{t("title")}</h3>
         <div
-          className="mt-4 rounded-lg border-2 px-8 py-4 text-3xl font-bold"
+          className="mt-4 rounded-lg border-2 px-8 py-4 text-2xl font-bold"
           data-testid="circularity-index-total-number__points-div"
         >
           {circularityIndexPointsStr}
         </div>
       </div>
-      <div className="m-8 h-[100px]">
+      <div className="mt-8 h-[100px]">
         <CircularityIndexTotalBarChart
           metricType={metricType}
           circularityTotalIndexPoints={circularityIndexPoints}

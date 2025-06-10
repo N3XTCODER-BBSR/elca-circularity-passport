@@ -78,7 +78,7 @@ const ModalPage1 = ({ layerData, isUpdating, handleCancel, handleNextModalPage }
         </button>
         <button
           type="button"
-          className={`rounded bg-indigo-600 px-4 py-2 text-white`}
+          className={`rounded bg-bbsr-blue-500 px-4 py-2 text-white`}
           onClick={handleNextModalPage}
           disabled={false}
         >
@@ -105,7 +105,7 @@ const ModalPage2 = ({ layerData, handleCancel, handleSave, options }: ModalPage2
       <select
         id="tbaustoff"
         name="tbaustoff"
-        className="mt-1 block w-full rounded-md border-2 border-gray-200 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        className="mt-1 block w-full rounded-md border-2 border-gray-200 p-2 shadow-sm focus:border-bbsr-blue-500 focus:ring-bbsr-blue-500 sm:text-sm"
         value={selectedScenario?.toString()}
         onChange={(e) => setSelectedScenario(e.target.value as TBs_ProductDefinitionEOLCategoryScenario)}
       >
@@ -125,7 +125,7 @@ const ModalPage2 = ({ layerData, handleCancel, handleSave, options }: ModalPage2
         id="proof"
         name="proof"
         required
-        className="mt-2 block w-full rounded-md border-2 border-gray-200 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        className="mt-2 block w-full rounded-md border-2 border-gray-200 p-2 shadow-sm focus:border-bbsr-blue-500 focus:ring-bbsr-blue-500 sm:text-sm"
         placeholder={t("proofPlaceholder")}
         value={proof}
         onChange={(e) => setProof(e.target.value)}
@@ -137,7 +137,7 @@ const ModalPage2 = ({ layerData, handleCancel, handleSave, options }: ModalPage2
         </button>
         <button
           type="button"
-          className={`rounded bg-indigo-600 px-4 py-2 text-white ${
+          className={`rounded bg-bbsr-blue-500 px-4 py-2 text-white ${
             !selectedScenario || !proof ? "cursor-not-allowed opacity-50" : ""
           }`}
           onClick={() => handleSave(selectedScenario, proof)}

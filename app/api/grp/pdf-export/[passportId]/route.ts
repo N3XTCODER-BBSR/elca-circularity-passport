@@ -84,7 +84,7 @@ export async function GET(req: NextRequest, { params }: { params: { passportId: 
     }),
   })
 
-  const data: any = await response.json()
+  const data = (await response.json()) as { renderStatus: string }
 
   if (data.renderStatus === "SUCCESS") {
     const publicUrl = `https://${process.env.S3_BUCKET_NAME}.${process.env.S3_ENDPOINT}/${passportPdfExportFilename}`

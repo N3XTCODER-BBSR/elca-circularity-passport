@@ -22,8 +22,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { getMassForProduct, getMassForProducts } from "./getMassForProducts"
 import { MassInKg, ProductId } from "./domain-types"
+import { getMassForProduct, getMassForProducts } from "./getMassForProducts"
 
 describe("calculateMassForProducts", () => {
   describe("layers", () => {

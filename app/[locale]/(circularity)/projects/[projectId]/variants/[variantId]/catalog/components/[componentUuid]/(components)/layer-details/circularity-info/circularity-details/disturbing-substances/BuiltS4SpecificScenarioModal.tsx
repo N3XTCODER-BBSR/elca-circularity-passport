@@ -247,7 +247,7 @@ const BuiltS4SpecificScenarioModal = ({
         <select
           id="eolScenario"
           name="eolScenario"
-          className="mt-4 w-64 rounded-md border-2 border-gray-200 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-4 w-64 rounded-md border-2 border-gray-200 p-2 shadow-sm focus:border-bbsr-blue-500 focus:ring-bbsr-blue-500 sm:text-sm"
           value={selectedScenario || ""}
           onChange={(e) => setSelectedScenario(e.target.value as TBs_ProductDefinitionEOLCategoryScenario)}
         >
@@ -268,7 +268,7 @@ const BuiltS4SpecificScenarioModal = ({
         </button>
         <button
           type="button"
-          className={`rounded bg-indigo-600 px-4 py-2 text-white ${
+          className={`rounded bg-bbsr-blue-500 px-4 py-2 text-white ${
             !selectedScenario ? "cursor-not-allowed opacity-50" : ""
           }`}
           onClick={() => handleSave(selectedScenario)}

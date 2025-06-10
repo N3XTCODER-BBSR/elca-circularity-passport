@@ -49,7 +49,7 @@ const NumberOfChildComponents = ({
       className={twMerge(
         "ml-auto w-9 min-w-max whitespace-nowrap rounded-full px-2.5 py-0.5 text-center text-xs font-medium leading-5 ring-1 ring-inset",
         hasAnyCircularityMissingData
-          ? "bg-rose-200 text-rose-800 ring-rose-800"
+          ? "bg-rose-100 text-rose-900 ring-rose-900"
           : "bg-white text-gray-600 ring-gray-200"
       )}
     >
@@ -166,8 +166,8 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
                             type="button"
                             className={twMerge(
                               selectedCategoryNumber === componentsByCategory.categoryNumber
-                                ? "bg-gray-50 text-indigo-600"
-                                : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                                ? "bg-gray-50 text-bbsr-blue-700"
+                                : "text-gray-700 hover:bg-gray-50 hover:text-bbsr-blue-700",
                               "group flex w-full gap-x-3 rounded-md p-2 pl-3 text-sm font-semibold leading-6"
                             )}
                           >
@@ -210,8 +210,8 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
                   type="button"
                   className={twMerge(
                     componentsByComponentNumber.componentTypeNumber === selectedComponentsTypeNumber
-                      ? "bg-gray-50 text-indigo-600"
-                      : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                      ? "bg-gray-50 text-bbsr-blue-700"
+                      : "text-gray-700 hover:bg-gray-50 hover:text-bbsr-blue-700",
                     "group flex w-full gap-x-3 rounded-md p-2 pl-3 text-sm font-semibold leading-6"
                   )}
                   onClick={() => onUpdateComponentTypeClick(componentsByComponentNumber.componentTypeNumber)}
@@ -243,7 +243,7 @@ const ComponentsTree = <T extends ComponentWithBasicFields>({
             return (
               <li key={component.uuid} className="">
                 <Link href={generateLinkUrlForComponent(component.uuid)}>
-                  <Box className="p-4">
+                  <Box className="p-4 hover:bg-gray-50 hover:text-bbsr-blue-700">
                     <div className="w-1/3">
                       <Image src="/component_placeholder_lg.png" alt={component.name} width={200} height={200} />
                     </div>

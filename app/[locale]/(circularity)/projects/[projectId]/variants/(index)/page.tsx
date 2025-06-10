@@ -64,10 +64,16 @@ const Page = async ({ params }: { params: { projectId: string } }) => {
     })
 
     return (
-      <div>
-        <h4 className="mb-1 text-sm font-semibold uppercase text-bbsr-blue-600">{t("project")}:</h4>
-        <h1 className="mb-4 text-2xl font-bold text-gray-900">{projectData.name || "unnamed"}</h1>
-        {displayVariants}
+      <div className="w-full">
+        <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
+          <section className="dark:bg-gray-900">
+            <div className="py-8">
+              <h4 className="mb-1 text-sm font-semibold uppercase text-bbsr-blue-600">{t("project")}:</h4>
+              <h1 className="mb-4 text-2xl font-bold text-gray-900">{projectData.name || "unnamed"}</h1>
+              {displayVariants}
+            </div>
+          </section>
+        </div>
       </div>
     )
   })

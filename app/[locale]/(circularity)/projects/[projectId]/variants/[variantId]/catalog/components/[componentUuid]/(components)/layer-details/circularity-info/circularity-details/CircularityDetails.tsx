@@ -386,7 +386,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
                   className={twMerge(
                     `relative flex min-w-[400px] items-center justify-center rounded-md px-4 py-4 text-sm font-semibold ring-1 ring-inset ring-gray-300 focus:z-10`,
                     key === layerData.dismantlingPotentialClassId
-                      ? "bg-indigo-500 text-white ring-indigo-500 hover:bg-indigo-600 "
+                      ? "bg-bbsr-blue-700 text-white ring-bbsr-blue-500 hover:bg-bbsr-blue-500 "
                       : "bg-white hover:bg-gray-50",
                     isDisabled ? "cursor-not-allowed bg-gray-200 hover:bg-gray-200" : "cursor-pointer"
                   )}
@@ -440,7 +440,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
                 <div className="mt-4">
                   <button
                     type="button"
-                    className="text-indigo-600 hover:text-indigo-800"
+                    className="text-bbsr-blue-700 hover:text-bbsr-blue-800"
                     onClick={handleOpenEolScenarioModal}
                   >
                     {circularityInfoTranslations("EolBuiltSection.overrideEolScenarioButton")}

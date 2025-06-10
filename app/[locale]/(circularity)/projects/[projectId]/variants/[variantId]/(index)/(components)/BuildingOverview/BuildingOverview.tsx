@@ -43,7 +43,7 @@ const MissingDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) 
   const t = await getTranslations("CircularityTool.sections.overview")
 
   return (
-    <div className="mx-64 flex-col items-center text-center">
+    <div data-bg="gray" className="mx-64 flex-col items-center text-center">
       <Image
         src="/missing-circularity-data-icon.svg"
         width={24}

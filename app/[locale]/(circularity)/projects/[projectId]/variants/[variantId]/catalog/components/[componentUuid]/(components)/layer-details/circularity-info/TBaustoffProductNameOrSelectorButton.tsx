@@ -112,7 +112,7 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
             data-testid="select-material-button__select"
             id="tbaustoff"
             name="tbaustoff"
-            className="mt-1 block w-full rounded-md border-2 border-gray-200 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            className="mt-1 block w-full rounded-md border-2 border-gray-200 p-2 shadow-sm focus:border-bbsr-blue-500 focus:ring-bbsr-blue-500 sm:text-sm"
             value={selectedIdStr}
             onChange={(e) => setSelectedIdStr(e.target.value)}
             disabled={isPending}
@@ -139,7 +139,7 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
           </button>
           <button
             type="button"
-            className={`rounded bg-indigo-600 px-4 py-2 text-white ${
+            className={`rounded bg-bbsr-blue-500 px-4 py-2 text-white ${
               !selectedIdStr || isPending ? "cursor-not-allowed opacity-50" : ""
             }`}
             onClick={handleSave}

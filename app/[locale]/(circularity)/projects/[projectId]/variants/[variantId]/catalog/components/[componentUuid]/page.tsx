@@ -107,45 +107,56 @@ const Page = async ({
     const t = await getTranslations("Circularity.Components")
 
     return (
-      <div>
-        <HistoryBackButton />
-        <h1 className="mt-12 text-2xl font-semibold leading-6">{componentData.element_name}</h1>
-        <div className="flex flex-col md:flex-row">
-          <div className="w-full py-4 md:w-1/3">
-            {" "}
-            <Image src="/component_placeholder_lg.png" alt={componentData?.element_name} width={400} height={400} />
-          </div>
-          <div className="w-full md:w-2/3 md:p-4">
-            <ComponentDescription componentData={componentData} />
-          </div>
-        </div>
-        <div className="mb-12 flex flex-col gap-2">
-          <Heading3>{t("buildingMaterialsHeading", { refUnit: componentData.unit })}</Heading3>
-          {layers.length < 1 && nonLayers.length < 1 && (
-            <span className="text-sm font-medium text-gray-900">{t("noBuildingMaterials")}</span>
-          )}
-          {layers.length > 0 && (
-            <div className="mb-12 flex flex-col gap-2">
-              <Heading4>{t("layersHeading")}</Heading4>
-              <ProductsList
-                products={layers}
-                projectId={projectId}
-                variantId={variantId}
-                availableTBaustoffProductIdAndNames={availableTBaustoffProductIdAndNames}
-              />
+      <div className="w-full">
+        <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
+          <section className="dark:bg-gray-900">
+            <div className="py-8">
+              <HistoryBackButton />
+              <h1 className="mt-12 text-2xl font-semibold leading-6">{componentData.element_name}</h1>
+              <div className="flex flex-col md:flex-row">
+                <div className="w-full py-4 md:w-1/3">
+                  {" "}
+                  <Image
+                    src="/component_placeholder_lg.png"
+                    alt={componentData?.element_name}
+                    width={400}
+                    height={400}
+                  />
+                </div>
+                <div className="w-full md:w-2/3 md:p-4">
+                  <ComponentDescription componentData={componentData} />
+                </div>
+              </div>
+              <div className="mb-12 flex flex-col gap-2">
+                <Heading3>{t("buildingMaterialsHeading", { refUnit: componentData.unit })}</Heading3>
+                {layers.length < 1 && nonLayers.length < 1 && (
+                  <span className="text-sm font-medium text-gray-900">{t("noBuildingMaterials")}</span>
+                )}
+                {layers.length > 0 && (
+                  <div className="mb-12 flex flex-col gap-2">
+                    <Heading4>{t("layersHeading")}</Heading4>
+                    <ProductsList
+                      products={layers}
+                      projectId={projectId}
+                      variantId={variantId}
+                      availableTBaustoffProductIdAndNames={availableTBaustoffProductIdAndNames}
+                    />
+                  </div>
+                )}
+                {nonLayers.length > 0 && (
+                  <div className="mb-12 flex flex-col gap-2">
+                    <Heading4>{t("nonLayersHeading")}</Heading4>
+                    <ProductsList
+                      products={nonLayers}
+                      projectId={projectId}
+                      variantId={variantId}
+                      availableTBaustoffProductIdAndNames={availableTBaustoffProductIdAndNames}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-          {nonLayers.length > 0 && (
-            <div className="mb-12 flex flex-col gap-2">
-              <Heading4>{t("nonLayersHeading")}</Heading4>
-              <ProductsList
-                products={nonLayers}
-                projectId={projectId}
-                variantId={variantId}
-                availableTBaustoffProductIdAndNames={availableTBaustoffProductIdAndNames}
-              />
-            </div>
-          )}
+          </section>
         </div>
       </div>
     )

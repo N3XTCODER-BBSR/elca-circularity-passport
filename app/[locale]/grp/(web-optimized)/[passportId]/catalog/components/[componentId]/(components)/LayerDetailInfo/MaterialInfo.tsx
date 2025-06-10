@@ -80,7 +80,7 @@ const MaterialInfo = ({ material }: { material: Material }) => {
                       <a
                         href={document.url}
                         target="_blank"
-                        className="font-medium text-indigo-600 hover:text-indigo-500"
+                        className="font-medium text-bbsr-blue-700 hover:text-bbsr-blue-500"
                         rel="noreferrer"
                       >
                         <div className="ml-4 flex min-w-0 flex-1 gap-2">

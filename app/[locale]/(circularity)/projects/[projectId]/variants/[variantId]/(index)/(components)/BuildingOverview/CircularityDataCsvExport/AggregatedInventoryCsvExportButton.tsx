@@ -63,7 +63,7 @@ const AggregatedInventoryCsvExportButton = ({ projectName, circularityData }: Ci
   return (
     <button
       type="button"
-      className="h-8 rounded-md bg-indigo-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+      className="h-8 rounded-md bg-bbsr-blue-700 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-bbsr-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bbsr-blue-500"
       onClick={generateAndDownloadCsv}
     >
       {tTable("exportAggregatedInventoryToCsv")}

@@ -58,6 +58,12 @@ export type ChartAndBreadCrumbComponentProps = {
   metricType: MetricType
 }
 
+interface TickProps {
+  x: number
+  y: number
+  value: string | number
+}
+
 function standardAxisProps() {
   return {
     tickSize: 5,
@@ -72,14 +78,14 @@ function standardAxisProps() {
 function customAxisLeftProps(clickHandler: (label: string) => void) {
   return {
     ...standardAxisProps(),
-    renderTick: (tick: any) => {
+    renderTick: (tick: TickProps) => {
       const handleClick = () => {
-        clickHandler(tick.value)
+        clickHandler(String(tick.value))
       }
 
       return (
-        <g transform={`translate(${tick.x},${tick.y})`} onClick={handleClick} style={{ cursor: "pointer" }}>
-          <text x={-60} y={5} textAnchor="middle" fontWeight={"regular"} fontSize="0.8rem" fill="#000">
+        <g transform={`translate(${tick.x - 96},${tick.y})`} onClick={handleClick} style={{ cursor: "pointer" }}>
+          <text x={-60} y={5} textAnchor="start" fontWeight="600" fontSize="0.8rem" fill="#005378">
             {tick.value}
           </text>
         </g>
@@ -142,14 +148,15 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
   const length = identifiers.size
 
   return (
-    <div className="mx-8 my-24 h-[370px]">
+    <div className="h-[370px]">
       <div className="flex flex-col items-center">
-        <h3 className="text-2xl font-bold text-gray-600 dark:text-gray-400">{title}</h3>
-        <div className="mt-2">
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-400">{title}</h3>
+
+        <div className="mt-2 text-gray-900">
           {`${labelTotalDimensionalValue}: `}
           {format.number(currentNode.dimensionalValue, { maximumFractionDigits: 2 })} {unitNameTotalDimensionalValue}
         </div>
-        <div className="mt-4 px-8 py-4">{currentNode.label}</div>
+        <div className="mt-4 px-8 py-4 text-gray-600">{currentNode.label}</div>
       </div>
 
       <div style={{ margin: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px` }}>
@@ -162,7 +169,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
               </span>
             ) : (
               <React.Fragment key={idx}>
-                <button className="text-sm text-gray-600 underline" onClick={() => goUpToLevel(idx)}>
+                <button className="text-sm text-bbsr-blue-700 underline" onClick={() => goUpToLevel(idx)}>
                   {b.node.label}
                 </button>
                 {" > "}
@@ -170,7 +177,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
             )
           )}
       </div>
-      <div className="mx-8 mb-64 h-[200px]">
+      <div className="h-[200px]">
         <div style={{ height: `${length * 2.25 + 5.5}rem` }} className="w-full">
           <ResponsiveBar
             data={chartData}

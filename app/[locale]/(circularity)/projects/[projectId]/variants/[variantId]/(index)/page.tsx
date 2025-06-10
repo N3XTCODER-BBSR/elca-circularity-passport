@@ -49,7 +49,17 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
       return <div>{t("projectNotFound")}</div>
     }
 
-    return <BuildingOverview projectName={projectInfo.name} projectId={projectInfo.id} variantId={variantId} />
+    return (
+      <div className="w-full bg-gray-100">
+        <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
+          <section className="dark:bg-gray-900">
+            <div className="py-8">
+              <BuildingOverview projectName={projectInfo.name} projectId={projectInfo.id} variantId={variantId} />
+            </div>
+          </section>
+        </div>
+      </div>
+    )
   })
 }
 

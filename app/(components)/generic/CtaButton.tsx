@@ -30,14 +30,14 @@ export const CtaButton: FC<{ href: string; text: string }> = ({ href, text }) =>
 
   if (isExternal) {
     return (
-      <a href={href} className="inline-block rounded-md bg-blue-600 px-2 py-1 text-white">
+      <a href={href} className="inline-block rounded-md bg-bbsr-blue-700 px-2 py-1 text-white">
         {text}
       </a>
     )
   }
 
   return (
-    <Link href={href} className="inline-block rounded-md bg-blue-600 px-2 py-1 text-white">
+    <Link href={href} className="inline-block rounded-md bg-bbsr-blue-700 px-2 py-1 text-white">
       {text}
     </Link>
   )

@@ -203,8 +203,18 @@ test.describe("Circularity tool", () => {
 
       await expect(page.locator("[data-testid=project-passports__passport-link]")).toBeVisible()
 
-      await page.locator("[data-testid=project-passports__passport-link]").click()
-      await page.waitForURL(/\/grp/, { timeout: 5000 })
+      // Wait for new page to open when clicking the passport link
+      const [newPage] = await Promise.all([
+        page.context().waitForEvent("page"),
+        page.locator("[data-testid=project-passports__passport-link]").click(),
+      ])
+
+      // Wait for the new page to load
+      await newPage.waitForLoadState()
+      await newPage.waitForURL(/\/grp/, { timeout: 5000 })
+
+      // Switch to using the new page for subsequent operations
+      page = newPage
 
       await expect(page.locator("[data-testid=total-building-mass-value__dd]")).toHaveText(/50[.,]8 kg/)
       await expect(page.locator("[data-testid=nrf-value__dd]")).toHaveText(/100 m2/)
