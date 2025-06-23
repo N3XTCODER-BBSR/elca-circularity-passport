@@ -37,15 +37,7 @@ export const passportParser = (passportDataJson: Prisma.JsonValue) => {
     jsonObj = passportDataJson
   }
 
-  const passportDataParsingResult = PassportDataSchema.safeParse(jsonObj)
-  if (passportDataParsingResult.error) {
-    console.error("Error parsing passport data", passportDataParsingResult.error)
-    console.error("issues", passportDataParsingResult.error.issues)
-    // TODO (M): show next.js error page
-    throw new Error("Error parsing passport data")
-  }
-
-  const passportData: PassportData = passportDataParsingResult.data
+  const passportData: PassportData = PassportDataSchema.parse(jsonObj)
 
   return passportData
 }

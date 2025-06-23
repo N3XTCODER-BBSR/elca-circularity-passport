@@ -30,7 +30,10 @@ import { getRequestId } from "./getRequestId"
 import { DatabaseError, NotFoundError, UnauthenticatedError, UnauthorizedError } from "../../lib/errors"
 import Unauthorized from "../[locale]/(circularity)/(components)/Unauthorized"
 
-export const withServerComponentErrorHandling = async (fn: () => Promise<React.ReactNode>) => {
+export const withServerComponentErrorHandling = async (
+  fn: () => Promise<React.ReactNode>,
+  specificErrors: Map<string, (error: Error) => React.ReactNode> = new Map()
+) => {
   try {
     return await fn()
   } catch (error) {
@@ -46,6 +49,12 @@ export const withServerComponentErrorHandling = async (fn: () => Promise<React.R
 
     if (error instanceof NotFoundError) {
       return notFound()
+    }
+
+    if (error instanceof Error) {
+      if (specificErrors.has(error.name)) {
+        return specificErrors.get(error.name)!(error)
+      }
     }
 
     // will be handled as 500 by client side error boundary (error.tsx)

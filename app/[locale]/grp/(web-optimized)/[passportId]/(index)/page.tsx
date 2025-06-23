@@ -23,15 +23,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { notFound } from "next/navigation"
+import { ZodError } from "zod"
+import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { getDinEnrichedPassportDataByPassportUuid } from "lib/domain-logic/grp/getPassportData"
+import { InvalidPassportErrorHandler } from "../(components)/InvalidPassportErrorHandler"
 import Overview from "../(components)/tabs/overview"
 
 const Page = async ({ params }: { params: { passportId: string } }) => {
-  const dinEnrichedPassportData = await getDinEnrichedPassportDataByPassportUuid(params.passportId)
+  return withServerComponentErrorHandling(
+    async () => {
+      const dinEnrichedPassportData = await getDinEnrichedPassportDataByPassportUuid(params.passportId)
 
-  if (dinEnrichedPassportData == null) {
-    notFound()
-  }
-  return <Overview dinEnrichedPassportData={dinEnrichedPassportData} />
+      if (dinEnrichedPassportData == null) {
+        return notFound()
+      }
+      return <Overview dinEnrichedPassportData={dinEnrichedPassportData} />
+    },
+    new Map([[ZodError.name, (error) => <InvalidPassportErrorHandler zodIssues={(error as ZodError).issues} />]])
+  )
 }
+
 export default Page

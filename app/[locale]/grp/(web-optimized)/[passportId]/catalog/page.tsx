@@ -23,21 +23,29 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { notFound } from "next/navigation"
+import { ZodError } from "zod"
+import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import ProjectCatalog from "./components/[componentId]/(components)/ProjectCatalog"
+import { InvalidPassportErrorHandler } from "../(components)/InvalidPassportErrorHandler"
 import { getDinEnrichedPassportDataByPassportUuid } from "../../../../../../lib/domain-logic/grp/getPassportData"
 
 const Page = async ({ params }: { params: { passportId: string } }) => {
-  const dinEnrichedPassportData = await getDinEnrichedPassportDataByPassportUuid(params.passportId)
+  return withServerComponentErrorHandling(
+    async () => {
+      const dinEnrichedPassportData = await getDinEnrichedPassportDataByPassportUuid(params.passportId)
 
-  if (dinEnrichedPassportData == null) {
-    notFound()
-  }
+      if (dinEnrichedPassportData == null) {
+        notFound()
+      }
 
-  return (
-    <ProjectCatalog
-      passportId={params.passportId}
-      projectComponents={dinEnrichedPassportData.dinEnrichedBuildingComponents}
-    />
+      return (
+        <ProjectCatalog
+          passportId={params.passportId}
+          projectComponents={dinEnrichedPassportData.dinEnrichedBuildingComponents}
+        />
+      )
+    },
+    new Map([[ZodError.name, (error) => <InvalidPassportErrorHandler zodIssues={(error as ZodError).issues} />]])
   )
 }
 

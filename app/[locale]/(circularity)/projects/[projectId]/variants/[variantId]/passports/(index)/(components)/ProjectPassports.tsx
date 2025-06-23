@@ -32,8 +32,8 @@ import { toast } from "react-hot-toast" // or whichever toast lib you prefer
 import { twMerge } from "tailwind-merge"
 
 import { ZodIssue } from "zod"
-import { fromZodIssue } from "zod-validation-error"
 import { createPassportForProjectVariantId } from "app/[locale]/(circularity)/(server-actions)/createPassportForProjectVariantId"
+import { invalidPassportDataToast } from "lib/presentation-logic/custom-toasts/invalid-passport-data"
 import { PassportMetadata } from "prisma/queries/db"
 
 type ProjectPassportsProps = {
@@ -58,36 +58,13 @@ export default function ProjectPassports({ passportsMetadata, projectVariantId, 
       router.refresh()
       toast.success("Passport successfully generated!")
     } else if (generatePassportResponse.errorI18nKey === "errors.validation") {
-      toast.custom((t) => (
-        <div
-          className={`${
-            t.visible ? "animate-enter" : "animate-leave"
-          } ring-opacity/5 pointer-events-auto flex w-full max-w-2xl rounded-lg bg-white shadow-lg ring-1 ring-black`}
-        >
-          <div className="w-0 flex-1 p-4">
-            <div className="flex items-start">
-              <div className="ml-3 flex-1">
-                <p className="text-sm font-medium text-orange-900">Error: Passport could not be generated!</p>
-                <ul className="mt-1 text-sm text-gray-500">
-                  {(generatePassportResponse.details as ZodIssue[]).map((zodIssue, i) => (
-                    <li className="mb-4" key={i}>
-                      {fromZodIssue(zodIssue).toString()}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className="flex border-l border-gray-200">
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="flex w-full items-center justify-center rounded-none rounded-r-lg border border-transparent p-4 text-sm font-medium text-bbsr-blue-700 hover:text-bbsr-blue-500 focus:outline-none focus:ring-2 focus:ring-bbsr-blue-500"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      ))
+      toast.custom((t) =>
+        invalidPassportDataToast(
+          t,
+          generatePassportResponse.details as ZodIssue[],
+          "Error: Passport could not be generated!"
+        )
+      )
     } else {
       toast.error(t(generatePassportResponse.errorI18nKey))
     }
