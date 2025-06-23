@@ -27,7 +27,8 @@ import { FC } from "react"
 import ListItemLink from "app/(components)/generic/ListItemLink"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
-import { getProjectsByOwnerId, ProjectWithVariants } from "lib/domain-logic/circularity/projects/getProjectsByOwnerId"
+import { ProjectWithVariants } from "lib/domain-logic/circularity/projects/getProjectsByOwnerId"
+import { getProjectsByUserAccess } from "lib/domain-logic/circularity/projects/getProjectsByUserAccess"
 
 const Page = async () => {
   return withServerComponentErrorHandling(async () => {
@@ -35,7 +36,7 @@ const Page = async () => {
 
     const userId = Number(session.user.id)
 
-    const projects = await getProjectsByOwnerId(userId)
+    const projects = await getProjectsByUserAccess(userId)
 
     const t = await getTranslations("Grp.Web.sections.projects")
 

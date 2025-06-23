@@ -471,6 +471,31 @@ export class LegacyDbDal {
     })
   }
 
+  getProjectsThatUserHasAccessTo = async (userId: number) => {
+    return await prismaLegacy.projects.findMany({
+      where: {
+        OR: this.getProjectAuthorizationConditions(userId),
+      },
+      select: {
+        id: true,
+        name: true,
+        created: true,
+        users: {
+          select: {
+            auth_name: true,
+          },
+        },
+        project_variants_project_variants_project_idToprojects: {
+          select: {
+            id: true,
+            name: true,
+            created: true,
+          },
+        },
+      },
+    })
+  }
+
   getProjectsByOwnerId = async (userId: number) => {
     return await prismaLegacy.projects.findMany({
       where: {

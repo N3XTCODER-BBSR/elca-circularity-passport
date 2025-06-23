@@ -23,7 +23,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { legacyDbDalInstance } from "./dalSingletons"
-import { createUser, deleteUserIfExists } from "./testUtils"
+import {
+  createAccessGroup,
+  createGroupMember,
+  createProject,
+  createUser,
+  deleteAccessGroupIfExists,
+  deleteProjectIfExists,
+  deleteUserIfExists,
+} from "./testUtils"
 
 describe("legacyDb queries", () => {
   describe("getElcaComponentDataByLayerId", () => {
@@ -180,6 +188,48 @@ describe("legacyDb queries", () => {
       const want = null
 
       expect(result).toBe(want)
+    })
+  })
+  describe("getProjectsThatUserHasAccessTo", () => {
+    const userId = 3
+    const accessGroupId = 20
+    const projectId = 20
+
+    beforeEach(async () => {
+      // create user
+      await createUser(userId, "testuser3")
+
+      // create access group and add user 2 to it
+      await createAccessGroup(accessGroupId)
+      await createGroupMember(2, accessGroupId)
+
+      // create another project where user 3 is the owner and user 2 is a member of its access group
+      await createProject(projectId, accessGroupId, userId)
+    })
+
+    afterEach(async () => {
+      await deleteProjectIfExists(projectId)
+      await deleteAccessGroupIfExists(accessGroupId)
+      await deleteUserIfExists(userId)
+    })
+
+    it("should return projects that the user is the owner of and projects that are in the user's access group alike", async () => {
+      const result = await legacyDbDalInstance.getProjectsThatUserHasAccessTo(2)
+
+      const want = [
+        {
+          id: 1,
+          name: "Test Project 1",
+        },
+        {
+          id: 20,
+        },
+      ]
+
+      expect(result).toBeDefined()
+      expect(result).toHaveLength(want.length)
+      expect(result[0]).toMatchObject(want[0]!)
+      expect(result[1]).toMatchObject(want[1]!)
     })
   })
   describe("getProjectsByOwnerId", () => {
