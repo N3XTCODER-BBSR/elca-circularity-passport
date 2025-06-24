@@ -71,7 +71,7 @@ export const setupElcaTestDB = async (startedNetwork?: StartedNetwork, networkAl
   const dbUrlWithSuperUser = `postgres://${dbUsername}:${dbPassword}@localhost:${dbPort}/${dbName}`
   const dbUrlWithReadOnlyUser = `postgres://${dbReadOnlyUsername}:${dbPassword}@localhost:${dbPort}/${dbName}`
 
-  // run migrations for elca db
+  // run migrations and seeding for elca db
   const runDbInitScriptOutput = await container.exec(["psql", "-U", dbUsername, "-f", `/tmp/${elcaDbInitScript}`])
   if (runDbInitScriptOutput.exitCode !== 0) {
     throw new Error(`Failed to run elca db init script: ${runDbInitScriptOutput.output}`)

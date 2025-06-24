@@ -41,7 +41,7 @@ export default defineConfig({
   globalTeardown: "./tests/e2e/globalTeardown.ts",
   testMatch: /\/.*\.spec\.ts/,
   use: {
-    baseURL: process.env.BASE_URL,
+    baseURL: process.env.BASE_URL || "http://localhost:3000",
     trace: "on-first-retry",
   },
   projects: [
@@ -49,7 +49,6 @@ export default defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
-
     {
       name: "firefox",
       use: { ...devices["Desktop Firefox"] },
@@ -60,4 +59,12 @@ export default defineConfig({
       use: { ...devices["Desktop Safari"] },
     },
   ],
+  webServer: process.env.CI
+    ? undefined
+    : {
+        command: "yarn dev",
+        url: "http://localhost:3000",
+        timeout: 120 * 1000,
+        reuseExistingServer: true,
+      },
 })

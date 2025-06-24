@@ -29,8 +29,9 @@ import fs from "node:fs"
 import { setupElcaTestDB, setupPassportTestDB } from "tests/setUpDbs"
 
 const testEnvFileName = ".env.e2e_tests"
+let baseUrl = "http://localhost:3000"
 
-const globalSetup = async () => {
+const setupCITestEnvironment = async () => {
   const network = await new Network().start()
 
   console.log("Sets up DB containers...")
@@ -78,25 +79,29 @@ const globalSetup = async () => {
 
   const appPort = appContainer.getMappedPort(port)
 
-  const baseUrl = `http://localhost:${appPort}`
+  baseUrl = `http://localhost:${appPort}`
   console.log("App is running on", baseUrl)
 
   process.env.DATABASE_URL = passportDbUrl
   process.env.ELCA_LEGACY_DATABASE_URL = elcaDbUrlWithReadOnlyUser
   process.env.ELCA_LEGACY_DATABASE_URL_SUPERUSER_FOR_TESTING = elcaDbUrlWithSuperUser
   process.env.BASE_URL = baseUrl
-
-  // HINT: don't use static import so that the prisma client is only created after the dyncamic DB URL env vars are set
-  const { createAndAuthenticateUsers } = require("./utils")
-
-  console.log("Creates test users...")
-  await createAndAuthenticateUsers(baseUrl)
 }
 
 const main = async (_: FullConfig) => {
   try {
+    const isCI = process.env.CI === "true"
+
     console.log("Global Setup Running...")
-    await globalSetup()
+    if (isCI) {
+      await setupCITestEnvironment()
+    }
+
+    // HINT: don't use static import so that the prisma client is only created after the dyncamic DB URL env vars are set
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { createAndAuthenticateUsers } = require("./utils")
+    console.log("Creates test users...")
+    await createAndAuthenticateUsers(baseUrl)
     console.log("Global Setup finished.")
   } catch (error) {
     console.error(error)

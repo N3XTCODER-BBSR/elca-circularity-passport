@@ -120,6 +120,21 @@ eLCA Circularity Index is a web-based add-on to eLCA, to calculate the circulari
 
 Open [http://localhost:3000](http://localhost:3000) to see the app in action.
 
+## Run the unit tests locally
+
+Run `yarn test`.
+
+## Run E2E tests locally
+
+1. Copy all the contents from the `.env.e2e_tests.EXAMPLE` file into a newly created `.env.e2e_tests` file
+
+   ```bash
+   cp .env.e2e_tests.EXAMPLE .env.e2e_tests
+   ```
+
+2. Run the E2E tests locally
+   `yarn e2e:ui --project=chromium` (in UI mode) or `yarn e2e:headless --project=chromium` (in headless mode). Set the `CI` environment variable to `true` to run the E2E tests in CI mode (eg `CI=true yarn e2e:ui`).
+
 ## Scripts Overview
 
 The following scripts are available in the `package.json`:
