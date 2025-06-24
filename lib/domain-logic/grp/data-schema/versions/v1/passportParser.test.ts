@@ -103,7 +103,6 @@ describe("passportParser", () => {
             rebuildPoints: 20,
             dismantlingPotentialClassId: "I",
             eolPoints: 10,
-            circularityIndex: 1234,
             methodologyVersion: "v3",
             version: "v1",
             category: "Recyclable",

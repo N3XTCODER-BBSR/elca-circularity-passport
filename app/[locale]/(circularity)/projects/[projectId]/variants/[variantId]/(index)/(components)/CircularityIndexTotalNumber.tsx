@@ -28,11 +28,11 @@ import { useFormatter, useTranslations } from "next-intl"
 import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
 import CircularityIndexTotalBarChart from "./CircularityIndexTotalBarChart"
 
-const CircularityIndexTotalNumber = ({
-  circularityIndexPoints,
+const CircularityMetricTotalNumber = ({
+  circularityMetricPoints: circularityIndexPoints,
   metricType,
 }: {
-  circularityIndexPoints: number
+  circularityMetricPoints: number
   metricType: MetricType
 }) => {
   const format = useFormatter()
@@ -49,7 +49,7 @@ const CircularityIndexTotalNumber = ({
         <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-400">{t("title")}</h3>
         <div
           className="mt-4 rounded-lg border-2 px-8 py-4 text-2xl font-bold"
-          data-testid="circularity-index-total-number__points-div"
+          data-testid={`circularity-metric-total-number__points-div`}
         >
           {circularityIndexPointsStr}
         </div>
@@ -65,4 +65,4 @@ const CircularityIndexTotalNumber = ({
   )
 }
 
-export default CircularityIndexTotalNumber
+export default CircularityMetricTotalNumber

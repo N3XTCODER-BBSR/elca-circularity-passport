@@ -7,7 +7,6 @@ import { DimensionalFieldName } from "../misc/domain-types"
  * Contains the calculated values for different circularity metrics across the project
  */
 export type ProjectMetricValues = {
-  circularityIndex: number
   eolBuiltPoints: number
   dismantlingPoints: number
 }
@@ -17,7 +16,6 @@ type Component = ElcaElementWithComponents<Layer>
 
 // Types for intermediate calculations
 type MetricAccumulator = {
-  circularityIndexTimesDimensionalValueSum: number
   eolBuiltPointsTimesDimensionalValueSum: number
   dismantlingPointsTimesDimensionalValueSum: number
   totalDimensionalValue: number
@@ -63,7 +61,6 @@ const processLayer = (
   const dimensionalValue = getDimensionalValue(layer, componentQuantity, dimensionalFieldName)
 
   return {
-    circularityIndexTimesDimensionalValueSum: getWeightedMetricValue(layer.circularityIndex, dimensionalValue),
     eolBuiltPointsTimesDimensionalValueSum: getWeightedMetricValue(layer.eolBuilt?.points, dimensionalValue),
     dismantlingPointsTimesDimensionalValueSum: getWeightedMetricValue(layer.dismantlingPoints, dimensionalValue),
     totalDimensionalValue: dimensionalValue,
@@ -78,8 +75,6 @@ const processLayer = (
  * @returns {MetricAccumulator} - Combined accumulator
  */
 const combineAccumulators = (acc1: MetricAccumulator, acc2: MetricAccumulator): MetricAccumulator => ({
-  circularityIndexTimesDimensionalValueSum:
-    acc1.circularityIndexTimesDimensionalValueSum + acc2.circularityIndexTimesDimensionalValueSum,
   eolBuiltPointsTimesDimensionalValueSum:
     acc1.eolBuiltPointsTimesDimensionalValueSum + acc2.eolBuiltPointsTimesDimensionalValueSum,
   dismantlingPointsTimesDimensionalValueSum:
@@ -89,7 +84,6 @@ const combineAccumulators = (acc1: MetricAccumulator, acc2: MetricAccumulator): 
 
 // Initial accumulator with zero values
 const initialAccumulator: MetricAccumulator = {
-  circularityIndexTimesDimensionalValueSum: 0,
   eolBuiltPointsTimesDimensionalValueSum: 0,
   dismantlingPointsTimesDimensionalValueSum: 0,
   totalDimensionalValue: 0,
@@ -102,12 +96,8 @@ const initialAccumulator: MetricAccumulator = {
  * @returns {ProjectMetricValues} - The final calculated metric values
  */
 const calculateFinalMetrics = (accumulator: MetricAccumulator): ProjectMetricValues => {
-  const {
-    circularityIndexTimesDimensionalValueSum,
-    eolBuiltPointsTimesDimensionalValueSum,
-    dismantlingPointsTimesDimensionalValueSum,
-    totalDimensionalValue,
-  } = accumulator
+  const { eolBuiltPointsTimesDimensionalValueSum, dismantlingPointsTimesDimensionalValueSum, totalDimensionalValue } =
+    accumulator
 
   /**
    * Safely divides two numbers, returning 0 if denominator is 0
@@ -120,7 +110,6 @@ const calculateFinalMetrics = (accumulator: MetricAccumulator): ProjectMetricVal
     denominator === 0 ? 0 : numerator / denominator
 
   return {
-    circularityIndex: safeDivide(circularityIndexTimesDimensionalValueSum, totalDimensionalValue),
     eolBuiltPoints: safeDivide(eolBuiltPointsTimesDimensionalValueSum, totalDimensionalValue),
     dismantlingPoints: safeDivide(dismantlingPointsTimesDimensionalValueSum, totalDimensionalValue),
   }

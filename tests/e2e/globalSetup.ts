@@ -33,8 +33,10 @@ let baseUrl = "http://localhost:3000"
 
 const setupCITestEnvironment = async () => {
   const network = await new Network().start()
+  console.log("Global Setup: Network created successfully")
 
-  console.log("Sets up DB containers...")
+  console.log("Global Setup: Setting up DB containers...")
+  const startTime = Date.now()
   const [
     {
       container: elcaDbContainer,
@@ -46,11 +48,21 @@ const setupCITestEnvironment = async () => {
     { container: passportDbContainer, dbUrl: passportDbUrl, internalUrl: passportInternalUrl },
   ] = await Promise.all([setupElcaTestDB(network, "elca"), setupPassportTestDB(network, "passport")])
 
+  console.log(`Global Setup: DB containers set up in ${Date.now() - startTime}ms`)
   ;(globalThis as unknown as { [key: string]: StartedTestContainer }).__PASSPORT_DB_CONTAINER__ = passportDbContainer
   ;(globalThis as unknown as { [key: string]: StartedTestContainer }).__ELCA_DB_CONTAINER__ = elcaDbContainer
 
-  console.log("Builds app image...")
+  console.log("Global Setup: Building app image...")
+  const buildStartTime = Date.now()
   const appContainerBuilder = await GenericContainer.fromDockerfile(".", "Dockerfile.e2e").build()
+  console.log(`Global Setup: App image built in ${Date.now() - buildStartTime}ms`)
+
+  // Check if env file exists
+  if (!fs.existsSync(testEnvFileName)) {
+    throw new Error(
+      `Global Setup: Environment file ${testEnvFileName} not found. Please create it with the required environment variables.`
+    )
+  }
 
   const databaseEnvs = {
     DATABASE_URL: passportInternalUrl,
@@ -66,7 +78,8 @@ const setupCITestEnvironment = async () => {
     ...envFileEnvs,
   }
 
-  console.log("Starts app container...")
+  console.log("Global Setup: Starting app container...")
+  const containerStartTime = Date.now()
   const port = 3000
   const appContainer = await appContainerBuilder
     .withEnvironment(envs)
@@ -75,12 +88,13 @@ const setupCITestEnvironment = async () => {
     .withCommand(["sh", "-c", `yarn prisma:generate && npx prisma migrate deploy && PORT=${port} yarn start`])
     .start()
 
+  console.log(`Global Setup: App container started in ${Date.now() - containerStartTime}ms`)
   ;(globalThis as unknown as { [key: string]: StartedTestContainer }).__APP_CONTAINER__ = appContainer
 
   const appPort = appContainer.getMappedPort(port)
 
   baseUrl = `http://localhost:${appPort}`
-  console.log("App is running on", baseUrl)
+  console.log(`Global Setup: App is running on ${baseUrl}`)
 
   process.env.DATABASE_URL = passportDbUrl
   process.env.ELCA_LEGACY_DATABASE_URL = elcaDbUrlWithReadOnlyUser

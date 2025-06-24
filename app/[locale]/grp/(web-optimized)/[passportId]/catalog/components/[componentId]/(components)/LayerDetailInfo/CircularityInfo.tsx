@@ -22,7 +22,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { useFormatter, useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { getEolClassNameByPoints } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { Circularity } from "lib/domain-logic/grp/data-schema/versions/v1/passportSchema"
@@ -30,18 +30,10 @@ import { Circularity } from "lib/domain-logic/grp/data-schema/versions/v1/passpo
 const CircularityInfo = ({ circularity }: { circularity?: Circularity }) => {
   const eolClass = getEolClassNameByPoints(circularity?.eolPoints)
   const t = useTranslations("Grp.Web.sections.detailPage.componentLayer.circularity")
-  const format = useFormatter()
+
   const resourceInfoKeyValues = [
-    {
-      key: t("circularityIndex"),
-      value:
-        circularity?.circularityIndex != null
-          ? format.number(circularity.circularityIndex, { maximumFractionDigits: 2 })
-          : "-",
-      testId: "circularity-index",
-    },
-    { key: t("eolClass"), value: eolClass },
-    { key: t("dismantlingClass"), value: circularity?.dismantlingPotentialClassId },
+    { key: t("eolClass"), value: eolClass, testId: "eol-class" },
+    { key: t("dismantlingClass"), value: circularity?.dismantlingPotentialClassId, testId: "dismantling-class" },
     { key: t("version"), value: circularity?.methodologyVersion },
     { key: t("proofReuse"), value: circularity?.proofReuse },
   ]

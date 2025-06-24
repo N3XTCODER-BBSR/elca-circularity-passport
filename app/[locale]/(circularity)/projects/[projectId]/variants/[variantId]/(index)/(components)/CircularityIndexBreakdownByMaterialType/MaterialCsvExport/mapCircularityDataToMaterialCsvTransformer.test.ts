@@ -68,7 +68,6 @@ function createMockLayer(
     disturbingSubstanceSelections: [] as DisturbingSubstanceSelection[],
     disturbingEolScenarioForS4: null,
 
-    circularityIndex: 0.75,
     dismantlingPoints: 1,
     disturbingSubstances: {
       noDisturbingSubstancesOrOnlyNullClassesSelected: true,
@@ -95,13 +94,11 @@ const mockCircularityData = [
         element_name: "Wall Layer 1",
         process_name: "Concrete",
         mass: 150,
-        circularityIndex: 0.8,
       }),
       createMockLayer({
         element_name: "Wall Layer 2",
         process_name: "Insulation",
         mass: 50,
-        circularityIndex: 0.6,
       }),
     ],
   },
@@ -117,7 +114,6 @@ const mockCircularityData = [
         element_name: "Floor Layer",
         process_name: "Wood",
         mass: 80,
-        circularityIndex: 0.9,
       }),
     ],
   },
@@ -134,7 +130,6 @@ const mockTranslations = {
   share: "Share",
   volumePerUnit: "Volume per Unit",
   massPerUnit: "Mass per Unit",
-  circularityIndex: "Circularity Index",
   eolClassBuilt: "EOL Class Built",
   eolPointsBuilt: "EOL Points Built",
   eolClassUnbuilt: "EOL Class Unbuilt",
@@ -152,9 +147,7 @@ describe("circularityDataToCsvTransformer", () => {
 
       // Check that CSV contains header row with translated field names
       expect(
-        csv.startsWith(
-          "Process Name,Component Name,Amount,Unit,Material,Thickness,Share,Volume per Unit,Mass per Unit,Circularity Index"
-        )
+        csv.startsWith("Process Name,Component Name,Amount,Unit,Material,Thickness,Share,Volume per Unit,Mass per Unit")
       ).toBeTruthy()
 
       // Check that CSV contains the expected number of rows (header + 3 data rows)
@@ -208,7 +201,6 @@ describe("circularityDataToCsvTransformer", () => {
               element_name: "Layer, with comma",
               process_name: "Material, with comma",
               mass: 150,
-              circularityIndex: 0.8,
             }),
           ],
         },

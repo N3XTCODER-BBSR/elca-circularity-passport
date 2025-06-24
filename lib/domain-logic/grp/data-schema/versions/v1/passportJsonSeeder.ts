@@ -218,7 +218,6 @@ function generateSingleMaterial(): Material {
     circularity: {
       eolPoints: eolPoints,
       dismantlingPotentialClassId: faker.helpers.arrayElement(["I", "II", "III"]),
-      circularityIndex: Math.round(0.7 * eolPoints + 0.3 * rebuildPoints),
       methodologyVersion: faker.helpers.arrayElement(["KSB BNB 2.0.6", "KSB BNB 4.1.4"]),
       rebuildPoints,
       // category: faker.helpers.arrayElement(["Zerstörungsfrei"]),

@@ -64,7 +64,6 @@ const getEolUnbuiltData = (layerData: EnrichedElcaElementComponent): EolUnbuiltD
 }
 
 export type CalculateCircularityDataForLayerReturnType = EnrichedElcaElementComponent & {
-  circularityIndex: number | null | undefined
   dismantlingPoints: number | null | undefined
   disturbingSubstances: {
     noDisturbingSubstancesOrOnlyNullClassesSelected: boolean
@@ -104,14 +103,8 @@ const calculateCircularityDataForLayer = (
     layerData.disturbingEolScenarioForS4
   )
 
-  const incompleteCircularityRequiredData =
-    eolBuilt == null || dismantlingPoints == null || layerData.volume === null || layerData.mass === null
-
-  const circularityIndex = incompleteCircularityRequiredData ? null : dismantlingPoints * 0.3 + eolBuilt.points * 0.7
-
   return {
     ...layerData,
-    circularityIndex,
     dismantlingPoints,
     disturbingSubstances: {
       noDisturbingSubstancesOrOnlyNullClassesSelected,

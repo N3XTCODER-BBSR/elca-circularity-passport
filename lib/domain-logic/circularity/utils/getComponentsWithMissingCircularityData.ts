@@ -37,6 +37,10 @@ export function getComponentUuidsWithMissingCircularityData(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
 ): string[] {
   return circularityData
-    .filter((component) => component.layers.some((layer) => layer.circularityIndex == null || layer.volume == null))
+    .filter((component) =>
+      component.layers.some(
+        (layer) => layer.volume == null || layer.dismantlingPoints == null || layer.eolBuilt?.points == null
+      )
+    )
     .map((component) => component.element_uuid)
 }

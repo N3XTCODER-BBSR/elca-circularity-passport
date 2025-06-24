@@ -207,9 +207,6 @@ function getMetricValue(material: MaterialNode, metricType: MetricType): number 
       return material.eolBuiltPoints ?? 0
     case "dismantlingPoints":
       return material.dismantlingPoints ?? 0
-    case "circularityIndex":
-    default:
-      return material.circularityIndex ?? 0
   }
 }
 

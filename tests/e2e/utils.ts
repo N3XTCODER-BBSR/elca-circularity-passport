@@ -87,12 +87,12 @@ export const fillOutAllCircularityDetails = async (
   await page.locator("[data-testid=component-layer__div__7]").locator("[data-testid=accordion__button__7]").click()
   await page
     .locator("[data-testid=component-layer__div__7]")
-    .locator("[data-testid=disturbing-substance-class__button__S3]")
+    .locator("[data-testid=circularity-details-rebuild-class-button__button__75]")
     .click()
 
   await page
     .locator("[data-testid=component-layer__div__7]")
-    .locator("[data-testid=circularity-details-rebuild-class-button__button__75]")
+    .locator("[data-testid=disturbing-substance-class__button__S3]")
     .click()
 
   await expect(page.locator("[data-testid=badge__div__7]")).not.toBeVisible()
@@ -165,7 +165,7 @@ export const fillOutAllCircularityDetails = async (
   await expect(page.locator("[data-testid=badge__div__26]")).not.toBeVisible()
 
   await page.goto(overviewPageUrl)
-  await expect(page.locator("[data-testid=circularity-index-total-number__points-div]")).toHaveText(/3,08 Punkte/)
+  await expect(page.locator("[data-testid=circularity-metric-total-number__points-div]")).toHaveText(/-25,07 Punkte/)
 
   await page.goto(componentPageUrl1)
   await page.locator("[data-testid=toggle__switch__7]").click()

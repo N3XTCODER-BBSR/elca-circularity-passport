@@ -33,7 +33,8 @@ import { getProjectCircularityData } from "lib/domain-logic/circularity/misc/get
 import { getAllProcessCategories, ProcessCategory } from "lib/domain-logic/circularity/process/getProcessCategories"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import {
-  hasCircularityIndexMissingForAnyProduct,
+  hasDismantlingPotentialMissingForAnyProduct,
+  hasEolBuiltMissingForAnyProduct,
   hasVolumeMissingForAnyProduct,
 } from "lib/domain-logic/circularity/utils/validateCircularityData"
 import CircularityData from "./CircularityData"
@@ -72,7 +73,6 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
     await getProjectCircularityData(variantId, projectId)
   const processCategories: ProcessCategory[] = await getAllProcessCategories()
 
-  const isCircularityIndexMissingForAnyProduct = hasCircularityIndexMissingForAnyProduct(circularityData)
   const isVolumeMissingForAnyProduct = hasVolumeMissingForAnyProduct(circularityData)
 
   const noBuildingComponents = circularityData.length === 0
@@ -80,14 +80,20 @@ const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingO
   const catalogPath = `/projects/${projectId}/variants/${variantId}/catalog`
   const t = await getTranslations("CircularityTool.sections.overview")
 
+  const isDismantlingPotentialMissingForAnyProduct = hasDismantlingPotentialMissingForAnyProduct(circularityData)
+  const isEolBuiltMissingForAnyProduct = hasEolBuiltMissingForAnyProduct(circularityData)
+
   const allDataAvailable =
-    !isCircularityIndexMissingForAnyProduct && !isVolumeMissingForAnyProduct && !noBuildingComponents
+    !isVolumeMissingForAnyProduct &&
+    !noBuildingComponents &&
+    !isDismantlingPotentialMissingForAnyProduct &&
+    !isEolBuiltMissingForAnyProduct
 
   const renderBody = () => {
     if (noBuildingComponents) {
       return <NoComponentsMessage />
     }
-    if (isCircularityIndexMissingForAnyProduct || isVolumeMissingForAnyProduct) {
+    if (isVolumeMissingForAnyProduct || isDismantlingPotentialMissingForAnyProduct || isEolBuiltMissingForAnyProduct) {
       return <MissingDataMessage catalogPath={catalogPath} />
     }
     return (

@@ -157,7 +157,7 @@ test.describe("Circularity tool", () => {
       )
 
       await page.goto(overviewPageUrl)
-      await expect(page.locator("[data-testid=circularity-index-total-number__points-div]")).toHaveText(/29/)
+      await expect(page.locator("[data-testid=circularity-metric-total-number__points-div]")).toHaveText(/0/)
     })
     test("if there are no components in variant, the overview and the catalog page should display a no components message", async ({
       page,
@@ -229,7 +229,8 @@ test.describe("Circularity tool", () => {
       )
 
       await page.click("[data-testid=tabs__tab-button__circularity]")
-      await expect(page.locator("[data-testid=circularity-index-value__dd]")).toHaveText(/29/)
+      await expect(page.locator("[data-testid=eol-class-value__dd]")).toHaveText(/E/)
+      await expect(page.locator("[data-testid=dismantling-class-value__dd]")).toHaveText(/III/)
     })
   })
 })

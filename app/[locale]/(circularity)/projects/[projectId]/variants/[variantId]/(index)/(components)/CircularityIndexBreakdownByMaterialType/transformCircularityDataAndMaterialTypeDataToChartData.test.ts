@@ -41,7 +41,6 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     process_category_node_id: number,
     volume: number,
     mass: number,
-    circularityIndex: number,
     eolBuiltPoints: number,
     dismantlingPoints: number
   ): MaterialNode {
@@ -53,7 +52,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       process_category_node_id,
       volume,
       mass,
-      circularityIndex,
+
       eolBuiltPoints,
       dismantlingPoints,
     }
@@ -68,7 +67,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       products,
       "mass",
       "Root",
-      "circularityIndex",
+      "eolBuiltPoints",
       false
     )
 
@@ -83,7 +82,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     // Make Bindemittel a top-level category by using "1"
     const processCategories: ProcessCategory[] = [createProcessCategory(614, "Bindemittel", "1")]
     const products: MaterialNode[] = [
-      createMaterialNode("uuid-1", "Comp: 1", 101, "Cement Product", 614, 50, 100, 0.8, 0, 0),
+      createMaterialNode("uuid-1", "Comp: 1", 101, "Cement Product", 614, 50, 100, 0, 0),
     ]
 
     const result = transformCircularityDataAndMaterialTypesToChartData(
@@ -91,7 +90,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       products,
       "mass",
       "Root",
-      "circularityIndex",
+      "eolBuiltPoints",
       false
     )
 
@@ -119,16 +118,16 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     expect(leaf.isLeaf).toBe(true)
     expect(leaf.label).toBe("Comp: 1")
     expect(leaf.dimensionalValue).toBe(100)
-    expect(leaf.metricValue).toBe(0.8)
+    expect(leaf.metricValue).toBe(0)
 
     // Check aggregated metrics up the hierarchy:
-    expect(productGroupNode.metricValue).toBe(0.8)
+    expect(productGroupNode.metricValue).toBe(0)
     expect(productGroupNode.dimensionalValue).toBe(100)
 
-    expect(categoryNode.metricValue).toBe(0.8)
+    expect(categoryNode.metricValue).toBe(0)
     expect(categoryNode.dimensionalValue).toBe(100)
 
-    expect(result.metricValue).toBe(0.8)
+    expect(result.metricValue).toBe(0)
     expect(result.dimensionalValue).toBe(100)
   })
 
@@ -142,10 +141,10 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     ]
 
     const products: MaterialNode[] = [
-      createMaterialNode("uuid-1", "Comp: 1", 101, "Concrete Mix A", 617, 50, 100, 0.8, 0, 0),
-      createMaterialNode("uuid-2", "Comp: 2", 102, "Mineral Wool A", 620, 25, 50, 0.9, 0, 0),
-      createMaterialNode("uuid-3", "Comp: 3", 103, "Steel Beam A", 646, 60, 120, 0.7, 0, 0),
-      createMaterialNode("uuid-4", "Comp: 4", 104, "Steel Beam B", 646, 40, 80, 0.6, 0, 0),
+      createMaterialNode("uuid-1", "Comp: 1", 101, "Concrete Mix A", 617, 50, 100, 0, 0),
+      createMaterialNode("uuid-2", "Comp: 2", 102, "Mineral Wool A", 620, 25, 50, 0, 0),
+      createMaterialNode("uuid-3", "Comp: 3", 103, "Steel Beam A", 646, 60, 120, 0, 0),
+      createMaterialNode("uuid-4", "Comp: 4", 104, "Steel Beam B", 646, 40, 80, 0, 0),
     ]
 
     const result = transformCircularityDataAndMaterialTypesToChartData(
@@ -153,7 +152,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       products,
       "mass",
       "Root",
-      "circularityIndex",
+      "eolBuiltPoints",
       false
     )
     expect(result.isLeaf).toBe(false)
@@ -181,13 +180,13 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     const concreteLeaf = mortarGroupNode.children[0] as ChartDataLeaf
     expect(concreteLeaf.isLeaf).toBe(true)
     expect(concreteLeaf.label).toBe("Comp: 1")
-    expect(concreteLeaf.metricValue).toBe(0.8)
+    expect(concreteLeaf.metricValue).toBe(0)
     expect(concreteLeaf.dimensionalValue).toBe(100)
 
     // Check mortar aggregation:
-    expect(mortarGroupNode.metricValue).toBe(0.8)
+    expect(mortarGroupNode.metricValue).toBe(0)
     expect(mortarGroupNode.dimensionalValue).toBe(100)
-    expect(mortarNode.metricValue).toBe(0.8)
+    expect(mortarNode.metricValue).toBe(0)
     expect(mortarNode.dimensionalValue).toBe(100)
 
     // Mineralwolle
@@ -202,13 +201,13 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     const mineralWoolLeaf = mwGroupNode.children[0] as ChartDataLeaf
     expect(mineralWoolLeaf.isLeaf).toBe(true)
     expect(mineralWoolLeaf.label).toBe("Comp: 2")
-    expect(mineralWoolLeaf.metricValue).toBe(0.9)
+    expect(mineralWoolLeaf.metricValue).toBe(0)
     expect(mineralWoolLeaf.dimensionalValue).toBe(50)
 
     // Check mineral wool aggregation:
-    expect(mwGroupNode.metricValue).toBe(0.9)
+    expect(mwGroupNode.metricValue).toBe(0)
     expect(mwGroupNode.dimensionalValue).toBe(50)
-    expect(mineralWoolNode.metricValue).toBe(0.9)
+    expect(mineralWoolNode.metricValue).toBe(0)
     expect(mineralWoolNode.dimensionalValue).toBe(50)
 
     // Metalle(4) -> Stahl und Eisen(4.01)
@@ -235,35 +234,35 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     const steelBeamALeaf = steelBeamAGroup.children[0] as ChartDataLeaf
     expect(steelBeamALeaf.isLeaf).toBe(true)
     expect(steelBeamALeaf.label).toBe("Comp: 3")
-    expect(steelBeamALeaf.metricValue).toBe(0.7)
+    expect(steelBeamALeaf.metricValue).toBe(0)
     expect(steelBeamALeaf.dimensionalValue).toBe(120)
 
     const steelBeamBLeaf = steelBeamBGroup.children[0] as ChartDataLeaf
     expect(steelBeamBLeaf.isLeaf).toBe(true)
     expect(steelBeamBLeaf.label).toBe("Comp: 4")
-    expect(steelBeamBLeaf.metricValue).toBe(0.6)
+    expect(steelBeamBLeaf.metricValue).toBe(0)
     expect(steelBeamBLeaf.dimensionalValue).toBe(80)
 
     // Check sub-aggregation inside each beam group
-    expect(steelBeamAGroup.metricValue).toBe(0.7)
+    expect(steelBeamAGroup.metricValue).toBe(0)
     expect(steelBeamAGroup.dimensionalValue).toBe(120)
-    expect(steelBeamBGroup.metricValue).toBe(0.6)
+    expect(steelBeamBGroup.metricValue).toBe(0)
     expect(steelBeamBGroup.dimensionalValue).toBe(80)
 
     // steelNode (Stahl und Eisen) aggregation:
     // Weighted average = (0.7*120 + 0.6*80) / 200 = 132 / 200 = 0.66
-    expect(steelNode.metricValue).toBeCloseTo(0.66, 2)
+    expect(steelNode.metricValue).toBeCloseTo(0, 2)
     expect(steelNode.dimensionalValue).toBe(200)
 
     // metalsNode aggregation:
-    expect(metalsNode.metricValue).toBeCloseTo(0.66, 2)
+    expect(metalsNode.metricValue).toBeCloseTo(0, 2)
     expect(metalsNode.dimensionalValue).toBe(200)
 
     // Root aggregation:
     // total mass = 100 + 50 + 200 = 350
     // weighted avg = (0.8*100 + 0.9*50 + 0.66*200) / 350
     // = (80 + 45 + 132) / 350 = 257 / 350 ~= 0.7343
-    expect(result.metricValue).toBeCloseTo(0.7343, 4)
+    expect(result.metricValue).toBeCloseTo(0, 4)
     expect(result.dimensionalValue).toBe(350)
   })
 
@@ -271,7 +270,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     // Only one top-level category "Bindemittel" (1)
     const processCategories: ProcessCategory[] = [createProcessCategory(614, "Bindemittel", "1")]
     const products: MaterialNode[] = [
-      createMaterialNode("uuid-binder", "Comp: binder", 501, "Binder Product", 614, 30, 60, 0.95, 0, 0),
+      createMaterialNode("uuid-binder", "Comp: binder", 501, "Binder Product", 614, 30, 60, 0, 0),
     ]
 
     const result = transformCircularityDataAndMaterialTypesToChartData(
@@ -279,7 +278,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       products,
       "mass",
       "Artificial Root",
-      "circularityIndex",
+      "eolBuiltPoints",
       true
     )
 
@@ -301,7 +300,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     const leaf = productGroupNode.children[0] as ChartDataLeaf
     expect(leaf.isLeaf).toBe(true)
     expect(leaf.label).toBe("Comp: binder")
-    expect(leaf.metricValue).toBe(0.95)
+    expect(leaf.metricValue).toBe(0)
     expect(leaf.dimensionalValue).toBe(60)
   })
 
@@ -312,8 +311,8 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       createProcessCategory(617, "Mörtel und Beton", "2"),
     ]
     const products: MaterialNode[] = [
-      createMaterialNode("uuid-binder", "Comp: binder", 501, "Binder Product", 614, 20, 40, 0.8, 0, 0),
-      createMaterialNode("uuid-concrete", "Comp: concrete", 502, "Concrete Product", 617, 50, 100, 0.7, 0, 0),
+      createMaterialNode("uuid-binder", "Comp: binder", 501, "Binder Product", 614, 20, 40, 0, 0),
+      createMaterialNode("uuid-concrete", "Comp: concrete", 502, "Concrete Product", 617, 50, 100, 0, 0),
     ]
 
     const result = transformCircularityDataAndMaterialTypesToChartData(
@@ -321,7 +320,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       products,
       "mass",
       "Artificial Root",
-      "circularityIndex",
+      "eolBuiltPoints",
       true
     )
     // Because multiple top-level categories exist, we keep the artificial root
@@ -344,7 +343,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       products,
       "mass",
       "Root",
-      "circularityIndex",
+      "eolBuiltPoints",
       false
     )
     // Since the category has no products, it won't appear as a child
@@ -360,18 +359,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     ]
 
     const products: MaterialNode[] = [
-      createMaterialNode(
-        "uuid-specialsteel",
-        "Comp: specialsteel",
-        9999,
-        "Special Steel Product",
-        999,
-        15,
-        30,
-        0.85,
-        0,
-        0
-      ),
+      createMaterialNode("uuid-specialsteel", "Comp: specialsteel", 9999, "Special Steel Product", 999, 15, 30, 0, 0),
     ]
 
     const result = transformCircularityDataAndMaterialTypesToChartData(
@@ -379,7 +367,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
       products,
       "mass",
       "Root",
-      "circularityIndex",
+      "eolBuiltPoints",
       false
     )
 
@@ -408,7 +396,7 @@ describe("transformCircularityDataAndMaterialTypesToChartData (with decimal ref_
     const specialSteelLeaf = productGroupNode.children[0] as ChartDataLeaf
     expect(specialSteelLeaf.isLeaf).toBe(true)
     expect(specialSteelLeaf.label).toBe("Comp: specialsteel")
-    expect(specialSteelLeaf.metricValue).toBe(0.85)
+    expect(specialSteelLeaf.metricValue).toBe(0)
     expect(specialSteelLeaf.dimensionalValue).toBe(30)
   })
 })

@@ -82,7 +82,6 @@ export const CircularitySchema = z.object({
   rebuildPoints: z.number(),
   eolPoints: z.number(),
   dismantlingPotentialClassId: z.nativeEnum(DismantlingPotentialClassId),
-  circularityIndex: z.number(),
   methodologyVersion: z.string().describe("e.g. 'BNB 07 Kreislauffähigkeit'"),
   proofReuse: z.string().nullish(),
   interferingSubstances: z.array(InterferingSubstancesSchema).optional(),

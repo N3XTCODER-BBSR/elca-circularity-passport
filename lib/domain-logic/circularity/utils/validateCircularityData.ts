@@ -27,18 +27,6 @@ import { CalculateCircularityDataForLayerReturnType } from "./calculate-circular
 import { ElcaElementWithComponents } from "../misc/domain-types"
 
 /**
- * Checks if any component in the circularity data has missing circularity index for any of its layers.
- *
- * @param circularityData Array of components with their circularity data
- * @returns True if any component has a layer with missing circularity index
- */
-export function hasCircularityIndexMissingForAnyProduct(
-  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
-): boolean {
-  return circularityData.some((component) => component.layers.some((layer) => layer.circularityIndex == null))
-}
-
-/**
  * Checks if any component in the circularity data has missing volume for any of its layers.
  *
  * @param circularityData Array of components with their circularity data
@@ -48,4 +36,28 @@ export function hasVolumeMissingForAnyProduct(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
 ): boolean {
   return circularityData.some((component) => component.layers.some((layer) => layer.volume === null))
+}
+
+/**
+ * Checks if any component in the circularity data has missing dismantling potential for any of its layers.
+ *
+ * @param circularityData Array of components with their circularity data
+ * @returns True if any component has a layer with missing dismantling potential
+ */
+export function hasDismantlingPotentialMissingForAnyProduct(
+  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
+) {
+  return circularityData.some((component) => component.layers.some((layer) => layer.dismantlingPoints == null))
+}
+
+/**
+ * Checks if any component in the circularity data has missing EOL built for any of its layers.
+ *
+ * @param circularityData Array of components with their circularity data
+ * @returns True if any component has a layer with missing EOL built
+ */
+export function hasEolBuiltMissingForAnyProduct(
+  circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
+) {
+  return circularityData.some((component) => component.layers.some((layer) => layer.eolBuilt?.points == null))
 }

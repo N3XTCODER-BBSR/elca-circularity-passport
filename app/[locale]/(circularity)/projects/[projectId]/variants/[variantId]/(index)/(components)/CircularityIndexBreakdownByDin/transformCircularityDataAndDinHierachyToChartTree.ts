@@ -123,8 +123,6 @@ function getMetricValue(layer: CalculateCircularityDataForLayerReturnType, metri
       return layer.eolBuilt?.points ?? 0
     case "dismantlingPoints":
       return layer.dismantlingPoints ?? 0
-    case "circularityIndex":
-      return layer.circularityIndex ?? 0
     default:
       return 0
   }

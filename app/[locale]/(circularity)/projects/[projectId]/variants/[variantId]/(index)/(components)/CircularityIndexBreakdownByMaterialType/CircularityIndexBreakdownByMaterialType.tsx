@@ -50,7 +50,6 @@ export type MaterialNode = {
   process_category_node_id: number
   volume: number
   mass: number
-  circularityIndex: number
   eolBuiltPoints: number
   dismantlingPoints: number
 }
@@ -81,7 +80,6 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
       // TODO (L): check whether this should actually fall back 'silently' to 0
       volume: (layer.volume ?? 0) * (layer.quantity ?? 0) || 0, // if volume might be null, default to 0 or handle upstream
       mass: (layer.mass ?? 0) * (layer.quantity ?? 0) || 0, // if mass might be null, default to 0 or handle upstream
-      circularityIndex: layer.circularityIndex ?? 0,
       eolBuiltPoints: layer.eolBuilt?.points ?? 0,
       dismantlingPoints: layer.dismantlingPoints ?? 0,
     }))

@@ -40,7 +40,6 @@ function getCircularityForMaterial(layer: CalculateCircularityDataForLayerReturn
   return {
     eolPoints: layer.eolBuilt?.points,
     rebuildPoints: layer.dismantlingPoints,
-    circularityIndex: layer.circularityIndex,
     dismantlingPotentialClassId: layer.dismantlingPotentialClassId,
     methodologyVersion: "PLACEHOLDER (1.111111111)",
     proofReuse: layer.eolUnbuiltSpecificScenarioProofText,

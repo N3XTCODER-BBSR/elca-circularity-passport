@@ -59,7 +59,6 @@ export const mapCircularityDataToMaterialCsvTransformer = (
         share: layer.layer_area_ratio ? layer.layer_area_ratio * 100 : "", // * 100 for percentage
         volumePerUnit: layer.volume ?? "",
         massPerUnit: layer.mass ?? "",
-        circularityIndex: layer.circularityIndex ?? "",
         eolClassBuilt: layer.eolBuilt?.className ?? "",
         eolPointsBuilt: layer.eolBuilt?.points ?? "",
         eolClassUnbuilt: layer.eolUnbuilt?.className ?? "",

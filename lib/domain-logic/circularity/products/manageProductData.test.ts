@@ -43,7 +43,6 @@ describe("manageProductData", () => {
       isLayer: true,
       mass: 720,
       volume: 0.3,
-      circularityIndex: null,
     })
   })
   describe("getProductCircularityData with circularity index", () => {
@@ -78,7 +77,6 @@ describe("manageProductData", () => {
         isLayer: true,
         mass: 720,
         volume: 0.3,
-        circularityIndex: 85.5,
         dismantlingPotentialClassId: "II",
         tBaustoffProductData: {
           name: "Aluminiumblech",

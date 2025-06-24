@@ -115,5 +115,5 @@ export type DisturbingSubstanceSelectionWithNullabelId = Omit<DisturbingSubstanc
 }
 export type ProductId = number
 export type MassInKg = number
-export type MetricType = "circularityIndex" | "eolBuiltPoints" | "dismantlingPoints"
+export type MetricType = "eolBuiltPoints" | "dismantlingPoints"
 export type DimensionalFieldName = "mass" | "volume"

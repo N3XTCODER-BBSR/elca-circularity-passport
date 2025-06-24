@@ -61,7 +61,6 @@ jest.mock("../utils/calculate-circularity-data-for-layer", () => {
     ...original,
     default: jest.fn((layer) => ({
       ...layer,
-      circularityIndex: 0.8,
       dismantlingPoints: 0.9,
       disturbingSubstances: {
         noDisturbingSubstancesOrOnlyNullClassesSelected: true,

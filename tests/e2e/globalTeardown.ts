@@ -26,11 +26,31 @@ import { StartedTestContainer } from "testcontainers"
 
 const main = async () => {
   try {
-    await (globalThis as unknown as { [key: string]: StartedTestContainer }).__PASSPORT_DB_CONTAINER__?.stop()
-    await (globalThis as unknown as { [key: string]: StartedTestContainer }).__ELCA_DB_CONTAINER__?.stop()
-    await (globalThis as unknown as { [key: string]: StartedTestContainer }).__APP_CONTAINER__?.stop()
+    console.log("Global Teardown: Starting cleanup...")
+
+    const passportDb = (globalThis as unknown as { [key: string]: StartedTestContainer }).__PASSPORT_DB_CONTAINER__
+    const elcaDb = (globalThis as unknown as { [key: string]: StartedTestContainer }).__ELCA_DB_CONTAINER__
+    const app = (globalThis as unknown as { [key: string]: StartedTestContainer }).__APP_CONTAINER__
+
+    // Stop containers in reverse order
+    if (app) {
+      console.log("Global Teardown: Stopping app container...")
+      await app.stop()
+    }
+
+    if (elcaDb) {
+      console.log("Global Teardown: Stopping eLCA DB container...")
+      await elcaDb.stop()
+    }
+
+    if (passportDb) {
+      console.log("Global Teardown: Stopping passport DB container...")
+      await passportDb.stop()
+    }
+
+    console.log("Global Teardown: Cleanup completed successfully")
   } catch (error) {
-    console.error(error)
+    console.error("Global Teardown: Error during cleanup:", error)
     process.exit(1)
   }
 }

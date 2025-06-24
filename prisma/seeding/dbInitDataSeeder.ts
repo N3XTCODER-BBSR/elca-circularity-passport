@@ -29,9 +29,7 @@ import { cleanupTbsProductDefinitionDuplicates } from "./cleanupTbsProductDefini
 
 import { TBs_ProductDefinitionEOLCategoryScenario } from "../generated/client"
 import { prisma } from "../prismaClient" // needs to be relative path
-
 const csvFilePath = path.resolve(__dirname, "./obd_tbaustoff_mapping.csv")
-
 type CsvRow = {
   oekobaudatName: string
   oekobaudatUuid____448d1096_2017_4901_a560_f652a83c737e____2020_II: string
@@ -44,7 +42,6 @@ type CsvRow = {
   eolScenarioPotential: string
   technologyFactor: string
 }
-
 async function readCsvFile(filePath: string): Promise<CsvRow[]> {
   const rows: CsvRow[] = []
   return new Promise((resolve, reject) => {
@@ -55,7 +52,6 @@ async function readCsvFile(filePath: string): Promise<CsvRow[]> {
       .on("error", (error) => reject(error))
   })
 }
-
 const mapToEOLCategoryScenario = (value: string): TBs_ProductDefinitionEOLCategoryScenario | null => {
   switch (value) {
     case "WV":
@@ -85,12 +81,9 @@ const mapToEOLCategoryScenario = (value: string): TBs_ProductDefinitionEOLCatego
       return null
   }
 }
-
 async function seedCircularityTool() {
   const csvData = await readCsvFile(csvFilePath)
-
   const eolCategoryCache = new Map<string, number>() // Cache with numeric IDs
-
   for (const row of csvData) {
     try {
       // Skip rows with incomplete data
@@ -103,13 +96,11 @@ async function seedCircularityTool() {
         console.warn(`Skipping row due to incomplete data: ${JSON.stringify(row)}`)
         continue
       }
-
       // Skip ProductDefinitions with " S4" in their name
       if (row.tBaustoffName.includes(" S4")) {
         console.warn(`Skipping row with " S4" in ProductDefinition name: ${JSON.stringify(row)}`)
         continue
       }
-
       // Map to enums
       const eolScenarioReal = mapToEOLCategoryScenario(row.eolScenarioReal)
       const eolScenarioPotential = mapToEOLCategoryScenario(row.eolScenarioPotential)
@@ -117,7 +108,6 @@ async function seedCircularityTool() {
         console.warn(`Invalid scenarios in row: ${JSON.stringify(row)}`)
         continue
       }
-
       // Generate a unique key for the EOLCategory
       const eolCategoryKey = JSON.stringify({
         name: row.eolCategoryName,
@@ -125,9 +115,7 @@ async function seedCircularityTool() {
         eolScenarioPotential,
         technologyFactor: parseFloat(row.technologyFactor),
       })
-
       let eolCategoryId: number
-
       // Check if the EOLCategory exists in cache or DB
       if (eolCategoryCache.has(eolCategoryKey)) {
         eolCategoryId = eolCategoryCache.get(eolCategoryKey)!
@@ -141,7 +129,6 @@ async function seedCircularityTool() {
             // technologyFactor: parseFloat(row.technologyFactor),
           },
         })
-
         if (existingCategory) {
           eolCategoryId = existingCategory.id
         } else {
@@ -155,7 +142,6 @@ async function seedCircularityTool() {
           })
           eolCategoryId = newCategory.id
         }
-
         eolCategoryCache.set(eolCategoryKey, eolCategoryId)
       }
 
@@ -209,7 +195,6 @@ async function seedCircularityTool() {
     }
   }
 }
-
 async function main() {
   if (process.env.SEED_INITIAL_DATA !== "true") {
     console.log('env variable "SEED_INITIAL_DATA" not set to "true" - will abort seeding...')
@@ -238,9 +223,7 @@ async function main() {
       console.log = () => {}
       console.warn = () => {}
     }
-
     await seedCircularityTool()
-
     if (process.env.NODE_ENV === "test") {
       console.log = consoleLog
       console.warn = consoleWarn

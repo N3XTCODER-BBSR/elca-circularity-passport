@@ -45,7 +45,6 @@ export type MaterialNode = {
   name: string
   process_category_node_id: number
   weight: number
-  circularityIndex: number
 }
 
 type MaterialCsvExportProps = {
@@ -80,7 +79,6 @@ export default function MaterialCsvExportButton(props: MaterialCsvExportProps) {
     share: tFields("share"),
     volumePerUnit: tFields("volumePerUnit"),
     massPerUnit: tFields("massPerUnit"),
-    circularityIndex: tCircularity("circularityIndex"),
     eolClassBuilt: tEolBuilt("class"),
     eolPointsBuilt: tEolBuilt("points"),
     eolClassUnbuilt: tEolUnbuiltClass("class"),

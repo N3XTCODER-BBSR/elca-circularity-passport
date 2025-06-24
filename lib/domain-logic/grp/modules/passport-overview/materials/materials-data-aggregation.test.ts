@@ -101,7 +101,6 @@ describe("aggregateMaterialsDataByBuildingComponentCategory", () => {
         interferingSubstances: [],
         rebuildPoints: 0,
         dismantlingPotentialClassId: "I",
-        circularityIndex: 0,
       },
       pollutants: {},
     }
@@ -328,7 +327,6 @@ describe("aggregateMaterialsDataByMaterialClass", () => {
         interferingSubstances: [],
         rebuildPoints: 0,
         dismantlingPotentialClassId: "I",
-        circularityIndex: 0,
       },
       pollutants: {},
       ...materialOverrides,

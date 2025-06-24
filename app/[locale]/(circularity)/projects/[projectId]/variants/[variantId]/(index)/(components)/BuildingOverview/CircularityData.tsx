@@ -15,7 +15,7 @@ import CircularityIndexBreakdownByDin from "../CircularityIndexBreakdownByDin/Ci
 import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
 } from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
-import CircularityIndexTotalNumber from "../CircularityIndexTotalNumber"
+import CircularityMetricTotalNumber from "../CircularityIndexTotalNumber"
 
 /**
  * CircularityData component
@@ -39,7 +39,7 @@ const CircularityData: FC<{
   dimensionalFieldName: DimensionalFieldName
   processCategories: ProcessCategory[]
 }> = ({ circularityData, catalogPath, projectName, dimensionalFieldName, processCategories }) => {
-  const [selectedMetricType, setSelectedMetricType] = useState<MetricType>("circularityIndex")
+  const [selectedMetricType, setSelectedMetricType] = useState<MetricType>("eolBuiltPoints")
 
   const totalMetricValues: ProjectMetricValues = calculateTotalMetricValuesForProject(
     circularityData,
@@ -75,8 +75,8 @@ const CircularityData: FC<{
       </div>
 
       <WhiteContainer>
-        <CircularityIndexTotalNumber
-          circularityIndexPoints={totalMetricValues[selectedMetricType]}
+        <CircularityMetricTotalNumber
+          circularityMetricPoints={totalMetricValues[selectedMetricType]}
           metricType={selectedMetricType}
         />
       </WhiteContainer>

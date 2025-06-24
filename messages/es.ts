@@ -214,7 +214,6 @@ const translationsGrpPlattformGeneric = {
         materialCompatibility: "Compatibilidad del Material - Contaminantes",
         eolClass: "Clase EOL",
         disturbingSubstanceNameUnspecified: "sin especificar",
-        circularityIndex: "Índice de Circularidad",
         dismantlingClass: "Clase de Desmantelamiento",
         eolPoints: "Puntos EOL",
         proofReuse: "Prueba de Reutilización",
@@ -314,7 +313,6 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
             cancel: "Cancelar",
             save: "Guardar",
           },
-          circularityIndex: "Indice de Circularidad",
           EolDataSection: {
             title: "Potencial de Circularidad - No construido",
             details: "Detalles",
@@ -444,7 +442,6 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           body: "El índice de circularidad se calcula para los componentes de construcción en los grupos de costos: 320, 330, 340, 350 y 360. Por favor, vaya a eLCA y agregue componentes de construcción en uno de estos grupos para comenzar, y asegúrese de que no estén excluidos del cálculo.",
         },
         metricTypeSelectorOptions: {
-          circularityIndex: "Índice de circularidad (ZI)",
           eolBuiltPoints: "Potencial de circularidad (Z)",
           dismantlingPoints: "Potencial de disminución (R)",
         },

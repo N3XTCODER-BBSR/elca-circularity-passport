@@ -213,7 +213,6 @@ const translationsGrpPlattformGeneric = {
         disturbingSubstanceNameUnspecified: "nicht spezifiziert",
         dismantlingClass: "Rückbau-Potential Klasse",
         // Grp.Web.Sections.detailPage.componentLayer.circularity.dismantlingClassNames
-        circularityIndex: "Zirkularitätsindex",
         eolPoints: "Zirkularitätspotenzial (unverbaut) Punkte",
         proofReuse: "Nachweis Wiederverwendung",
         version: "Version",
@@ -312,7 +311,6 @@ const translationsPlattformGeneric = {
             cancel: "Abbrechen",
             save: "Speichern",
           },
-          circularityIndex: "Zirkularitätsindex",
           EolDataSection: {
             title: "Zirkularitätspotenzial - Unverbaut",
             details: "Details",
@@ -419,7 +417,6 @@ const translationsPlattformGeneric = {
         },
         title: "Zirkularitätsbewertung",
         metricTypeSelectorOptions: {
-          circularityIndex: "Zirkularitätsindex (ZI)",
           eolBuiltPoints: "Zirkularitätspotential (Z)",
           dismantlingPoints: "Rückbaupotential (R)",
         },

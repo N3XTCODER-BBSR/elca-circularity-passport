@@ -53,7 +53,6 @@ describe("calculateTotalMetricValuesForProject", () => {
             eolUnbuiltSpecificScenario: null,
 
             // Circularity data
-            circularityIndex: 0.8,
             dismantlingPoints: 0.9,
             disturbingSubstances: {
               noDisturbingSubstancesOrOnlyNullClassesSelected: true,
@@ -114,7 +113,6 @@ describe("calculateTotalMetricValuesForProject", () => {
             eolUnbuiltSpecificScenario: null,
 
             // Circularity data
-            circularityIndex: 0.6,
             dismantlingPoints: 0.5,
             disturbingSubstances: {
               noDisturbingSubstancesOrOnlyNullClassesSelected: true,
@@ -137,14 +135,6 @@ describe("calculateTotalMetricValuesForProject", () => {
     // Test with mass as dimensional field
     const resultWithMass = calculateTotalMetricValuesForProject(mockCircularityData, "mass")
 
-    // Assert for volume-based calculations
-    // Expected calculations for circularityIndex with volume:
-    // Element 1: quantity = 2, volume = 0.1, CI = 0.8
-    // Element 2: quantity = 3, volume = 0.05, CI = 0.6
-    // Total volume = (2 * 0.1) + (3 * 0.05) = 0.2 + 0.15 = 0.35
-    // Weighted CI = ((2 * 0.1 * 0.8) + (3 * 0.05 * 0.6)) / 0.35 = (0.16 + 0.09) / 0.35 = 0.25 / 0.35 = 0.714...
-    expect(resultWithVolume.circularityIndex).toBeCloseTo(0.7143, 4)
-
     // Expected calculations for eolBuiltPoints with volume:
     // Element 1: quantity = 2, volume = 0.1, eolBuiltPoints = 0.7
     // Element 2: quantity = 3, volume = 0.05, eolBuiltPoints = 0.6
@@ -158,14 +148,6 @@ describe("calculateTotalMetricValuesForProject", () => {
     // Total volume = (2 * 0.1) + (3 * 0.05) = 0.2 + 0.15 = 0.35
     // Weighted dismantlingPoints = ((2 * 0.1 * 0.9) + (3 * 0.05 * 0.5)) / 0.35 = (0.18 + 0.075) / 0.35 = 0.255 / 0.35 = 0.729...
     expect(resultWithVolume.dismantlingPoints).toBeCloseTo(0.7286, 4)
-
-    // Assert for mass-based calculations
-    // Expected calculations for circularityIndex with mass:
-    // Element 1: quantity = 2, mass = 100, CI = 0.8
-    // Element 2: quantity = 3, mass = 50, CI = 0.6
-    // Total mass = (2 * 100) + (3 * 50) = 200 + 150 = 350
-    // Weighted CI = ((2 * 100 * 0.8) + (3 * 50 * 0.6)) / 350 = (160 + 90) / 350 = 250 / 350 = 0.714...
-    expect(resultWithMass.circularityIndex).toBeCloseTo(0.7143, 4)
 
     // Expected calculations for eolBuiltPoints with mass:
     // Element 1: quantity = 2, mass = 100, eolBuiltPoints = 0.7

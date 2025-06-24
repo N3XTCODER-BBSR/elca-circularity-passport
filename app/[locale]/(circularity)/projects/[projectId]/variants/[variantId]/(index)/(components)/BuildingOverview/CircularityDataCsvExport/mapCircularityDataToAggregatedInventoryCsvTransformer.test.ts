@@ -72,7 +72,6 @@ function createMockLayer(
     disturbingSubstanceSelections: [] as DisturbingSubstanceSelection[],
     disturbingEolScenarioForS4: null,
 
-    circularityIndex: 0.75,
     dismantlingPoints: 1,
     disturbingSubstances: {
       noDisturbingSubstancesOrOnlyNullClassesSelected: true,

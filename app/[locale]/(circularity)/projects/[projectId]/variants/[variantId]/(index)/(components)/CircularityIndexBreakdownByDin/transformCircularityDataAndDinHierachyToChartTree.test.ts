@@ -73,7 +73,6 @@ function createMockLayer(
     disturbingSubstanceSelections: [] as DisturbingSubstanceSelection[],
     disturbingEolScenarioForS4: null,
 
-    circularityIndex: 0.75,
     dismantlingPoints: 1,
     disturbingSubstances: {
       noDisturbingSubstancesOrOnlyNullClassesSelected: true,
@@ -98,9 +97,9 @@ const circularityData = [
     quantity: 2,
     unit: "m2",
     layers: [
-      createMockLayer({ element_name: "Fundament Layer A", mass: 100, circularityIndex: 0.75 }),
-      createMockLayer({ element_name: "Fundament Layer B", mass: 50, circularityIndex: 0.9 }),
-      createMockLayer({ element_name: "Fundament Layer C", mass: 50, circularityIndex: 0.6 }),
+      createMockLayer({ element_name: "Fundament Layer A", mass: 100 }),
+      createMockLayer({ element_name: "Fundament Layer B", mass: 50 }),
+      createMockLayer({ element_name: "Fundament Layer C", mass: 50 }),
     ],
   },
   {
@@ -111,8 +110,8 @@ const circularityData = [
     quantity: 3,
     unit: "m2",
     layers: [
-      createMockLayer({ element_name: "Außenstütze Layer A", din_code: 333, mass: 200, circularityIndex: 0.5 }),
-      createMockLayer({ element_name: "Außenstütze Layer B", din_code: 333, mass: 100, circularityIndex: 0.4 }),
+      createMockLayer({ element_name: "Außenstütze Layer A", din_code: 333, mass: 200 }),
+      createMockLayer({ element_name: "Außenstütze Layer B", din_code: 333, mass: 100 }),
     ],
   },
   {
@@ -122,7 +121,7 @@ const circularityData = [
     din_code: 341,
     quantity: 4,
     unit: "Stück",
-    layers: [createMockLayer({ element_name: "Innenwand Layer A", din_code: 341, mass: 80, circularityIndex: 0.8 })],
+    layers: [createMockLayer({ element_name: "Innenwand Layer A", din_code: 341, mass: 80 })],
   },
   {
     element_uuid: "17517962-b544-4433-b4bc-49aa101814ab",
@@ -132,8 +131,8 @@ const circularityData = [
     quantity: 5,
     unit: "m2",
     layers: [
-      createMockLayer({ element_name: "Außentür Layer A", din_code: 334, mass: 120, circularityIndex: 0.7 }),
-      createMockLayer({ element_name: "Außentür Layer B", din_code: 334, mass: 80, circularityIndex: 0.9 }),
+      createMockLayer({ element_name: "Außentür Layer A", din_code: 334, mass: 120 }),
+      createMockLayer({ element_name: "Außentür Layer B", din_code: 334, mass: 80 }),
     ],
   },
 ]
@@ -146,7 +145,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       singleCategoryData,
       "mass",
       "Single Category Project",
-      "circularityIndex",
+      "eolBuiltPoints",
       true
     )
     expect(root.label).toBe("Single Category Project")
@@ -158,7 +157,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
     expect(leaf.label).toBe("340: Innenwände") // From the real din276Hierarchy data
     // We expect the dimensionalValue = quantity(4) * mass(80) = 320
     expect(leaf.dimensionalValue).toBe(320)
-    expect(leaf.metricValue).toBe(0.8)
+    expect(leaf.metricValue).toBe(2)
   })
 
   test("handles scenario with no matching DIN codes (empty after filtering)", () => {
@@ -167,7 +166,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       noMatchData,
       "mass",
       "No Matches",
-      "circularityIndex",
+      "eolBuiltPoints",
       true
     )
     expect(root.label).toBe("No Matches")
@@ -175,22 +174,6 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
     expect((root as ChartDataInternalNode).children.length).toBe(0)
     expect(root.metricValue).toBe(0)
     expect(root.dimensionalValue).toBe(0)
-  })
-
-  test("handles layers with circularityIndex = null", () => {
-    const modifiedData = circularityData.map((d) => ({
-      ...d,
-      layers: d.layers.map((l) => ({ ...l, circularityIndex: null })),
-    }))
-    const root = transformCircularityDataAndDinHierachyToChartTree(
-      modifiedData,
-      "mass",
-      "Null Circularity",
-      "circularityIndex",
-      false
-    )
-    // Expect zero metric because null is treated as 0
-    expect(root.metricValue).toBe(0)
   })
 
   test("handles layers with zero mass", () => {
@@ -202,7 +185,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       zeroMassData,
       "mass",
       "Zero Mass Project",
-      "circularityIndex",
+      "eolBuiltPoints",
       false
     )
     // Expect no meaningful average if all masses are zero
@@ -215,34 +198,13 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       circularityData,
       "mass",
       "Multiple Categories Project",
-      "circularityIndex",
+      "eolBuiltPoints",
       true
     )
     // Expect multiple top-level categories, so no flattening:
     expect(root.label).toBe("Multiple Categories Project")
     const children = (root as ChartDataInternalNode).children
     expect(children.length).toBeGreaterThan(1)
-  })
-
-  test("handles a scenario where all layers have the same circularityIndex", () => {
-    const uniformIndexData = circularityData.map((d) => ({
-      ...d,
-      layers: d.layers.map((l) => ({ ...l, circularityIndex: 0.7 })),
-      quantity: 2,
-    }))
-    const root = transformCircularityDataAndDinHierachyToChartTree(
-      uniformIndexData,
-      "mass",
-      "Uniform Circularity",
-      "circularityIndex",
-      false
-    )
-    // If all are the same, the metricValue at top should match 0.7
-    expect(root.metricValue).toBeCloseTo(0.7)
-    const children = (root as ChartDataInternalNode).children
-    for (const child of children) {
-      expect(child.metricValue).toBeCloseTo(0.7)
-    }
   })
 
   /**
@@ -260,9 +222,9 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
         quantity: 1,
         unit: "m2",
         layers: [
-          createMockLayer({ element_name: "Layer 1", din_code: 331, mass: 10, circularityIndex: 0.9 }),
-          createMockLayer({ element_name: "Layer 2", din_code: 331, mass: 20, circularityIndex: 0.5 }),
-          createMockLayer({ element_name: "Layer 3", din_code: 331, mass: 15, circularityIndex: 0.75 }),
+          createMockLayer({ element_name: "Layer 1", din_code: 331, mass: 10 }),
+          createMockLayer({ element_name: "Layer 2", din_code: 331, mass: 20 }),
+          createMockLayer({ element_name: "Layer 3", din_code: 331, mass: 15 }),
         ],
       },
     ]
@@ -272,7 +234,7 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
       customData,
       "mass",
       "DupCheck Project",
-      "circularityIndex",
+      "eolBuiltPoints",
       false
     )
     expect(root.label).toBe("DupCheck Project")
@@ -300,6 +262,6 @@ describe("transformCircularityDataAndDinHierachyToChartTree", () => {
     // Now check the properties of this leaf
     const leaf = matchingLeaves[0]!
     expect(leaf.dimensionalValue).toBe(45)
-    expect(leaf.metricValue).toBeCloseTo(0.6722, 4)
+    expect(leaf.metricValue).toBeCloseTo(2, 4)
   })
 })

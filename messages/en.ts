@@ -213,7 +213,6 @@ const translationsGrpPlatformGeneric = {
         eolClass: "EOL Class",
         disturbingSubstanceNameUnspecified: "unspecified",
         dismantlingClass: "Dismantling Potential Class",
-        circularityIndex: "Circularity Index",
         eolPoints: "EOL Points",
         proofReuse: "Proof of Reuse",
         version: "Version",
@@ -311,7 +310,6 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
             cancel: "Cancel",
             save: "Save",
           },
-          circularityIndex: "Circularity Index",
           EolDataSection: {
             title: "Circularity Potential - Unbuilt",
             details: "Details",
@@ -441,7 +439,6 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           body: "The circularity index is calculated for building components in the cost groups: 320, 330, 340, 350 and 360. Please go to eLCA and add building components in one of these groups to get started, and ensure they are not excluded from the calculation.",
         },
         metricTypeSelectorOptions: {
-          circularityIndex: "Circularity index (ZI)",
           eolBuiltPoints: "Circularity potential (Z)",
           dismantlingPoints: "Dismantling potential (R)",
         },

@@ -130,11 +130,14 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
       className="mb-6 overflow-hidden border border-gray-200 bg-white p-6"
       data-testid={`component-layer__div__${layerData.component_id}`}
     >
-      {!currentLayerData.isExcluded && (!circulartyEnrichedLayerData.circularityIndex || !currentLayerData.volume) && (
-        <div className="mb-6 flex">
-          <Badge testId={layerData.component_id.toString()}>{layerTranslations("incomplete")}</Badge>
-        </div>
-      )}
+      {!currentLayerData.isExcluded &&
+        (!currentLayerData.volume ||
+          !circulartyEnrichedLayerData.dismantlingPoints ||
+          !circulartyEnrichedLayerData.eolBuilt?.points) && (
+          <div className="mb-6 flex">
+            <Badge testId={layerData.component_id.toString()}>{layerTranslations("incomplete")}</Badge>
+          </div>
+        )}
       <ProductHeader layerData={currentLayerData} layerNumber={layerNumber} refetchLayerData={refetchLayerData} />
       <Accordion transition transitionTimeout={200}>
         <AccordionItemFullSimple testId={layerData.component_id.toString()} header={<></>}>

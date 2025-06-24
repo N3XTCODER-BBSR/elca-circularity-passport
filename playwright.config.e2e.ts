@@ -34,6 +34,7 @@ export default defineConfig({
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
+  globalTimeout: 30 * 60 * 1000, // Increased global timeout to 30 minutes
   timeout: 120 * 1000,
   workers: 1,
   reporter: "html",
@@ -43,6 +44,9 @@ export default defineConfig({
   use: {
     baseURL: process.env.BASE_URL || "http://localhost:3000",
     trace: "on-first-retry",
+    // Add longer navigation timeout for slower setup
+    navigationTimeout: 60 * 1000,
+    actionTimeout: 30 * 1000,
   },
   projects: [
     {

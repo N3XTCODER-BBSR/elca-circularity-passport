@@ -22,7 +22,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { ArrowPathIcon, ExclamationTriangleIcon } from "@heroicons/react/20/solid"
+import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
@@ -31,15 +31,7 @@ import { useState } from "react"
 import toast from "react-hot-toast"
 import { twMerge } from "tailwind-merge"
 import { AccordionItemFull } from "app/(components)/generic/AccordionItem"
-import {
-  Area,
-  EditButton,
-  ErrorText,
-  Heading4,
-  Required,
-  StyledDd,
-  StyledDt,
-} from "app/(components)/generic/layout-elements"
+import { Area, EditButton, ErrorText, Heading4, Required } from "app/(components)/generic/layout-elements"
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { addOrUpdateDisturbingSubstanceSelection } from "app/[locale]/(circularity)/(server-actions)/addOrUpdateDisturbingSubstance"
 import { removeDisturbingSubstanceSelection } from "app/[locale]/(circularity)/(server-actions)/removeDisturbingSubstances"
@@ -340,27 +332,6 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
 
   return (
     <>
-      <Area>
-        <div className="flex flex-row justify-between">
-          {" "}
-          <StyledDt>
-            <h4 className="flex items-center" role="alert">
-              <div className="mr-2 flex size-8 items-center justify-center rounded-md bg-blue-500">
-                <ArrowPathIcon className="size-5 text-white" aria-hidden="true" />
-              </div>
-
-              <p className="">{circularityInfoTranslations("circularityIndex")}</p>
-            </h4>
-          </StyledDt>
-          <StyledDd justifyEnd>
-            <b>
-              {layerData.circularityIndex
-                ? format.number(layerData.circularityIndex, { maximumFractionDigits: 2 })
-                : "-"}
-            </b>
-          </StyledDd>
-        </div>
-      </Area>
       <Area>
         <div className="flex flex-row justify-between">
           <Heading4>
