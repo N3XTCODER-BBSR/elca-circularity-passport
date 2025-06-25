@@ -301,6 +301,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
   ]
 
   const [isEolScenarioModalOpen, setIsEolScenarioModalOpen] = useState(false)
+  const [isShowExamplesModalOpen, setIsShowExamplesModalOpen] = useState(false)
 
   const handleOpenEolScenarioModal = () => {
     setIsEolScenarioModalOpen(true)
@@ -341,7 +342,6 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
             <ErrorText className="mr-4">{circularityInfoTranslations("RebuildSection.error")}</ErrorText>
           )}
         </div>
-
         <div>
           <div className="isolate flex flex-wrap justify-center gap-4">
             {Object.entries(dismantlingPotentialClassIdMapping).map(([key, value]) => {
@@ -370,10 +370,49 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
               )
             })}
           </div>
-
+          <div className="mt-2 flex flex-row justify-start">
+            <button
+              type="button"
+              className="font-normal text-bbsr-blue-700 hover:text-bbsr-blue-800"
+              onClick={() => setIsShowExamplesModalOpen(true)}
+              data-testid="show-examples"
+            >
+              {circularityInfoTranslations("RebuildSection.showExamples")}
+            </button>
+          </div>
           <SideBySideDescriptionListsWithHeadline justifyEnd data={eolUnbuiltDataSecondary} className="md:border" />
         </div>
       </Area>
+      {isShowExamplesModalOpen && (
+        <Modal
+          onClose={() => setIsShowExamplesModalOpen(false)}
+          title={circularityInfoTranslations("RebuildSection.examplesModalTitle")}
+          isOpen={isShowExamplesModalOpen}
+          description={circularityInfoTranslations("RebuildSection.examplesModalIntro")}
+        >
+          <div className="flex flex-col gap-4">
+            {circularityInfoTranslations.raw("RebuildSection.examplesModalCards").map((card: any, idx: number) => {
+              const titleText = card.title
+              return (
+                <div key={idx} className="flex w-full flex-col rounded-lg border border-gray-200 bg-gray-50 p-4 shadow">
+                  <div className="mb-2 text-base font-semibold text-bbsr-blue-700">{titleText}</div>
+                  <div className="mb-2 text-sm font-medium text-gray-800">{card.criteriaLabel}</div>
+                  <div className="mb-2 text-sm font-medium text-gray-800">{card.criteria}</div>
+                  {card.examplesLabel && (
+                    <div className="mb-2 mt-3 text-xs font-semibold uppercase tracking-wide text-gray-600">
+                      {card.examplesLabel}
+                    </div>
+                  )}
+                  <div className="mb-4 text-sm font-semibold text-bbsr-blue-800">{card.examples}</div>
+                  <div className="mt-auto border-t border-gray-100 pt-2 text-xs font-medium text-gray-500">
+                    {card.note}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </Modal>
+      )}
       <EolDataSection layerDatacirculartyEnrichedLayerData={layerData} />
       <Area>
         <div className="flex flex-col justify-between">
