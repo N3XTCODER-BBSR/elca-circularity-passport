@@ -106,8 +106,7 @@ export const fillOutAllCircularityDetails = async (
     .locator("[data-testid=component-layer__div__14]")
     .locator("[data-testid=edit-button__button__tbaustoff-selector]")
     .click()
-  await page.locator("[data-testid=select-material-button__select]").selectOption({ value: "1" })
-
+  await page.locator(".max-h-64 div.cursor-pointer").first().click()
   await page.locator("[data-testid=select-material-save-button__button]").click()
 
   await page

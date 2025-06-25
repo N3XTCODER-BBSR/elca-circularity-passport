@@ -26,6 +26,7 @@ import csv from "csv-parser"
 import fs from "fs"
 import path from "path"
 import { cleanupTbsProductDefinitionDuplicates } from "./cleanupTbsProductDefinitionDuplicates"
+import { updateProcessCategoryNumbers } from "./updateProcessCategoryNumbers"
 
 import { TBs_ProductDefinitionEOLCategoryScenario } from "../generated/client"
 import { prisma } from "../prismaClient" // needs to be relative path
@@ -41,6 +42,7 @@ type CsvRow = {
   eolScenarioReal: string
   eolScenarioPotential: string
   technologyFactor: string
+  processCategoryNumber: string
 }
 async function readCsvFile(filePath: string): Promise<CsvRow[]> {
   const rows: CsvRow[] = []
@@ -159,6 +161,7 @@ async function seedCircularityTool() {
             name: row.tBaustoffName,
             tBs_version: "2024-Q4",
             tBs_ProductDefinitionEOLCategoryId: eolCategoryId,
+            processCategoryNumber: row.processCategoryNumber || null,
           },
         })
       }
@@ -213,6 +216,20 @@ async function main() {
     }
   } else {
     console.log("DELETE_DUPLICATES_FROM_TBAUSTOFF_MAPPING=false: Skipping tBaustoff duplicate cleanup script...")
+  }
+
+  // Optionally run process category number update if env var is set
+  if (process.env.UPDATE_PROCESS_CATEGORY_NUMBERS === "true") {
+    console.log("UPDATE_PROCESS_CATEGORY_NUMBERS=true: Running process category number update script...")
+    try {
+      await updateProcessCategoryNumbers()
+      console.log("Process category numbers update completed.")
+    } catch (e) {
+      console.error("Process category numbers update script failed. Aborting seeding.", e)
+      process.exit(1)
+    }
+  } else {
+    console.log("UPDATE_PROCESS_CATEGORY_NUMBERS=false: Skipping process category numbers update script...")
   }
 
   try {

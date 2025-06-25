@@ -55,6 +55,7 @@ import {
   HorizontalDescriptionItem,
 } from "./(components)/CircularityIndication"
 import HistoryBackButton from "./(components)/HistoryBackButton"
+import type { SelectOption } from "./(components)/layer-details/circularity-info/TBaustoffProductNameOrSelectorButton/types"
 import ComponentLayer from "./(components)/layer-details/ComponentLayer"
 
 const Page = async ({
@@ -102,6 +103,7 @@ const Page = async ({
     const availableTBaustoffProductIdAndNames = availableTBaustoffProducts.map((el) => ({
       id: `${el.id}`,
       value: el.name,
+      processCategory: el.processCategoryNumber ? { number: el.processCategoryNumber, name: "" } : null,
     }))
 
     const t = await getTranslations("Circularity.Components")
@@ -172,14 +174,8 @@ const ProductsList = ({
   products: EnrichedElcaElementComponent[]
   projectId: number
   variantId: number
-  availableTBaustoffProductIdAndNames: { id: string | number; value: string }[]
+  availableTBaustoffProductIdAndNames: SelectOption[]
 }) => {
-  // Convert the id to string to match the SelectOption type
-  const formattedProducts = availableTBaustoffProductIdAndNames.map((product) => ({
-    id: String(product.id),
-    value: product.value,
-  }))
-
   return (
     <ul>
       {products.map((product) => (
@@ -189,7 +185,7 @@ const ProductsList = ({
             variantId={variantId}
             layerData={product}
             layerNumber={product.layer_position}
-            tBaustoffProducts={formattedProducts}
+            tBaustoffProducts={availableTBaustoffProductIdAndNames}
           />
         </li>
       ))}

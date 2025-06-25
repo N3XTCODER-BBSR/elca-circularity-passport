@@ -45,12 +45,14 @@ export type PassportMetadata = Prisma.PassportGetPayload<{
 
 export class DbDal {
   getAvailableTBaustoffProducts = async () => {
-    return await prisma.tBs_ProductDefinition.findMany({
+    const results = await prisma.tBs_ProductDefinition.findMany({
       select: {
         id: true,
         name: true,
+        processCategoryNumber: true,
       },
     })
+    return results
   }
 
   getTBaustoffProducts = async (tBaustoffProductIds: number[]) => {

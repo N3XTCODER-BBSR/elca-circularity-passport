@@ -55,6 +55,7 @@ model TBs_ProductDefinition {
   id                                 Int                               @id @default(autoincrement())
   tBs_version                        String                            @map("tBaustoffVersion")
   name                               String
+  processCategoryNumber              String?
   tBs_ProductDefinitionEOLCategoryId Int?                              @map("tBaustoff_ProductEOLCategoryId")
   tBs_ProductDefinitionEOLCategory   TBs_ProductDefinitionEOLCategory? @relation(fields: [tBs_ProductDefinitionEOLCategoryId], references: [id])
   userEnrichedProductData            UserEnrichedProductData[]

@@ -101,14 +101,23 @@ export const createProductWithComponent = async (productId: number, componentId:
   })
 }
 
-export const createTBsProductDefinition = async (id: number) => {
+export const createTBsProductDefinition = async (
+  id: number,
+  name: string = "Acetyliertes Holz",
+  processCategoryNumber: string | null = null
+) => {
   return await prisma.tBs_ProductDefinition.create({
     data: {
       id,
       tBs_version: "2024-Q4",
-      name: "Acetyliertes Holz",
+      name,
+      processCategoryNumber,
     },
   })
+}
+
+export const truncateTBsProductDefinition = async () => {
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "TBs_ProductDefinition" RESTART IDENTITY CASCADE;')
 }
 
 export const createDisturbingSubstanceSelectionWithDependencies = async () => {

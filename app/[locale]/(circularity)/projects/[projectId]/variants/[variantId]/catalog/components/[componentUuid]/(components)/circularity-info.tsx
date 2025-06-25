@@ -203,7 +203,7 @@ const CircularityInfo = (props: CircularityInfoProps) => {
             <p className="mb-4">{error}</p>
             <button
               onClick={() => setError(null)}
-              className="mt-2 w-full rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+              className="mt-2 w-full rounded bg-bbsr-blue-500 px-4 py-2 text-white hover:bg-bbsr-blue-700"
             >
               Close
             </button>
@@ -255,7 +255,7 @@ const CircularityInfo = (props: CircularityInfoProps) => {
                     className={twMerge(
                       `relative flex min-w-[400px] items-center justify-center rounded-md px-4 py-4 text-sm font-semibold ring-1 ring-inset ring-gray-300 focus:z-10`,
                       key === props.layerData.dismantlingPotentialClassId
-                        ? "bg-indigo-500 text-white ring-indigo-500 hover:bg-indigo-600 "
+                        ? "bg-bbsr-blue-700 text-white ring-bbsr-blue-500 hover:bg-bbsr-blue-500 "
                         : "bg-white hover:bg-gray-50",
                       isDisabled ? "cursor-not-allowed bg-gray-200 hover:bg-gray-200" : "cursor-pointer"
                     )}
