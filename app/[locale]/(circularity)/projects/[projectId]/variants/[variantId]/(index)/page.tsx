@@ -27,6 +27,8 @@ import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { ensureVariantAccessible } from "app/[locale]/(circularity)/(utils)/ensureAccessible"
 import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/auth/ensureAuthorized"
+import { getProjectCircularityData } from "lib/domain-logic/circularity/misc/getProjectCircularityData"
+import { getAllProcessCategories } from "lib/domain-logic/circularity/process/getProcessCategories"
 import { getProjectById } from "lib/domain-logic/circularity/projects/getProjectById"
 import BuildingOverview from "./(components)/BuildingOverview/BuildingOverview"
 
@@ -43,7 +45,11 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
 
     await ensureVariantAccessible(variantId, projectId)
 
-    const projectInfo = await getProjectById(projectId)
+    const [projectInfo, circularityData, processCategories] = await Promise.all([
+      getProjectById(projectId),
+      getProjectCircularityData(variantId, projectId),
+      getAllProcessCategories(),
+    ])
 
     if (!projectInfo) {
       return <div>{t("projectNotFound")}</div>
@@ -54,7 +60,13 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
         <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
           <section className="dark:bg-gray-900">
             <div className="py-8">
-              <BuildingOverview projectName={projectInfo.name} projectId={projectInfo.id} variantId={variantId} />
+              <BuildingOverview
+                projectName={projectInfo.name}
+                projectId={projectInfo.id}
+                variantId={variantId}
+                initialCircularityData={circularityData}
+                processCategories={processCategories}
+              />
             </div>
           </section>
         </div>

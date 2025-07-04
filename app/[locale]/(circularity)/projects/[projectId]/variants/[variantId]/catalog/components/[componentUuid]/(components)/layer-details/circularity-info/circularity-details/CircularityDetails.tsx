@@ -25,7 +25,6 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
 import { useFormatter, useTranslations } from "next-intl"
 import { useState } from "react"
 import toast from "react-hot-toast"
@@ -165,13 +164,13 @@ type CircularityDetailsProps = {
   projectId: number
   variantId: number
   layerData: CalculateCircularityDataForLayerReturnType
+  componentUuid: string
 }
-const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDetailsProps) => {
+const CircularityDetails = ({ projectId, variantId, layerData, componentUuid }: CircularityDetailsProps) => {
   const circularityInfoTranslations = useTranslations("Circularity.Components.Layers.CircularityInfo")
   const t = useTranslations()
   const format = useFormatter()
   const queryClient = useQueryClient()
-  const router = useRouter()
 
   const updateDismantlingPotentialClassIdMutation = useMutation<void, Error, DismantlingPotentialClassId | null>({
     mutationFn: async (id: DismantlingPotentialClassId | null) => {
@@ -181,8 +180,8 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] })
-      router.refresh()
+      queryClient.invalidateQueries({ queryKey: ["componentData", projectId, variantId, componentUuid] })
+      queryClient.invalidateQueries({ queryKey: ["circularityData", projectId, variantId] })
     },
     onError: (error: Error) => {
       if (error instanceof CallServerActionError) {
@@ -208,7 +207,10 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
         throw new CallServerActionError(result.errorI18nKey)
       }
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["componentData", projectId, variantId, componentUuid] })
+      queryClient.invalidateQueries({ queryKey: ["circularityData", projectId, variantId] })
+    },
     onError: (error: Error) => {
       if (error instanceof CallServerActionError) {
         toast.error(t(error.errorI18nKey))
@@ -233,8 +235,8 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] })
-      router.refresh()
+      queryClient.invalidateQueries({ queryKey: ["componentData", projectId, variantId, componentUuid] })
+      queryClient.invalidateQueries({ queryKey: ["circularityData", projectId, variantId] })
     },
     onError: (error: Error) => {
       if (error instanceof CallServerActionError) {
@@ -251,8 +253,8 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] })
-      router.refresh()
+      queryClient.invalidateQueries({ queryKey: ["componentData", projectId, variantId, componentUuid] })
+      queryClient.invalidateQueries({ queryKey: ["circularityData", projectId, variantId] })
     },
     onError: (error: Error) => {
       if (error instanceof CallServerActionError) {
@@ -314,8 +316,7 @@ const CircularityDetails = ({ projectId, variantId, layerData }: CircularityDeta
   const handleSaveEolScenario = async (
     selectedEolScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined
   ) => {
-    await updateDisturbingEolScenarioForS4Mutation.mutate({ selectedEolScenario })
-    router.refresh()
+    updateDisturbingEolScenarioForS4Mutation.mutate({ selectedEolScenario })
     setIsEolScenarioModalOpen(false)
   }
 

@@ -25,7 +25,7 @@
 "use client"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import toast from "react-hot-toast"
@@ -153,6 +153,9 @@ const ModalPage2 = ({ layerData, handleCancel, handleSave, options }: ModalPage2
 const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ layerData }) => {
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo.EolDataSection.ModalPage2")
   const queryClient = useQueryClient()
+  const { projectId, variantId, componentUuid } = useParams()
+  const projectIdNumber = parseInt(projectId as string)
+  const variantIdNumber = parseInt(variantId as string)
 
   const updateSpecificEolScenarioMutation = useMutation<
     void,
@@ -174,7 +177,10 @@ const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ layerData
         throw new CallServerActionError(result.errorI18nKey)
       }
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["layerData", layerData.component_id] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["componentData", projectIdNumber, variantIdNumber, componentUuid] })
+      queryClient.invalidateQueries({ queryKey: ["circularityData", projectIdNumber, variantIdNumber] })
+    },
     onError: (error: unknown) => {
       if (error instanceof CallServerActionError) {
         toast.error(t(error.errorI18nKey))
@@ -189,7 +195,6 @@ const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ layerData
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalPage, setModalPage] = useState(1)
-  const router = useRouter()
 
   const handleNextModalPage = () => {
     setModalPage(2)
@@ -199,8 +204,7 @@ const EOLScenarioEditButton: React.FC<EOLScenarioEditButtonProps> = ({ layerData
     selectedScenario: TBs_ProductDefinitionEOLCategoryScenario | null | undefined,
     proofText: string
   ) => {
-    await updateSpecificEolScenarioMutation.mutate({ selectedEolScenario: selectedScenario, proofText })
-    router.refresh()
+    updateSpecificEolScenarioMutation.mutate({ selectedEolScenario: selectedScenario, proofText })
 
     setIsModalOpen(false)
     setModalPage(1)

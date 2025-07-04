@@ -30,7 +30,6 @@ import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/dom
 import { getElcaElementsForVariantId } from "lib/domain-logic/circularity/misc/getElcaElementsForProjectId"
 import { getProjectCircularityData } from "lib/domain-logic/circularity/misc/getProjectCircularityData"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { getComponentUuidsWithMissingCircularityData } from "lib/domain-logic/circularity/utils/getComponentsWithMissingCircularityData"
 import ProjectCatalog from "./(components)/ProjectCatalog"
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
@@ -54,9 +53,6 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
     const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
       await getProjectCircularityData(variantId, projectId)
 
-    const componentUuiddsWithMissingCircularityIndexForAnyProduct =
-      getComponentUuidsWithMissingCircularityData(circularityData)
-
     return (
       <div className="w-full">
         <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
@@ -66,9 +62,7 @@ const Page = async ({ params }: { params: { projectId: string; variantId: string
                 projectId={projectId}
                 variantId={variantId}
                 projectComponents={dataResult}
-                componentUuiddsWithMissingCircularityIndexForAnyProduct={
-                  componentUuiddsWithMissingCircularityIndexForAnyProduct
-                }
+                initialCircularityData={circularityData}
               />
             </div>
           </section>

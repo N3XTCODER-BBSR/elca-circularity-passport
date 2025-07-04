@@ -2,7 +2,7 @@
 
 import { useIsMutating, useMutation } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import toast from "react-hot-toast"
@@ -27,7 +27,10 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
   const circularityTranslations = useTranslations("Circularity.Components.Layers.CircularityInfo")
   const processCategoryTranslations = useTranslations("Common.processCategories")
   const t = useTranslations()
-  const router = useRouter()
+  const { projectId, variantId, componentUuid } = useParams()
+  const projectIdNumber = parseInt(projectId as string)
+  const variantIdNumber = parseInt(variantId as string)
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [focusedIndex, setFocusedIndex] = useState<number>(-1)
 
@@ -44,8 +47,8 @@ const SelectMaterialButton: React.FC<SelectMaterialButtonProps> = ({ circulartyE
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["layerData", circulartyEnrichedLayerData.component_id] })
-      router.refresh()
+      queryClient.invalidateQueries({ queryKey: ["componentData", projectIdNumber, variantIdNumber, componentUuid] })
+      queryClient.invalidateQueries({ queryKey: ["circularityData", projectIdNumber, variantIdNumber] })
       setIsModalOpen(false)
     },
     onError: (error: unknown) => {

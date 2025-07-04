@@ -30,6 +30,7 @@ import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
 import { ensureUserAuthorizationToElementComponent } from "lib/auth/ensureAuthorized"
 import { addOrUpdateDisturbingSubstance } from "lib/domain-logic/circularity/disturbingSubstances/manageDisturbingSubstances"
 import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/circularity/misc/domain-types"
+import { ensureProductAndVariantArePartOfProject } from "lib/domain-logic/circularity/misc/ensureProductIsPartOfProject"
 
 /**
  * Server action for adding or updating a disturbing substance selection
@@ -54,7 +55,10 @@ export async function addOrUpdateDisturbingSubstanceSelection(
     const userId = Number(session.user.id)
     await ensureUserAuthorizationToElementComponent(userId, productId)
 
+    // ensure that the product is part of the project
+    await ensureProductAndVariantArePartOfProject(productId, projectId, variantId)
+
     // Delegate to domain logic
-    return addOrUpdateDisturbingSubstance(productId, variantId, projectId, disturbingSubstanceSelectionWithNullableId)
+    await addOrUpdateDisturbingSubstance(productId, disturbingSubstanceSelectionWithNullableId)
   })
 }

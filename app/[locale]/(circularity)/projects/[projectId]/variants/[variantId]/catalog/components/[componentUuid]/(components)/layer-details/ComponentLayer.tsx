@@ -25,17 +25,14 @@
 "use client"
 
 import { Accordion } from "@szhsin/react-accordion"
-import { useQuery } from "@tanstack/react-query"
 import { useFormatter, useTranslations } from "next-intl"
 import { AccordionItemFullSimple } from "app/(components)/generic/AccordionItem"
 import { Badge } from "app/(components)/generic/layout-elements"
 import SideBySideDescriptionListsWithHeadline, {
   KeyValueTuple,
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
-import getElcaComponentDataByProductId from "app/[locale]/(circularity)/(server-actions)/getElcaComponentDataByProductId"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { CallServerActionError } from "lib/errors"
 import { SelectOption } from "lib/presentation-logic/helper-types"
 import CircularityInfo from "./circularity-info/CircularityInfo"
 import ProductHeader from "../ProductHeader"
@@ -46,33 +43,24 @@ type ComponentLayerProps = {
   layerData: EnrichedElcaElementComponent
   layerNumber: number
   tBaustoffProducts: SelectOption[]
+  componentUuid: string
 }
 
-const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustoffProducts }: ComponentLayerProps) => {
-  const layerDataQuery = useQuery({
-    queryKey: ["layerData", layerData.component_id],
-    queryFn: async () => {
-      const result = await getElcaComponentDataByProductId(variantId, projectId, layerData.component_id)
-
-      if (result.success) {
-        return result.data!
-      }
-
-      throw new CallServerActionError(result.errorI18nKey)
-    },
-    initialData: layerData,
-    staleTime: Infinity,
-  })
-
+const ComponentLayer = ({
+  projectId,
+  variantId,
+  layerData,
+  layerNumber,
+  tBaustoffProducts,
+  componentUuid,
+}: ComponentLayerProps) => {
   const unitsTranslations = useTranslations("Units")
   const layerTranslations = useTranslations("Circularity.Components.Layers")
   const format = useFormatter()
 
-  const { data: currentLayerData, refetch: refetchLayerData } = layerDataQuery
-
   // TODO: consider to do this calucation on the server side
   // (or at least be consistent with the other calculation in the conext of the overview page / project circularity index)
-  const circulartyEnrichedLayerData = calculateCircularityDataForLayer(currentLayerData)
+  const circulartyEnrichedLayerData = calculateCircularityDataForLayer(layerData)
 
   const layerKeyValues: KeyValueTuple[] = [
     // {
@@ -89,8 +77,8 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     // },
     {
       key: layerTranslations("mass"),
-      value: currentLayerData.mass
-        ? `${format.number(currentLayerData.mass, {
+      value: layerData.mass
+        ? `${format.number(layerData.mass, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
           })} ${unitsTranslations("Kg.short")}`
@@ -105,8 +93,8 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     {
       key: layerTranslations("volume"),
       value:
-        currentLayerData.volume != null
-          ? `${format.number(currentLayerData.volume, {
+        layerData.volume != null
+          ? `${format.number(layerData.volume, {
               minimumFractionDigits: 0,
               maximumFractionDigits: 2,
             })} m3`
@@ -116,12 +104,13 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
     },
   ]
 
-  const circularityInfo = currentLayerData.isExcluded ? null : (
+  const circularityInfo = layerData.isExcluded ? null : (
     <CircularityInfo
       layerData={circulartyEnrichedLayerData}
       tBaustoffProducts={tBaustoffProducts}
       projectId={projectId}
       variantId={variantId}
+      componentUuid={componentUuid}
     />
   )
 
@@ -130,15 +119,21 @@ const ComponentLayer = ({ projectId, variantId, layerData, layerNumber, tBaustof
       className="mb-6 overflow-hidden border border-gray-200 bg-white p-6"
       data-testid={`component-layer__div__${layerData.component_id}`}
     >
-      {!currentLayerData.isExcluded &&
-        (!currentLayerData.volume ||
+      {!layerData.isExcluded &&
+        (!layerData.volume ||
           !circulartyEnrichedLayerData.dismantlingPoints ||
           !circulartyEnrichedLayerData.eolBuilt?.points) && (
           <div className="mb-6 flex">
             <Badge testId={layerData.component_id.toString()}>{layerTranslations("incomplete")}</Badge>
           </div>
         )}
-      <ProductHeader layerData={currentLayerData} layerNumber={layerNumber} refetchLayerData={refetchLayerData} />
+      <ProductHeader
+        layerData={layerData}
+        layerNumber={layerNumber}
+        projectId={projectId}
+        variantId={variantId}
+        componentUuid={componentUuid}
+      />
       <Accordion transition transitionTimeout={200}>
         <AccordionItemFullSimple testId={layerData.component_id.toString()} header={<></>}>
           <div className="mt-8 overflow-hidden">

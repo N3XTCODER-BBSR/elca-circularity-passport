@@ -733,6 +733,22 @@ export class LegacyDbDal {
     })
   }
 
+  isProductPartOfProject = async (productId: number, projectId: number) => {
+    return await prismaLegacy.elca_element_components.findFirst({
+      where: {
+        id: productId,
+        elements: {
+          project_variants: {
+            projects_project_variants_project_idToprojects: {
+              id: projectId,
+            },
+          },
+        },
+      },
+      select: { id: true },
+    })
+  }
+
   getProcessDbUuidForProject = async (projectId: number): Promise<string | null> => {
     const project = await prismaLegacy.projects.findUnique({
       where: { id: projectId },

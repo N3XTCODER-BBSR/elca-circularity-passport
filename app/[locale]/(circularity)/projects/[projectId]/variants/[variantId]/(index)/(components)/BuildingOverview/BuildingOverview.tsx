@@ -22,15 +22,17 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
+"use client"
+
+import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
-import { getTranslations } from "next-intl/server"
+import { useTranslations } from "next-intl"
 import { FC } from "react"
 import { CtaButton } from "app/(components)/generic/CtaButton"
 import { NoComponentsMessage } from "app/(components)/NoComponentsMessage"
 import { DimensionalFieldName } from "lib/domain-logic/circularity/misc/domain-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
-import { getProjectCircularityData } from "lib/domain-logic/circularity/misc/getProjectCircularityData"
-import { getAllProcessCategories, ProcessCategory } from "lib/domain-logic/circularity/process/getProcessCategories"
+import { ProcessCategory } from "lib/domain-logic/circularity/process/getProcessCategories"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import {
   hasDismantlingPotentialMissingForAnyProduct,
@@ -40,8 +42,8 @@ import {
 import CircularityData from "./CircularityData"
 import MaterialCsvExportButton from "../CircularityIndexBreakdownByMaterialType/MaterialCsvExport/MaterialCsvExportButton"
 
-const MissingDataMessage: FC<{ catalogPath: string }> = async ({ catalogPath }) => {
-  const t = await getTranslations("CircularityTool.sections.overview")
+const MissingDataMessage: FC<{ catalogPath: string }> = ({ catalogPath }) => {
+  const t = useTranslations("CircularityTool.sections.overview")
 
   return (
     <div data-bg="gray" className="mx-64 flex-col items-center text-center">
@@ -65,20 +67,33 @@ type BuildingOverviewProps = {
   projectId: number
   projectName: string
   variantId: number
+  initialCircularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
+  processCategories: ProcessCategory[]
 }
 
-const BuildingOverview = async ({ projectId, projectName, variantId }: BuildingOverviewProps) => {
+const BuildingOverview = ({
+  projectId,
+  projectName,
+  variantId,
+  initialCircularityData,
+  processCategories,
+}: BuildingOverviewProps) => {
   const dimensionalFieldName: DimensionalFieldName = "volume"
-  const circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[] =
-    await getProjectCircularityData(variantId, projectId)
-  const processCategories: ProcessCategory[] = await getAllProcessCategories()
+  const { data: circularityData } = useQuery({
+    queryKey: ["circularityData", projectId, variantId],
+    queryFn: () =>
+      fetch(`/api/projects/${projectId}/variants/${variantId}/circularity-data`).then(
+        (res) => res.json() as Promise<ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]>
+      ),
+    initialData: initialCircularityData,
+  })
 
   const isVolumeMissingForAnyProduct = hasVolumeMissingForAnyProduct(circularityData)
 
   const noBuildingComponents = circularityData.length === 0
 
   const catalogPath = `/projects/${projectId}/variants/${variantId}/catalog`
-  const t = await getTranslations("CircularityTool.sections.overview")
+  const t = useTranslations("CircularityTool.sections.overview")
 
   const isDismantlingPotentialMissingForAnyProduct = hasDismantlingPotentialMissingForAnyProduct(circularityData)
   const isEolBuiltMissingForAnyProduct = hasEolBuiltMissingForAnyProduct(circularityData)

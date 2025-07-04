@@ -36,6 +36,7 @@ type CircularityInfoProps = {
   variantId: number
   layerData: CalculateCircularityDataForLayerReturnType
   tBaustoffProducts: SelectOption[]
+  componentUuid: string
 }
 
 const CircularityInfo = (props: CircularityInfoProps) => {
@@ -68,6 +69,7 @@ const CircularityInfo = (props: CircularityInfoProps) => {
           layerData={circulartyEnrichedLayerData}
           variantId={props.variantId}
           projectId={props.projectId}
+          componentUuid={props.componentUuid}
         />
       )}
     </div>

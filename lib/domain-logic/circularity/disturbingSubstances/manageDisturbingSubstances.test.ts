@@ -26,6 +26,7 @@
 import { DisturbingSubstanceClassId } from "prisma/generated/client"
 import { resetDb, seedDb } from "tests/utils"
 import { addOrUpdateDisturbingSubstance } from "./manageDisturbingSubstances"
+import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 
 describe("addOrUpdateDisturbingSubstance", () => {
   const productId = 5
@@ -51,12 +52,9 @@ describe("addOrUpdateDisturbingSubstance", () => {
       disturbingSubstanceName: "",
     }
 
-    let enrichedProductData = await addOrUpdateDisturbingSubstance(
-      productId,
-      variantId,
-      projectId,
-      newDisturbingSubstanceSelection
-    )
+    await addOrUpdateDisturbingSubstance(productId, newDisturbingSubstanceSelection)
+
+    let enrichedProductData = await fetchElcaComponentById(productId, variantId, projectId)
 
     expect(enrichedProductData.disturbingSubstanceSelections).toMatchObject([
       {
@@ -75,12 +73,9 @@ describe("addOrUpdateDisturbingSubstance", () => {
       disturbingSubstanceName: "",
     }
 
-    enrichedProductData = await addOrUpdateDisturbingSubstance(
-      productId,
-      variantId,
-      projectId,
-      removeDisturbingSubstanceSelection
-    )
+    await addOrUpdateDisturbingSubstance(productId, removeDisturbingSubstanceSelection)
+
+    enrichedProductData = await fetchElcaComponentById(productId, variantId, projectId)
 
     expect(enrichedProductData.disturbingSubstanceSelections).toMatchObject([
       {

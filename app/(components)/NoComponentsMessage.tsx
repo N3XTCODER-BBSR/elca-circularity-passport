@@ -22,6 +22,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
+"use client"
+
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 

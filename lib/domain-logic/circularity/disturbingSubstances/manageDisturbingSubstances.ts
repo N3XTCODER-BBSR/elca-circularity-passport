@@ -26,7 +26,6 @@
 import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/circularity/misc/domain-types"
 import { DisturbingSubstanceClassId, Prisma, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
-import { fetchElcaComponentById } from "../utils/getElcaComponentDataByLayerIdAndUserId"
 
 /**
  * Deletes a disturbing substance selection by its ID
@@ -121,8 +120,6 @@ export async function deleteDisturbingSubstanceSelectionsByLayerId(layerId: numb
  */
 export async function addOrUpdateDisturbingSubstance(
   productId: number,
-  variantId: number,
-  projectId: number,
   disturbingSubstanceSelectionWithNullableId: DisturbingSubstanceSelectionWithNullabelId
 ) {
   // Initialize or update user-enriched product data
@@ -172,7 +169,4 @@ export async function addOrUpdateDisturbingSubstance(
   if (disturbingSubstances.length === 0) {
     await updateUserEnrichedProductDataDisturbingEolScenario(productId)
   }
-
-  // Return the updated component data
-  return fetchElcaComponentById(productId, variantId, projectId)
 }

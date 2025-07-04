@@ -142,7 +142,7 @@ describe("preloadCircularityData", () => {
   it("should preload the circularity data with user enriched data", async () => {
     await updateProductTBaustoffAndRemoveDisturbingSubstances(5, 3)
     await upsertUserEnrichedProductDataByLayerId(5, DismantlingPotentialClassId.II)
-    await addOrUpdateDisturbingSubstance(5, 1, 1, {
+    await addOrUpdateDisturbingSubstance(5, {
       id: null,
       userEnrichedProductDataElcaElementComponentId: 5,
       disturbingSubstanceClassId: DisturbingSubstanceClassId.S2,

@@ -203,7 +203,7 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
       })
     })
 
-    it("returns DB error errorI18nKey user is project owner but variant is not part of project", async () => {
+    it("returns DB error errorI18nKey if user is project owner but variant is not part of project", async () => {
       const mockSession = createMockSession(user1Id)
       ;(ensureUserIsAuthenticated as jest.Mock).mockResolvedValue(mockSession)
 
@@ -215,7 +215,7 @@ describe("addOrUpdateDisturbingSubstanceSelection", () => {
           product1Id,
           disturbingSubstanceSelection
         )
-      ).resolves.toMatchObject({ errorI18nKey: "errors.db", success: false })
+      ).resolves.toMatchObject({ errorI18nKey: "errors.unauthorized", success: false })
     })
 
     it("it returns unauthorized errorI18nKey if user is project owner but product id is not part of project", async () => {

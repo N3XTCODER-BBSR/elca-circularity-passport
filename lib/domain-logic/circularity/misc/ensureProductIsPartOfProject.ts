@@ -22,19 +22,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { DbDal } from "./db"
-import { LegacyDbDal } from "./legacyDb"
-import { buildDalProxyInstance } from "./utils"
 
-declare global {
-  var __legacyDbDalInstance: LegacyDbDal | null
-  var __dbDalInstance: DbDal | null
+import { ensureVariantAccessible } from "app/[locale]/(circularity)/(utils)/ensureAccessible"
+import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
+
+/**
+ * Ensures that a product (element component) belongs to the specified project
+ */
+export async function ensureProductAndVariantArePartOfProject(productId: number, projectId: number, variantId: number) {
+  // First check if the variant belongs to the project
+  await ensureVariantAccessible(variantId, projectId)
+
+  // Then check if the product belongs to the project
+  const product = await legacyDbDalInstance.isProductPartOfProject(productId, projectId)
+  if (!product) {
+    throw new Error(`Product ${productId} is not part of project ${projectId}`)
+  }
 }
-
-const _legacyDbDalInstance = globalThis.__legacyDbDalInstance ?? buildDalProxyInstance(new LegacyDbDal())
-const _dbDalInstance = globalThis.__dbDalInstance ?? buildDalProxyInstance(new DbDal())
-
-globalThis.__legacyDbDalInstance = _legacyDbDalInstance
-globalThis.__dbDalInstance = _dbDalInstance
-
-export { _legacyDbDalInstance as legacyDbDalInstance, _dbDalInstance as dbDalInstance }

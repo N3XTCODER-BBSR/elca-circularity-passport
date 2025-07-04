@@ -22,19 +22,38 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { DbDal } from "./db"
-import { LegacyDbDal } from "./legacyDb"
-import { buildDalProxyInstance } from "./utils"
 
-declare global {
-  var __legacyDbDalInstance: LegacyDbDal | null
-  var __dbDalInstance: DbDal | null
+import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
+import { SelectOption } from "lib/presentation-logic/helper-types"
+import ComponentLayer from "./layer-details/ComponentLayer"
+
+export const ProductsList = ({
+  products,
+  projectId,
+  variantId,
+  availableTBaustoffProductIdAndNames,
+  componentUuid,
+}: {
+  products: EnrichedElcaElementComponent[]
+  projectId: number
+  variantId: number
+  availableTBaustoffProductIdAndNames: SelectOption[]
+  componentUuid: string
+}) => {
+  return (
+    <ul>
+      {products.map((product) => (
+        <li key={product.component_id}>
+          <ComponentLayer
+            componentUuid={componentUuid}
+            projectId={projectId}
+            variantId={variantId}
+            layerData={product}
+            layerNumber={product.layer_position}
+            tBaustoffProducts={availableTBaustoffProductIdAndNames}
+          />
+        </li>
+      ))}
+    </ul>
+  )
 }
-
-const _legacyDbDalInstance = globalThis.__legacyDbDalInstance ?? buildDalProxyInstance(new LegacyDbDal())
-const _dbDalInstance = globalThis.__dbDalInstance ?? buildDalProxyInstance(new DbDal())
-
-globalThis.__legacyDbDalInstance = _legacyDbDalInstance
-globalThis.__dbDalInstance = _dbDalInstance
-
-export { _legacyDbDalInstance as legacyDbDalInstance, _dbDalInstance as dbDalInstance }

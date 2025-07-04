@@ -24,11 +24,10 @@
  */
 "use client"
 
-import { QueryObserverResult, RefetchOptions, useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import { useFormatter, useTranslations } from "next-intl"
-import { FC } from "react"
+import { useState } from "react"
 import toast from "react-hot-toast"
 import Toggle from "app/(components)/generic/Toggle"
 import { toggleExcludedProduct } from "app/[locale]/(circularity)/(server-actions)/toggleExcludedProduct"
@@ -45,18 +44,22 @@ import {
   HorizontalDescriptionItem,
 } from "./CircularityIndication"
 
-const ProductHeader: FC<{
+type ProductHeaderProps = {
   layerData: EnrichedElcaElementComponent
   layerNumber: number
-  refetchLayerData: (options?: RefetchOptions) => Promise<QueryObserverResult<EnrichedElcaElementComponent, Error>>
-}> = ({ layerData, layerNumber, refetchLayerData }) => {
+  projectId: number
+  variantId: number
+  componentUuid: string
+}
+
+const ProductHeader = ({ layerData, layerNumber, projectId, variantId, componentUuid }: ProductHeaderProps) => {
   const t = useTranslations()
   const layerTranslations = useTranslations("Circularity.Components.Layers")
   const productTranslations = useTranslations("Circularity.Components.Layers.headers")
   const metricsTranslations = useTranslations("Circularity.Components.Layers.headers.metrics")
   const format = useFormatter()
-
-  const router = useRouter()
+  const queryClient = useQueryClient()
+  const [refetching, setRefetching] = useState(false)
 
   const updateExcludedProductMutation = useMutation({
     mutationFn: async (productId: number) => {
@@ -66,8 +69,12 @@ const ProductHeader: FC<{
       }
     },
     onSuccess: async () => {
-      await refetchLayerData()
-      router.refresh()
+      setRefetching(true)
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["componentData", projectId, variantId, componentUuid] }),
+        queryClient.invalidateQueries({ queryKey: ["circularityData", projectId, variantId] }),
+      ])
+      setRefetching(false)
     },
     onError: (error: Error) => {
       if (error instanceof CallServerActionError) {
@@ -80,9 +87,8 @@ const ProductHeader: FC<{
     updateExcludedProductMutation.mutate(layerData.component_id)
   }
 
-  const optimisticProductIsExcluded = updateExcludedProductMutation.isPending
-    ? !layerData.isExcluded
-    : layerData.isExcluded
+  const optimisticProductIsExcluded =
+    updateExcludedProductMutation.isPending || refetching ? !layerData.isExcluded : layerData.isExcluded
 
   const circulartyEnrichedLayerData = calculateCircularityDataForLayer(layerData)
 
@@ -102,7 +108,7 @@ const ProductHeader: FC<{
         <div className="flex items-center gap-1 text-sm font-medium leading-5 sm:gap-2">
           <div>{layerTranslations("excludedFromCalculation")}</div>
           <Toggle
-            disabled={updateExcludedProductMutation.isPending}
+            disabled={updateExcludedProductMutation.isPending || refetching}
             testId={layerData.component_id.toString()}
             isEnabled={optimisticProductIsExcluded}
             setEnabled={setProductIsExcluded}

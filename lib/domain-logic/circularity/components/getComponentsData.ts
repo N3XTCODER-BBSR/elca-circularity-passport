@@ -24,6 +24,9 @@
  */
 
 import { dbDalInstance, legacyDbDalInstance } from "prisma/queries/dalSingletons"
+import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "../misc/domain-types"
+import { getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId } from "../misc/getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId"
+import { preloadCircularityData } from "../misc/preloadCircularityData"
 
 /**
  * Type representing the base data for an ELCA variant element
@@ -74,4 +77,35 @@ export async function getElcaVariantComponentsByInstanceId(
  */
 export async function getAvailableTBaustoffProducts() {
   return dbDalInstance.getAvailableTBaustoffProducts()
+}
+
+/**
+ * Retrieves the data for a component by its UUID, variant ID, and project ID.
+ *
+ * @param componentUuid The UUID of the component
+ * @param variantId The ID of the variant
+ * @param projectId The ID of the project
+ * @returns The data for the component
+ */
+export async function getComponentData(componentUuid: string, variantId: number, projectId: number) {
+  // Get element base data
+  const elementBaseData = await getElcaVariantElementBaseDataByUuid(componentUuid, variantId, projectId)
+
+  // Get component data
+  const projectComponents = await getElcaVariantComponentsByInstanceId(elementBaseData.uuid, variantId, projectId)
+
+  const preloadedData = await preloadCircularityData(projectComponents, projectId)
+
+  const componentData: ElcaElementWithComponents<EnrichedElcaElementComponent> =
+    await getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId(
+      elementBaseData,
+      projectComponents,
+      preloadedData.excludedProductIdsSet,
+      preloadedData.userEnrichedMap,
+      preloadedData.tBaustoffMappingEntriesMap,
+      preloadedData.tBaustoffProductMap,
+      preloadedData.productMassMap
+    )
+
+  return componentData
 }

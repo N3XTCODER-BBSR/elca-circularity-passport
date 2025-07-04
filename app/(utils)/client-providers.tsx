@@ -30,7 +30,16 @@ import { SessionProvider } from "next-auth/react"
 import React from "react"
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const [queryClient] = React.useState(() => new QueryClient())
+  const [queryClient] = React.useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 5 * 60 * 1000, // 5 minutes
+          },
+        },
+      })
+  )
 
   return (
     <SessionProvider>

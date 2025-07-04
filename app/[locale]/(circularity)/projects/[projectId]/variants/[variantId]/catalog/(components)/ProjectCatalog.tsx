@@ -23,11 +23,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 "use client"
+import { useQuery } from "@tanstack/react-query"
 import _ from "lodash"
 import { useTranslations } from "next-intl"
 import ComponentsTree from "app/(components)/ComponentsTree"
 import { NoComponentsMessage } from "app/(components)/NoComponentsMessage"
+import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { ElcaProjectElementRow } from "lib/domain-logic/circularity/misc/getElcaElementsForProjectId"
+import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { getComponentUuidsWithMissingCircularityData } from "lib/domain-logic/circularity/utils/getComponentsWithMissingCircularityData"
 import { costGroupCategoryNumbersToInclude } from "lib/domain-logic/grp/data-schema/versions/v1/din276Mapping"
 import { ComponentWithBasicFields } from "lib/domain-logic/shared/basic-types"
 
@@ -35,19 +39,26 @@ type ProjectCatalogProps = {
   projectId: number
   projectComponents: ElcaProjectElementRow[]
   variantId: number
-  componentUuiddsWithMissingCircularityIndexForAnyProduct: string[]
+  initialCircularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
 }
-const ProjectCatalog = ({
-  projectId,
-  variantId,
-  projectComponents,
-  componentUuiddsWithMissingCircularityIndexForAnyProduct,
-}: ProjectCatalogProps) => {
+const ProjectCatalog = ({ projectId, variantId, projectComponents, initialCircularityData }: ProjectCatalogProps) => {
+  const { data: circularityData } = useQuery({
+    queryKey: ["circularityData", projectId, variantId],
+    queryFn: () =>
+      fetch(`/api/projects/${projectId}/variants/${variantId}/circularity-data`).then(
+        (res) => res.json() as Promise<ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]>
+      ),
+    initialData: initialCircularityData,
+  })
+
   const componentWithBasicFields: ComponentWithBasicFields[] = projectComponents.map((el) => ({
     dinComponentLevelNumber: parseInt(el.din_code),
     name: el.element_name,
     uuid: el.element_uuid,
   }))
+
+  const componentUuiddsWithMissingCircularityIndexForAnyProduct =
+    getComponentUuidsWithMissingCircularityData(circularityData)
 
   const componentWithBasicFieldsUnique = _.uniqBy(componentWithBasicFields, "uuid")
 
