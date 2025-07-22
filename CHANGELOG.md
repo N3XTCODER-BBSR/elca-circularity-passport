@@ -1,3 +1,36 @@
+## [Release 0.3.6] - 2025-07-22
+
+### Added
+
+- Error page for passports that do not conform to schema (passport and passport/catalog pages)
+- New function: `getProjectsThatUserHasAccessTo` and integration in project pages
+- Search filter for tbaustoff in catalog
+- Dismantling potential examples and related UI
+- New UI components: ComponentsDescription, MaterialCategorySelector, SelectMaterialButton, ProductsList, ProjectPassports, and more
+- New test files and expanded test coverage for CSV export utilities, circularity data, and inventory transformers
+- Added new utility hooks and improved error handling across the app
+
+### Changed
+
+- Major updates to CSV export utilities, including new dismantling potential remark field
+- Improved accessibility and UI/UX refinements throughout the app
+- Updated translation files for de, en, and es
+- Refactored and reorganized several modules for better maintainability
+
+### Fixed
+
+- State management fix on component page
+- Bug fixes and performance improvements in BuildingOverview, CircularityInfo, and other key components
+- Resolved minor typing and linting issues
+- Local E2E test reliability and timeout adjustments
+
+### Chore
+
+- Updated dependencies and configuration files
+- Improved E2E and unit test reliability
+
+---
+
 ## [Release 0.3.5] - 2025-06-10
 
 ### Fixed
