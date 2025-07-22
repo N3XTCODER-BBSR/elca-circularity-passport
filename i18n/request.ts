@@ -22,33 +22,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import withBundleAnalyzer from "@next/bundle-analyzer"
-import withPlugins from "next-compose-plugins"
-import createNextIntlPlugin from 'next-intl/plugin';
-import { env } from "./env.mjs"
+import { notFound } from "next/navigation"
+import { getRequestConfig } from "next-intl/server"
+import { routing } from "./routing"
 
+export default getRequestConfig(async ({ locale }) => {
+  // Validate that the incoming `locale` parameter is valid
+  if (!routing.locales.includes(locale as any)) notFound()
 
-const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
- 
-/**
- * @type {import('next').NextConfig}
- */
-const config = withPlugins([[withBundleAnalyzer({ enabled: env.ANALYZE })]], {
-  reactStrictMode: true,
-  logging: {
-    fetches: {
-      fullUrl: true,
-    },
-  },
-  experimental: { instrumentationHook: true },
-  rewrites() {
-    return [
-      { source: "/healthz", destination: "/api/health" },
-      { source: "/api/healthz", destination: "/api/health" },
-      { source: "/health", destination: "/api/health" },
-      { source: "/ping", destination: "/api/health" },
-    ]
-  },
+  return {
+    messages: (await import(`../messages/${locale}.ts`)).default,
+  }
 })
-
-export default withNextIntl(config)

@@ -88,6 +88,7 @@ export const getElcaElementDetailsAndComponentsByComponentInstanceIdAndUserId = 
       isExcluded: excludedProductIdsSet.has(component.component_id),
       tBaustoffProductData,
       dismantlingPotentialClassId: userDefinedData?.dismantlingPotentialClassId,
+      dismantlingPotentialClassRemark: userDefinedData?.dismantlingPotentialClassRemark,
       tBaustoffProductSelectedByUser: userDefinedData?.tBaustoffProductSelectedByUser,
       eolUnbuiltSpecificScenario: userDefinedData?.specificEolUnbuiltTotalScenario,
       eolUnbuiltSpecificScenarioProofText: userDefinedData?.specificEolUnbuiltTotalScenarioProofText,

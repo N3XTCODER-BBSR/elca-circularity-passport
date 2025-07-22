@@ -69,7 +69,7 @@ export class DbDal {
   }
 
   getUserDefinedTBaustoffData = async (componentIds: number[]) => {
-    return await prisma.userEnrichedProductData.findMany({
+    const result = await prisma.userEnrichedProductData.findMany({
       where: {
         elcaElementComponentId: {
           in: componentIds,
@@ -79,6 +79,7 @@ export class DbDal {
         selectedDisturbingSubstances: true,
       },
     })
+    return result
   }
 
   getExcludedProductIds = async (productIds: number[]) => {
@@ -132,17 +133,29 @@ export class DbDal {
     selectedDismantlingPotentialClassId: DismantlingPotentialClassId | null
   ) => {
     return await prisma.userEnrichedProductData.upsert({
-      // TODO (XL): IMPORTANT: add checks here for:
-      // 1. user has access to the project and layer
-      // 2. that there is not already a match found by the OBD-tBaustoff mapping
-      // 3. if the layerId exists in the database
       where: { elcaElementComponentId: layerId },
       update: {
         dismantlingPotentialClassId: selectedDismantlingPotentialClassId,
+        // If we're setting the class to null, also clear the remark
+        ...(selectedDismantlingPotentialClassId === null ? { dismantlingPotentialClassRemark: null } : {}),
       },
       create: {
         elcaElementComponentId: layerId,
         dismantlingPotentialClassId: selectedDismantlingPotentialClassId,
+        tBaustoffProductSelectedByUser: false,
+      },
+    })
+  }
+
+  upsertUserEnrichedProductDataWithDismantlingRemark = async (layerId: number, remark: string | null) => {
+    return await prisma.userEnrichedProductData.upsert({
+      where: { elcaElementComponentId: layerId },
+      update: {
+        dismantlingPotentialClassRemark: remark,
+      },
+      create: {
+        elcaElementComponentId: layerId,
+        dismantlingPotentialClassRemark: remark,
         tBaustoffProductSelectedByUser: false,
       },
     })
@@ -274,7 +287,7 @@ export class DbDal {
   }
 
   getUserDefinedTBaustoffDataForComponentId = async (componentId: number) => {
-    return await prisma.userEnrichedProductData.findUnique({
+    const result = await prisma.userEnrichedProductData.findUnique({
       where: {
         elcaElementComponentId: componentId,
       },
@@ -282,6 +295,7 @@ export class DbDal {
         selectedDisturbingSubstances: true,
       },
     })
+    return result
   }
 
   getTBaustoffMappingEntry = async (oekobaudatProcessUuid: string, oekobaudatProcessDbUuid: string) => {

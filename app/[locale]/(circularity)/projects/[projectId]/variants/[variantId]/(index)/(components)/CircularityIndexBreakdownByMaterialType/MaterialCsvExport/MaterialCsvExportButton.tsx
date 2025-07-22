@@ -50,6 +50,7 @@ export type MaterialNode = {
 type MaterialCsvExportProps = {
   catalogPath: string
   projectName: string
+  projectId: number
   processCategories: ProcessCategory[]
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
 }
@@ -70,30 +71,56 @@ export default function MaterialCsvExportButton(props: MaterialCsvExportProps) {
 
   // Map of field names to their translation keys
   const fieldTranslations: Record<string, string> = {
-    processName: tFields("processName"),
-    buildingComponent: tComponents("name"),
+    // Component Data
+    layerNumber: tFields("layerNumber"),
+    componentName: tComponents("name"),
     amount: tFields("amount"),
     unit: tFields("unit"),
-    tBaustoffMaterial: tCircularity("tBaustoffMaterial"),
+    buildingMaterialComponent: tFields("buildingMaterialComponent"),
+    componentId: tFields("componentId"),
+    componentUuid: tFields("componentUuid"),
+
+    // Base Data
+    tBuildingMaterial: tCircularity("tBaustoffMaterial"),
     thickness: tFields("thickness"),
-    share: tFields("share"),
+    volumeSharePercent: tFields("volumeShare"),
     volumePerUnit: tFields("volumePerUnit"),
     massPerUnit: tFields("massPerUnit"),
-    eolClassBuilt: tEolBuilt("class"),
-    eolPointsBuilt: tEolBuilt("points"),
+
+    // Circularity Potential - Unbuilt
+    eolScenarioReal: tFields("eolScenarioReal"),
+    eolScenarioPotential: tFields("eolScenarioPotential"),
+    technologyFactor: tFields("tf"),
+    eolScenarioSpecific: tFields("eolScenarioSpecific"),
+    explanationUnbuilt: tFields("explanationUnbuilt"),
     eolClassUnbuilt: tEolUnbuiltClass("class"),
     eolPointsUnbuilt: tEolUnbuiltPoints("points"),
-    rebuildClass: tRebuild("rebuildClass"),
-    rebuildPoints: tRebuild("rebuildPoints"),
-    elementUuid: tFields("componentUuid"),
-    componentId: tFields("componentId"),
+    manualValuesUnbuilt: tFields("manualValuesUnbuilt"),
+
+    // Dismantling Potential
+    dismantlingPotentialClass: tRebuild("rebuildClass"),
+    dismantlingPotentialPoints: tRebuild("rebuildPoints"),
+    manualValuesDismantling: tFields("manualValuesDismantling"),
+
+    // Material Compatibility
     materialCompatibilityClass: tFields("materialCompatibilityClass"),
-    materialCompatibilityPoints: tFields("materialCompatibilityPoints"),
+    materialExplanation: tFields("materialExplanation"),
+    newClassification: tFields("newClassification"),
+    manualValuesMaterial: tFields("manualValuesMaterial"),
+
+    // Circularity Potential - Built
+    eolClassBuilt: tEolBuilt("class"),
+    eolPointsBuilt: tEolBuilt("points"),
   }
 
   const generateAndDownloadCsv = () => {
-    const csvContent = mapCircularityDataToMaterialCsvTransformer(props.circularityData, fieldTranslations)
-    downloadCsvFile(generateCsvFilename(props.projectName, "Zirkulaeritaetsinventar"), csvContent)
+    const csvBuffer = mapCircularityDataToMaterialCsvTransformer(
+      props.circularityData,
+      fieldTranslations,
+      props.projectId
+    )
+    const filename = generateCsvFilename(props.projectName, "Zirkulaeritaetsinventar")
+    downloadCsvFile(filename, csvBuffer)
   }
 
   return (

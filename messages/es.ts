@@ -367,6 +367,8 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
             examplesModalContent: "Aquí puede encontrar ejemplos de clases de potencial de desmontaje y su aplicación.",
             examplesModalIntro:
               "La elección de la clase de desmontaje depende del tipo de conexión, accesibilidad y posibles contaminaciones. La siguiente visión general ofrece ejemplos típicos.",
+            remarkLabel: "Observaciones adicionales (opcional)",
+            remarkPlaceholder: "Ingrese cualquier observación adicional sobre el potencial de desmontaje",
             examplesModalCards: [
               {
                 title: "I – Desmontable sin destrucción",
@@ -508,7 +510,7 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           },
         },
         materialExport: {
-          exportMaterialsToCsv: "Exportar (csv)",
+          exportMaterialsToCsv: "Exportar inventario de circularidad (CSV)",
           fields: {
             componentUuid: "UUID del componente",
             volumePerUnit: "Volumen (m3) por unidad",
@@ -521,6 +523,19 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
             componentId: "ID del componente",
             materialCompatibilityClass: "Clase de compatibilidad",
             materialCompatibilityPoints: "Puntos de compatibilidad",
+            layerNumber: "Número de capa",
+            buildingMaterialComponent: "Material de construcción/Componente/Producto",
+            volumeShare: "Proporción de volumen en %",
+            eolScenarioReal: "Escenario EOL (Real)",
+            eolScenarioPotential: "Escenario EOL (Potencial)",
+            tf: "TF",
+            eolScenarioSpecific: "Escenario EOL (Específico)",
+            explanationUnbuilt: "Explicación",
+            manualValuesUnbuilt: "Valores/selección ingresados manualmente",
+            manualValuesDismantling: "Valores/selección ingresados manualmente",
+            materialExplanation: "Explicación",
+            newClassification: "Nueva clasificación",
+            manualValuesMaterial: "Valores/selección ingresados manualmente",
           },
         },
         aggregatedInventoryExport: {

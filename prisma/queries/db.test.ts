@@ -23,6 +23,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { dbDalInstance } from "./dalSingletons"
+import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 
 describe("db queries", () => {
   describe("excluded product queries", () => {
@@ -71,6 +72,113 @@ describe("db queries", () => {
 
       expect(result).toHaveLength(want.length)
       expect(result).toMatchObject(want)
+    })
+  })
+
+  describe("upsertUserEnrichedProductDataWithDismantlingRemark", () => {
+    const layerId = 1
+    const remark = "Test remark"
+
+    beforeEach(async () => {
+      await dbDalInstance.truncateExcludedProductTable() // Using existing truncate method as example
+    })
+
+    it("should create a new record with remark when record does not exist", async () => {
+      // Act
+      const result = await dbDalInstance.upsertUserEnrichedProductDataWithDismantlingRemark(layerId, remark)
+
+      // Assert
+      expect(result).toMatchObject({
+        elcaElementComponentId: layerId,
+        dismantlingPotentialClassRemark: remark,
+        tBaustoffProductSelectedByUser: false,
+      })
+
+      // Verify in database
+      const dbRecord = await dbDalInstance.getUserDefinedTBaustoffDataForComponentId(layerId)
+      expect(dbRecord).toMatchObject({
+        elcaElementComponentId: layerId,
+        dismantlingPotentialClassRemark: remark,
+        tBaustoffProductSelectedByUser: false,
+      })
+    })
+
+    it("should update existing record with new remark", async () => {
+      // Arrange
+      await dbDalInstance.upsertUserEnrichedProductDataWithDismantlingRemark(layerId, "Old remark")
+
+      // Act
+      const result = await dbDalInstance.upsertUserEnrichedProductDataWithDismantlingRemark(layerId, remark)
+
+      // Assert
+      expect(result).toMatchObject({
+        elcaElementComponentId: layerId,
+        dismantlingPotentialClassRemark: remark,
+        tBaustoffProductSelectedByUser: false,
+      })
+
+      // Verify in database
+      const dbRecord = await dbDalInstance.getUserDefinedTBaustoffDataForComponentId(layerId)
+      expect(dbRecord).toMatchObject({
+        elcaElementComponentId: layerId,
+        dismantlingPotentialClassRemark: remark,
+        tBaustoffProductSelectedByUser: false,
+      })
+    })
+
+    it("should clear remark when null is passed", async () => {
+      // Arrange
+      await dbDalInstance.upsertUserEnrichedProductDataWithDismantlingRemark(layerId, "Existing remark")
+
+      // Act
+      const result = await dbDalInstance.upsertUserEnrichedProductDataWithDismantlingRemark(layerId, null)
+
+      // Assert
+      expect(result).toMatchObject({
+        elcaElementComponentId: layerId,
+        dismantlingPotentialClassRemark: null,
+        tBaustoffProductSelectedByUser: false,
+      })
+
+      // Verify in database
+      const dbRecord = await dbDalInstance.getUserDefinedTBaustoffDataForComponentId(layerId)
+      expect(dbRecord).toMatchObject({
+        elcaElementComponentId: layerId,
+        dismantlingPotentialClassRemark: null,
+        tBaustoffProductSelectedByUser: false,
+      })
+    })
+
+    it("should preserve other fields when updating remark", async () => {
+      // Arrange - First create a record with other fields set
+      await dbDalInstance.upsertUserEnrichedProductDataByLayerId(layerId, "II")
+      await dbDalInstance.upsertUserEnrichedProductDataWithEolScenario(
+        layerId,
+        TBs_ProductDefinitionEOLCategoryScenario.WV,
+        "proof text"
+      )
+
+      // Act
+      const result = await dbDalInstance.upsertUserEnrichedProductDataWithDismantlingRemark(layerId, remark)
+
+      // Assert
+      expect(result).toMatchObject({
+        elcaElementComponentId: layerId,
+        dismantlingPotentialClassRemark: remark,
+        dismantlingPotentialClassId: "II",
+        specificEolUnbuiltTotalScenario: TBs_ProductDefinitionEOLCategoryScenario.WV,
+        tBaustoffProductSelectedByUser: false,
+      })
+
+      // Verify in database
+      const dbRecord = await dbDalInstance.getUserDefinedTBaustoffDataForComponentId(layerId)
+      expect(dbRecord).toMatchObject({
+        elcaElementComponentId: layerId,
+        dismantlingPotentialClassRemark: remark,
+        dismantlingPotentialClassId: "II",
+        specificEolUnbuiltTotalScenario: TBs_ProductDefinitionEOLCategoryScenario.WV,
+        tBaustoffProductSelectedByUser: false,
+      })
     })
   })
 })

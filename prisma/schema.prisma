@@ -136,6 +136,7 @@ model UserEnrichedProductData {
   specificEolUnbuiltTotalScenarioProofText String?
 
   dismantlingPotentialClassId DismantlingPotentialClassId?
+  dismantlingPotentialClassRemark String?
 
   selectedDisturbingSubstances           DisturbingSubstanceSelection[]
   disturbingEolScenarioForS4             TBs_ProductDefinitionEOLCategoryScenario?

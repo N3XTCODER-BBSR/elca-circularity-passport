@@ -57,12 +57,14 @@ test.describe("Login Page", () => {
     // Submit the form
     await page.click('button[type="submit"]')
 
-    // // Expect to be redirected to the projects page
-    await page.waitForNavigation() // Or use waitForURL() as suggested before
+    // Wait for navigation and loading
+    await page.waitForNavigation()
 
-    // Check that the heading 'Your Projects' is visible
-    const heading = await page.locator("h3")
-    await expect(heading).toHaveText("Your Projects")
+    // Wait for the heading to be visible and check its text
+    // Using a longer timeout since this involves auth, navigation and data loading
+    const heading = page.locator("h3.text-2xl")
+    await expect(heading).toBeVisible({ timeout: 10000 })
+    await expect(heading).toHaveText(/Your Projects|Ihre Projekte/, { timeout: 10000 }) // Accept both English and German translations
   })
 
   // TODO: Fix this test

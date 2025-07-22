@@ -94,6 +94,7 @@ export type EnrichedElcaElementComponent = ElcaProjectComponentRow & {
   tBaustoffProductSelectedByUser?: boolean
   tBaustoffProductData?: TBaustoffProductData | null
   dismantlingPotentialClassId?: DismantlingPotentialClassId | null
+  dismantlingPotentialClassRemark?: string | null
   eolUnbuiltSpecificScenario?: TBs_ProductDefinitionEOLCategoryScenario | null
   eolUnbuiltSpecificScenarioProofText: string | null | undefined
   disturbingSubstanceSelections: DisturbingSubstanceSelection[]

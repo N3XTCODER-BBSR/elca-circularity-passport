@@ -40,15 +40,27 @@ export function getDisturbingSubstancesString(layerData: EnrichedElcaElementComp
     : "-"
 }
 
+export type MaterialCompatibilityResult = number | "NEUEINST." | null
+
 /**
  * Calculates the material compatibility of a component layer
  * @param layerData The enriched element component data
- * @returns The material compatibility or null if not available
+ * @returns The material compatibility points, "NEUEINST." if S4 substance is present, or null if not available
  */
-export function calculateMaterialCompatibility(layerData: CalculateCircularityDataForLayerReturnType): number | null {
-  const materialCompatibility =
-    layerData.eolBuilt?.points != null && layerData.eolUnbuilt?.points != null
-      ? layerData.eolBuilt?.points - layerData.eolUnbuilt?.points
-      : null
-  return materialCompatibility
+export function calculateMaterialCompatibility(
+  layerData: CalculateCircularityDataForLayerReturnType
+): MaterialCompatibilityResult {
+  // If either points are missing, return null
+  if (layerData.eolBuilt?.points == null || layerData.eolUnbuilt?.points == null) {
+    return null
+  }
+
+  // Check for S4 substance - if present, return "NEUEINST."
+  const hasS4Substance = layerData.disturbingSubstanceSelections.some((s) => s.disturbingSubstanceClassId === "S4")
+  if (hasS4Substance) {
+    return "NEUEINST."
+  }
+
+  // Calculate the difference between eolBuilt and eolUnbuilt points
+  return layerData.eolBuilt.points - layerData.eolUnbuilt.points
 }

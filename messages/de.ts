@@ -364,6 +364,8 @@ const translationsPlattformGeneric = {
             examplesModalContent: "Hier finden Sie Beispiele für Rückbaupotenzialklassen und deren Anwendung.",
             examplesModalIntro:
               "Die Wahl der Rückbauklasse hängt von der Art der Verbindung, Zugänglichkeit und etwaigen Verunreinigungen ab. Die folgende Übersicht bietet typische Beispiele.",
+            remarkLabel: "Zusätzliche Anmerkungen (optional)",
+            remarkPlaceholder: "Geben Sie hier zusätzliche Anmerkungen zum Rückbaupotenzial ein",
             examplesModalCards: [
               {
                 title: "I – Zerstörungsfrei rückbaubar",
@@ -496,7 +498,7 @@ const translationsPlattformGeneric = {
           total: "Total",
         },
         materialExport: {
-          exportMaterialsToCsv: "Exportieren (csv)",
+          exportMaterialsToCsv: "Zirkularitätsinventar exportieren (CSV)",
           fields: {
             componentUuid: "Komponenten-UUID",
             volumePerUnit: "Volume (m3) pro Einheit",
@@ -509,6 +511,19 @@ const translationsPlattformGeneric = {
             componentId: "Komponenten-ID",
             materialCompatibilityClass: "Materialverträglichkeit Klasse",
             materialCompatibilityPoints: "Materialverträglichkeit Punkte",
+            layerNumber: "Schicht-nummer",
+            buildingMaterialComponent: "Baumaterial/Komponente/Bauprodukt",
+            volumeShare: "Anteil in Vol-%",
+            eolScenarioReal: "EOL Szenario (Real)",
+            eolScenarioPotential: "EOL Szenario (Potenzial)",
+            tf: "TF",
+            eolScenarioSpecific: "EOL-Szenario (Spezifisch)",
+            explanationUnbuilt: "Erläuterung",
+            manualValuesUnbuilt: "Manuell eingetragene Werte/Auswahl",
+            manualValuesDismantling: "Manuell eingetragene Werte/Auswahl",
+            materialExplanation: "Erläuterung",
+            newClassification: "Neuein-stufung",
+            manualValuesMaterial: "Manuell eingetragene Werte/Auswahl",
           },
         },
       },

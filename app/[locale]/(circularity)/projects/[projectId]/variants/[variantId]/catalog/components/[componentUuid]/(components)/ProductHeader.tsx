@@ -91,8 +91,13 @@ const ProductHeader = ({ layerData, layerNumber, projectId, variantId, component
     updateExcludedProductMutation.isPending || refetching ? !layerData.isExcluded : layerData.isExcluded
 
   const circulartyEnrichedLayerData = calculateCircularityDataForLayer(layerData)
-
   const materialCompatibility = calculateMaterialCompatibility(circulartyEnrichedLayerData)
+  const materialCompatibilityDisplay =
+    materialCompatibility !== null
+      ? typeof materialCompatibility === "number"
+        ? format.number(materialCompatibility, { maximumFractionDigits: 2 })
+        : materialCompatibility
+      : "-"
 
   const disturbingSubstancesClassStr = getDisturbingSubstancesString(layerData)
 
@@ -157,10 +162,7 @@ const ProductHeader = ({ layerData, layerNumber, projectId, variantId, component
           labelValuePairs={[
             {
               label: metricsTranslations("points"),
-              value:
-                materialCompatibility !== null
-                  ? format.number(materialCompatibility, { maximumFractionDigits: 2 })
-                  : "-",
+              value: materialCompatibilityDisplay,
             },
             { label: metricsTranslations("class"), value: disturbingSubstancesClassStr },
           ]}

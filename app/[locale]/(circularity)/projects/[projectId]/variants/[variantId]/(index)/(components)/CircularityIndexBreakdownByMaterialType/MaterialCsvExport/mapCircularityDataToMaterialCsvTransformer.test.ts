@@ -26,8 +26,17 @@ import {
   CalculateCircularityDataForLayerReturnType,
   SpecificOrTotal,
 } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { DismantlingPotentialClassId, DisturbingSubstanceSelection } from "prisma/generated/client"
+import {
+  DismantlingPotentialClassId,
+  DisturbingSubstanceClassId,
+  DisturbingSubstanceSelection,
+  TBs_ProductDefinitionEOLCategoryScenario,
+} from "prisma/generated/client"
 import { mapCircularityDataToMaterialCsvTransformer } from "./mapCircularityDataToMaterialCsvTransformer"
+import { createReadStream } from "fs"
+import { Readable } from "stream"
+import csv from "csv-parser"
+import iconv from "iconv-lite"
 
 /**
  * Helper to create a mock layer object for testing.
@@ -41,6 +50,8 @@ function createMockLayer(
     layer_position: 0,
     is_layer: true,
     process_name: "mock-process",
+    productUnit: "m2",
+    productQuantity: 1,
     oekobaudat_process_uuid: undefined,
     pdb_name: undefined,
     pdb_version: null,
@@ -60,9 +71,11 @@ function createMockLayer(
     mass: 100,
     volume: 0.5,
     isExcluded: false,
+    isLayer: true,
     tBaustoffProductSelectedByUser: false,
     tBaustoffProductData: { name: "Test Material", tBaustoffProductId: 123 },
     dismantlingPotentialClassId: DismantlingPotentialClassId.II,
+    dismantlingPotentialClassRemark: "",
     eolUnbuiltSpecificScenario: null,
     eolUnbuiltSpecificScenarioProofText: null,
     disturbingSubstanceSelections: [] as DisturbingSubstanceSelection[],
@@ -76,6 +89,16 @@ function createMockLayer(
     eolUnbuilt: { points: 3, className: "Class A", specificOrTotal: SpecificOrTotal.Specific },
     eolBuilt: { points: 2, className: "Class B" },
     layer_area_ratio: 0.8,
+
+    // Use the mapped values from the schema
+    eolScenarioReal: "RC+",
+    eolScenarioPotential: "EV-",
+    technologyFactor: 0.75,
+    manuallyEnteredValues: {
+      eolUnbuilt: false,
+      dismantling: true,
+      materialCompatibility: false,
+    },
     ...overrides,
   } as CalculateCircularityDataForLayerReturnType
 }
@@ -94,11 +117,33 @@ const mockCircularityData = [
         element_name: "Wall Layer 1",
         process_name: "Concrete",
         mass: 150,
+        disturbingSubstanceSelections: [
+          {
+            id: 1,
+            userEnrichedProductDataElcaElementComponentId: 1,
+            disturbingSubstanceClassId: DisturbingSubstanceClassId.S3,
+            disturbingSubstanceName: "Test Substance",
+          },
+        ],
+        disturbingSubstances: {
+          noDisturbingSubstancesOrOnlyNullClassesSelected: false,
+          hasS4DisturbingSubstance: false,
+        },
+        manuallyEnteredValues: {
+          eolUnbuilt: false,
+          dismantling: true,
+          materialCompatibility: true,
+        },
       }),
       createMockLayer({
         element_name: "Wall Layer 2",
         process_name: "Insulation",
         mass: 50,
+        manuallyEnteredValues: {
+          eolUnbuilt: false,
+          dismantling: false, // Set to false to get "-" instead of "MANUELL"
+          materialCompatibility: false,
+        },
       }),
     ],
   },
@@ -140,32 +185,257 @@ const mockTranslations = {
   elementUuid: "Element UUID",
 }
 
+// Constants for CSV strings (ISO-8859-15 encoded characters)
+const CSV_STRINGS = {
+  // Main headers
+  COMPONENT_DATA: '"Bauteilkomponenten-Daten"',
+  LAYER_DATA: '"Schichten der Bauteilkomponente"',
+  BASE_DATA: '"Basisdaten / Einheit (mÂ², m, StÃŒck) je Bauteilschicht"',
+  CIRCULARITY_UNBUILT: '"ZirkularitÃ€tspotenzial - Unverbaut"',
+  DISMANTLING_POTENTIAL: '"RÃŒckbaupotential"',
+  MATERIAL_COMPATIBILITY: '"MaterialvertrÃ€glichkeit"',
+  CIRCULARITY_BUILT: '"ZirkularitÃ€tspotenzial - Verbaut (Final)"',
+
+  // Subheaders
+  LAYER_NUMBER: '"Schichtnummer"',
+  COMPONENT: '"Bauteilkomponente"',
+  AMOUNT: '"Menge"',
+  UNIT: '"Einheit"',
+  DIN_276: '"KG DIN 276"',
+  COMPONENT_UUID: '"Komponenten-UUID"',
+  BUILDING_MATERIAL: `"Baustoff (${String.fromCharCode(195)}${String.fromCharCode(150)}BD)"`, // Fixed encoding
+  T_BUILDING_MATERIAL: '"tBaustoff"',
+  MANUAL_VALUES: '"Manuell eingetragene Werte/Auswahl"',
+  THICKNESS: '"Dicke [mm]"',
+  VOLUME_SHARE: '"Anteil in Vol-%"',
+  VOLUME_PER_UNIT: '"Volumen [mÂ³/Einheit]"',
+  MASS_PER_UNIT: '"Masse [kg/Einheit]"',
+  EOL_SCENARIO_REAL: '"EOL Szenario (Real)"',
+  EOL_SCENARIO_POTENTIAL: '"EOL Szenario (Potenzial)"',
+  TECHNOLOGY_FACTOR: '"TF"',
+  EOL_SCENARIO_SPECIFIC: '"EOL-Szenario (Spezifisch)"',
+  EXPLANATION: '"ErlÃ€uterung"',
+  EOL_CLASS: '"EOL Klasse"',
+  EOL_POINTS: '"EOL Punkte"',
+  POINTS: '"Punkte"',
+  DISMANTLING_CLASS: '"RÃŒckbaupotenzial Klasse"',
+  DISMANTLING_POINTS: '"RÃŒckbaupotenzial Punkte"',
+  DISMANTLING_REMARK: '"Hinweis"',
+  MATERIAL_CLASS: '"MaterialvertrÃ€glichkeit Klasse"',
+  RECLASSIFICATION: '"Neueinstufung"',
+} as const
+
+// Helper function to decode ISO-8859-15 buffer to string
+const decodeCsvBuffer = (buffer: Buffer): string => {
+  return iconv.decode(buffer, "iso-8859-15")
+}
+
 describe("circularityDataToCsvTransformer", () => {
+  const TEST_PROJECT_ID = 42403
+
   describe("mapCircularityDataToCsv", () => {
-    test("transforms circularity data to CSV format with translated headers", () => {
-      const csv = mapCircularityDataToMaterialCsvTransformer(mockCircularityData, mockTranslations)
+    test("creates CSV with correct header structure", () => {
+      const csv = mapCircularityDataToMaterialCsvTransformer(mockCircularityData, mockTranslations, TEST_PROJECT_ID)
+      const csvString = decodeCsvBuffer(csv)
+      const rows = csvString.split("\n")
 
-      // Check that CSV contains header row with translated field names
-      expect(
-        csv.startsWith("Process Name,Component Name,Amount,Unit,Material,Thickness,Share,Volume per Unit,Mass per Unit")
-      ).toBeTruthy()
+      // Ensure we have at least the project ID row, empty row, headers, and data
+      expect(rows.length).toBeGreaterThanOrEqual(4)
 
-      // Check that CSV contains the expected number of rows (header + 3 data rows)
-      const rows = csv.split("\n")
-      expect(rows.length).toBe(4) // 1 header row + 3 data rows
+      // Check project ID row
+      expect(rows[0]?.split(";")).toEqual([
+        '"eLCA Projekt-ID"',
+        `"${TEST_PROJECT_ID}"`,
+        ...Array(29).fill('""'), // Fill remaining columns with empty strings
+      ])
 
-      // Check that specific data values are present in the CSV
-      expect(csv).toContain("Concrete,Wall Component")
-      expect(csv).toContain("Insulation,Wall Component")
-      expect(csv).toContain("Wood,Floor Component")
+      // Check empty row
+      expect(rows[1]?.split(";")).toEqual(Array(31).fill('""'))
+
+      // Check main header row structure (now at index 2)
+      expect(rows[2]?.split(";")).toEqual([
+        CSV_STRINGS.COMPONENT_DATA,
+        '""',
+        '""',
+        '""',
+        '""',
+        '""',
+        CSV_STRINGS.LAYER_DATA,
+        '""',
+        '""',
+        CSV_STRINGS.BASE_DATA,
+        '""',
+        '""',
+        '""',
+        CSV_STRINGS.CIRCULARITY_UNBUILT,
+        '""',
+        '""',
+        '""',
+        '""',
+        '""',
+        '""',
+        '""',
+        CSV_STRINGS.DISMANTLING_POTENTIAL,
+        '""',
+        '""',
+        '""',
+        CSV_STRINGS.MATERIAL_COMPATIBILITY,
+        '""',
+        '""',
+        '""',
+        '""',
+        CSV_STRINGS.CIRCULARITY_BUILT,
+        '""',
+      ])
+
+      // Check subheader row structure (now at index 3)
+      expect(rows[3]?.split(";")).toEqual([
+        CSV_STRINGS.LAYER_NUMBER,
+        CSV_STRINGS.COMPONENT,
+        CSV_STRINGS.AMOUNT,
+        CSV_STRINGS.UNIT,
+        CSV_STRINGS.DIN_276,
+        CSV_STRINGS.COMPONENT_UUID,
+        CSV_STRINGS.BUILDING_MATERIAL,
+        CSV_STRINGS.T_BUILDING_MATERIAL,
+        CSV_STRINGS.MANUAL_VALUES,
+        CSV_STRINGS.THICKNESS,
+        CSV_STRINGS.VOLUME_SHARE,
+        CSV_STRINGS.VOLUME_PER_UNIT,
+        CSV_STRINGS.MASS_PER_UNIT,
+        CSV_STRINGS.EOL_SCENARIO_REAL,
+        CSV_STRINGS.EOL_SCENARIO_POTENTIAL,
+        CSV_STRINGS.TECHNOLOGY_FACTOR,
+        CSV_STRINGS.EOL_SCENARIO_SPECIFIC,
+        CSV_STRINGS.EXPLANATION,
+        CSV_STRINGS.EOL_CLASS,
+        CSV_STRINGS.EOL_POINTS,
+        CSV_STRINGS.MANUAL_VALUES,
+        CSV_STRINGS.DISMANTLING_CLASS,
+        CSV_STRINGS.DISMANTLING_POINTS,
+        CSV_STRINGS.DISMANTLING_REMARK,
+        CSV_STRINGS.MANUAL_VALUES,
+        CSV_STRINGS.MATERIAL_CLASS,
+        CSV_STRINGS.EXPLANATION,
+        CSV_STRINGS.POINTS,
+        CSV_STRINGS.RECLASSIFICATION,
+        CSV_STRINGS.MANUAL_VALUES,
+        CSV_STRINGS.EOL_CLASS,
+        CSV_STRINGS.EOL_POINTS,
+      ])
+
+      // Check first data row (now at index 4)
+      const dataRows = rows.slice(4)
+      const firstRow = dataRows[0]?.split(";")
+      expect(firstRow).toBeDefined()
+      expect(firstRow).toEqual([
+        '"0"', // schichtNummer
+        '"Wall Component"', // bauteilkomponente
+        '"2"', // menge
+        '"m2"', // einheit
+        '"331"', // kgDin276
+        '"mock-element-uuid"', // komponentenUuid
+        '"Concrete"', // baustoffOebd
+        '"Test Material"', // tBaustoff
+        '""', // manuelleWerteTBaustoff
+        '"100"', // dicke
+        '"80"', // anteilInVolProz
+        '"0.5"', // volumenProEinheit
+        '"150"', // masseProEinheit
+        '"RC+"', // eolSzenarioReal
+        '"EV-"', // eolSzenarioPotenzial
+        '"0.75"', // tf
+        '""', // eolSzenarioSpezifisch
+        '""', // erlaeuterungUnbuilt
+        '"Class A"', // eolKlasseUnbuilt
+        '"3"', // eolPunkteUnbuilt
+        '""', // manuelleWerteUnbuilt
+        '"II"', // rueckbaupotenzialKlasse
+        '"1"', // rueckbaupotenzialPunkte
+        '""', // hinweis
+        '"MANUELL"', // manuelleWerteDismantling
+        '"S3"', // materialvertraeglichkeitKlasse
+        '"Test Substance"', // erlaeuterungMaterial
+        '"-1"', // punkte
+        '""', // neueinstufung
+        '"MANUELL"', // manuelleWerteMaterial
+        '"Class B"', // eolKlasseBuilt
+        '"2"', // eolPunkteBuilt
+      ])
+
+      // Check second row to ensure it still has "-" for no disturbing substances
+      const secondRow = dataRows[1]?.split(";")
+      expect(secondRow).toBeDefined()
+      expect(secondRow?.[25]).toBe('"-"') // materialvertraeglichkeitKlasse should be "-"
+    })
+
+    test("transforms circularity data to CSV format with correct data mapping", () => {
+      const csv = mapCircularityDataToMaterialCsvTransformer(mockCircularityData, mockTranslations, TEST_PROJECT_ID)
+      const csvString = decodeCsvBuffer(csv)
+      const rows = csvString.split("\n")
+
+      // Get the data rows (skip project ID, empty row, and headers)
+      const dataRows = rows.slice(4)
+
+      // Verify we have at least two data rows
+      expect(dataRows.length).toBeGreaterThanOrEqual(2)
+
+      // Check first data row (Concrete layer)
+      const firstRow = dataRows[0]?.split(";")
+      expect(firstRow).toBeDefined()
+      expect(firstRow).toEqual([
+        '"0"', // schichtNummer (layer_position)
+        '"Wall Component"', // bauteilname
+        '"2"', // menge
+        '"m2"', // einheit
+        '"331"', // kgDin276
+        '"mock-element-uuid"', // komponentenUuid
+        '"Concrete"', // baustoffOebd
+        '"Test Material"', // tBaustoff
+        '""', // manuelleWerteTBaustoff
+        '"100"', // dicke
+        '"80"', // anteilInVolProz
+        '"0.5"', // volumenProEinheit
+        '"150"', // masseProEinheit
+        '"RC+"', // eolSzenarioReal
+        '"EV-"', // eolSzenarioPotenzial
+        '"0.75"', // tf
+        '""', // eolSzenarioSpezifisch
+        '""', // erlaeuterungUnbuilt
+        '"Class A"', // eolKlasseUnbuilt
+        '"3"', // eolPunkteUnbuilt
+        '""', // manuelleWerteUnbuilt
+        '"II"', // rueckbaupotenzialKlasse
+        '"1"', // rueckbaupotenzialPunkte
+        '""', // hinweis
+        '"MANUELL"', // manuelleWerteDismantling
+        '"S3"', // materialvertraeglichkeitKlasse
+        '"Test Substance"', // erlaeuterungMaterial
+        '"-1"', // punkte
+        '""', // neueinstufung
+        '"MANUELL"', // manuelleWerteMaterial
+        '"Class B"', // eolKlasseBuilt
+        '"2"', // eolPunkteBuilt
+      ])
+
+      // Check second data row (Insulation layer)
+      const secondRow = dataRows[1]?.split(";")
+      expect(secondRow).toBeDefined()
+      expect(secondRow![6]).toBe('"Insulation"') // baustoffOebd
     })
 
     test("handles empty circularity data", () => {
       const emptyData: typeof mockCircularityData = []
-      const csv = mapCircularityDataToMaterialCsvTransformer(emptyData, mockTranslations)
+      const csv = mapCircularityDataToMaterialCsvTransformer(emptyData, mockTranslations, TEST_PROJECT_ID)
+      const csvString = decodeCsvBuffer(csv)
+      const rows = csvString.split("\n") as string[]
 
-      // Should return an empty string for empty data
-      expect(csv).toBe("")
+      expect(rows).toHaveLength(4) // Project ID row, empty row, and two header rows
+      expect(rows[0]).toContain('"eLCA Projekt-ID"') // Project ID header exists
+      expect(rows[0]).toContain(`"${TEST_PROJECT_ID}"`) // Project ID value exists
+      expect(rows[1]).toBe(rows[1]?.split(";").fill('""').join(";")) // Empty row
+      expect(rows[2]).toBeTruthy() // Main header exists
+      expect(rows[3]).toBeTruthy() // Subheader exists
     })
 
     test("handles circularity data with no layers", () => {
@@ -181,50 +451,319 @@ describe("circularityDataToCsvTransformer", () => {
         },
       ]
 
-      const csv = mapCircularityDataToMaterialCsvTransformer(dataWithNoLayers, mockTranslations)
+      const csv = mapCircularityDataToMaterialCsvTransformer(dataWithNoLayers, mockTranslations, TEST_PROJECT_ID)
+      const csvString = decodeCsvBuffer(csv)
+      const rows = csvString.split("\n") as string[]
 
-      // Should return an empty string when there are no layers
-      expect(csv).toBe("")
+      expect(rows).toHaveLength(4) // Project ID row, empty row, and two header rows
+      expect(rows[0]).toContain('"eLCA Projekt-ID"') // Project ID header exists
+      expect(rows[0]).toContain(`"${TEST_PROJECT_ID}"`) // Project ID value exists
+      expect(rows[1]).toBe(rows[1]?.split(";").fill('""').join(";")) // Empty row
+      expect(rows[2]).toBeTruthy() // Main header exists
+      expect(rows[3]).toBeTruthy() // Subheader exists
     })
 
-    test("properly escapes values containing commas", () => {
-      const dataWithCommas: typeof mockCircularityData = [
+    test("properly escapes values containing semicolons", async () => {
+      const mockDataWithSemicolons = [
         {
           element_uuid: "element-1",
-          element_name: "Wall, with comma",
+          element_name: "Wall; with semicolon",
           element_type_name: "Wall",
           din_code: 331,
-          quantity: 2,
+          quantity: 1,
           unit: "m2",
           layers: [
             createMockLayer({
-              element_name: "Layer, with comma",
-              process_name: "Material, with comma",
+              process_name: "Material; with semicolon",
               mass: 150,
+              volume: 0.5,
+              layer_area_ratio: 0.8,
+              tBaustoffProductData: { name: "Test Material", tBaustoffProductId: 123 },
             }),
           ],
         },
       ]
 
-      const csv = mapCircularityDataToMaterialCsvTransformer(dataWithCommas, mockTranslations)
+      const csvBuffer = mapCircularityDataToMaterialCsvTransformer(
+        mockDataWithSemicolons,
+        mockTranslations,
+        TEST_PROJECT_ID
+      )
+      const csvString = decodeCsvBuffer(csvBuffer)
+      const rows: string[] = csvString.split("\n")
 
-      // Check that values with commas are properly quoted
-      expect(csv).toContain('"Material, with comma"')
-      expect(csv).toContain('"Wall, with comma"')
+      // Verify header structure
+      const mainHeader = rows[2]?.split(";") // Now looking at row 2 instead of row 0
+      expect(mainHeader).toBeDefined()
+      expect(mainHeader).toContain(CSV_STRINGS.COMPONENT_DATA)
+      expect(mainHeader).toContain(CSV_STRINGS.BASE_DATA)
+      expect(mainHeader).toContain(CSV_STRINGS.CIRCULARITY_UNBUILT)
+      expect(mainHeader).toContain(CSV_STRINGS.DISMANTLING_POTENTIAL)
+      expect(mainHeader).toContain(CSV_STRINGS.MATERIAL_COMPATIBILITY)
+      expect(mainHeader).toContain(CSV_STRINGS.CIRCULARITY_BUILT)
+
+      // Verify subheader structure
+      const subheaderRow = rows[3]
+      if (!subheaderRow) {
+        throw new Error("Subheader row is missing")
+      }
+      const subheader = subheaderRow.split(";").map((s: string) => s.replace(/"/g, ""))
+      expect(subheader).toContain("Schichtnummer")
+      expect(subheader).toContain("Bauteilkomponente")
+      expect(subheader).toContain("tBaustoff")
+      expect(subheader).toContain("EOL Klasse")
+      expect(subheader).toContain("EOL Punkte")
     })
 
-    test("uses fallback for missing translations", () => {
-      // Create a partial translation map missing some keys
-      const partialTranslations = {
-        processName: "Process Name",
-        buildingComponent: "Component Name",
-        // Other translations missing
+    test("handles S4 disturbing substances correctly", () => {
+      const mockData = [
+        {
+          element_uuid: "mock-uuid",
+          element_type_name: "Wall",
+          element_name: "Wall Component",
+          din_code: 123,
+          unit: "m2",
+          quantity: 1,
+          layers: [
+            createMockLayer({
+              disturbingSubstanceSelections: [
+                {
+                  id: 1,
+                  userEnrichedProductDataElcaElementComponentId: 1,
+                  disturbingSubstanceClassId: "S4",
+                  disturbingSubstanceName: "Asbestos",
+                },
+              ],
+              disturbingEolScenarioForS4: TBs_ProductDefinitionEOLCategoryScenario.CL_PLUS,
+              eolBuilt: { points: 100, className: "B" },
+            }),
+          ],
+        },
+      ]
+
+      const result = mapCircularityDataToMaterialCsvTransformer(mockData, {}, TEST_PROJECT_ID)
+      const csvString = decodeCsvBuffer(result)
+      const rows = csvString.split("\n")
+      const dataRow = rows[4]?.split(";") // First data row (now at index 4)
+      expect(dataRow).toBeDefined()
+
+      if (dataRow) {
+        // Check that material compatibility points show "NEUEINST."
+        expect(dataRow[27]).toBe('"NEUEINST."')
+        // Check that neueinstufung shows the formatted S4 scenario
+        expect(dataRow[28]).toBe('"CL+"')
+      }
+    })
+
+    test("handles multiple disturbing substances with S4 correctly", () => {
+      const mockData = [
+        {
+          element_uuid: "mock-uuid",
+          element_type_name: "Wall",
+          element_name: "Wall Component",
+          din_code: 123,
+          unit: "m2",
+          quantity: 1,
+          layers: [
+            createMockLayer({
+              disturbingSubstanceSelections: [
+                {
+                  id: 1,
+                  userEnrichedProductDataElcaElementComponentId: 1,
+                  disturbingSubstanceClassId: "S2",
+                  disturbingSubstanceName: "Lead",
+                },
+                {
+                  id: 2,
+                  userEnrichedProductDataElcaElementComponentId: 1,
+                  disturbingSubstanceClassId: "S4",
+                  disturbingSubstanceName: "Asbestos",
+                },
+                {
+                  id: 3,
+                  userEnrichedProductDataElcaElementComponentId: 1,
+                  disturbingSubstanceClassId: "S3",
+                  disturbingSubstanceName: "Mercury",
+                },
+              ],
+              disturbingEolScenarioForS4: TBs_ProductDefinitionEOLCategoryScenario.CL_PLUS,
+              eolBuilt: { points: 100, className: "B" },
+            }),
+          ],
+        },
+      ]
+
+      const result = mapCircularityDataToMaterialCsvTransformer(mockData, {}, TEST_PROJECT_ID)
+      const csvString = decodeCsvBuffer(result)
+      const rows = csvString.split("\n")
+      const dataRow = rows[4]?.split(";") // First data row (now at index 4)
+      expect(dataRow).toBeDefined()
+
+      if (dataRow) {
+        // Check that material compatibility points show "NEUEINST."
+        expect(dataRow[27]).toBe('"NEUEINST."')
+        // Check that erlaeuterungMaterial shows all substances
+        expect(dataRow[26]).toBe('"Lead, Asbestos, Mercury"')
+        // Check that neueinstufung shows the formatted S4 scenario
+        expect(dataRow[28]).toBe('"CL+"')
+      }
+    })
+
+    test("sorts materials correctly by DIN code, component name, UUID, and layer position", () => {
+      const mockDataForSorting = [
+        {
+          element_uuid: "element-3",
+          element_name: "Wall C",
+          element_type_name: "Type C",
+          din_code: 350,
+          quantity: 1,
+          unit: "m2",
+          layers: [
+            createMockLayer({ layer_position: 2, element_uuid: "uuid-3" }),
+            createMockLayer({ layer_position: 1, element_uuid: "uuid-3" }),
+          ],
+        },
+        {
+          element_uuid: "element-1",
+          element_name: "Wall B",
+          element_type_name: "Type A",
+          din_code: 331,
+          quantity: 1,
+          unit: "m2",
+          layers: [
+            createMockLayer({ layer_position: 2, element_uuid: "uuid-2" }),
+            createMockLayer({ layer_position: 1, element_uuid: "uuid-1" }),
+          ],
+        },
+        {
+          element_uuid: "element-2",
+          element_name: "Wall A",
+          element_type_name: "Type B",
+          din_code: 331,
+          quantity: 1,
+          unit: "m2",
+          layers: [
+            createMockLayer({ layer_position: 2, element_uuid: "uuid-1" }),
+            createMockLayer({ layer_position: 1, element_uuid: "uuid-2" }),
+          ],
+        },
+      ]
+
+      const csv = mapCircularityDataToMaterialCsvTransformer(mockDataForSorting, mockTranslations, TEST_PROJECT_ID)
+      const csvString = decodeCsvBuffer(csv)
+      const rows = csvString.split("\n")
+      const dataRows = rows.slice(4) // Skip project ID, empty row, and headers
+
+      // Helper to extract sorting-relevant fields from a CSV row
+      const extractSortFields = (row: string) => {
+        const fields = row.split(";")
+        return {
+          dinCode: parseInt(fields[4]?.replace(/"/g, "") || "0", 10),
+          componentName: fields[1]?.replace(/"/g, "") || "",
+          uuid: fields[5]?.replace(/"/g, "") || "",
+          layerPosition: parseInt(fields[0]?.replace(/"/g, "") || "0", 10),
+        }
       }
 
-      const csv = mapCircularityDataToMaterialCsvTransformer(mockCircularityData, partialTranslations)
+      // Verify sorting
+      for (let i = 0; i < dataRows.length - 1; i++) {
+        const currentRow = dataRows[i]
+        const nextRow = dataRows[i + 1]
 
-      // Should use the original key names for missing translations
-      expect(csv).toContain("Process Name,Component Name,amount,unit")
+        if (!currentRow || !nextRow) continue
+
+        const current = extractSortFields(currentRow)
+        const next = extractSortFields(nextRow)
+
+        // If DIN codes are different, current should be less than next
+        if (current.dinCode !== next.dinCode) {
+          expect(current.dinCode || 0).toBeLessThan(next.dinCode || 0)
+          continue
+        }
+
+        // If DIN codes are same but component names are different, current should come before next alphabetically
+        if (current.componentName !== next.componentName) {
+          expect(current.componentName.localeCompare(next.componentName)).toBeLessThan(0)
+          continue
+        }
+
+        // If DIN codes and component names are same but UUIDs are different, current should come before next alphabetically
+        if (current.uuid !== next.uuid) {
+          expect(current.uuid.localeCompare(next.uuid)).toBeLessThan(0)
+          continue
+        }
+
+        // If all above are same, check layer position
+        if (current.uuid === next.uuid) {
+          expect(current.layerPosition).toBeLessThan(next.layerPosition)
+        }
+      }
+    })
+
+    test("shows MANUELL indicator for manually selected tBaustoff", () => {
+      const mockDataWithManualTBaustoff = [
+        {
+          element_uuid: "element-1",
+          element_name: "Wall Component",
+          element_type_name: "Wall",
+          din_code: 331,
+          quantity: 1,
+          unit: "m2",
+          layers: [
+            createMockLayer({
+              tBaustoffProductSelectedByUser: true,
+              tBaustoffProductData: { name: "Manual Test Material", tBaustoffProductId: 456 },
+            }),
+          ],
+        },
+      ]
+
+      const csv = mapCircularityDataToMaterialCsvTransformer(
+        mockDataWithManualTBaustoff,
+        mockTranslations,
+        TEST_PROJECT_ID
+      )
+      const csvString = decodeCsvBuffer(csv)
+      const rows = csvString.split("\n")
+      const dataRow = rows[4]?.split(";") // First data row (now at index 4)
+
+      expect(dataRow).toBeDefined()
+      if (dataRow) {
+        // Check that tBaustoff name is correct
+        expect(dataRow[7]).toBe('"Manual Test Material"')
+        // Check that manual indicator is set
+        expect(dataRow[8]).toBe('"MANUELL"')
+      }
+    })
+
+    test("shows dismantling remark in the Hinweis column", () => {
+      const mockDataWithRemark = [
+        {
+          element_uuid: "element-1",
+          element_name: "Wall Component",
+          element_type_name: "Wall",
+          din_code: 331,
+          quantity: 1,
+          unit: "m2",
+          layers: [
+            createMockLayer({
+              dismantlingPotentialClassRemark: "Special tools required for dismantling",
+              dismantlingPotentialClassId: DismantlingPotentialClassId.III,
+            }),
+          ],
+        },
+      ]
+
+      const csv = mapCircularityDataToMaterialCsvTransformer(mockDataWithRemark, mockTranslations, TEST_PROJECT_ID)
+      const csvString = decodeCsvBuffer(csv)
+      const rows = csvString.split("\n")
+      const dataRow = rows[4]?.split(";") // First data row (now at index 4)
+
+      expect(dataRow).toBeDefined()
+      if (dataRow) {
+        // The Hinweis column should be at index 23 (after Rückbaupotenzial Punkte)
+        expect(dataRow[23]).toBe('"Special tools required for dismantling"')
+      }
     })
   })
 })

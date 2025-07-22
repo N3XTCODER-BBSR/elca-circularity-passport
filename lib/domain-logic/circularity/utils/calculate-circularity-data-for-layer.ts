@@ -30,6 +30,7 @@ import {
   getEolPointsByScenario,
 } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { DisturbingSubstanceClassId } from "prisma/generated/client"
+import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 
 export enum SpecificOrTotal {
   Specific = "Specific",
@@ -74,6 +75,14 @@ export type CalculateCircularityDataForLayerReturnType = EnrichedElcaElementComp
     points: number
     className: string
   } | null
+  eolScenarioReal: TBs_ProductDefinitionEOLCategoryScenario | null
+  eolScenarioPotential: TBs_ProductDefinitionEOLCategoryScenario | null
+  technologyFactor: number | null
+  manuallyEnteredValues: {
+    eolUnbuilt: boolean
+    dismantling: boolean
+    materialCompatibility: boolean
+  }
 }
 
 const calculateCircularityDataForLayer = (
@@ -103,6 +112,19 @@ const calculateCircularityDataForLayer = (
     layerData.disturbingEolScenarioForS4
   )
 
+  const eolScenarioReal = layerData.tBaustoffProductData?.eolData?.eolUnbuiltRealScenario ?? null
+  const eolScenarioPotential = layerData.tBaustoffProductData?.eolData?.eolUnbuiltPotentialScenario ?? null
+  const technologyFactor = layerData.tBaustoffProductData?.eolData
+    ? layerData.tBaustoffProductData.eolData.eolUnbuiltPotentialPoints /
+      layerData.tBaustoffProductData.eolData.eolUnbuiltRealPoints
+    : null
+
+  const manuallyEnteredValues = {
+    eolUnbuilt: layerData.eolUnbuiltSpecificScenario !== null,
+    dismantling: layerData.dismantlingPotentialClassId !== null,
+    materialCompatibility: layerData.disturbingSubstanceSelections.length > 0,
+  }
+
   return {
     ...layerData,
     dismantlingPoints,
@@ -110,8 +132,12 @@ const calculateCircularityDataForLayer = (
       noDisturbingSubstancesOrOnlyNullClassesSelected,
       hasS4DisturbingSubstance,
     },
-    eolUnbuilt: eolUnbuilt,
-    eolBuilt: eolBuilt,
+    eolUnbuilt,
+    eolBuilt,
+    eolScenarioReal,
+    eolScenarioPotential,
+    technologyFactor,
+    manuallyEnteredValues,
   }
 }
 

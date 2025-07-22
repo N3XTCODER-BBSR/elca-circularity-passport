@@ -364,6 +364,8 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
             examplesModalContent: "Here you can find examples of dismantling potential classes and their application.",
             examplesModalIntro:
               "The choice of dismantling class depends on the type of connection, accessibility, and possible contamination. The following overview provides typical examples.",
+            remarkLabel: "Additional Remarks (optional)",
+            remarkPlaceholder: "Enter any additional remarks about the dismantling potential",
             examplesModalCards: [
               {
                 title: "I – Non-destructively dismantlable",
@@ -505,7 +507,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           },
         },
         materialExport: {
-          exportMaterialsToCsv: "Export (csv)",
+          exportMaterialsToCsv: "Export Circularity Inventory (CSV)",
           fields: {
             componentUuid: "Component UUID",
             volumePerUnit: "Volume (m3) per Unit",
@@ -518,6 +520,19 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
             componentId: "Component ID",
             materialCompatibilityClass: "Material Compatibility Class",
             materialCompatibilityPoints: "Material Compatibility Points",
+            layerNumber: "Layer number",
+            buildingMaterialComponent: "Building material/Component/Product",
+            volumeShare: "Volume share in %",
+            eolScenarioReal: "EOL Scenario (Real)",
+            eolScenarioPotential: "EOL Scenario (Potential)",
+            tf: "TF",
+            eolScenarioSpecific: "EOL Scenario (Specific)",
+            explanationUnbuilt: "Explanation",
+            manualValuesUnbuilt: "Manually entered values/selection",
+            manualValuesDismantling: "Manually entered values/selection",
+            materialExplanation: "Explanation",
+            newClassification: "New classification",
+            manualValuesMaterial: "Manually entered values/selection",
           },
         },
         aggregatedInventoryExport: {

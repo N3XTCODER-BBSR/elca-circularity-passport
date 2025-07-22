@@ -65,6 +65,17 @@ export async function upsertUserEnrichedProductDataWithEolScenario(
 }
 
 /**
+ * Updates or inserts user-enriched product data with dismantling potential remark
+ *
+ * @param layerId The ID of the element component layer to update
+ * @param remark The remark text to associate with the dismantling potential
+ * @returns Promise with the updated user-enriched product data
+ */
+export async function upsertUserEnrichedProductDataWithDismantlingRemark(layerId: number, remark: string | null) {
+  return dbDalInstance.upsertUserEnrichedProductDataWithDismantlingRemark(layerId, remark)
+}
+
+/**
  * Retrieves component data for a product and calculates its circularity data
  *
  * @param productId The ID of the product

@@ -97,6 +97,7 @@ async function processProjectComponent(
     tBaustoffProductData: productData,
     tBaustoffProductSelectedByUser: userDefinedData?.tBaustoffProductSelectedByUser,
     dismantlingPotentialClassId: userDefinedData?.dismantlingPotentialClassId,
+    dismantlingPotentialClassRemark: userDefinedData?.dismantlingPotentialClassRemark,
     eolUnbuiltSpecificScenario: userDefinedData?.specificEolUnbuiltTotalScenario,
     eolUnbuiltSpecificScenarioProofText: userDefinedData?.specificEolUnbuiltTotalScenarioProofText,
     disturbingSubstanceSelections: userDefinedData?.selectedDisturbingSubstances ?? [],

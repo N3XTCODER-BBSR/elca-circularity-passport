@@ -23,6 +23,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 
+import iconv from "iconv-lite"
+import { formatCsvRows } from "app/(utils)/csvExportUtils"
 import { DimensionalFieldName } from "lib/domain-logic/circularity/misc/domain-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
@@ -178,7 +180,7 @@ function createCsvSection(
 export function mapCircularityDataToAggregatedInventoryCsvTransformer(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
   translations: Record<string, string>
-): string {
+): Buffer {
   // Create main header row
   const mainHeaderRow = [translations.aggregatedInventory || "Aggregated Inventory - Circularity Potential"]
 
@@ -217,20 +219,9 @@ export function mapCircularityDataToAggregatedInventoryCsvTransformer(
     ...massSection,
   ]
 
-  // Put quotes around all cells and escape inner quotes
-  const escapedCsvData = csvData.map((row) =>
-    row.map((cell) => {
-      // Ensure numbers use dot as decimal separator
-      if (typeof cell === "number") {
-        return `"${cell.toString()}"`
-      }
-      // If string looks like a number with comma decimal, replace with dot
-      if (typeof cell === "string" && /^\d+,\d+$/.test(cell)) {
-        return `"${cell.replace(/,/, ".")}"`
-      }
-      return `"${String(cell).replace(/"/g, '""')}"`
-    })
-  )
-  // Use comma as separator for Finder compatibility
-  return escapedCsvData.map((row) => row.join(",")).join("\n")
+  // Format CSV with semicolon separator and quoted fields
+  const csvContent = formatCsvRows(csvData)
+
+  // Convert to Buffer with ISO-8859-15 encoding for Excel compatibility
+  return iconv.encode(csvContent, "iso-8859-15")
 }

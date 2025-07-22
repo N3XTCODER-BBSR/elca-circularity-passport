@@ -22,17 +22,23 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-// NOTE: according to docs, this file should be in /i18n/request.ts (which doesn't work)
-// https://next-intl-docs.vercel.app/docs/getting-started/app-router/with-i18n-routing#middleware
-import { notFound } from "next/navigation"
-import { getRequestConfig } from "next-intl/server"
-import { routing } from "./i18n/routing"
+"use server"
 
-export default getRequestConfig(async ({ locale }) => {
-  // Validate that the incoming `locale` parameter is valid
-  if (!routing.locales.includes(locale as any)) notFound()
+import { z } from "zod"
+import { withServerActionErrorHandling } from "app/(utils)/errorHandler"
+import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
+import { ensureUserAuthorizationToElementComponent } from "lib/auth/ensureAuthorized"
+import { upsertUserEnrichedProductDataWithDismantlingRemark } from "lib/domain-logic/circularity/products/manageProductData"
 
-  return {
-    messages: (await import(`./messages/${locale}.ts`)).default,
-  }
-})
+export async function updateDismantlingPotentialRemark(productId: number, remark: string | null) {
+  return withServerActionErrorHandling(async () => {
+    z.number().parse(productId)
+    z.string().nullable().parse(remark)
+
+    const session = await ensureUserIsAuthenticated()
+    const userId = Number(session.user.id)
+
+    await ensureUserAuthorizationToElementComponent(userId, productId)
+    await upsertUserEnrichedProductDataWithDismantlingRemark(productId, remark)
+  })
+}

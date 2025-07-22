@@ -26,7 +26,7 @@ import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useFormatter, useTranslations } from "next-intl"
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import toast from "react-hot-toast"
 import { twMerge } from "tailwind-merge"
 import { AccordionItemFull } from "app/(components)/generic/AccordionItem"
@@ -35,6 +35,7 @@ import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/Sid
 import { addOrUpdateDisturbingSubstanceSelection } from "app/[locale]/(circularity)/(server-actions)/addOrUpdateDisturbingSubstance"
 import { removeDisturbingSubstanceSelection } from "app/[locale]/(circularity)/(server-actions)/removeDisturbingSubstances"
 import { updateDismantlingPotentialClassId } from "app/[locale]/(circularity)/(server-actions)/updateDismantlingPotentialClassId"
+import { updateDismantlingPotentialRemark } from "app/[locale]/(circularity)/(server-actions)/updateDismantlingPotentialRemark"
 import { updateDisturbingEolScenarioForS4 } from "app/[locale]/(circularity)/(server-actions)/updateDisturbingEolScenarioForS4"
 import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/circularity/misc/domain-types"
 import {
@@ -53,6 +54,8 @@ import DisturbingSubstances from "./DisturbingSubstances"
 import EOLScenarioEditButton from "./EOLScenarioEditButton"
 import EolScenarioInfoBox from "./EolScenarioInfoBox"
 import Modal from "../../../Modal"
+import { StyledDd, StyledDt, TwoColGrid } from "app/(components)/generic/layout-elements"
+import { useDebounce } from "app/(utils)/useDebounce"
 
 type EolDataSectionProps = {
   layerDatacirculartyEnrichedLayerData: CalculateCircularityDataForLayerReturnType
@@ -171,6 +174,19 @@ const CircularityDetails = ({ projectId, variantId, layerData, componentUuid }: 
   const t = useTranslations()
   const format = useFormatter()
   const queryClient = useQueryClient()
+  const [isShowExamplesModalOpen, setIsShowExamplesModalOpen] = useState(false)
+  const [isEolScenarioModalOpen, setIsEolScenarioModalOpen] = useState(false)
+  const [remarkText, setRemarkText] = useState<string | null>(layerData.dismantlingPotentialClassRemark ?? null)
+
+  // Debounce the remark text with a 1-second delay
+  const debouncedRemarkText = useDebounce<string | null>(remarkText, 1000)
+
+  useEffect(() => {
+    // Only save if the value has actually changed from what's in layerData
+    if (debouncedRemarkText !== layerData.dismantlingPotentialClassRemark) {
+      updateDismantlingPotentialRemarkMutation.mutate(debouncedRemarkText)
+    }
+  }, [debouncedRemarkText])
 
   const updateDismantlingPotentialClassIdMutation = useMutation<void, Error, DismantlingPotentialClassId | null>({
     mutationFn: async (id: DismantlingPotentialClassId | null) => {
@@ -189,6 +205,35 @@ const CircularityDetails = ({ projectId, variantId, layerData, componentUuid }: 
       }
     },
   })
+
+  const updateDismantlingPotentialRemarkMutation = useMutation({
+    mutationFn: async (remark: string | null) => {
+      const result = await updateDismantlingPotentialRemark(layerData.component_id, remark)
+      if (!result.success) {
+        throw new CallServerActionError(result.errorI18nKey)
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["componentData", projectId, variantId, componentUuid] })
+      queryClient.invalidateQueries({ queryKey: ["circularityData", projectId, variantId] })
+    },
+    onError: (error: Error) => {
+      if (error instanceof CallServerActionError) {
+        toast.error(t(error.errorI18nKey))
+      } else {
+        toast.error(t("Errors.Generic.serverError"))
+      }
+    },
+  })
+
+  // Effect to trigger save when debounced value changes
+  useEffect(() => {
+    // Only save if the value has actually changed from what's in layerData
+    // and we're not in the initial mount
+    if (debouncedRemarkText !== layerData.dismantlingPotentialClassRemark) {
+      updateDismantlingPotentialRemarkMutation.mutate(debouncedRemarkText)
+    }
+  }, [debouncedRemarkText])
 
   const updateDisturbingEolScenarioForS4Mutation = useMutation<
     void,
@@ -302,9 +347,6 @@ const CircularityDetails = ({ projectId, variantId, layerData, componentUuid }: 
     },
   ]
 
-  const [isEolScenarioModalOpen, setIsEolScenarioModalOpen] = useState(false)
-  const [isShowExamplesModalOpen, setIsShowExamplesModalOpen] = useState(false)
-
   const handleOpenEolScenarioModal = () => {
     setIsEolScenarioModalOpen(true)
   }
@@ -343,7 +385,17 @@ const CircularityDetails = ({ projectId, variantId, layerData, componentUuid }: 
             <ErrorText className="mr-4">{circularityInfoTranslations("RebuildSection.error")}</ErrorText>
           )}
         </div>
-        <div>
+        <div className="flex flex-row justify-start">
+          <button
+            type="button"
+            className="font-normal text-bbsr-blue-700 hover:text-bbsr-blue-800"
+            onClick={() => setIsShowExamplesModalOpen(true)}
+            data-testid="show-examples"
+          >
+            {circularityInfoTranslations("RebuildSection.showExamples")}
+          </button>
+        </div>
+        <div className="mt-4">
           <div className="isolate flex flex-wrap justify-center gap-4">
             {Object.entries(dismantlingPotentialClassIdMapping).map(([key, value]) => {
               const isDisabled =
@@ -371,16 +423,33 @@ const CircularityDetails = ({ projectId, variantId, layerData, componentUuid }: 
               )
             })}
           </div>
-          <div className="mt-2 flex flex-row justify-start">
-            <button
-              type="button"
-              className="font-normal text-bbsr-blue-700 hover:text-bbsr-blue-800"
-              onClick={() => setIsShowExamplesModalOpen(true)}
-              data-testid="show-examples"
-            >
-              {circularityInfoTranslations("RebuildSection.showExamples")}
-            </button>
-          </div>
+          {layerData.dismantlingPotentialClassId && (
+            <div className="mt-4">
+              <TwoColGrid>
+                <StyledDt>{circularityInfoTranslations("RebuildSection.remarkLabel")}</StyledDt>
+                <StyledDd>
+                  <textarea
+                    id="dismantlingRemark"
+                    name="dismantlingRemark"
+                    rows={2}
+                    className="block w-full rounded-md border-2 border-gray-200 p-2 text-sm shadow-sm focus:border-bbsr-blue-500 focus:ring-bbsr-blue-500"
+                    placeholder={circularityInfoTranslations("RebuildSection.remarkPlaceholder")}
+                    value={remarkText ?? ""}
+                    onChange={(e) => {
+                      const newValue = e.target.value.trim() === "" ? null : e.target.value
+                      setRemarkText(newValue)
+                    }}
+                    onBlur={() => {
+                      // Also save on blur for immediate feedback when user leaves the field
+                      if (remarkText !== layerData.dismantlingPotentialClassRemark) {
+                        updateDismantlingPotentialRemarkMutation.mutate(remarkText)
+                      }
+                    }}
+                  />
+                </StyledDd>
+              </TwoColGrid>
+            </div>
+          )}
           <SideBySideDescriptionListsWithHeadline justifyEnd data={eolUnbuiltDataSecondary} className="md:border" />
         </div>
       </Area>

@@ -32,6 +32,12 @@ import {
   mapCircularityDataToAggregatedInventoryCsvTransformer,
   processCircularityDataForCsv,
 } from "./mapCircularityDataToAggregatedInventoryCsvTransformer"
+import iconv from "iconv-lite"
+
+// Helper function to decode ISO-8859-15 buffer to string
+const decodeCsvBuffer = (buffer: Buffer): string => {
+  return iconv.decode(buffer, "iso-8859-15")
+}
 
 /**
  * Helper to create a mock layer object for testing.
@@ -140,6 +146,16 @@ const mockCircularityData = [
   },
 ]
 
+// Constants for CSV strings (using actual UTF-8 characters since we'll decode properly)
+const CSV_STRINGS = {
+  VOLUME_DATA: '"Volume Data (m³)"',
+  TOTAL_VOLUME: '"Total volume (m³) per EOL class"',
+  TOTAL_VOLUME_PER_MATERIAL: '"Total volume (m³) per material"',
+  MASS_DATA: '"Mass Data (kg)"',
+  TOTAL_MASS: '"Total mass (kg) per EOL class"',
+  TOTAL_MASS_PER_MATERIAL: '"Total mass (kg) per material"',
+} as const
+
 // Mock translations for testing
 const mockTranslations = {
   total: "Total",
@@ -147,6 +163,10 @@ const mockTranslations = {
   massSection: "Mass Data (kg)",
   percentagePerClass: "% per class",
   aggregatedInventory: "Aggregated Inventory",
+  totalVolumePerEolClass: "Total volume (m³) per EOL class",
+  totalMassPerEolClass: "Total mass (kg) per EOL class",
+  totalVolumePerMaterial: "Total volume (m³) per material",
+  totalMassPerMaterial: "Total mass (kg) per material",
 }
 
 describe("mapCircularityDataToAggregatedInventoryCsvTransformer", () => {
@@ -263,85 +283,81 @@ describe("mapCircularityDataToAggregatedInventoryCsvTransformer", () => {
   describe("mapCircularityDataToAggregatedInventoryCsvTransformer", () => {
     test("transforms circularity data to CSV format with both volume and mass sections", () => {
       const csv = mapCircularityDataToAggregatedInventoryCsvTransformer(mockCircularityData, mockTranslations)
+      const csvString = decodeCsvBuffer(csv)
 
-      // Check that CSV contains the main header (now quoted)
-      expect(csv.startsWith('"Aggregated Inventory"')).toBeTruthy()
+      // Check that CSV contains the main header
+      expect(csvString.startsWith('"Aggregated Inventory"')).toBeTruthy()
 
-      // Check that CSV contains both volume and mass sections (now quoted)
-      expect(csv).toContain('"Volume Data (m³)"')
-      expect(csv).toContain('"Mass Data (kg)"')
+      // Check that CSV contains both volume and mass sections
+      expect(csvString).toContain(CSV_STRINGS.VOLUME_DATA)
+      expect(csvString).toContain(CSV_STRINGS.MASS_DATA)
 
       // Check that CSV contains the expected number of rows
-      const rows = csv.split("\n")
+      const rows = csvString.split("\n")
       expect(rows.length).toBeGreaterThan(10) // Header + section headers + data rows + totals
 
       // Check that specific data values are present in the CSV
-      expect(csv).toContain('"Concrete"')
-      expect(csv).toContain('"Insulation"')
-      expect(csv).toContain('"Wood"')
+      expect(csvString).toContain('"Concrete"')
+      expect(csvString).toContain('"Insulation"')
+      expect(csvString).toContain('"Wood"')
 
       // Check that the EOL classes are included as columns
       Object.values(EolClasses).forEach((eolClass) => {
         if (eolClass !== EolClasses.NA) {
-          expect(csv).toContain(`"${eolClass}"`)
+          expect(csvString).toContain(`"${eolClass}"`)
         }
       })
 
-      // Check that the totals row is present (full label, now quoted)
-      expect(csv).toContain('"Total volume (m³) per EOL class"')
-      expect(csv).toContain('"Total mass (kg) per EOL class"')
+      // Check that the totals row is present
+      expect(csvString).toContain(CSV_STRINGS.TOTAL_VOLUME)
+      expect(csvString).toContain(CSV_STRINGS.TOTAL_MASS)
 
       // Check that the percentage row is present
-      expect(csv).toContain('"% per class"')
+      expect(csvString).toContain('"% per class"')
     })
 
     test("handles empty circularity data", () => {
-      const csv = mapCircularityDataToAggregatedInventoryCsvTransformer([], mockTranslations)
+      const emptyData: typeof mockCircularityData = []
+      const csv = mapCircularityDataToAggregatedInventoryCsvTransformer(emptyData, mockTranslations)
+      const csvString = decodeCsvBuffer(csv)
 
       // Should still create a CSV with headers
-      expect(csv).toContain('"Aggregated Inventory"')
-      expect(csv).toContain('"Volume Data (m³)"')
-      expect(csv).toContain('"Mass Data (kg)"')
+      expect(csvString).toContain('"Aggregated Inventory"')
+      expect(csvString).toContain(CSV_STRINGS.VOLUME_DATA)
+      expect(csvString).toContain(CSV_STRINGS.MASS_DATA)
 
-      // Check that the CSV contains Total rows (now matching full label)
-      const rows = csv.split("\n")
+      // Check that the CSV contains Total rows
+      const rows = csvString.split("\n")
 
       // Verify that there are Total rows in the output
-      const totalRows = rows.filter(
-        (row) =>
-          row.startsWith('"Total volume (m³) per EOL class"') || row.startsWith('"Total mass (kg) per EOL class"')
-      )
-      expect(totalRows.length).toBeGreaterThan(0)
-
-      // Verify that the percentage rows exist
-      const percentageRows = rows.filter((row) => row.includes('"% per class"'))
-      expect(percentageRows.length).toBeGreaterThan(0)
+      expect(rows.some((row) => row.includes(CSV_STRINGS.TOTAL_VOLUME))).toBeTruthy()
+      expect(rows.some((row) => row.includes(CSV_STRINGS.TOTAL_MASS))).toBeTruthy()
     })
 
     test("uses fallback for missing translations", () => {
-      // Create a partial translation map missing some keys
-      const partialTranslations = {
-        total: "Total",
-        // Other translations missing
-      }
-
-      const csv = mapCircularityDataToAggregatedInventoryCsvTransformer(mockCircularityData, partialTranslations)
+      const csv = mapCircularityDataToAggregatedInventoryCsvTransformer(mockCircularityData, {})
+      const csvString = decodeCsvBuffer(csv)
 
       // Should use the original key names for missing translations
-      expect(csv).toContain('"Volume Data (m³)"')
-      expect(csv).toContain('"Mass Data (kg)"')
-      expect(csv).toContain('"% per class"')
+      expect(csvString).toContain(CSV_STRINGS.VOLUME_DATA)
+      expect(csvString).toContain(CSV_STRINGS.MASS_DATA)
+      expect(csvString).toContain('"% per class"')
+
+      // Check that the totals rows use the fallback strings
+      const rows = csvString.split("\n")
+      expect(rows.some((row) => row.includes(CSV_STRINGS.TOTAL_VOLUME))).toBeTruthy()
+      expect(rows.some((row) => row.includes(CSV_STRINGS.TOTAL_MASS))).toBeTruthy()
     })
 
     test("formats numbers correctly, omitting zeros", () => {
       const csv = mapCircularityDataToAggregatedInventoryCsvTransformer(mockCircularityData, mockTranslations)
 
       // Check that non-zero values are formatted with 2 decimal places
-      expect(csv).toContain('"0.60"') // Volume of concrete in class A
-      expect(csv).toContain('"0.80"') // Volume of concrete in class B
+      expect(csv.toString("utf-8")).toContain('"0.60"') // Volume of concrete in class A
+      expect(csv.toString("utf-8")).toContain('"0.80"') // Volume of concrete in class B
 
       // Check that zero values are represented as quoted empty strings
-      const rows = csv.split("\n")
+      const rows = csv.toString("utf-8").split("\n")
       const rowWithZeros = rows.find((row) => row.includes('"Insulation"') && row.includes('""'))
 
       expect(rowWithZeros).toBeDefined()

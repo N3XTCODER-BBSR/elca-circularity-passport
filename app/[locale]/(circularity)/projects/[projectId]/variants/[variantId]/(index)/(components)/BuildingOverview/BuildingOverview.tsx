@@ -133,6 +133,7 @@ const BuildingOverview = ({
             <MaterialCsvExportButton
               catalogPath={catalogPath}
               projectName={projectName}
+              projectId={projectId}
               processCategories={processCategories}
               circularityData={circularityData}
             />
