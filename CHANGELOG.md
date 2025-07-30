@@ -1,3 +1,32 @@
+## [Release 0.4.0] - 2025-01-27
+
+### Added
+
+- **PDF Catalog Export:** Implemented PDF catalog export functionality
+  - Added PDF-optimized page layout and styling with proper authentication
+  - Implemented one-time token authentication system for secure PDF access
+  - Added domain logic and server actions for calculation and data processing
+  - Integrated with Doppio PDF service for professional PDF generation
+  - Added BNB number fetching from legacy database for PDF reports
+  - Implemented session-based authentication for PDF export endpoints
+  - Added export button with loading states and success/error toasts
+  - Enhanced CSV export to include project name for better identification
+
+### Fixed
+
+- **Authentication & Security:**
+  - Fixed cross-domain authentication issues in PDF export
+  - Improved token validation and expiry management
+- **Build & Development:**
+  - Fixed build errors related to caching of old paths
+
+### Improved / Refactored
+
+- **Testing:**
+  - Added tests for DAL functions and authentication
+
+---
+
 ## [Release 0.3.6] - 2025-07-22
 
 ### Added
