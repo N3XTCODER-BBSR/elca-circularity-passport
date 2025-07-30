@@ -22,15 +22,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import "styles/global.css"
-import { Metadata } from "next"
+import "styles/print.global.css"
+
 import { Inter as FontSans } from "next/font/google"
+import { Metadata } from "next/types"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
-import { Toaster } from "react-hot-toast"
 import { twMerge } from "tailwind-merge"
-import ClientProviders from "app/(utils)/client-providers"
-import Footer from "../../(components)/Footer"
+import i18nFormattingOptions from "../../grp/(utils)/i18nFormattingOptions"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -38,12 +37,12 @@ const fontSans = FontSans({
 })
 
 export const metadata: Metadata = {
-  title: "Circularity Tool",
+  title: "PDF View - Building Resource Passport",
   twitter: {
     card: "summary_large_image",
   },
   openGraph: {
-    url: "https://circularity-elca.app/",
+    url: "https://digitalbuildingpassport.app/",
     images: [
       {
         width: 1200,
@@ -54,28 +53,14 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function RootLayout({
-  children,
-  params: { locale },
-}: {
-  children: React.ReactNode
-  params: { locale: string }
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const messages = await getMessages()
   return (
-    <html lang={locale}>
-      <body className={twMerge("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
-        <ClientProviders>
-          <NextIntlClientProvider messages={messages}>
-            <div className="flex min-h-screen flex-col">
-              <div>
-                <Toaster />
-              </div>
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
-          </NextIntlClientProvider>
-        </ClientProviders>
+    <html lang="en">
+      <body className={twMerge("font-sans antialiased", fontSans.variable)}>
+        <NextIntlClientProvider formats={i18nFormattingOptions} messages={messages}>
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   )

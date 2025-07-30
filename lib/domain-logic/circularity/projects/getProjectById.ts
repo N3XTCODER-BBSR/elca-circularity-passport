@@ -28,7 +28,9 @@ import { legacyDbDalInstance } from "prisma/queries/dalSingletons"
 /**
  * Type representing project information
  */
-export type ProjectInfo = Awaited<ReturnType<typeof legacyDbDalInstance.getProjectById>>
+export type ProjectInfo =
+  | (Awaited<ReturnType<typeof legacyDbDalInstance.getProjectById>> & { bnbNr: string | null })
+  | null
 
 /**
  * Retrieves information for a specific project by its ID.
@@ -37,5 +39,23 @@ export type ProjectInfo = Awaited<ReturnType<typeof legacyDbDalInstance.getProje
  * @returns Project information
  */
 export async function getProjectById(projectId: number): Promise<ProjectInfo> {
-  return legacyDbDalInstance.getProjectById(projectId)
+  const projectRaw = await legacyDbDalInstance.getProjectById(projectId)
+  if (!projectRaw) return null
+  const project = { ...projectRaw, project_attributes: projectRaw.project_attributes ?? [] }
+
+  // Extract bnbNr as string if present
+  let bnbNr: string | null = null
+  const attr = project.project_attributes[0]
+  if (attr) {
+    if (attr.text_value != null) {
+      bnbNr = attr.text_value
+    } else if (attr.numeric_value != null) {
+      bnbNr = String(attr.numeric_value)
+    }
+  }
+
+  return {
+    ...project,
+    bnbNr,
+  }
 }

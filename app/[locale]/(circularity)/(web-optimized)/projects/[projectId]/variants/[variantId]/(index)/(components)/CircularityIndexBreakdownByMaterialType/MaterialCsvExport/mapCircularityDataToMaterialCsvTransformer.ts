@@ -35,6 +35,7 @@ import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/clien
 
 // CSV Headers
 const CSV_HEADERS = {
+  PROJECT_NAME: "eLCA Projekt-Name",
   PROJECT_ID: "eLCA Projekt-ID",
   COMPONENT_DATA: "Bauteilkomponenten-Daten",
   LAYER_DATA: "Schichten der Bauteilkomponente",
@@ -97,12 +98,14 @@ const SPECIAL_VALUES = {
  * @param {ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]} circularityData - Array of building components with circularity data
  * @param {Record<string, string>} fieldTranslations - Object mapping field names to their translated headers
  * @param {number} projectId - The eLCA project ID
+ * @param {string} [projectName] - The eLCA project name (optional, defaults to empty string)
  * @returns {Buffer} Formatted CSV buffer containing the mapped circularity data
  */
 export const mapCircularityDataToMaterialCsvTransformer = (
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
   fieldTranslations: Record<string, string>,
-  projectId: number
+  projectId: number,
+  projectName: string = ""
 ) => {
   // Define column groups for subheader
   const subheaders = {
@@ -149,40 +152,11 @@ export const mapCircularityDataToMaterialCsvTransformer = (
     circularityPotentialBuilt: [SUBHEADER_FIELDS.EOL_CLASS, SUBHEADER_FIELDS.EOL_POINTS],
   }
 
+  // Create project name row (new row above project ID)
+  const projectNameRow = [CSV_HEADERS.PROJECT_NAME, projectName, ...Array(29).fill("")]
+
   // Create project ID row
-  const projectIdRow = [
-    CSV_HEADERS.PROJECT_ID,
-    projectId,
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-  ]
+  const projectIdRow = [CSV_HEADERS.PROJECT_ID, projectId, ...Array(29).fill("")]
 
   // Create empty row for spacing
   const emptyRow = [
@@ -257,13 +231,15 @@ export const mapCircularityDataToMaterialCsvTransformer = (
 
   const mappedProducts = circularityData.flatMap((buildingComponent) =>
     buildingComponent.layers.map((layer) => {
+      // For display: if layer_position is -1, show 'NULL' in CSV
+      const displayLayerNumber = layer.layer_position === -1 ? "NULL" : layer.layer_position
       const materialCompatibilityClass = getDisturbingSubstancesString(layer)
       const materialCompatibility = calculateMaterialCompatibility(layer)
       const materialCompatibilityPoints = materialCompatibility ?? "-"
 
       return {
         // Component Data
-        layerNumber: layer.layer_position,
+        layerNumber: displayLayerNumber,
         componentName: buildingComponent.element_name,
         amount: buildingComponent.quantity ?? "",
         unit: layer.unit ?? "",
@@ -333,12 +309,17 @@ export const mapCircularityDataToMaterialCsvTransformer = (
     if (a.componentUuid !== b.componentUuid) {
       return a.componentUuid.localeCompare(b.componentUuid)
     }
-    // Finally by layer number
-    return a.layerNumber - b.layerNumber
+    // Finally by layer number (use numeric value, treat 'NULL' as -1)
+    const aLayer =
+      a.layerNumber === "NULL" ? -1 : typeof a.layerNumber === "number" ? a.layerNumber : parseInt(a.layerNumber, 10)
+    const bLayer =
+      b.layerNumber === "NULL" ? -1 : typeof b.layerNumber === "number" ? b.layerNumber : parseInt(b.layerNumber, 10)
+    return aLayer - bLayer
   })
 
-  // Create CSV with project ID, empty row, main header and subheaders
+  // Create CSV with project name, project ID, empty row, main header and subheaders
   const csvRows = [
+    projectNameRow, // Project Name row (new first row)
     projectIdRow, // Project ID row
     emptyRow, // Empty row for spacing
     mainHeaderRow, // Main header row with column groups

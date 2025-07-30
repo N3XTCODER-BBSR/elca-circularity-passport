@@ -511,6 +511,7 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
         },
         materialExport: {
           exportMaterialsToCsv: "Exportar inventario de circularidad (CSV)",
+          exportComponentCatalogToPdf: "Exportar Catálogo de Componentes (PDF)",
           fields: {
             componentUuid: "UUID del componente",
             volumePerUnit: "Volumen (m3) por unidad",

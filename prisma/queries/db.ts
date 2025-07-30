@@ -44,6 +44,44 @@ export type PassportMetadata = Prisma.PassportGetPayload<{
 }>
 
 export class DbDal {
+  createOneTimePdfToken = async ({
+    token,
+    userId,
+    projectId,
+    variantId,
+    expiresAt,
+  }: {
+    token: string
+    userId: string
+    projectId: number
+    variantId: number
+    expiresAt: Date
+  }) => {
+    return await prisma.oneTimePdfToken.create({
+      data: {
+        token,
+        userId,
+        projectId,
+        variantId,
+        expiresAt,
+        used: false,
+      },
+    })
+  }
+
+  findOneTimePdfToken = async (token: string) => {
+    return await prisma.oneTimePdfToken.findUnique({
+      where: { token },
+    })
+  }
+
+  markOneTimePdfTokenAsUsed = async (token: string) => {
+    return await prisma.oneTimePdfToken.update({
+      where: { token },
+      data: { used: true },
+    })
+  }
+
   getAvailableTBaustoffProducts = async () => {
     const results = await prisma.tBs_ProductDefinition.findMany({
       select: {

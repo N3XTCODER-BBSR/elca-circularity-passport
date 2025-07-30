@@ -1,0 +1,110 @@
+@page {
+  size: A4;
+  margin: 15mm 10mm; /* Standard safe margin for print */
+  bleed: 3mm; /* Standard bleed for print */
+  marks: crop cross; /* Add crop and registration marks */
+}
+
+/* Reset body for print layout */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+  font-size: 10pt; /* Base font size */
+  line-height: 1.4;
+}
+
+/* Typography scale using relative units */
+.component-catalog-pdf h1 {
+  font-size: 1.6rem; /* 16pt */
+  margin-bottom: 1.2em;
+}
+
+.component-catalog-pdf h2 {
+  font-size: 1.4rem; /* 14pt */
+}
+
+.component-catalog-pdf h3 {
+  font-size: 1.2rem; /* 12pt */
+  margin-bottom: 0.8em;
+}
+
+.component-catalog-pdf h4 {
+  font-size: 1.1rem; /* 11pt */
+  margin-bottom: 0.6em;
+}
+
+/* Page container */
+.component-catalog-pdf {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Content area that can grow */
+.component-catalog-pdf .content {
+  flex: 1;
+  /*padding: 0 5mm; /* Horizontal padding only */
+  overflow: visible !important;
+}
+
+/* Header and footer */
+.component-catalog-pdf .header,
+.component-catalog-pdf .footer {
+  flex: none;
+}
+
+/* Print-specific styles */
+@media print {
+  html,
+  body {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .component-catalog-pdf {
+    min-height: auto !important;
+  }
+}
+
+/* Keep components together where possible */
+.component-catalog-pdf .print-avoid-break {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: 8mm; /* Space between components */
+}
+
+/* Force materials to stay together */
+.component-catalog-pdf .keep-together {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* Headers */
+.component-catalog-pdf h1,
+.component-catalog-pdf h2,
+.component-catalog-pdf h3,
+.component-catalog-pdf h4 {
+  break-after: avoid;
+  page-break-after: avoid;
+  orphans: 3;
+}
+
+/* Lists and paragraphs */
+.component-catalog-pdf p,
+.component-catalog-pdf li {
+  orphans: 3;
+  widows: 3;
+}
+
+/* Section spacing */
+.component-catalog-pdf section {
+  margin-bottom: 10mm; /* Increased space between sections */
+}
+
+/* First section doesn't need top margin */
+.component-catalog-pdf section:first-child {
+  margin-top: 0;
+}

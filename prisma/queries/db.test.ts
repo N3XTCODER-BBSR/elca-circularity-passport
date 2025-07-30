@@ -24,6 +24,7 @@
  */
 import { dbDalInstance } from "./dalSingletons"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
+import { truncateOneTimePdfTokenTable } from "./testUtils"
 
 describe("db queries", () => {
   describe("excluded product queries", () => {
@@ -72,6 +73,169 @@ describe("db queries", () => {
 
       expect(result).toHaveLength(want.length)
       expect(result).toMatchObject(want)
+    })
+  })
+
+  describe("PDF token queries", () => {
+    beforeEach(async () => {
+      // Clean up any existing tokens before each test
+      await truncateOneTimePdfTokenTable()
+    })
+
+    it("should create a one-time PDF token correctly", async () => {
+      // Arrange
+      const tokenData = {
+        token: "test-token-123",
+        userId: "user-123",
+        projectId: 1,
+        variantId: 2,
+        expiresAt: new Date(Date.now() + 60000), // 1 minute from now
+      }
+
+      // Act
+      const result = await dbDalInstance.createOneTimePdfToken(tokenData)
+
+      // Assert
+      expect(result).toMatchObject({
+        token: tokenData.token,
+        userId: tokenData.userId,
+        projectId: tokenData.projectId,
+        variantId: tokenData.variantId,
+        used: false,
+      })
+      expect(result.expiresAt).toEqual(tokenData.expiresAt)
+    })
+
+    it("should find a one-time PDF token by token value", async () => {
+      // Arrange
+      const tokenData = {
+        token: "find-test-token",
+        userId: "user-456",
+        projectId: 3,
+        variantId: 4,
+        expiresAt: new Date(Date.now() + 60000),
+      }
+      await dbDalInstance.createOneTimePdfToken(tokenData)
+
+      // Act
+      const result = await dbDalInstance.findOneTimePdfToken(tokenData.token)
+
+      // Assert
+      expect(result).toMatchObject({
+        token: tokenData.token,
+        userId: tokenData.userId,
+        projectId: tokenData.projectId,
+        variantId: tokenData.variantId,
+        used: false,
+      })
+    })
+
+    it("should return null when finding non-existent token", async () => {
+      // Act
+      const result = await dbDalInstance.findOneTimePdfToken("non-existent-token")
+
+      // Assert
+      expect(result).toBeNull()
+    })
+
+    it("should mark a one-time PDF token as used", async () => {
+      // Arrange
+      const tokenData = {
+        token: "mark-used-token",
+        userId: "user-789",
+        projectId: 5,
+        variantId: 6,
+        expiresAt: new Date(Date.now() + 60000),
+      }
+      await dbDalInstance.createOneTimePdfToken(tokenData)
+
+      // Act
+      const result = await dbDalInstance.markOneTimePdfTokenAsUsed(tokenData.token)
+
+      // Assert
+      expect(result).toMatchObject({
+        token: tokenData.token,
+        userId: tokenData.userId,
+        projectId: tokenData.projectId,
+        variantId: tokenData.variantId,
+        used: true,
+      })
+    })
+
+    it("should preserve other fields when marking token as used", async () => {
+      // Arrange
+      const tokenData = {
+        token: "preserve-fields-token",
+        userId: "user-101",
+        projectId: 7,
+        variantId: 8,
+        expiresAt: new Date(Date.now() + 60000),
+      }
+      await dbDalInstance.createOneTimePdfToken(tokenData)
+
+      // Act
+      const result = await dbDalInstance.markOneTimePdfTokenAsUsed(tokenData.token)
+
+      // Assert
+      expect(result).toMatchObject({
+        token: tokenData.token,
+        userId: tokenData.userId,
+        projectId: tokenData.projectId,
+        variantId: tokenData.variantId,
+        expiresAt: tokenData.expiresAt,
+        used: true,
+      })
+    })
+
+    it("should handle multiple tokens correctly", async () => {
+      // Arrange
+      const tokens = [
+        {
+          token: "token-1",
+          userId: "user-1",
+          projectId: 1,
+          variantId: 1,
+          expiresAt: new Date(Date.now() + 60000),
+        },
+        {
+          token: "token-2",
+          userId: "user-2",
+          projectId: 2,
+          variantId: 2,
+          expiresAt: new Date(Date.now() + 120000),
+        },
+      ]
+
+      // Act - Create multiple tokens
+      for (const tokenData of tokens) {
+        await dbDalInstance.createOneTimePdfToken(tokenData)
+      }
+
+      // Assert - Verify each token can be found
+      for (const tokenData of tokens) {
+        const found = await dbDalInstance.findOneTimePdfToken(tokenData.token)
+        expect(found).toMatchObject({
+          token: tokenData.token,
+          userId: tokenData.userId,
+          projectId: tokenData.projectId,
+          variantId: tokenData.variantId,
+          used: false,
+        })
+      }
+
+      // Act - Mark one token as used
+      const firstToken = tokens[0]!
+      const secondToken = tokens[1]!
+      await dbDalInstance.markOneTimePdfTokenAsUsed(firstToken.token)
+
+      // Assert - Verify the first token is now used, second is still unused
+      const usedToken = await dbDalInstance.findOneTimePdfToken(firstToken.token)
+      const unusedToken = await dbDalInstance.findOneTimePdfToken(secondToken.token)
+
+      expect(usedToken).not.toBeNull()
+      expect(unusedToken).not.toBeNull()
+      expect(usedToken!.used).toBe(true)
+      expect(unusedToken!.used).toBe(false)
     })
   })
 

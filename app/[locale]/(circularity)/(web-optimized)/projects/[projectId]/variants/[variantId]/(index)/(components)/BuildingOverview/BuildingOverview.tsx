@@ -41,6 +41,7 @@ import {
 } from "lib/domain-logic/circularity/utils/validateCircularityData"
 import CircularityData from "./CircularityData"
 import MaterialCsvExportButton from "../CircularityIndexBreakdownByMaterialType/MaterialCsvExport/MaterialCsvExportButton"
+import ComponentCatalogPdfExportButton from "./ComponentCatalogPdfExportButton"
 
 const MissingDataMessage: FC<{ catalogPath: string }> = ({ catalogPath }) => {
   const t = useTranslations("CircularityTool.sections.overview")
@@ -129,15 +130,20 @@ const BuildingOverview = ({
           <h1 className="text-l max-w-xl font-bold leading-none tracking-tight dark:text-white lg:text-3xl">
             {t("title")}
           </h1>
-          {allDataAvailable && (
-            <MaterialCsvExportButton
-              catalogPath={catalogPath}
-              projectName={projectName}
-              projectId={projectId}
-              processCategories={processCategories}
-              circularityData={circularityData}
-            />
-          )}
+          <div className="flex gap-4">
+            {allDataAvailable && (
+              <>
+                <MaterialCsvExportButton
+                  catalogPath={catalogPath}
+                  projectName={projectName}
+                  projectId={projectId}
+                  processCategories={processCategories}
+                  circularityData={circularityData}
+                />
+                <ComponentCatalogPdfExportButton projectId={projectId} variantId={variantId} />
+              </>
+            )}
+          </div>
         </div>
         <h2 className="max-w-[50%]">
           <span className="text-2xl">{projectName}</span>

@@ -113,6 +113,75 @@ body {
   padding: 0;
   display: flex;
   flex-direction: column;
-
   font-size: 10pt;
+}
+
+/* Page break controls */
+.keep-together {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.page-break-before {
+  page-break-before: always;
+  break-before: page;
+}
+
+/* Headers */
+h1,
+h2,
+h3,
+h4 {
+  break-after: avoid;
+  page-break-after: avoid;
+  orphans: 3;
+}
+
+/* Lists and paragraphs */
+p,
+li {
+  orphans: 3;
+  widows: 3;
+}
+
+/* Module containers */
+.module-container {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: 2rem;
+}
+
+/* Component sections */
+.component-section {
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+/* Keep small components together */
+.component-item {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* Table controls */
+thead {
+  display: table-header-group;
+}
+
+tr {
+  page-break-inside: auto;
+  break-inside: auto;
+}
+
+/* Print-specific utilities */
+@media print {
+  .print-avoid-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-new-page {
+    break-before: page;
+    page-break-before: always;
+  }
 }

@@ -22,12 +22,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { getRequestId } from "app/(utils)/getRequestId"
 import { legacyDbHealthCheck } from "lib/domain-logic/system/healthCheck"
 import { dbDalInstance } from "prisma/queries/dalSingletons"
 
-export async function GET() {
+export const dynamic = "force-dynamic" // defaults to auto
+export const runtime = "nodejs" // defaults to edge
+
+export async function GET(request: NextRequest) {
   const healthResponse = {
     server: "ok",
     databases: {

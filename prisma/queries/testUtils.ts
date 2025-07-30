@@ -315,3 +315,7 @@ export const deleteAccessGroupIfExists = async (groupId: number) => {
     }
   })
 }
+
+export const truncateOneTimePdfTokenTable = async () => {
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "OneTimePdfToken" RESTART IDENTITY CASCADE;')
+}

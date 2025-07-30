@@ -449,6 +449,12 @@ export class LegacyDbDal {
       where: {
         id,
       },
+      include: {
+        project_attributes: {
+          where: { ident: "elca.bnb_nr" },
+          select: { text_value: true, numeric_value: true },
+        },
+      },
     })
   }
 

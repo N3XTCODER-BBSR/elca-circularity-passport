@@ -410,4 +410,21 @@ describe("legacyDb queries", () => {
       await deleteUserIfExists(userId)
     })
   })
+  describe("getPassportRelevantDataForProjectVariantFromLegacyDb", () => {
+    it("should return passport relevant data for a given project variant ID", async () => {
+      // Use a known project variant ID from your test DB, e.g. 1
+      const result = await legacyDbDalInstance.getPassportRelevantDataForProjectVariantFromLegacyDb(1)
+      expect(result).toBeDefined()
+      expect(result).not.toBeNull()
+      if (!result) throw new Error("No result returned from getPassportRelevantDataForProjectVariantFromLegacyDb")
+      expect(result).toHaveProperty("project_locations")
+      expect(result).toHaveProperty("projects_project_variants_project_idToprojects")
+      expect(result).toHaveProperty("project_constructions")
+      // Check some nested fields
+      expect(result.projects_project_variants_project_idToprojects).toHaveProperty("name")
+      expect(result.projects_project_variants_project_idToprojects).toHaveProperty("project_nr")
+      expect(result.project_locations).toHaveProperty("street")
+      expect(result.project_locations).toHaveProperty("city")
+    })
+  })
 })

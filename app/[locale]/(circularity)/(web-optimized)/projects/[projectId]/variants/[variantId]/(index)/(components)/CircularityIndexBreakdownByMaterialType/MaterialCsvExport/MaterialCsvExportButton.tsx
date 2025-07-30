@@ -117,7 +117,8 @@ export default function MaterialCsvExportButton(props: MaterialCsvExportProps) {
     const csvBuffer = mapCircularityDataToMaterialCsvTransformer(
       props.circularityData,
       fieldTranslations,
-      props.projectId
+      props.projectId,
+      props.projectName
     )
     const filename = generateCsvFilename(props.projectName, "Zirkulaeritaetsinventar")
     downloadCsvFile(filename, csvBuffer)
