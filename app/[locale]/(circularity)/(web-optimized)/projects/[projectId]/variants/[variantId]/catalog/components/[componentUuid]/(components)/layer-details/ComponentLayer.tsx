@@ -120,9 +120,9 @@ const ComponentLayer = ({
       data-testid={`component-layer__div__${layerData.component_id}`}
     >
       {!layerData.isExcluded &&
-        (!layerData.volume ||
-          !circulartyEnrichedLayerData.dismantlingPoints ||
-          !circulartyEnrichedLayerData.eolBuilt?.points) && (
+        (layerData.volume == null ||
+          circulartyEnrichedLayerData.dismantlingPoints == null ||
+          circulartyEnrichedLayerData.eolBuilt?.points == null) && (
           <div className="mb-6 flex">
             <Badge testId={layerData.component_id.toString()}>{layerTranslations("incomplete")}</Badge>
           </div>
