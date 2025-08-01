@@ -1,4 +1,13 @@
-## [Release 0.4.0] - 2025-01-27
+## [Release 0.4.1] - 2025-08-01
+
+### Fixed
+
+- **Component Detail View:**
+  - Prevent false positive "incomplete" badge for valid zero values
+
+---
+
+## [Release 0.4.0] - 2025-07-27
 
 ### Added
 
