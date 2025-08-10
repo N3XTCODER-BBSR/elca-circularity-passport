@@ -56,7 +56,7 @@ const AggregatedInventoryCsvExportButton = ({ projectName, circularityData }: Ci
 
   const generateAndDownloadCsv = () => {
     const csvContent = mapCircularityDataToAggregatedInventoryCsvTransformer(circularityData, fieldTranslations)
-    const filename = generateCsvFilename(projectName, "AggregatedInventory")
+    const filename = generateCsvFilename(projectName, "Zirkularitaetspotenzial")
     downloadCsvFile(filename, csvContent)
   }
 

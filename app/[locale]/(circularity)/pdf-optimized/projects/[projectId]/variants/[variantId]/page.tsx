@@ -1,6 +1,7 @@
 "use server"
 
 import { notFound } from "next/navigation"
+import { getTranslations } from "next-intl/server"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import getDataForPdfExportForProjectVariantId from "app/[locale]/(circularity)/(server-actions)/getDataForPdfExportForProjectVariantId"
 import { ensureVariantAccessible } from "app/[locale]/(circularity)/(utils)/ensureAccessible"
@@ -29,12 +30,6 @@ interface ProjectMetadata {
   bnbCoordinator: string
 }
 
-const LANG = {
-  DISMANTLING_POTENTIAL: "Rückbaupotenzial (Gebäude, gewichtet nach Volumen):",
-  CIRCULARITY_POTENTIAL: "Zirkularitätspotenzial (Gebäude, gewichtet nach Volumen):",
-  POINTS: "Punkte",
-} as const
-
 async function PdfPage({
   params,
   searchParams,
@@ -42,6 +37,7 @@ async function PdfPage({
   params: { projectId: string; variantId: string }
   searchParams?: { [key: string]: string | string[] }
 }) {
+  const t = await getTranslations("CircularityTool.sections.pdfExport")
   // --- One-time token validation (query param) ---
   const projectId = Number(params.projectId)
   const variantId = Number(params.variantId)
@@ -157,11 +153,11 @@ async function PdfPage({
     <div className="component-catalog-pdf" data-string="footerLabel">
       <div className="header mb-8 bg-gray-100 pt-6 text-gray-900">
         <div className="mx-auto max-w-[200mm] px-[5mm]">
-          <h1>Ergebnisbericht Zirkularitätstool mit Bauteilkatalog für Kriterium U.05 Kreislaufähigkeit BNB</h1>
+          <h1>{t("title")}</h1>
         </div>
       </div>
       <main className="content mx-auto max-w-[200mm] px-[5mm]">
-        <Section title="1. Projektdaten">
+        <Section title={t("sections.projectData")}>
           <ProjectData
             projectId={params.projectId}
             projectName={project.name}
@@ -172,19 +168,19 @@ async function PdfPage({
           />
         </Section>
 
-        <Section title="2. Grundlage" subtitle="Liste aller Bauteilkomponente">
+        <Section title={t("sections.components")} subtitle={t("sections.componentsSubtitle")}>
           <ComponentsList components={components} />
         </Section>
 
-        <Section title="3. Ergebnis">
+        <Section title={t("sections.results")}>
           <div className="text-s mb-6 grid grid-cols-[auto,1fr] gap-x-8 gap-y-2 text-gray-500">
-            <div>{LANG.DISMANTLING_POTENTIAL}</div>
+            <div>{t("results.dismantlingPotential")}</div>
             <div>
-              {formatNumber(totalMetricValues.dismantlingPoints)} {LANG.POINTS}
+              {formatNumber(totalMetricValues.dismantlingPoints)} {t("results.points")}
             </div>
-            <div>{LANG.CIRCULARITY_POTENTIAL}</div>
+            <div>{t("results.circularityPotential")}</div>
             <div>
-              {formatNumber(totalMetricValues.eolBuiltPoints)} {LANG.POINTS}
+              {formatNumber(totalMetricValues.eolBuiltPoints)} {t("results.points")}
             </div>
           </div>
           <hr className="my-4" />

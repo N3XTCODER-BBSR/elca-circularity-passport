@@ -37,7 +37,7 @@ interface TBaustoffEolData {
 }
 
 /**
- * Processes circularity data to aggregate by tBaustoff and EOL class
+ * Processes circularity data to aggregate by tBaustoff and EoL class
  */
 export function processCircularityDataForCsv(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[],
@@ -50,14 +50,14 @@ export function processCircularityDataForCsv(
 } {
   const tBaustoffMap = new Map<string, TBaustoffEolData>()
 
-  // Include all possible EOL classes, not just the ones present in the data
+  // Include all possible EoL classes, not just the ones present in the data
   // But leave out the 'N/A' special class
   const allEolClasses = Object.values(EolClasses).filter((eolClass) => eolClass !== EolClasses.NA)
 
   // Process each element and its layers
   circularityData.forEach((element) => {
     element.layers.forEach((layer) => {
-      // Skip layers without tBaustoff data or EOL class
+      // Skip layers without tBaustoff data or EoL class
       // TODO (L): during refactoring, we probably wanna use a type here that guarantees the presence of these properties
       if (!layer.tBaustoffProductData?.name || !layer.eolUnbuilt?.className) return
 
@@ -82,7 +82,7 @@ export function processCircularityDataForCsv(
         tBaustoffMap.set(tBaustoffName, tBaustoffEntry)
       }
 
-      // Add amount to the corresponding EOL class and total
+      // Add amount to the corresponding EoL class and total
       tBaustoffEntry.eolData[eolClass] += amount
       tBaustoffEntry.total += amount
     })
@@ -93,13 +93,13 @@ export function processCircularityDataForCsv(
     a.tBaustoffName.localeCompare(b.tBaustoffName)
   )
 
-  // Sort EOL classes by their enum order
+  // Sort EoL classes by their enum order
   const eolClasses = [...allEolClasses].sort((a, b) => {
     const order = Object.values(EolClasses)
     return order.indexOf(a) - order.indexOf(b)
   })
 
-  // Calculate total for each EOL class
+  // Calculate total for each EoL class
   const eolTotals = eolClasses.reduce(
     (acc, eolClass) => {
       acc[eolClass] = tBaustoffEolData.reduce((sum, item) => sum + item.eolData[eolClass], 0)
@@ -130,10 +130,10 @@ function createCsvSection(
     dimensionalFieldName
   )
 
-  // Create EOL class label row with section title in the first cell
+  // Create EoL class label row with section title in the first cell
   const eolClassLabelRow = [
     sectionTitle,
-    translations.eolClassLabel || "EOL class:",
+    translations.eolClassLabel || "EoL class:",
     ...eolClasses.slice(1).map(() => ""),
     "",
   ]
@@ -196,7 +196,7 @@ export function mapCircularityDataToAggregatedInventoryCsvTransformer(
     "volume",
     translations,
     translations.volumeSection || "Volume Data (m³)",
-    translations.totalVolumePerEolClass || "Total volume (m³) per EOL class",
+    translations.totalVolumePerEolClass || "Total volume (m³) per EoL class",
     translations.totalVolumePerMaterial || "Total volume (m³) per material"
   )
 
@@ -206,7 +206,7 @@ export function mapCircularityDataToAggregatedInventoryCsvTransformer(
     "mass",
     translations,
     translations.massSection || "Mass Data (kg)",
-    translations.totalMassPerEolClass || "Total mass (kg) per EOL class",
+    translations.totalMassPerEolClass || "Total mass (kg) per EoL class",
     translations.totalMassPerMaterial || "Total mass (kg) per material"
   )
 

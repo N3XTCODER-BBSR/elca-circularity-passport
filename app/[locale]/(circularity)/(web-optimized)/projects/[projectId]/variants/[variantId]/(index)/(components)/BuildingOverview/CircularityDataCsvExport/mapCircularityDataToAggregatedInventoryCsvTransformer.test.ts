@@ -90,7 +90,7 @@ function createMockLayer(
   } as CalculateCircularityDataForLayerReturnType
 }
 
-// Create mock test data with different materials and EOL classes
+// Create mock test data with different materials and EoL classes
 const mockCircularityData = [
   {
     element_uuid: "element-1",
@@ -149,10 +149,10 @@ const mockCircularityData = [
 // Constants for CSV strings (using actual UTF-8 characters since we'll decode properly)
 const CSV_STRINGS = {
   VOLUME_DATA: '"Volume Data (m³)"',
-  TOTAL_VOLUME: '"Total volume (m³) per EOL class"',
+  TOTAL_VOLUME: '"Total volume (m³) per EoL class"',
   TOTAL_VOLUME_PER_MATERIAL: '"Total volume (m³) per material"',
   MASS_DATA: '"Mass Data (kg)"',
-  TOTAL_MASS: '"Total mass (kg) per EOL class"',
+  TOTAL_MASS: '"Total mass (kg) per EoL class"',
   TOTAL_MASS_PER_MATERIAL: '"Total mass (kg) per material"',
 } as const
 
@@ -163,8 +163,8 @@ const mockTranslations = {
   massSection: "Mass Data (kg)",
   percentagePerClass: "% per class",
   aggregatedInventory: "Aggregated Inventory",
-  totalVolumePerEolClass: "Total volume (m³) per EOL class",
-  totalMassPerEolClass: "Total mass (kg) per EOL class",
+  totalVolumePerEolClass: "Total volume (m³) per EoL class",
+  totalMassPerEolClass: "Total mass (kg) per EoL class",
   totalVolumePerMaterial: "Total volume (m³) per material",
   totalMassPerMaterial: "Total mass (kg) per material",
 }
@@ -184,7 +184,7 @@ describe("mapCircularityDataToAggregatedInventoryCsvTransformer", () => {
       expect(concreteData?.eolData[EolClasses.B]).toBe(0.8) // From Floor Layer 2
       expect(concreteData?.total).toBe(1.4) // 0.6 + 0.8
 
-      // Check that all EOL classes except NA are included
+      // Check that all EoL classes except NA are included
       const expectedEolClassesCount = Object.values(EolClasses).filter((eolClass) => eolClass !== EolClasses.NA).length
       expect(result.eolClasses.length).toBe(expectedEolClassesCount)
 
@@ -249,7 +249,7 @@ describe("mapCircularityDataToAggregatedInventoryCsvTransformer", () => {
       expect(Object.values(result.eolTotals).every((total) => total === 0)).toBeTruthy()
     })
 
-    test("skips layers without tBaustoff data or EOL class", () => {
+    test("skips layers without tBaustoff data or EoL class", () => {
       const dataWithMissingInfo = [
         {
           element_uuid: "element-1",
@@ -265,7 +265,7 @@ describe("mapCircularityDataToAggregatedInventoryCsvTransformer", () => {
               volume: 0.5,
             }),
             createMockLayer({
-              eolUnbuilt: null, // Missing EOL class
+              eolUnbuilt: null, // Missing EoL class
               mass: 200,
               volume: 1.0,
             }),
@@ -301,7 +301,7 @@ describe("mapCircularityDataToAggregatedInventoryCsvTransformer", () => {
       expect(csvString).toContain('"Insulation"')
       expect(csvString).toContain('"Wood"')
 
-      // Check that the EOL classes are included as columns
+      // Check that the EoL classes are included as columns
       Object.values(EolClasses).forEach((eolClass) => {
         if (eolClass !== EolClasses.NA) {
           expect(csvString).toContain(`"${eolClass}"`)

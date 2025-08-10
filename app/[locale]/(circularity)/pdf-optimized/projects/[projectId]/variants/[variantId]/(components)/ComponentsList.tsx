@@ -1,4 +1,8 @@
+"use client"
+
+import { useTranslations } from "next-intl"
 import { formatNumber, formatRoman } from "lib/presentation-logic/formatters"
+import { formatUnit } from "lib/presentation-logic/circularity/formatUnit"
 
 interface Material {
   name: string
@@ -29,56 +33,60 @@ interface ComponentsListProps {
 }
 
 export function ComponentsList({ components }: ComponentsListProps) {
+  const t = useTranslations("CircularityTool.sections.pdfExport.components")
+
   return (
     <div className="space-y-6">
       {components.map((component, index) => (
-        <div key={index} className="print-avoid-break rounded border border-gray-200 p-4 shadow-sm">
+        <div key={index} className="print-avoid-break border border-gray-200 p-4">
           {/* Component name as header */}
           <h3 className="mb-4">{component.name}</h3>
 
           {/* Properties in 2-column layout */}
           <div className="mb-3 grid grid-cols-2 gap-x-12 gap-y-2">
             <div className="grid grid-cols-[auto,1fr] gap-x-4">
-              <div className="font-semibold">UUID:</div>
+              <div className="font-semibold">{t("uuid")}</div>
               <div>{component.uuid}</div>
 
-              <div className="font-semibold">Kostengruppe:</div>
+              <div className="font-semibold">{t("costGroup")}</div>
               <div>{component.costGroup}</div>
             </div>
 
             <div className="grid grid-cols-[auto,1fr] gap-x-4">
-              <div className="font-semibold">Installierte Anzahl:</div>
+              <div className="font-semibold">{t("installedQuantity")}</div>
               <div>{formatNumber(component.quantity, 2)}</div>
 
-              <div className="font-semibold">Referenzeinheit:</div>
-              <div>{component.referenceUnit}</div>
+              <div className="font-semibold">{t("referenceUnit")}</div>
+              <div>{formatUnit(component.referenceUnit)}</div>
             </div>
           </div>
 
           {/* Materials table */}
           <div className="keep-together mt-4">
-            <div className="mb-2 text-right text-sm italic text-gray-600">Angaben pro {component.referenceUnit}</div>
+            <div className="mb-2 text-right text-sm italic text-gray-600">
+              {t("dataPerUnit", { formattedUnit: formatUnit(component.referenceUnit) })}
+            </div>
             <table className="w-full">
               <thead className="border-b border-gray-300 text-sm">
                 <tr className="text-xs leading-tight">
-                  <th className="px-2 pb-2 text-left">Material</th>
-                  <th className="min-w-[60px] px-2 pb-2 text-right">Volumen</th>
-                  <th className="min-w-[60px] px-2 pb-2 text-right">Gewicht</th>
+                  <th className="px-2 pb-2 text-left">{t("tableHeaders.material")}</th>
+                  <th className="min-w-[60px] px-2 pb-2 text-right">{t("tableHeaders.volume")}</th>
+                  <th className="min-w-[60px] px-2 pb-2 text-right">{t("tableHeaders.weight")}</th>
                   <th className="px-2 pb-2 text-center" colSpan={2}>
-                    Rückbaupotenzial
+                    {t("tableHeaders.dismantlingPotential")}
                   </th>
                   <th className="px-2 pb-2 text-center" colSpan={2}>
-                    Zirkularitätspotenzial
+                    {t("tableHeaders.circularityPotential")}
                   </th>
                 </tr>
                 <tr className="text-xs leading-tight text-gray-500">
                   <th className="px-2 pb-2 text-left font-normal"></th>
-                  <th className="min-w-[60px] px-2 pb-2 text-right font-normal">m³</th>
-                  <th className="min-w-[60px] px-2 pb-2 text-right font-normal">kg</th>
-                  <th className="min-w-[50px] px-2 pb-2 text-right font-normal">Punkte</th>
-                  <th className="min-w-[50px] px-2 pb-2 text-left font-normal">Klasse</th>
-                  <th className="min-w-[50px] px-2 pb-2 text-right font-normal">Punkte</th>
-                  <th className="min-w-[50px] px-2 pb-2 text-left font-normal">Klasse</th>
+                  <th className="min-w-[60px] px-2 pb-2 text-right font-normal">{t("tableHeaders.volumeUnit")}</th>
+                  <th className="min-w-[60px] px-2 pb-2 text-right font-normal">{t("tableHeaders.weightUnit")}</th>
+                  <th className="min-w-[50px] px-2 pb-2 text-right font-normal">{t("tableHeaders.points")}</th>
+                  <th className="min-w-[50px] px-2 pb-2 text-left font-normal">{t("tableHeaders.class")}</th>
+                  <th className="min-w-[50px] px-2 pb-2 text-right font-normal">{t("tableHeaders.points")}</th>
+                  <th className="min-w-[50px] px-2 pb-2 text-left font-normal">{t("tableHeaders.class")}</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
