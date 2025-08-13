@@ -49,5 +49,7 @@ export function calculateEolDataByEolCateogryData(eolCategory: TBs_ProductDefini
     eolUnbuiltPotentialClassName: potentialClassName,
     eolUnbuiltTotalPoints: totalPoints,
     eolUnbuiltTotalClassName: totalClassName,
+    // Include the original technology factor from the database for direct use
+    technologyFactor: eolCategory.technologyFactor,
   }
 }

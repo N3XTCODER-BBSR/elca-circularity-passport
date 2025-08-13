@@ -152,7 +152,7 @@ const ProductHeader = ({ layerData, layerNumber, projectId, variantId, component
             },
             {
               label: metricsTranslations("class"),
-              valueItem: <DismantlingPotentialBadge value={circulartyEnrichedLayerData.dismantlingPoints || null} />,
+              valueItem: <DismantlingPotentialBadge value={circulartyEnrichedLayerData.dismantlingPoints ?? null} />,
             },
           ]}
         />

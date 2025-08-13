@@ -114,10 +114,9 @@ const calculateCircularityDataForLayer = (
 
   const eolScenarioReal = layerData.tBaustoffProductData?.eolData?.eolUnbuiltRealScenario ?? null
   const eolScenarioPotential = layerData.tBaustoffProductData?.eolData?.eolUnbuiltPotentialScenario ?? null
-  const technologyFactor = layerData.tBaustoffProductData?.eolData
-    ? layerData.tBaustoffProductData.eolData.eolUnbuiltPotentialPoints /
-      layerData.tBaustoffProductData.eolData.eolUnbuiltRealPoints
-    : null
+
+  // Use the stored technology factor from the database
+  const technologyFactor = layerData.tBaustoffProductData?.eolData?.technologyFactor ?? null
 
   const manuallyEnteredValues = {
     eolUnbuilt: layerData.eolUnbuiltSpecificScenario !== null,

@@ -46,3 +46,6 @@ generated
 playwright/.auth
 performance-summary.json
 
+# TypeScript build info
+*.tsbuildinfo
+tsconfig.tsbuildinfo

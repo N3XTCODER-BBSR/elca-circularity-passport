@@ -40,6 +40,8 @@ type ElcaProjectComponentLayerEolData = {
   // TODO (M): Check if this is actually needed at this point (maybe better calculated on the fly?)
   eolUnbuiltTotalPoints: number
   eolUnbuiltTotalClassName: EolClasses
+  // Include the original technology factor from the database
+  technologyFactor: number
 }
 
 export type TBaustoffProductData = {

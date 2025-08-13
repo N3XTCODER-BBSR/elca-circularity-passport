@@ -22,13 +22,7 @@ import {
   calculateBnbCircularityPoints,
   calculateBnbDismantlingPoints,
 } from "lib/domain-logic/circularity/utils/calculateBnbPoints"
-import { formatNumber } from "lib/presentation-logic/formatters"
-
-interface ProjectMetadata {
-  address: string
-  bnbNumber: string
-  bnbCoordinator: string
-}
+import { formatNumber, formatProjectAddress } from "lib/presentation-logic/formatters"
 
 async function PdfPage({
   params,
@@ -121,32 +115,11 @@ async function PdfPage({
 
   const currentDate = new Date().toLocaleDateString("de-DE")
 
-  // Get project metadata from description field (stored as JSON)
-  let projectMetadata: ProjectMetadata = {
-    address: "",
-    bnbNumber: "",
-    bnbCoordinator: "",
-  }
-
-  try {
-    if (project.description) {
-      // TODO: consider using zod to parse the project metadata
-      const parsed = JSON.parse(project.description) as ProjectMetadata
-      projectMetadata = {
-        address: parsed.address || "",
-        bnbNumber: parsed.bnbNumber || "",
-        bnbCoordinator: parsed.bnbCoordinator || "",
-      }
-    }
-  } catch (e) {
-    console.error("Failed to parse project metadata", e)
-  }
-
-  // Compose address from legacy DB fields if available
-  let address = projectMetadata.address
+  // Get address from legacy DB fields
+  let address = ""
   if (legacyVariantData?.data?.project_locations) {
     const loc = legacyVariantData.data.project_locations
-    address = `${loc.street || ""}, ${loc.postcode || ""} ${loc.city || ""}`
+    address = formatProjectAddress(loc)
   }
 
   return (
@@ -163,7 +136,7 @@ async function PdfPage({
             projectName={project.name}
             address={address}
             bnbNumber={project.bnbNr || ""}
-            bnbCoordinator={projectMetadata.bnbCoordinator}
+            bnbCoordinator=""
             creationDate={currentDate}
           />
         </Section>

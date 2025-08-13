@@ -110,12 +110,30 @@ async function seedCircularityTool() {
         console.warn(`Invalid scenarios in row: ${JSON.stringify(row)}`)
         continue
       }
+
+      // Validate technology factor is within valid bounds (0 ≤ TF ≤ 1)
+      const technologyFactor = parseFloat(row.technologyFactor)
+      if (isNaN(technologyFactor)) {
+        throw new Error(
+          `Invalid technology factor format "${row.technologyFactor}" in row: ${JSON.stringify(
+            row
+          )}. Technology factor must be a valid number.`
+        )
+      }
+      if (technologyFactor < 0 || technologyFactor > 1) {
+        throw new Error(
+          `Technology factor ${technologyFactor} is out of valid range [0, 1] in row: ${JSON.stringify(
+            row
+          )}. Technology factor must be between 0 and 1 (inclusive).`
+        )
+      }
+
       // Generate a unique key for the EOLCategory
       const eolCategoryKey = JSON.stringify({
         name: row.eolCategoryName,
         eolScenarioReal,
         eolScenarioPotential,
-        technologyFactor: parseFloat(row.technologyFactor),
+        technologyFactor: technologyFactor,
       })
       let eolCategoryId: number
       // Check if the EOLCategory exists in cache or DB
