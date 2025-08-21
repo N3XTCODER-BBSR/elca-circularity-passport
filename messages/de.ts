@@ -166,7 +166,7 @@ const translationsGrpPlattformGeneric = {
   detailPage: {
     component: {
       back: "Zurück",
-      componentName: "Komponenten-Name",
+      componentName: "Name Bauteil",
       uuid: "UUID",
       costGroup: "Kostengruppe DIN276",
     },
@@ -424,6 +424,11 @@ const translationsPlattformGeneric = {
         "Das BBSR (Bundesinstitut für Bau-, Stadt-und Raumforschung, Referat WB6 Bauen und Umwelt) stellt dieses Tool kostenlos zur Verfügung.",
       project: "Projekt",
       exportPdf: "PDF Exportieren",
+      pages: {
+        overview: "Ressourcenpass für Gebäude",
+        passportDetail: "Gebäude-Details",
+        passportCatalog: "Ressourcenpass Katalog",
+      },
       NavBar: {
         overview: "Überblick",
         catalog: "Katalog",
@@ -446,6 +451,14 @@ const translationsPlattformGeneric = {
     },
   },
   CircularityTool: {
+    pages: {
+      overview: "Zirkularitätsbewertung",
+      projects: "Projekte - Zirkularitätsindex",
+      projectVariants: "Projektvarianten",
+      componentCatalog: "Katalog",
+      componentDetail: "Komponenten-Details",
+      pdfExport: "PDF-Export",
+    },
     sections: {
       overview: {
         projectNotFound: "Projekt mit dieser ID für den aktuellen Benutzer nicht gefunden.",
@@ -489,7 +502,7 @@ const translationsPlattformGeneric = {
           tBaustoffAndEolClassColTitle: "tBaustoff / EoL-Klasse",
           volumeSection: "Zirkularitätspotenzial, bzgl. Volumen (m³)",
           massSection: "Zirkularitätspotenzial, bzgl. Masse (kg)",
-          exportAggregatedInventoryToCsv: "Exportieren (csv)",
+          exportAggregatedInventoryToCsv: "Exportieren (CSV)",
           totalVolumePerEolClass: "Gesamtvolumen (m³) pro EoL-Klasse",
           totalMassPerEolClass: "Gesamtmasse (kg) pro EoL-Klasse",
           percentagePerClass: "Gesamtpunkte (%) pro EoL-Klasse",
@@ -640,6 +653,7 @@ const translationsPlattformGeneric = {
       userTestingGuide: "Benutzerguide",
       privacyPolicy: "Datenschutz",
       imprint: "Impressum",
+      accessibility: "Barrierefreiheit",
     },
     copyright: "BBSR Alle Rechte vorbehalten.",
   },

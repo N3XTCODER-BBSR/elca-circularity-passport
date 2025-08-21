@@ -26,13 +26,14 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import Image from "next/image"
-import { useFormatter, useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 import toast from "react-hot-toast"
 import Toggle from "app/(components)/generic/Toggle"
 import { toggleExcludedProduct } from "app/[locale]/(circularity)/(server-actions)/toggleExcludedProduct"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
 import {
   calculateMaterialCompatibility,
   getDisturbingSubstancesString,
@@ -57,7 +58,7 @@ const ProductHeader = ({ layerData, layerNumber, projectId, variantId, component
   const layerTranslations = useTranslations("Circularity.Components.Layers")
   const productTranslations = useTranslations("Circularity.Components.Layers.headers")
   const metricsTranslations = useTranslations("Circularity.Components.Layers.headers.metrics")
-  const format = useFormatter()
+  const { formatCircularityMetric } = useCircularityFormatter()
   const queryClient = useQueryClient()
   const [refetching, setRefetching] = useState(false)
 
@@ -95,7 +96,7 @@ const ProductHeader = ({ layerData, layerNumber, projectId, variantId, component
   const materialCompatibilityDisplay =
     materialCompatibility !== null
       ? typeof materialCompatibility === "number"
-        ? format.number(materialCompatibility, { maximumFractionDigits: 2 })
+        ? formatCircularityMetric(materialCompatibility)
         : materialCompatibility
       : "-"
 
@@ -130,7 +131,7 @@ const ProductHeader = ({ layerData, layerNumber, projectId, variantId, component
               label: metricsTranslations("points"),
               value:
                 circulartyEnrichedLayerData.eolUnbuilt?.points != null
-                  ? format.number(circulartyEnrichedLayerData.eolUnbuilt?.points, { maximumFractionDigits: 2 })
+                  ? formatCircularityMetric(circulartyEnrichedLayerData.eolUnbuilt?.points)
                   : "-",
             },
             {
@@ -147,7 +148,7 @@ const ProductHeader = ({ layerData, layerNumber, projectId, variantId, component
               label: metricsTranslations("points"),
               value:
                 circulartyEnrichedLayerData.dismantlingPoints != null
-                  ? format.number(circulartyEnrichedLayerData.dismantlingPoints, { maximumFractionDigits: 2 })
+                  ? formatCircularityMetric(circulartyEnrichedLayerData.dismantlingPoints)
                   : "-",
             },
             {
@@ -174,7 +175,7 @@ const ProductHeader = ({ layerData, layerNumber, projectId, variantId, component
               label: metricsTranslations("points"),
               value:
                 circulartyEnrichedLayerData.eolBuilt?.points != null
-                  ? format.number(circulartyEnrichedLayerData.eolBuilt?.points, { maximumFractionDigits: 2 })
+                  ? formatCircularityMetric(circulartyEnrichedLayerData.eolBuilt?.points)
                   : "-",
             },
             {

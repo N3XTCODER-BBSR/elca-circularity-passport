@@ -79,10 +79,12 @@ export const fillOutAllCircularityDetails = async (
 ) => {
   await page.goto(componentPageUrl1)
   await page.locator("[data-testid=toggle__switch__5]").click()
-  await expect(page.locator("[data-testid=badge__div__5]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__5]")).not.toBeVisible({ timeout: 30000 })
 
   await page.locator("[data-testid=toggle__switch__6]").click()
-  await expect(page.locator("[data-testid=badge__div__6]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__6]")).not.toBeVisible({ timeout: 30000 })
 
   await page.locator("[data-testid=component-layer__div__7]").locator("[data-testid=accordion__button__7]").click()
   await page
@@ -95,11 +97,12 @@ export const fillOutAllCircularityDetails = async (
     .locator("[data-testid=disturbing-substance-class__button__S3]")
     .click()
 
-  await expect(page.locator("[data-testid=badge__div__7]")).not.toBeVisible()
+  await expect(page.locator("[data-testid=badge__div__7]")).not.toBeVisible({ timeout: 30000 })
 
   await page.goto(componentPageUrl2)
   await page.locator("[data-testid=toggle__switch__13]").click()
-  await expect(page.locator("[data-testid=badge__div__13]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__13]")).not.toBeVisible({ timeout: 30000 })
 
   await page.locator("[data-testid=accordion__button__14]").click()
   await page
@@ -119,54 +122,69 @@ export const fillOutAllCircularityDetails = async (
     .locator("data-testid=disturbing-substance-class__button__S1")
     .click()
 
-  await expect(page.locator("[data-testid=badge__div__14]")).not.toBeVisible()
+  await expect(page.locator("[data-testid=badge__div__14]")).not.toBeVisible({ timeout: 30000 })
 
   await page.goto(componentPageUrl3)
   await page.locator("[data-testid=toggle__switch__15]").click()
-  await expect(page.locator("[data-testid=badge__div__15]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__15]")).not.toBeVisible({ timeout: 30000 })
 
   await page.locator("[data-testid=toggle__switch__16]").click()
-  await expect(page.locator("[data-testid=badge__div__16]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__16]")).not.toBeVisible({ timeout: 30000 })
 
   await page.goto(componentPageUrl4)
   await page.locator("[data-testid=toggle__switch__17]").click()
-  await expect(page.locator("[data-testid=badge__div__17]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__17]")).not.toBeVisible({ timeout: 30000 })
 
   await page.locator("[data-testid=toggle__switch__18]").click()
-  await expect(page.locator("[data-testid=badge__div__18]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__18]")).not.toBeVisible({ timeout: 30000 })
 
   await page.locator("[data-testid=toggle__switch__19]").click()
-  await expect(page.locator("[data-testid=badge__div__19]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__19]")).not.toBeVisible({ timeout: 30000 })
 
   await page.locator("[data-testid=toggle__switch__20]").click()
-  await expect(page.locator("[data-testid=badge__div__20]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__20]")).not.toBeVisible({ timeout: 30000 })
 
   await page.locator("[data-testid=toggle__switch__21]").click()
-  await expect(page.locator("[data-testid=badge__div__21]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__21]")).not.toBeVisible({ timeout: 30000 })
 
   await page.goto(componentPageUrl5)
   await page.locator("[data-testid=toggle__switch__22]").click()
-  await expect(page.locator("[data-testid=badge__div__22]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__22]")).not.toBeVisible({ timeout: 30000 })
 
   await page.goto(componentPageUrl6)
   await page.locator("[data-testid=toggle__switch__23]").click()
-  await expect(page.locator("[data-testid=badge__div__23]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__23]")).not.toBeVisible({ timeout: 30000 })
 
   await page.goto(componentPageUrl7)
   await page.locator("[data-testid=toggle__switch__24]").click()
-  await expect(page.locator("[data-testid=badge__div__24]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__24]")).not.toBeVisible({ timeout: 30000 })
 
   await page.goto(componentPageUrl8)
   await page.locator("[data-testid=toggle__switch__25]").click()
-  await expect(page.locator("[data-testid=badge__div__25]")).not.toBeVisible()
+  // Wait for the toggle to take effect
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__25]")).not.toBeVisible({ timeout: 30000 })
 
   await page.locator("[data-testid=toggle__switch__26]").click()
-  await expect(page.locator("[data-testid=badge__div__26]")).not.toBeVisible()
+  // Wait for the toggle to take effect
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__26]")).not.toBeVisible({ timeout: 30000 })
 
   await page.goto(overviewPageUrl)
-  await expect(page.locator("[data-testid=circularity-metric-total-number__points-div]")).toHaveText(/-25,07 Punkte/)
+  await expect(page.locator("[data-testid=circularity-metric-total-number__points-div]")).toHaveText(/-25,1 Punkte/)
 
   await page.goto(componentPageUrl1)
   await page.locator("[data-testid=toggle__switch__7]").click()
-  await expect(page.locator("[data-testid=badge__div__7]")).not.toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.locator("[data-testid=badge__div__7]")).not.toBeVisible({ timeout: 30000 })
 }

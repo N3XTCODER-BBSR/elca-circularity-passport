@@ -1,6 +1,31 @@
+/**
+ * This file is part of the "eLCA Circularity Index and Building Resource Passport" project.
+ *
+ * Circularity Index
+ * A web-based add-on to eLCA, to calculate the circularity index of a building according to "BNB-Steckbrief 07 Kreislauffähigkeit".
+ *
+ * Building Resource Passport
+ * A website for exploring and downloading normed sustainability indicators of a building.
+ *
+ * Copyright (c) 2024 N3xtcoder <info@n3xtcoder.org>
+ * Nextcoder Softwareentwicklungs GmbH - http://n3xtcoder.org/
+ *
+ * Primary License:
+ * This project is licensed under the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * Additional Notice:
+ * This file also contains code originally licensed under the MIT License.
+ * Please see the LICENSE file in the root of the repository for details.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
+ */
 "use server"
 
 import { notFound } from "next/navigation"
+import { Metadata } from "next/types"
 import { getTranslations } from "next-intl/server"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import getDataForPdfExportForProjectVariantId from "app/[locale]/(circularity)/(server-actions)/getDataForPdfExportForProjectVariantId"
@@ -22,7 +47,16 @@ import {
   calculateBnbCircularityPoints,
   calculateBnbDismantlingPoints,
 } from "lib/domain-logic/circularity/utils/calculateBnbPoints"
-import { formatNumber, formatProjectAddress } from "lib/presentation-logic/formatters"
+import { formatProjectAddress } from "lib/presentation-logic/formatters"
+import { formatCircularityMetricServer } from "lib/presentation-logic/circularity/formatCircularityMetric"
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("CircularityTool.pages")
+
+  return {
+    title: t("pdfExport"),
+  }
+}
 
 async function PdfPage({
   params,
@@ -142,18 +176,18 @@ async function PdfPage({
         </Section>
 
         <Section title={t("sections.components")} subtitle={t("sections.componentsSubtitle")}>
-          <ComponentsList components={components} />
+          <ComponentsList components={components} locale="de" />
         </Section>
 
         <Section title={t("sections.results")}>
           <div className="text-s mb-6 grid grid-cols-[auto,1fr] gap-x-8 gap-y-2 text-gray-500">
             <div>{t("results.dismantlingPotential")}</div>
             <div>
-              {formatNumber(totalMetricValues.dismantlingPoints)} {t("results.points")}
+              {await formatCircularityMetricServer(totalMetricValues.dismantlingPoints, "de")} {t("results.points")}
             </div>
             <div>{t("results.circularityPotential")}</div>
             <div>
-              {formatNumber(totalMetricValues.eolBuiltPoints)} {t("results.points")}
+              {await formatCircularityMetricServer(totalMetricValues.eolBuiltPoints, "de")} {t("results.points")}
             </div>
           </div>
           <hr className="my-4" />
@@ -162,6 +196,7 @@ async function PdfPage({
             circularityPoints={totalMetricValues.eolBuiltPoints}
             weightedDismantlingPoints={calculateBnbDismantlingPoints(totalMetricValues.dismantlingPoints)}
             weightedCircularityPoints={calculateBnbCircularityPoints(totalMetricValues.eolBuiltPoints)}
+            locale="de"
           />
         </Section>
       </main>

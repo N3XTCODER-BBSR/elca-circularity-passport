@@ -23,8 +23,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 
-import iconv from "iconv-lite"
-import { formatCsvRows } from "app/(utils)/csvExportUtils"
+import { formatCsvRows, convertCsvToUtf8Buffer } from "app/(utils)/csvExportUtils"
 import { DimensionalFieldName } from "lib/domain-logic/circularity/misc/domain-types"
 import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
@@ -222,6 +221,6 @@ export function mapCircularityDataToAggregatedInventoryCsvTransformer(
   // Format CSV with semicolon separator and quoted fields
   const csvContent = formatCsvRows(csvData)
 
-  // Convert to Buffer with ISO-8859-15 encoding for Excel compatibility
-  return iconv.encode(csvContent, "iso-8859-15")
+  // Convert to Buffer with UTF-8 encoding and BOM for Excel compatibility
+  return convertCsvToUtf8Buffer(csvContent)
 }

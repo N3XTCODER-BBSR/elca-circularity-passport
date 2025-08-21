@@ -428,6 +428,11 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
         "El BBSR (Instituto Federal de Investigación sobre la Construcción, Asuntos Urbanos y Espaciales, Sección WB6 Construcción y Medio Ambiente) proporciona esta herramienta de forma gratuita.",
       project: "Proyecto",
       exportPdf: "Exportar PDF",
+      pages: {
+        overview: "Pasaporte de Recursos para Edificios",
+        passportDetail: "Detalles del Edificio",
+        passportCatalog: "Catálogo de Pasaportes",
+      },
       NavBar: {
         overview: "Resumen",
         catalog: "Catálogo",
@@ -450,6 +455,14 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
     },
   },
   CircularityTool: {
+    pages: {
+      overview: "Evaluación de Circularidad",
+      projects: "Proyectos - Índice de Circularidad",
+      projectVariants: "Variantes del Proyecto",
+      componentCatalog: "Catálogo de Componentes",
+      componentDetail: "Detalles del Componente",
+      pdfExport: "Exportar PDF",
+    },
     sections: {
       passportsForProject: {
         title: "Pases de Recursos Generados del Edificio",
@@ -546,7 +559,7 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           tBaustoffAndEolClassColTitle: "tBaustoff / Clase EoL",
           volumeSection: "Potencial de Circularidad, datos de Volumen (m³)",
           massSection: "Potencial de Circularidad, datos de Masa (kg)",
-          exportAggregatedInventoryToCsv: "Exportar (csv)",
+          exportAggregatedInventoryToCsv: "Exportar (CSV)",
           totalVolumePerEolClass: "Volumen total (m³) por clase EoL",
           totalMassPerEolClass: "Masa total (kg) por clase EoL",
           percentagePerClass: "Porcentaje total (%) por clase EoL",
@@ -645,6 +658,7 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
       userTestingGuide: "Guía de Usuario",
       privacyPolicy: "Política de Privacidad",
       imprint: "Aviso legal",
+      accessibility: "Accesibilidad",
     },
     copyright: "BBSR Todos los derechos reservados.",
   },

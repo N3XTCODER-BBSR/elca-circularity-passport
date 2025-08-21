@@ -22,6 +22,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
+import { Metadata } from "next/types"
+import { getTranslations } from "next-intl/server"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { ensureVariantAccessible } from "app/[locale]/(circularity)/(utils)/ensureAccessible"
 import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
@@ -30,7 +32,16 @@ import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/dom
 import { getElcaElementsForVariantId } from "lib/domain-logic/circularity/misc/getElcaElementsForProjectId"
 import { getProjectCircularityData } from "lib/domain-logic/circularity/misc/getProjectCircularityData"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { getProjectById } from "lib/domain-logic/circularity/projects/getProjectById"
 import ProjectCatalog from "./(components)/ProjectCatalog"
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("CircularityTool.pages")
+
+  return {
+    title: t("componentCatalog"),
+  }
+}
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
   return withServerComponentErrorHandling(async () => {

@@ -24,6 +24,7 @@
  */
 
 import { notFound } from "next/navigation"
+import { Metadata } from "next/types"
 import { getTranslations } from "next-intl/server"
 import ListItemLink from "app/(components)/generic/ListItemLink"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
@@ -31,6 +32,14 @@ import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/auth/ensureAuthorized"
 import { getProjectDataWithVariants } from "lib/domain-logic/circularity/projects/getProjectDataWithVariants"
 import ProjectLayout from "../../(components)/ProjectLayout"
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("CircularityTool.pages")
+
+  return {
+    title: t("projectVariants"),
+  }
+}
 
 const Page = async ({ params }: { params: { projectId: string } }) => {
   return withServerComponentErrorHandling(async () => {

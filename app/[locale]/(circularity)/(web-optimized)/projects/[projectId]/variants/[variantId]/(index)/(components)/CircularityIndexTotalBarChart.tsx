@@ -23,9 +23,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { ResponsiveBar } from "@nivo/bar"
-import { useFormatter } from "next-intl"
 import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
 import { circularityMetricBarChartColorMapping } from "lib/domain-logic/shared/styleConstants"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
 
 const CircularityIndexTotalBarChart = ({
   circularityTotalIndexPoints,
@@ -36,7 +36,7 @@ const CircularityIndexTotalBarChart = ({
   margin: { top: number; right: number; bottom: number; left: number }
   metricType: MetricType
 }) => {
-  const format = useFormatter()
+  const { formatCircularityMetric } = useCircularityFormatter()
 
   return (
     <>
@@ -93,8 +93,7 @@ const CircularityIndexTotalBarChart = ({
               borderRadius: "4px",
             }}
           >
-            <b>{d.data.identifier}</b>:{" "}
-            {format.number(d.data.datum, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}
+            <b>{d.data.identifier}</b>: {formatCircularityMetric(d.data.datum)}
           </div>
         )}
         totalsOffset={9}

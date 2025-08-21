@@ -32,11 +32,12 @@ import {
   mapCircularityDataToAggregatedInventoryCsvTransformer,
   processCircularityDataForCsv,
 } from "./mapCircularityDataToAggregatedInventoryCsvTransformer"
-import iconv from "iconv-lite"
 
-// Helper function to decode ISO-8859-15 buffer to string
+// Helper function to decode UTF-8 buffer with BOM to string
 const decodeCsvBuffer = (buffer: Buffer): string => {
-  return iconv.decode(buffer, "iso-8859-15")
+  // Remove UTF-8 BOM and decode as UTF-8
+  const contentWithoutBom = buffer.slice(3) // Skip BOM bytes
+  return contentWithoutBom.toString("utf8")
 }
 
 /**

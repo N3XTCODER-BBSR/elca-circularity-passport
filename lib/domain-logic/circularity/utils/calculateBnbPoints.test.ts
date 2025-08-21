@@ -25,34 +25,34 @@
 import { calculateBnbDismantlingPoints, calculateBnbCircularityPoints } from "./calculateBnbPoints"
 
 describe("calculateBnbDismantlingPoints", () => {
-  it("returns 30 for RGeb >= 50", () => {
-    expect(calculateBnbDismantlingPoints(50)).toBe(30)
-    expect(calculateBnbDismantlingPoints(60)).toBe(30)
+  it("returns 25 for RGeb >= 45", () => {
+    expect(calculateBnbDismantlingPoints(45)).toBe(25)
+    expect(calculateBnbDismantlingPoints(60)).toBe(25)
   })
-  it("returns 0 for RGeb <= 20", () => {
-    expect(calculateBnbDismantlingPoints(20)).toBe(0)
-    expect(calculateBnbDismantlingPoints(10)).toBe(0)
+  it("returns 0 for RGeb <= 7.5", () => {
+    expect(calculateBnbDismantlingPoints(7.5)).toBe(0)
+    expect(calculateBnbDismantlingPoints(5)).toBe(0)
   })
-  it("interpolates and rounds for 20 < RGeb < 50", () => {
-    expect(calculateBnbDismantlingPoints(35)).toBe(15)
-    expect(calculateBnbDismantlingPoints(34)).toBe(14)
-    expect(calculateBnbDismantlingPoints(21)).toBe(1)
-    expect(calculateBnbDismantlingPoints(49)).toBe(29)
+  it("interpolates and rounds for 7.5 < RGeb < 45", () => {
+    expect(calculateBnbDismantlingPoints(26.25)).toBe(13)
+    expect(calculateBnbDismantlingPoints(26)).toBe(12)
+    expect(calculateBnbDismantlingPoints(8)).toBe(0)
+    expect(calculateBnbDismantlingPoints(44)).toBe(24)
   })
 })
 
 describe("calculateBnbCircularityPoints", () => {
-  it("returns 60 for ZGeb >= 60", () => {
-    expect(calculateBnbCircularityPoints(60)).toBe(60)
-    expect(calculateBnbCircularityPoints(70)).toBe(60)
+  it("returns 50 for ZGeb >= 60", () => {
+    expect(calculateBnbCircularityPoints(60)).toBe(50)
+    expect(calculateBnbCircularityPoints(70)).toBe(50)
   })
   it("returns 0 for ZGeb <= 20", () => {
     expect(calculateBnbCircularityPoints(20)).toBe(0)
     expect(calculateBnbCircularityPoints(10)).toBe(0)
   })
   it("interpolates and rounds for 20 < ZGeb < 60", () => {
-    expect(calculateBnbCircularityPoints(40)).toBe(30)
-    expect(calculateBnbCircularityPoints(21)).toBe(2)
-    expect(calculateBnbCircularityPoints(59)).toBe(59)
+    expect(calculateBnbCircularityPoints(40)).toBe(25)
+    expect(calculateBnbCircularityPoints(21)).toBe(1)
+    expect(calculateBnbCircularityPoints(59)).toBe(49)
   })
 })

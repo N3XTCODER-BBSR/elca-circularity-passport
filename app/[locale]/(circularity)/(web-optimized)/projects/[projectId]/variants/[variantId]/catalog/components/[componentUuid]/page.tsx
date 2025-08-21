@@ -24,6 +24,7 @@
  */
 
 import { notFound } from "next/navigation"
+import { Metadata } from "next/types"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
 import { ensureUserAuthorizationToElementByUuid } from "lib/auth/ensureAuthorized"
@@ -33,6 +34,12 @@ import {
 } from "lib/domain-logic/circularity/components/getComponentsData"
 
 import { ComponentPageClientComponent } from "./(components)/ComponentClientPageComponent"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Component Details",
+  }
+}
 
 const Page = async ({
   params,

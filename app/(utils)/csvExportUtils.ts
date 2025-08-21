@@ -27,7 +27,23 @@ import iconv from "iconv-lite"
 /**
  * Encoding used for CSV files to ensure proper handling of special characters in Excel
  */
-const CSV_ENCODING = "iso-8859-15"
+const CSV_ENCODING = "utf8"
+
+/**
+ * UTF-8 BOM bytes for Excel compatibility
+ */
+const UTF8_BOM = Buffer.from([0xef, 0xbb, 0xbf])
+
+/**
+ * Converts CSV content to a Buffer with UTF-8 encoding and BOM for Excel compatibility
+ *
+ * @param {string} csvContent - The CSV content string
+ * @returns {Buffer} The CSV content as a Buffer with UTF-8 BOM
+ */
+export const convertCsvToUtf8Buffer = (csvContent: string): Buffer => {
+  const csvBuffer = Buffer.from(csvContent, "utf8")
+  return Buffer.concat([UTF8_BOM, csvBuffer])
+}
 
 /**
  * Type for objects that can be converted to CSV
@@ -63,12 +79,12 @@ export const formatCsvRows = (rows: (string | number | null | undefined)[][]): s
 }
 
 /**
- * Converts an array of objects to a CSV string format using ISO-8859-15 encoding,
+ * Converts an array of objects to a CSV string format using UTF-8 encoding with BOM,
  * semicolon separators, and double quotes for all fields.
  *
  * @param {T[]} data - The array of objects to convert to CSV
  * @param {Record<string, string>} fieldTranslations - Object mapping field names to their translated headers
- * @returns {Buffer} CSV content as a buffer with ISO-8859-15 encoding
+ * @returns {Buffer} CSV content as a buffer with UTF-8 encoding and BOM
  */
 export const convertToCSV = <T extends CsvConvertible>(
   data: T[],
@@ -93,9 +109,9 @@ export const convertToCSV = <T extends CsvConvertible>(
     ),
   ]
 
-  // Format the rows and convert to ISO-8859-15
+  // Format the rows and convert to UTF-8 with BOM
   const csvContent = formatCsvRows(csvRows)
-  return iconv.encode(csvContent, CSV_ENCODING)
+  return convertCsvToUtf8Buffer(csvContent)
 }
 
 /**

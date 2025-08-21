@@ -25,7 +25,7 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useFormatter, useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 import { useState, useEffect, useCallback } from "react"
 import toast from "react-hot-toast"
 import { twMerge } from "tailwind-merge"
@@ -48,6 +48,7 @@ import {
   EOLScenarioMap,
 } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { CallServerActionError } from "lib/errors"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
 import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import BuiltS4SpecificScenarioModal from "./disturbing-substances/BuiltS4SpecificScenarioModal"
 import DisturbingSubstances from "./DisturbingSubstances"
@@ -61,19 +62,13 @@ type EolDataSectionProps = {
   layerDatacirculartyEnrichedLayerData: CalculateCircularityDataForLayerReturnType
 }
 
-// Hint: we defined this custom type here because of tsc complaining about not finding the actual type 'Formatter' from the next-intl library.
-type Formatter = {
-  number: (
-    num: number,
-    config: {
-      maximumFractionDigits: number
-    }
-  ) => string
-}
-
 type Translation = (text: string) => string
 
-const formatEolUnbuiltData = (data: EolUnbuiltData | null, format: Formatter, t: Translation) => {
+const formatEolUnbuiltData = (
+  data: EolUnbuiltData | null,
+  formatCircularityMetric: (value: number | null | undefined) => string,
+  t: Translation
+) => {
   if (!data) {
     return []
   }
@@ -89,7 +84,7 @@ const formatEolUnbuiltData = (data: EolUnbuiltData | null, format: Formatter, t:
     },
     {
       key: `${t("EolUnbuilt.Points.points")} ${keySuffix}`, // TODO: i18n
-      value: format.number(eolPoints, { maximumFractionDigits: 2 }),
+      value: formatCircularityMetric(eolPoints),
       testId: "eol-unbuilt-points",
     },
   ]
@@ -97,12 +92,16 @@ const formatEolUnbuiltData = (data: EolUnbuiltData | null, format: Formatter, t:
 
 const EolDataSection = ({ layerDatacirculartyEnrichedLayerData }: EolDataSectionProps) => {
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo.EolDataSection")
-  const format = useFormatter()
+  const { formatCircularityMetric } = useCircularityFormatter()
 
   if (layerDatacirculartyEnrichedLayerData.tBaustoffProductData == null) {
     return null
   }
-  const eolUnbuiltData = formatEolUnbuiltData(layerDatacirculartyEnrichedLayerData.eolUnbuilt, format, t)
+  const eolUnbuiltData = formatEolUnbuiltData(
+    layerDatacirculartyEnrichedLayerData.eolUnbuilt,
+    formatCircularityMetric,
+    t
+  )
   const eolUnbuiltDataSecondary = [
     // POTENTIAL
     {
@@ -113,9 +112,9 @@ const EolDataSection = ({ layerDatacirculartyEnrichedLayerData }: EolDataSection
       key: t("EolUnbuilt.Points.potential"),
       value:
         layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltPotentialPoints != null
-          ? format.number(layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData.eolUnbuiltPotentialPoints, {
-              maximumFractionDigits: 2,
-            })
+          ? formatCircularityMetric(
+              layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData.eolUnbuiltPotentialPoints
+            )
           : "-",
     },
     // REAL
@@ -127,9 +126,9 @@ const EolDataSection = ({ layerDatacirculartyEnrichedLayerData }: EolDataSection
       key: t("EolUnbuilt.Points.real"),
       value:
         layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltRealPoints != null
-          ? format.number(layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltRealPoints, {
-              maximumFractionDigits: 2,
-            })
+          ? formatCircularityMetric(
+              layerDatacirculartyEnrichedLayerData.tBaustoffProductData.eolData?.eolUnbuiltRealPoints
+            )
           : "-",
     },
   ]
@@ -172,7 +171,7 @@ type CircularityDetailsProps = {
 const CircularityDetails = ({ projectId, variantId, layerData, componentUuid }: CircularityDetailsProps) => {
   const circularityInfoTranslations = useTranslations("Circularity.Components.Layers.CircularityInfo")
   const t = useTranslations()
-  const format = useFormatter()
+  const { formatCircularityMetric } = useCircularityFormatter()
   const queryClient = useQueryClient()
   const [isShowExamplesModalOpen, setIsShowExamplesModalOpen] = useState(false)
   const [isEolScenarioModalOpen, setIsEolScenarioModalOpen] = useState(false)
@@ -340,9 +339,7 @@ const CircularityDetails = ({ projectId, variantId, layerData, componentUuid }: 
     {
       key: circularityInfoTranslations("RebuildSection.rebuildPoints"),
       value: layerData.dismantlingPotentialClassId
-        ? format.number(dismantlingPotentialClassIdMapping[layerData.dismantlingPotentialClassId].points, {
-            maximumFractionDigits: 2,
-          })
+        ? formatCircularityMetric(dismantlingPotentialClassIdMapping[layerData.dismantlingPotentialClassId].points)
         : "-",
     },
   ]
@@ -369,7 +366,7 @@ const CircularityDetails = ({ projectId, variantId, layerData, componentUuid }: 
     },
     {
       key: circularityInfoTranslations("EolBuiltSection.points"),
-      value: layerData.eolBuilt?.points ? format.number(layerData.eolBuilt?.points, { maximumFractionDigits: 2 }) : "-",
+      value: layerData.eolBuilt?.points ? formatCircularityMetric(layerData.eolBuilt?.points) : "-",
       testId: "eol-built-points",
     },
   ]

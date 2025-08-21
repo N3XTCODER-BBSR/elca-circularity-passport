@@ -36,7 +36,6 @@ import { mapCircularityDataToMaterialCsvTransformer } from "./mapCircularityData
 import { createReadStream } from "fs"
 import { Readable } from "stream"
 import csv from "csv-parser"
-import iconv from "iconv-lite"
 
 /**
  * Helper to create a mock layer object for testing.
@@ -185,16 +184,16 @@ const mockTranslations = {
   elementUuid: "Element UUID",
 }
 
-// Constants for CSV strings (ISO-8859-15 encoded characters)
+// Constants for CSV strings (UTF-8 encoded characters)
 const CSV_STRINGS = {
   // Main headers
   COMPONENT_DATA: '"Bauteilkomponenten-Daten"',
   LAYER_DATA: '"Schichten der Bauteilkomponente"',
-  BASE_DATA: '"Basisdaten / Einheit (mÂ², m, StÃŒck) je Bauteilschicht"',
-  CIRCULARITY_UNBUILT: '"ZirkularitÃ€tspotenzial - Unverbaut"',
-  DISMANTLING_POTENTIAL: '"RÃŒckbaupotential"',
-  MATERIAL_COMPATIBILITY: '"MaterialvertrÃ€glichkeit"',
-  CIRCULARITY_BUILT: '"ZirkularitÃ€tspotenzial - Verbaut (Final)"',
+  BASE_DATA: '"Basisdaten / Einheit (m², m, Stück) je Bauteilschicht"',
+  CIRCULARITY_UNBUILT: '"Zirkularitätspotenzial - Unverbaut"',
+  DISMANTLING_POTENTIAL: '"Rückbaupotential"',
+  MATERIAL_COMPATIBILITY: '"Materialverträglichkeit"',
+  CIRCULARITY_BUILT: '"Zirkularitätspotenzial - Verbaut (Final)"',
 
   // Subheaders
   LAYER_NUMBER: '"Schichtnummer"',
@@ -203,25 +202,25 @@ const CSV_STRINGS = {
   UNIT: '"Einheit"',
   DIN_276: '"KG DIN 276"',
   COMPONENT_UUID: '"Komponenten-UUID"',
-  BUILDING_MATERIAL: `"Baustoff (${String.fromCharCode(195)}${String.fromCharCode(150)}BD)"`, // Fixed encoding
+  BUILDING_MATERIAL: '"Baustoff (ÖBD)"',
   T_BUILDING_MATERIAL: '"tBaustoff"',
   MANUAL_VALUES: '"Manuell eingetragene Werte/Auswahl"',
   THICKNESS: '"Dicke [mm]"',
   VOLUME_SHARE: '"Anteil in Vol-%"',
-  VOLUME_PER_UNIT: '"Volumen [mÂ³/Einheit]"',
+  VOLUME_PER_UNIT: '"Volumen [m³/Einheit]"',
   MASS_PER_UNIT: '"Masse [kg/Einheit]"',
   EOL_SCENARIO_REAL: '"EOL Szenario (Real)"',
   EOL_SCENARIO_POTENTIAL: '"EOL Szenario (Potenzial)"',
   TECHNOLOGY_FACTOR: '"TF"',
   EOL_SCENARIO_SPECIFIC: '"EOL-Szenario (Spezifisch)"',
-  EXPLANATION: '"ErlÃ€uterung"',
+  EXPLANATION: '"Erläuterung"',
   EOL_CLASS: '"EOL Klasse"',
   EOL_POINTS: '"EOL Punkte"',
   POINTS: '"Punkte"',
-  DISMANTLING_CLASS: '"RÃŒckbaupotenzial Klasse"',
-  DISMANTLING_POINTS: '"RÃŒckbaupotenzial Punkte"',
+  DISMANTLING_CLASS: '"Rückbaupotenzial Klasse"',
+  DISMANTLING_POINTS: '"Rückbaupotenzial Punkte"',
   DISMANTLING_REMARK: '"Hinweis"',
-  MATERIAL_CLASS: '"MaterialvertrÃ€glichkeit Klasse"',
+  MATERIAL_CLASS: '"Materialverträglichkeit Klasse"',
   RECLASSIFICATION: '"Neueinstufung"',
 } as const
 
@@ -296,9 +295,11 @@ function getRow(rows: string[], rowKey: keyof typeof ROW_INDEX) {
   return rows[ROW_INDEX[rowKey]]?.split(";")
 }
 
-// Helper function to decode ISO-8859-15 buffer to string
+// Helper function to decode UTF-8 buffer with BOM to string
 const decodeCsvBuffer = (buffer: Buffer): string => {
-  return iconv.decode(buffer, "iso-8859-15")
+  // Remove UTF-8 BOM and decode as UTF-8
+  const contentWithoutBom = buffer.slice(3) // Skip BOM bytes
+  return contentWithoutBom.toString("utf8")
 }
 
 describe("circularityDataToCsvTransformer", () => {

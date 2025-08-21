@@ -22,9 +22,18 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
+import { Metadata } from "next/types"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 import { getAllPassportsData } from "lib/domain-logic/grp/getPassportData"
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Grp.Web.pages")
+
+  return {
+    title: t("overview"),
+  }
+}
 
 export default async function Web() {
   const t = await getTranslations("Grp.Web")

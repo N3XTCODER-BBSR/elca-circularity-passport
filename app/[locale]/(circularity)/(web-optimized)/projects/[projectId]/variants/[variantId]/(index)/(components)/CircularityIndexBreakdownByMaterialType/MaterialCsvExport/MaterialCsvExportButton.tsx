@@ -28,6 +28,7 @@ import { useTranslations } from "next-intl"
 import React from "react"
 import { generateCsvFilename } from "app/(utils)/csvExportUtils"
 import { downloadCsvFile } from "app/(utils)/downloadCsvFile"
+import { CtaButton } from "app/(components)/generic/CtaButton"
 import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { mapCircularityDataToMaterialCsvTransformer } from "./mapCircularityDataToMaterialCsvTransformer"
@@ -124,13 +125,5 @@ export default function MaterialCsvExportButton(props: MaterialCsvExportProps) {
     downloadCsvFile(filename, csvBuffer)
   }
 
-  return (
-    <button
-      type="button"
-      className="h-8 rounded-md bg-bbsr-blue-700 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-bbsr-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bbsr-blue-500"
-      onClick={generateAndDownloadCsv}
-    >
-      {t("exportMaterialsToCsv")}
-    </button>
-  )
+  return <CtaButton text={t("exportMaterialsToCsv")} onClick={generateAndDownloadCsv} />
 }

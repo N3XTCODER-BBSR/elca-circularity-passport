@@ -22,16 +22,28 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-export const downloadCsvFile = (filename: string, csvContent: Buffer, charset: string = "utf-8") => {
-  const blob = new Blob([csvContent], { type: `text/csv;charset=${charset};` })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement("a")
-  link.setAttribute("href", url)
 
-  link.setAttribute("download", filename)
-  link.style.visibility = "hidden"
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url) // Clean up the URL object
+import { getFormatter } from "next-intl/server"
+
+/**
+ * Formats a circularity metric value with consistent 1 decimal place
+ * This function is designed for server-side rendering where useFormatter is not available
+ *
+ * @param value - The circularity metric value to format
+ * @param locale - The locale for formatting (e.g., 'de', 'en', 'es')
+ * @returns Formatted string with 1 decimal place, or "-" if value is null/undefined
+ */
+export const formatCircularityMetricServer = async (
+  value: number | null | undefined,
+  locale: string
+): Promise<string> => {
+  if (value == null || Number.isNaN(value)) {
+    return "-"
+  }
+
+  const formatter = await getFormatter({ locale })
+  return formatter.number(value, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })
 }

@@ -26,8 +26,8 @@
 
 import React, { useState } from "react"
 import { useTranslations } from "next-intl"
-import { twMerge } from "tailwind-merge"
 import { toast } from "react-hot-toast"
+import { CtaButton } from "app/(components)/generic/CtaButton"
 
 type ComponentCatalogPdfExportButtonProps = {
   projectId: number
@@ -79,16 +79,6 @@ export default function ComponentCatalogPdfExportButton({
   }
 
   return (
-    <button
-      type="button"
-      className={twMerge(
-        "h-8 rounded-md bg-bbsr-blue-700 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-bbsr-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bbsr-blue-500",
-        isLoading ? "cursor-not-allowed opacity-70" : ""
-      )}
-      onClick={handleExportPdf}
-      disabled={isLoading}
-    >
-      {t("exportComponentCatalogToPdf")}
-    </button>
+    <CtaButton text={t("exportComponentCatalogToPdf")} onClick={handleExportPdf} type="button" disabled={isLoading} />
   )
 }

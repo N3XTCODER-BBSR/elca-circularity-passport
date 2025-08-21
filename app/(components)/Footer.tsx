@@ -58,6 +58,11 @@ function Footer() {
               {tFooter("links.imprint")}
             </Link>
           </li>
+          <li>
+            <Link href="/accessibility" className="text-gray-400 transition-colors hover:text-white">
+              {tFooter("links.accessibility")}
+            </Link>
+          </li>
         </ul>
       </div>
     </footer>

@@ -107,7 +107,7 @@ test.describe("Circularity tool", () => {
         await expect(
           page.locator("[data-testid=component-layer__div__7]").locator("[data-testid=tbaustoff-product-name__span]")
         ).toHaveText("Kunststoffprofil SBR")
-        await expect(page.locator("[data-testid=eol-unbuilt-points-value__dd]")).toHaveText("-20")
+        await expect(page.locator("[data-testid=eol-unbuilt-points-value__dd]")).toHaveText("-20,0")
       })
       test('if the user clicks  on an "S3" pollutant and on a class "I" rebuild potential, the circularity index field has the correct value', async ({
         page,
@@ -122,7 +122,7 @@ test.describe("Circularity tool", () => {
           .click()
         await expect(
           page.locator("[data-testid=component-layer__div__7]").locator("[data-testid=eol-built-points-value__dd]")
-        ).toHaveText("-40")
+        ).toHaveText("-40,0")
       })
     })
   })

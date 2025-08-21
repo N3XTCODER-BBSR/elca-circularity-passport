@@ -24,12 +24,13 @@
  */
 "use client"
 
-import { useFormatter, useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 import CircularityBarChart, {
   CircularityBarChartDatum,
 } from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/circularity/CircularityBarChart"
 import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import aggregateCircularityData from "lib/domain-logic/grp/modules/passport-overview/circularity/circularity-data-aggregation"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
 import DummyAccordion from "../../../DummyAccordion"
 
 type CircularityProps = {
@@ -42,7 +43,7 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
   const tCostGroups = useTranslations("Common.costGroups")
   const tAggregationSelector = useTranslations("GenericComponents.AggregationSelector")
   const aggregatedData = aggregateCircularityData(dinEnrichedBuildingComponents)
-  const format = useFormatter()
+  const { formatCircularityMetric } = useCircularityFormatter()
 
   const chartDataForAvgEolPointsPerComponentCostCategory: CircularityBarChartDatum[] =
     aggregatedData.avgEolPointsPerComponentCostCategory.map((data) => {
@@ -55,10 +56,7 @@ const Circularity: React.FC<CircularityProps> = ({ dinEnrichedBuildingComponents
       }
     })
 
-  const formattedCircularityIndexPoints = format.number(aggregatedData.totalAvgEolPoints, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  })
+  const formattedCircularityIndexPoints = formatCircularityMetric(aggregatedData.totalAvgEolPoints)
 
   const chartDataForAvgEolPoints: CircularityBarChartDatum[] = [
     {

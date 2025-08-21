@@ -23,7 +23,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 
-import { formatCsvRows } from "app/(utils)/csvExportUtils"
+import { formatCsvRows, convertCsvToUtf8Buffer } from "app/(utils)/csvExportUtils"
 import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import {
@@ -328,5 +328,7 @@ export const mapCircularityDataToMaterialCsvTransformer = (
   ]
 
   const csvContent = formatCsvRows(csvRows)
-  return Buffer.from(csvContent)
+
+  // Convert to Buffer with UTF-8 encoding and BOM for Excel compatibility
+  return convertCsvToUtf8Buffer(csvContent)
 }

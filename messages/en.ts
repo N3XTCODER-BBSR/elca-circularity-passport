@@ -425,6 +425,11 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
         "The BBSR (Federal Institute for Research on Building, Urban Affairs and Spatial Development, Department WB6 Construction and Environment) provides this tool free of charge.",
       project: "Project",
       exportPdf: "Export PDF",
+      pages: {
+        overview: "Building Resource Passport",
+        passportDetail: "Building Details",
+        passportCatalog: "Passport Catalog",
+      },
       NavBar: {
         overview: "Overview",
         catalog: "Catalog",
@@ -447,6 +452,14 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
     },
   },
   CircularityTool: {
+    pages: {
+      overview: "Circularity Assessment",
+      projects: "Projects - Circularity Index",
+      projectVariants: "Project Variants",
+      componentCatalog: "Component Catalog",
+      componentDetail: "Component Details",
+      pdfExport: "PDF Export",
+    },
     sections: {
       signin: {
         title: "eLCA Circularity Index",
@@ -543,7 +556,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           tBaustoffAndEolClassColTitle: "tBaustoff / EoL Class",
           volumeSection: "Circularity Potential by volume (m³)",
           massSection: "Circularity Potential by mass (kg)",
-          exportAggregatedInventoryToCsv: "Export (csv)",
+          exportAggregatedInventoryToCsv: "Export (CSV)",
           totalVolumePerEolClass: "Total volume (m³) per EoL class",
           totalMassPerEolClass: "Total mass (kg) per EoL class",
           percentagePerClass: "Total percentage (%) per EoL class",
@@ -641,6 +654,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
       userTestingGuide: "User Testing Guide",
       privacyPolicy: "Privacy Policy",
       imprint: "Imprint",
+      accessibility: "Accessibility",
     },
     copyright: "BBSR All rights reserved.",
   },

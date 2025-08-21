@@ -13,7 +13,7 @@ const fontSans = FontSans({
 })
 
 export const metadata: Metadata = {
-  title: "PDF View - Building Resource Passport",
+  title: "PDF Export - Zirkularitätstool Bauteilkatalog",
   twitter: {
     card: "summary_large_image",
   },

@@ -5,12 +5,14 @@ import {
   calculateBnbDismantlingPoints,
   calculateBnbCircularityPoints,
 } from "lib/domain-logic/circularity/utils/calculateBnbPoints"
+import { formatCircularityMetricServer } from "lib/presentation-logic/circularity/formatCircularityMetric"
 
 interface ResultsProps {
   dismantlingPoints: number
   circularityPoints: number
   weightedDismantlingPoints: number
   weightedCircularityPoints: number
+  locale: string
 }
 
 export function Results({
@@ -18,10 +20,9 @@ export function Results({
   circularityPoints,
   weightedDismantlingPoints,
   weightedCircularityPoints,
+  locale,
 }: ResultsProps) {
   const t = useTranslations("CircularityTool.sections.pdfExport.results")
-  const formatNumber = (value: number, digits: number) =>
-    new Intl.NumberFormat("de-DE", { maximumFractionDigits: digits }).format(value)
 
   const erreichteRuckbauPunkte = calculateBnbDismantlingPoints(weightedDismantlingPoints)
   const erreichteZirkularitaetPunkte = calculateBnbCircularityPoints(weightedCircularityPoints)
@@ -31,12 +32,12 @@ export function Results({
       <div className="grid grid-cols-[auto,1fr] gap-x-8 gap-y-4 text-sm">
         <div className="font-semibold">{t("achievedDismantlingPoints")}</div>
         <div>
-          {formatNumber(erreichteRuckbauPunkte, 0)} {t("points")}
+          {formatCircularityMetricServer(erreichteRuckbauPunkte, locale)} {t("points")}
         </div>
 
         <div className="font-semibold">{t("achievedCircularityPoints")}</div>
         <div>
-          {formatNumber(erreichteZirkularitaetPunkte, 0)} {t("points")}
+          {formatCircularityMetricServer(erreichteZirkularitaetPunkte, locale)} {t("points")}
         </div>
 
         <div className="font-semibold">

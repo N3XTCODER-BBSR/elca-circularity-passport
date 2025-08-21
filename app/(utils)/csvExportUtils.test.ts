@@ -22,8 +22,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { generateCsvFilename, convertToCSV } from "app/(utils)/csvExportUtils"
-import iconv from "iconv-lite"
+import { convertToCSV, formatCsvRows, escapeValue, generateCsvFilename } from "./csvExportUtils"
 
 describe("generateCsvFilename", () => {
   // Mock the Date object for consistent testing
@@ -80,7 +79,9 @@ describe("convertToCSV", () => {
   }
 
   const decodeCsvBuffer = (buffer: Buffer): string => {
-    return iconv.decode(buffer, "iso-8859-15")
+    // Remove UTF-8 BOM and decode as UTF-8
+    const contentWithoutBom = buffer.slice(3) // Skip BOM bytes
+    return contentWithoutBom.toString("utf8")
   }
 
   // Helper to parse CSV fields properly, handling quoted values
@@ -140,7 +141,7 @@ describe("convertToCSV", () => {
     })
   })
 
-  test("uses ISO-8859-15 encoding for special characters", () => {
+  test("uses UTF-8 encoding with BOM for special characters", () => {
     const specialData = [{ name: "Test ä", value: "100", description: "Contains € symbol" }]
 
     const buffer = convertToCSV(specialData, translations)

@@ -25,10 +25,10 @@
 // ChartAndBreadCrumbComponent.tsx
 "use client"
 import { ResponsiveBar } from "@nivo/bar"
-import { useFormatter } from "next-intl"
 import React, { useState } from "react"
 import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
 import { circularityMetricBarChartColorMapping } from "lib/domain-logic/shared/styleConstants"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
 import { useMetricOptions } from "../../(utils)/useMetricOptions"
 
 export type ChartDataLeaf = {
@@ -103,7 +103,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
   metricType,
 }) => {
   const [path, setPath] = useState<ChartDataNode[]>([rootChartDataNode])
-  const format = useFormatter()
+  const { formatCircularityMetric } = useCircularityFormatter()
   const metricOptions = useMetricOptions()
 
   // TODO (M): consider to add proper logic checks so that this
@@ -154,7 +154,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
 
         <div className="mt-2 text-gray-900">
           {`${labelTotalDimensionalValue}: `}
-          {format.number(currentNode.dimensionalValue, { maximumFractionDigits: 2 })} {unitNameTotalDimensionalValue}
+          {formatCircularityMetric(currentNode.dimensionalValue)} {unitNameTotalDimensionalValue}
         </div>
         <div className="mt-4 px-8 py-4 text-gray-600">{currentNode.label}</div>
       </div>
@@ -218,7 +218,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
                 >
                   <b>{d.data.identifier}</b>
                   <div>
-                    {metricLabel}: {format.number(d.data.datum, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}
+                    {metricLabel}: {formatCircularityMetric(d.data.datum)}
                   </div>
                 </div>
               )

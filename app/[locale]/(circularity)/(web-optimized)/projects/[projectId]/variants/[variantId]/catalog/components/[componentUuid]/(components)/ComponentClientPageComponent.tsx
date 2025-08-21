@@ -68,7 +68,7 @@ export const ComponentPageClientComponent = ({
   const [layers, nonLayers] = _.partition(componentData.layers, (layer) => layer.is_layer)
 
   return (
-    <div className="w-full">
+    <div className="w-full" style={{ overflowWrap: "break-word", wordBreak: "break-word" }}>
       <div className="max-w-[1200px] px-12 lg:px-20" style={{ margin: "0 auto" }}>
         <section className="dark:bg-gray-900">
           <div className="py-8">

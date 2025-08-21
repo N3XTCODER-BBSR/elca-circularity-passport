@@ -22,16 +22,28 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-export const downloadCsvFile = (filename: string, csvContent: Buffer, charset: string = "utf-8") => {
-  const blob = new Blob([csvContent], { type: `text/csv;charset=${charset};` })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement("a")
-  link.setAttribute("href", url)
 
-  link.setAttribute("download", filename)
-  link.style.visibility = "hidden"
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url) // Clean up the URL object
+import { useFormatter } from "next-intl"
+
+/**
+ * React hook that provides a consistent interface for formatting circularity metrics
+ * This hook is designed for client-side components and provides the formatter function
+ *
+ * @returns An object with a formatCircularityMetric function
+ */
+export const useCircularityFormatter = () => {
+  const format = useFormatter()
+
+  return {
+    formatCircularityMetric: (value: number | null | undefined): string => {
+      if (value == null || Number.isNaN(value)) {
+        return "-"
+      }
+
+      return format.number(value, {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      })
+    },
+  }
 }

@@ -23,11 +23,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import { notFound } from "next/navigation"
+import { Metadata } from "next/types"
 import { ZodError } from "zod"
+import { getTranslations } from "next-intl/server"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { getDinEnrichedPassportDataByPassportUuid } from "lib/domain-logic/grp/getPassportData"
 import { InvalidPassportErrorHandler } from "../(components)/InvalidPassportErrorHandler"
 import Overview from "../(components)/tabs/overview"
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Grp.Web.pages")
+
+  return {
+    title: t("passportDetail"),
+  }
+}
 
 const Page = async ({ params }: { params: { passportId: string } }) => {
   return withServerComponentErrorHandling(

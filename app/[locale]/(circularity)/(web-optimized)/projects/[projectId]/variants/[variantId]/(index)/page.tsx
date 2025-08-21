@@ -22,6 +22,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
+import { Metadata } from "next/types"
 import { getTranslations } from "next-intl/server"
 import { withServerComponentErrorHandling } from "app/(utils)/errorHandler"
 import { ensureVariantAccessible } from "app/[locale]/(circularity)/(utils)/ensureAccessible"
@@ -31,6 +32,14 @@ import { getProjectCircularityData } from "lib/domain-logic/circularity/misc/get
 import { getAllProcessCategories } from "lib/domain-logic/circularity/process/getProcessCategories"
 import { getProjectById } from "lib/domain-logic/circularity/projects/getProjectById"
 import BuildingOverview from "./(components)/BuildingOverview/BuildingOverview"
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("CircularityTool.pages")
+
+  return {
+    title: t("overview"),
+  }
+}
 
 const Page = async ({ params }: { params: { projectId: string; variantId: string } }) => {
   return withServerComponentErrorHandling(async () => {

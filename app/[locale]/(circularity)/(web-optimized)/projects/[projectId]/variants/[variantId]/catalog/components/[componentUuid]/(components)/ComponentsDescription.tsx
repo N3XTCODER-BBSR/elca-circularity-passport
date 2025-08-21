@@ -35,6 +35,8 @@ import { getTotalWeightedCircularityPotential } from "lib/domain-logic/circulari
 import { getTotalWeightedDismantlingPotential } from "lib/domain-logic/circularity/utils/getTotalsForEnrichedElcaElementComponent/getTotalWeightedDismantlingPotential"
 import { getDinCodeGroupLevel } from "lib/presentation-logic/circularity/formatDinCode"
 import { formatVolumeWithUnit } from "lib/presentation-logic/circularity/formatVolumeWithUnit"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
+import { useFormatter, useTranslations } from "next-intl"
 
 import {
   CircularityPotentialBadge,
@@ -42,13 +44,13 @@ import {
   DismantlingPotentialBadge,
   HorizontalDescriptionItem,
 } from "./CircularityIndication"
-import { useFormatter, useTranslations } from "next-intl"
 
 export const ComponentDescription = ({
   componentData,
 }: {
   componentData: ElcaElementWithComponents<EnrichedElcaElementComponent>
 }) => {
+  const { formatCircularityMetric } = useCircularityFormatter()
   const format = useFormatter()
   const t = useTranslations("Circularity.Components")
   const headersTranslations = useTranslations("Circularity.Components.headers")
@@ -113,7 +115,7 @@ export const ComponentDescription = ({
               label: headersTranslations("metrics.points"),
               value:
                 totalWeightedDismantlingPotential !== null
-                  ? format.number(totalWeightedDismantlingPotential, { maximumFractionDigits: 2 })
+                  ? formatCircularityMetric(totalWeightedDismantlingPotential)
                   : "-",
             },
             {
@@ -129,7 +131,7 @@ export const ComponentDescription = ({
               label: headersTranslations("metrics.points"),
               value:
                 totalWeightedCircularityPotential !== null
-                  ? format.number(totalWeightedCircularityPotential, { maximumFractionDigits: 2 })
+                  ? formatCircularityMetric(totalWeightedCircularityPotential)
                   : "-",
             },
             {

@@ -22,7 +22,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
-import { MenuItem as HeadlessUiMenuItem, Menu, MenuItems } from "@headlessui/react"
+import { MenuItem as HeadlessUiMenuItem, Menu, MenuItems, MenuButton } from "@headlessui/react"
 import Link from "next/link"
 import { FC } from "react"
 import { twMerge } from "tailwind-merge"
@@ -41,29 +41,44 @@ const NavBarDropdownMenu: FC<{ menuButton: React.ReactNode; items: MenuItem[]; c
 }) => {
   return (
     <Menu as="div" className={twMerge("relative ml-3", className)}>
-      <div>{menuButton}</div>
+      <MenuButton as="div" className="focus:outline-none focus:ring-2 focus:ring-bbsr-blue-500 focus:ring-offset-2">
+        {menuButton}
+      </MenuButton>
       <MenuItems
         className="ring-opacity/5 absolute right-0 z-10 mt-2 w-44 origin-top-right 
                      scale-95 rounded-md bg-white py-1 opacity-0 shadow-lg 
                      ring-1 ring-black transition focus:outline-none data-[open]:scale-100 
                      data-[open]:opacity-100"
+        static
       >
         {items.map((item) => {
-          const itemContent = item.href ? (
-            <Link href={item.href} className="block px-4 py-2 text-sm text-gray-700" data-testid={item.testId}>
-              {item.text}
-            </Link>
-          ) : (
-            <button
-              onClick={item.handleOnClick}
-              className="block w-full px-4 py-2 text-left text-sm text-gray-700"
-              data-testid={item.testId}
-            >
-              {item.text}
-            </button>
+          return (
+            <HeadlessUiMenuItem key={item.text}>
+              {({ focus }) =>
+                item.href ? (
+                  <Link
+                    href={item.href}
+                    className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none ${
+                      focus ? "bg-gray-100" : ""
+                    }`}
+                    data-testid={item.testId}
+                  >
+                    {item.text}
+                  </Link>
+                ) : (
+                  <button
+                    onClick={item.handleOnClick}
+                    className={`block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none ${
+                      focus ? "bg-gray-100" : ""
+                    }`}
+                    data-testid={item.testId}
+                  >
+                    {item.text}
+                  </button>
+                )
+              }
+            </HeadlessUiMenuItem>
           )
-
-          return <HeadlessUiMenuItem key={item.text}>{itemContent}</HeadlessUiMenuItem>
         })}
       </MenuItems>
     </Menu>

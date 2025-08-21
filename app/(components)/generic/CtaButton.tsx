@@ -23,22 +23,53 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import Link from "next/link"
-import { FC } from "react"
+import { FC, ButtonHTMLAttributes } from "react"
 
-export const CtaButton: FC<{ href: string; text: string }> = ({ href, text }) => {
-  const isExternal = href.startsWith("http")
+interface CtaButtonProps {
+  text: string
+  href?: string
+  onClick?: () => void
+  type?: ButtonHTMLAttributes<HTMLButtonElement>["type"]
+  disabled?: boolean
+}
 
-  if (isExternal) {
+export const CtaButton: FC<CtaButtonProps> = ({ href, text, onClick, type = "button", disabled = false }) => {
+  const buttonClasses =
+    "min-h-8 h-auto rounded-md bg-bbsr-blue-700 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-bbsr-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bbsr-blue-500"
+  const disabledClasses = disabled ? "cursor-not-allowed opacity-70" : ""
+
+  // If onClick is provided, render as button
+  if (onClick) {
     return (
-      <a href={href} className="inline-block rounded-md bg-bbsr-blue-700 px-2 py-1 text-white">
+      <button type={type} className={`${buttonClasses} ${disabledClasses}`} onClick={onClick} disabled={disabled}>
         {text}
-      </a>
+      </button>
     )
   }
 
+  // If href is provided, render as link
+  if (href) {
+    const isExternal = href.startsWith("http")
+
+    if (isExternal) {
+      return (
+        <a href={href} className={`${buttonClasses} ${disabledClasses}`}>
+          {text}
+        </a>
+      )
+    }
+
+    return (
+      <Link href={href} className={`${buttonClasses} ${disabledClasses}`}>
+        {text}
+      </Link>
+    )
+  }
+
+  // Fallback to button if neither href nor onClick is provided
   return (
-    <Link href={href} className="inline-block rounded-md bg-bbsr-blue-700 px-2 py-1 text-white">
+    <button type={type} className={`${buttonClasses} ${disabledClasses}`}>
       {text}
-    </Link>
+    </button>
   )
 }
