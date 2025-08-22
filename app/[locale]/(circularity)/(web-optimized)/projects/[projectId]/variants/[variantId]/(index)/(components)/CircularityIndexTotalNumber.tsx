@@ -28,6 +28,7 @@ import { useTranslations } from "next-intl"
 import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
 import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
 import CircularityIndexTotalBarChart from "./CircularityIndexTotalBarChart"
+import { chartMargin } from "lib/presentation-logic/circularity/chartHeightUtils"
 
 const CircularityMetricTotalNumber = ({
   circularityMetricPoints: circularityIndexPoints,
@@ -56,7 +57,7 @@ const CircularityMetricTotalNumber = ({
         <CircularityIndexTotalBarChart
           metricType={metricType}
           circularityTotalIndexPoints={circularityIndexPoints}
-          margin={{ top: 0, right: 30, bottom: 50, left: 150 }}
+          margin={chartMargin}
         />
       </div>
     </div>

@@ -26,6 +26,7 @@
 
 import { useTranslations } from "next-intl"
 import { Area, Heading3, Required, StyledDd, StyledDt, TwoColGrid } from "app/(components)/generic/layout-elements"
+import Tooltip from "app/(components)/generic/Tooltip"
 import type { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
 import { SelectOption } from "lib/presentation-logic/helper-types"
 import CircularityDetails from "./circularity-details/CircularityDetails"
@@ -55,8 +56,11 @@ const CircularityInfo = (props: CircularityInfoProps) => {
       <Area>
         <TwoColGrid>
           <StyledDt>
-            {t("tBaustoffMaterial")}
-            <Required />
+            <div className="flex items-center gap-2">
+              <span>{t("tBaustoffMaterial")}</span>
+              <Tooltip id="tBaustoffMaterial">{t("tBaustoffMaterialTooltip")}</Tooltip>
+              <Required />
+            </div>
           </StyledDt>
           <StyledDd justifyEnd>
             <TBaustoffProductNameOrSelectorButton layerData={circulartyEnrichedLayerData} options={tBaustoffProducts} />

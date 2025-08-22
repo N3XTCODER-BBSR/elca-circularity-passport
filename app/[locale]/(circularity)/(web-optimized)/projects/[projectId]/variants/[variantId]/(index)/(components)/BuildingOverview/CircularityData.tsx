@@ -41,6 +41,7 @@ import CircularityIndexBreakdownByMaterialType, {
   ProcessCategory,
 } from "../CircularityIndexBreakdownByMaterialType/CircularityIndexBreakdownByMaterialType"
 import CircularityMetricTotalNumber from "../CircularityIndexTotalNumber"
+import { chartMargin } from "lib/presentation-logic/circularity/chartHeightUtils"
 
 /**
  * CircularityData component
@@ -125,7 +126,7 @@ const CircularityData: FC<{
           projectName={projectName}
           processCategories={processCategories}
           circularityData={circularityData}
-          margin={{ top: 0, right: 50, bottom: 50, left: 180 }}
+          margin={chartMargin}
           metricType={selectedMetricType}
         />
       </WhiteContainer>

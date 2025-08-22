@@ -306,6 +306,7 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           },
           title: "Circularidad",
           tBaustoffMaterial: "tBaustoff",
+          tBaustoffMaterialTooltip: "Información del material relacionada con la clasificación científica EoL",
           tBaustoffSelector: {
             select: "Seleccionar",
             modalBody:

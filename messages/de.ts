@@ -304,6 +304,7 @@ const translationsPlattformGeneric = {
           },
           title: "Zirkularität",
           tBaustoffMaterial: "tBaustoff",
+          tBaustoffMaterialTooltip: "Materialinformation die sich auf die wissenschaftliche EoL-Einstufung bezieht",
           tBaustoffSelector: {
             select: "Auswählen",
             modalBody: "Bitte wählen Sie einen tBaustoff Baustoff aus der Liste aus.",

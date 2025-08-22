@@ -30,6 +30,7 @@ import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
 import { circularityMetricBarChartColorMapping } from "lib/domain-logic/shared/styleConstants"
 import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
 import { useMetricOptions } from "../../(utils)/useMetricOptions"
+import { calculateChartHeight, chartMargin } from "lib/presentation-logic/circularity/chartHeightUtils"
 
 export type ChartDataLeaf = {
   isLeaf: true
@@ -56,6 +57,7 @@ export type ChartAndBreadCrumbComponentProps = {
   labelTotalDimensionalValue: string
   unitNameTotalDimensionalValue: string
   metricType: MetricType
+  margin?: { top: number; right: number; bottom: number; left: number }
 }
 
 interface TickProps {
@@ -101,6 +103,7 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
   labelTotalDimensionalValue,
   unitNameTotalDimensionalValue,
   metricType,
+  margin: customMargin,
 }) => {
   const [path, setPath] = useState<ChartDataNode[]>([rootChartDataNode])
   const { formatCircularityMetric } = useCircularityFormatter()
@@ -142,13 +145,18 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
       }))
     : []
 
-  const margin = { top: 20, right: 50, bottom: 30, left: 180 }
+  // Use custom margin if provided, otherwise use default
+  const margin = chartMargin
 
-  const identifiers = new Set(chartData.map((d) => d["datum"]))
-  const length = identifiers.size
+  const length = chartData.length
+
+  // Use shared utility for consistent chart height calculation
+  const chartHeight = calculateChartHeight(length)
+  const baseHeight = 200 // Header, title, breadcrumb area
+  const totalHeight = baseHeight + chartHeight
 
   return (
-    <div className="h-[370px]">
+    <div style={{ height: `${totalHeight}px`, minHeight: "370px" }}>
       <div className="flex flex-col items-center">
         <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-400">{title}</h3>
 
@@ -177,63 +185,62 @@ export const ChartAndBreadCrumbComponent: React.FC<ChartAndBreadCrumbComponentPr
             )
           )}
       </div>
-      <div className="h-[200px]">
-        <div style={{ height: `${length * 2.25 + 5.5}rem` }} className="w-full">
-          <ResponsiveBar
-            data={chartData}
-            keys={["datum"]}
-            indexBy="identifier"
-            theme={{
-              axis: {
-                ticks: {
-                  text: {
-                    fontSize: "0.8rem",
-                  },
+
+      <div style={{ height: `${chartHeight}px` }} className="w-full">
+        <ResponsiveBar
+          data={chartData}
+          keys={["datum"]}
+          indexBy="identifier"
+          theme={{
+            axis: {
+              ticks: {
+                text: {
+                  fontSize: "0.8rem",
                 },
               },
-            }}
-            margin={margin}
-            colors={(datum) => circularityMetricBarChartColorMapping(datum.data.datum, metricType)}
-            padding={0.2}
-            groupMode="grouped"
-            layout="horizontal"
-            valueScale={{ type: "linear" }}
-            indexScale={{ type: "band", round: true }}
-            borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
-            minValue={-60}
-            maxValue={140}
-            axisTop={null}
-            tooltipLabel={(d) => d.data.identifier}
-            tooltip={(d) => {
-              const metricLabel = metricOptions.find((option) => option.value === metricType)?.label
+            },
+          }}
+          margin={margin}
+          colors={(datum) => circularityMetricBarChartColorMapping(datum.data.datum, metricType)}
+          padding={0.1}
+          groupMode="grouped"
+          layout="horizontal"
+          valueScale={{ type: "linear" }}
+          indexScale={{ type: "band", round: true }}
+          borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+          minValue={-60}
+          maxValue={140}
+          axisTop={null}
+          tooltipLabel={(d) => d.data.identifier}
+          tooltip={(d) => {
+            const metricLabel = metricOptions.find((option) => option.value === metricType)?.label
 
-              return (
-                <div
-                  style={{
-                    background: "white",
-                    padding: "9px 12px",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                  }}
-                >
-                  <b>{d.data.identifier}</b>
-                  <div>
-                    {metricLabel}: {formatCircularityMetric(d.data.datum)}
-                  </div>
+            return (
+              <div
+                style={{
+                  background: "white",
+                  padding: "9px 12px",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                }}
+              >
+                <b>{d.data.identifier}</b>
+                <div>
+                  {metricLabel}: {formatCircularityMetric(d.data.datum)}
                 </div>
-              )
-            }}
-            axisRight={null}
-            axisBottom={standardAxisProps()}
-            axisLeft={customAxisLeftProps(handleBarLabelClick)}
-            totalsOffset={9}
-            animate={false}
-            enableGridX={false}
-            enableGridY={false}
-            enableLabel={false}
-            role="application"
-          />
-        </div>
+              </div>
+            )
+          }}
+          axisRight={null}
+          axisBottom={standardAxisProps()}
+          axisLeft={customAxisLeftProps(handleBarLabelClick)}
+          totalsOffset={9}
+          animate={false}
+          enableGridX={false}
+          enableGridY={false}
+          enableLabel={false}
+          role="application"
+        />
       </div>
     </div>
   )

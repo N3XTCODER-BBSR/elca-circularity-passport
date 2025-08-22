@@ -35,6 +35,7 @@ import {
   ChartAndBreadCrumbComponent,
   ChartDataNode,
 } from "../CircularityIndexBreakdownByDin/ChartAndBreadCrumbComponent"
+import { chartMargin } from "lib/presentation-logic/circularity/chartHeightUtils"
 
 export type ProcessCategory = {
   node_id: number
@@ -107,6 +108,7 @@ export default function CircularityIndexBreakdownByMaterialType(props: Circulari
       labelTotalDimensionalValue={t(`totalDimensionValue.${props.dimensionalFieldName}`)}
       unitNameTotalDimensionalValue={tUnits(`${props.dimensionalFieldName === "mass" ? "Kg" : "M3"}.short`)}
       metricType={props.metricType}
+      margin={chartMargin}
     />
   )
 }

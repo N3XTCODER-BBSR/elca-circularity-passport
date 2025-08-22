@@ -304,6 +304,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           },
           title: "Circularity",
           tBaustoffMaterial: "tBaustoff",
+          tBaustoffMaterialTooltip: "Material information based on a scientific EoL classification",
           tBaustoffSelector: {
             select: "Select",
             modalBody: "No match found for this Ökobaudat product. Please select a tBaustoff material from the list.",

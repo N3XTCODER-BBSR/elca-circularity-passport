@@ -26,6 +26,7 @@ import { ResponsiveBar } from "@nivo/bar"
 import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
 import { circularityMetricBarChartColorMapping } from "lib/domain-logic/shared/styleConstants"
 import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
+import { chartMargin } from "lib/presentation-logic/circularity/chartHeightUtils"
 
 const CircularityIndexTotalBarChart = ({
   circularityTotalIndexPoints,
@@ -33,7 +34,7 @@ const CircularityIndexTotalBarChart = ({
   margin,
 }: {
   circularityTotalIndexPoints: number
-  margin: { top: number; right: number; bottom: number; left: number }
+  margin?: { top: number; right: number; bottom: number; left: number }
   metricType: MetricType
 }) => {
   const { formatCircularityMetric } = useCircularityFormatter()
@@ -50,9 +51,9 @@ const CircularityIndexTotalBarChart = ({
             },
           },
         }}
-        data={[{ datum: circularityTotalIndexPoints, identifier: "Gesamt" }]}
+        data={[{ datum: circularityTotalIndexPoints, identifier: "" }]}
         indexBy="identifier"
-        margin={margin}
+        margin={chartMargin}
         keys={["datum"]}
         colors={(datum) => circularityMetricBarChartColorMapping(datum.data.datum, metricType)}
         padding={0.2}
@@ -84,18 +85,7 @@ const CircularityIndexTotalBarChart = ({
           legendOffset: -40,
           truncateTickAt: 0,
         }}
-        tooltip={(d) => (
-          <div
-            style={{
-              background: "white",
-              padding: "9px 12px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-            }}
-          >
-            <b>{d.data.identifier}</b>: {formatCircularityMetric(d.data.datum)}
-          </div>
-        )}
+        isInteractive={false}
         totalsOffset={9}
         enableGridX={false}
         enableGridY={false}
