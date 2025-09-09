@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl"
 import { formatNumber, formatRoman } from "lib/presentation-logic/formatters"
 import { formatUnit } from "lib/presentation-logic/circularity/formatUnit"
-import { formatCircularityMetricServer } from "lib/presentation-logic/circularity/formatCircularityMetric"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
 
 interface Material {
   name: string
@@ -36,6 +36,7 @@ interface ComponentsListProps {
 
 export function ComponentsList({ components, locale }: ComponentsListProps) {
   const t = useTranslations("CircularityTool.sections.pdfExport.components")
+  const { formatCircularityMetric } = useCircularityFormatter()
 
   return (
     <div className="space-y-6">
@@ -97,13 +98,9 @@ export function ComponentsList({ components, locale }: ComponentsListProps) {
                     <td className="py-2 pr-4">{material.name}</td>
                     <td className="py-2 text-right">{formatNumber(material.volume, 3)}</td>
                     <td className="py-2 text-right">{formatNumber(material.mass, 1)}</td>
-                    <td className="py-2 text-right">
-                      {formatCircularityMetricServer(material.dismantling.points, locale)}
-                    </td>
+                    <td className="py-2 text-right">{formatCircularityMetric(material.dismantling.points)}</td>
                     <td className="py-2 pl-4">{formatRoman(material.dismantling.class)}</td>
-                    <td className="py-2 text-right">
-                      {formatCircularityMetricServer(material.circularity.points, locale)}
-                    </td>
+                    <td className="py-2 text-right">{formatCircularityMetric(material.circularity.points)}</td>
                     <td className="py-2 pl-4">{material.circularity.class}</td>
                   </tr>
                 ))}

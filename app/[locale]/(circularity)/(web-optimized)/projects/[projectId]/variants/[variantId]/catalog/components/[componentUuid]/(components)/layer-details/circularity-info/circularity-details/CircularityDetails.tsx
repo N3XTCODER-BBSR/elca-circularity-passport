@@ -25,13 +25,15 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useTranslations } from "next-intl"
-import { useState, useEffect, useCallback } from "react"
+import { useFormatter, useTranslations } from "next-intl"
+import { useState, useEffect } from "react"
 import toast from "react-hot-toast"
 import { twMerge } from "tailwind-merge"
 import { AccordionItemFull } from "app/(components)/generic/AccordionItem"
 import { Area, EditButton, ErrorText, Heading4, Required } from "app/(components)/generic/layout-elements"
+import { StyledDd, StyledDt, TwoColGrid } from "app/(components)/generic/layout-elements"
 import SideBySideDescriptionListsWithHeadline from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
+import { useDebounce } from "app/(utils)/useDebounce"
 import { addOrUpdateDisturbingSubstanceSelection } from "app/[locale]/(circularity)/(server-actions)/addOrUpdateDisturbingSubstance"
 import { removeDisturbingSubstanceSelection } from "app/[locale]/(circularity)/(server-actions)/removeDisturbingSubstances"
 import { updateDismantlingPotentialClassId } from "app/[locale]/(circularity)/(server-actions)/updateDismantlingPotentialClassId"
@@ -55,8 +57,6 @@ import DisturbingSubstances from "./DisturbingSubstances"
 import EOLScenarioEditButton from "./EOLScenarioEditButton"
 import EolScenarioInfoBox from "./EolScenarioInfoBox"
 import Modal from "../../../Modal"
-import { StyledDd, StyledDt, TwoColGrid } from "app/(components)/generic/layout-elements"
-import { useDebounce } from "app/(utils)/useDebounce"
 
 type EolDataSectionProps = {
   layerDatacirculartyEnrichedLayerData: CalculateCircularityDataForLayerReturnType
@@ -195,8 +195,8 @@ const CircularityDetails = ({ projectId, variantId, layerData, componentUuid }: 
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["componentData", projectId, variantId, componentUuid] })
       queryClient.invalidateQueries({ queryKey: ["circularityData", projectId, variantId] })
+      return queryClient.invalidateQueries({ queryKey: ["componentData", projectId, variantId, componentUuid] })
     },
     onError: (error: Error) => {
       if (error instanceof CallServerActionError) {
@@ -307,10 +307,7 @@ const CircularityDetails = ({ projectId, variantId, layerData, componentUuid }: 
     },
   })
 
-  const setDismantlingPotentialClassId = async (id: DismantlingPotentialClassId) => {
-    const newIdOrNull = layerData.dismantlingPotentialClassId === id ? null : id
-    updateDismantlingPotentialClassIdMutation.mutate(newIdOrNull)
-  }
+  const [dismantlingPotentialClassId, setDismantlingPotentialClassId] = useState(layerData.dismantlingPotentialClassId)
 
   const handleUpdateDisturbingSubstance = async (
     disturbingSubstanceSelection: DisturbingSubstanceSelectionWithNullabelId
@@ -395,23 +392,25 @@ const CircularityDetails = ({ projectId, variantId, layerData, componentUuid }: 
         <div className="mt-4">
           <div className="isolate flex flex-wrap justify-center gap-4">
             {Object.entries(dismantlingPotentialClassIdMapping).map(([key, value]) => {
-              const isDisabled =
-                layerData.dismantlingPotentialClassId != null && layerData.dismantlingPotentialClassId !== key
-
+              const currentDismantlingPotentialClassId = updateDismantlingPotentialClassIdMutation.isPending
+                ? dismantlingPotentialClassId
+                : layerData.dismantlingPotentialClassId
               return (
                 <button
                   key={key}
                   type="button"
-                  disabled={isDisabled}
                   data-testid={`circularity-details-rebuild-class-button__button__${value.points}`}
                   className={twMerge(
                     `relative flex min-w-[400px] items-center justify-center rounded-md px-4 py-4 text-sm font-semibold ring-1 ring-inset ring-gray-300 focus:z-10`,
-                    key === layerData.dismantlingPotentialClassId
+                    key === currentDismantlingPotentialClassId
                       ? "bg-bbsr-blue-700 text-white ring-bbsr-blue-500 hover:bg-bbsr-blue-500 "
                       : "bg-white hover:bg-gray-50",
-                    isDisabled ? "cursor-not-allowed bg-gray-200 hover:bg-gray-200" : "cursor-pointer"
+                    "cursor-pointer"
                   )}
-                  onClick={() => setDismantlingPotentialClassId(key as DismantlingPotentialClassId)}
+                  onClick={() => {
+                    setDismantlingPotentialClassId(key as DismantlingPotentialClassId)
+                    updateDismantlingPotentialClassIdMutation.mutate(key as DismantlingPotentialClassId)
+                  }}
                 >
                   {circularityInfoTranslations(
                     `sections.dismantlingPotential.dismantlingClassNames.${value.translationKey}`

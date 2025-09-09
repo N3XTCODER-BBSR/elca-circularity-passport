@@ -29,6 +29,7 @@ import { useTranslations } from "next-intl"
 import { useEffect, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { Area, Heading4, Required } from "app/(components)/generic/layout-elements"
+import { useDebounce } from "app/(utils)/useDebounce"
 import { DisturbingSubstanceSelectionWithNullabelId } from "lib/domain-logic/circularity/misc/domain-types"
 import { DisturbingSubstanceClassId, DisturbingSubstanceSelection } from "prisma/generated/client"
 
@@ -87,21 +88,16 @@ const DisturbingSubstanceRow = ({
     <div className="my-2 flex items-center gap-4">
       <div className="isolate flex flex-wrap justify-center gap-2">
         {disturbingSubstanceClasses.map((disturbingSubstanceClassId) => {
-          const isDisabled =
-            disturbingSubstanceSelection.disturbingSubstanceClassId != null &&
-            disturbingSubstanceClassId !== disturbingSubstanceSelection.disturbingSubstanceClassId
           return (
             <button
               key={disturbingSubstanceClassId}
               data-testid={`disturbing-substance-class__button__${disturbingSubstanceClassId}`}
-              disabled={isDisabled}
               type="button"
               className={twMerge(
                 `relative flex items-center justify-center rounded-md px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 focus:z-10`,
                 disturbingSubstanceClassId === disturbingSubstanceSelection.disturbingSubstanceClassId
                   ? "bg-bbsr-blue-700 text-white ring-bbsr-blue-500 hover:bg-bbsr-blue-500 "
-                  : "bg-white hover:bg-gray-50",
-                isDisabled ? "cursor-not-allowed bg-gray-200 hover:bg-gray-200" : "cursor-pointer"
+                  : "bg-white hover:bg-gray-50"
               )}
               onClick={() => {
                 const newClassIdOrNull =

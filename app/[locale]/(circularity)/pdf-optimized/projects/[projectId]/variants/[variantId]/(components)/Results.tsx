@@ -5,7 +5,7 @@ import {
   calculateBnbDismantlingPoints,
   calculateBnbCircularityPoints,
 } from "lib/domain-logic/circularity/utils/calculateBnbPoints"
-import { formatCircularityMetricServer } from "lib/presentation-logic/circularity/formatCircularityMetric"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
 
 interface ResultsProps {
   dismantlingPoints: number
@@ -23,6 +23,7 @@ export function Results({
   locale,
 }: ResultsProps) {
   const t = useTranslations("CircularityTool.sections.pdfExport.results")
+  const { formatCircularityMetric } = useCircularityFormatter()
 
   const erreichteRuckbauPunkte = calculateBnbDismantlingPoints(weightedDismantlingPoints)
   const erreichteZirkularitaetPunkte = calculateBnbCircularityPoints(weightedCircularityPoints)
@@ -32,12 +33,12 @@ export function Results({
       <div className="grid grid-cols-[auto,1fr] gap-x-8 gap-y-4 text-sm">
         <div className="font-semibold">{t("achievedDismantlingPoints")}</div>
         <div>
-          {formatCircularityMetricServer(erreichteRuckbauPunkte, locale)} {t("points")}
+          {formatCircularityMetric(erreichteRuckbauPunkte)} {t("points")}
         </div>
 
         <div className="font-semibold">{t("achievedCircularityPoints")}</div>
         <div>
-          {formatCircularityMetricServer(erreichteZirkularitaetPunkte, locale)} {t("points")}
+          {formatCircularityMetric(erreichteZirkularitaetPunkte)} {t("points")}
         </div>
 
         <div className="font-semibold">

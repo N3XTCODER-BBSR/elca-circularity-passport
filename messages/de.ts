@@ -513,7 +513,7 @@ const translationsPlattformGeneric = {
         },
         materialExport: {
           exportMaterialsToCsv: "Zirkularitätsinventar exportieren (CSV)",
-          exportComponentCatalogToPdf: "Komponenten Katalog exportieren (PDF)",
+          exportComponentCatalogToPdf: "Bauteilkatalog exportieren (PDF)",
           fields: {
             componentUuid: "Komponenten-UUID",
             volumePerUnit: "Volume (m³) pro Einheit",
