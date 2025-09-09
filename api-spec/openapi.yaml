@@ -1,0 +1,327 @@
+openapi: 3.0.3
+info:
+  title: tBaustoffe API
+  description: API for accessing tBaustoff materials data
+  version: 0.0.1-draft
+  contact:
+    name: eLCA Support
+    email: elcadevs@n3xtcoder.org
+  license:
+    name: AGPL-3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.html
+# servers:
+#   - url: https://api.elca.example.com/v1
+#     description: Production server
+#   - url: https://staging-api.elca.example.com/v1
+#     description: Staging server
+paths:
+  /materials:
+    get:
+      summary: Get all materials
+      operationId: getMaterials
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 100
+          description: Maximum number of items to return
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Number of items to skip for pagination
+        - name: version
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Specific version to retrieve
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Material'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /materials/{uuid}:
+    get:
+      summary: Get single material by UUID
+      operationId: getMaterialsUuid
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The uuid to retrieve
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Material'                  
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /releases:
+    get:
+      summary: Get list of available releases
+      operationId: getReleases
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Release'
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    Release:
+      type: object
+      required:
+        - version
+      properties:
+        version:
+          type: string
+          description: tBaustoff release 
+    Material:
+      type: object
+      required:
+        - uuid
+        - release
+        - name
+      properties:
+        uuid:
+          type: string
+          description: tBaustoff unique identifier for the material
+        release:
+          type: string
+          description: tBaustoff release
+        name:
+          type: string
+          description: Name of the material
+          maxLength: 500
+        eolCategory:
+          $ref: '#/components/schemas/EOLCategory'
+          nullable: true
+          description: Related eolcategory
+        oekobaudatMappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/OekobaudatMapping'
+          description: List of related oekobaudatmappings
+    EOLCategory:
+      type: object
+      required:
+        # - id
+        - name
+        - eolScenarioUnbuiltReal
+        - eolScenarioUnbuiltPotential
+        - technologyFactor
+      properties:
+        # id:
+        #   type: integer
+        #   description: Unique identifier for the EOL category
+        name:
+          type: string
+          description: Name of the EOL category
+        eolScenarioUnbuiltReal:
+          type: enum
+          description: End-of-life scenario for unbuilt real state
+          enum:
+            - WV
+            - CL+
+            - CL-
+            - RC+
+            - RC-
+            - SV
+            - EV+
+            - EV-
+            - EB
+            - Dep+
+            - Dep-
+        eolScenarioUnbuiltPotential:
+          type: enum
+          description: End-of-life scenario for unbuilt potential state
+          enum:
+            - WV
+            - CL+
+            - CL-
+            - RC+
+            - RC-
+            - SV
+            - EV+
+            - EV-
+            - EB
+            - Dep+
+            - Dep-
+        technologyFactor:
+          type: float
+          description: Technology factor for the category
+          minimum: 0
+          maximum: 1
+        # materials:
+        #   type: array
+        #   items:
+        #     $ref: '#/components/schemas/Material'
+        #   description: List of related materials
+    OekobaudatMapping:
+      type: object
+      required:
+        - oebdUuid
+        - oebdVersionUuid
+      properties:
+        oebdUuid:
+          type: string
+          description: Oekobaudat process UUID
+          format: uuid
+        oebdVersionUuid:
+          type: string
+          description: Oekobaudat materialversion UUID
+          format: uuid
+        oebdRelease:
+          type: string
+          description: Oekobaudat database release
+          format: string
+        # materialId:
+        #   type: integer
+        #   description: Foreign key to tBaustoff product
+        #   nullable: true
+        # material:
+        #   $ref: '#/components/schemas/Material'
+        #   nullable: true
+        #   description: Related material
+    PaginationMeta:
+      type: object
+      required:
+        - total
+        - limit
+        - offset
+        - hasNext
+        - hasPrevious
+      properties:
+        total:
+          type: integer
+          description: Total number of items available
+        limit:
+          type: integer
+          description: Number of items per page
+        offset:
+          type: integer
+          description: Number of items skipped
+        hasNext:
+          type: boolean
+          description: Whether there are more items available
+        hasPrevious:
+          type: boolean
+          description: Whether there are previous items available
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              description: Error code for programmatic handling
+            message:
+              type: string
+              description: Human-readable error message
+            details:
+              type: object
+              description: Additional error details
+              additionalProperties: true
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for API authentication
+security:
+  - BearerAuth: []
+tags:
+  - name: Materials
+    description: Operations for accessing material circularity data
+  - name: Releases
+    description: List of released versions
