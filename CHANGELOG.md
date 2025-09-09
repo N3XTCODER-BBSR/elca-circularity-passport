@@ -1,3 +1,39 @@
+## [Release 0.4.2] - 2025-08-06
+
+### Added
+
+- **UI Enhancements:**
+  - Added tooltip for tBaustoff in component catalog
+  - Improved chart height handling on overview page with DRY refactoring
+
+### Fixed
+
+  - Fixed missing dismantling class handling (0 values no longer converted to null)
+  - Fixed technology factor in CSV export with proper validation
+  - Fixed address formatting for PDF reports
+  - Fixed PDF export button being covered by hidden project-variant-switcher link
+  - Fixed navbar accessibility by preventing hidden menu from intercepting clicks
+  - Fixed chart height issues on overview page
+  - Removed disabled state for dismantling potential and contaminants buttons
+  - Fixed client component hook usage instead of server functions
+
+### Improved / Refactored
+
+- **Code Quality:**
+  - Added license prefix to source files
+  - Created unit formatter utility for PDF generation
+  - Improved localization for PDF content
+  - Enhanced test coverage for technology factor validation
+  - Updated wording and formatting throughout the application
+
+### Chore
+
+- Updated TypeScript build info in gitignore
+- Cleaned up redundant code and improved code organization
+- Updated messages files
+
+---
+
 ## [Release 0.4.1] - 2025-08-01
 
 ### Fixed
