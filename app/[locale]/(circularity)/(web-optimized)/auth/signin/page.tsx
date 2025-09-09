@@ -62,7 +62,12 @@ export default function LoginPage({ searchParams }: PageProps) {
           <h2 className="text-xl font-semibold text-gray-800">{t("title")}</h2>
           <p className="mt-2 ">
             <span className="text-gray-600">{t("subTitle.a")}</span>
-            <a href="https://www.bauteileditor.de" target="_blank" className="text-blue-600 underline" rel="noreferrer">
+            <a
+              href="https://2022.bauteileditor.de"
+              target="_blank"
+              className="text-blue-600 underline"
+              rel="noreferrer"
+            >
               {t("subTitle.b")}
             </a>{" "}
             <span className="text-gray-600">{t("subTitle.c")}</span>
