@@ -227,8 +227,15 @@ export class LegacyDbDal {
       return element.element_components
         .map((ec) => {
           const pc = ec.process_configs
-          // TODO: extract A1-3 out into a constant
-          const assignment = pc.process_life_cycle_assignments.find((a) => a.processes?.life_cycle_ident === "A1-3")
+          // TODO: think through the following comment and check if it is still valid
+          // Why do we at first check the whole life_cycle_ident for "A1-3" and then check for "A1", "A2", "A3"?
+          // Because the life_cycle_ident is not always "A1-3" and sometimes only "A1", "A2", "A3".
+          // But we prefer to use the whole life_cycle_ident for "A1-3" if it exists
+
+          // TODO: extract A1-3, A1, A2, A3 out into constants
+          const assignment =
+            pc.process_life_cycle_assignments.find((a) => a.processes?.life_cycle_ident === "A1-3") ||
+            pc.process_life_cycle_assignments.find((a) => ["A1", "A2", "A3"].includes(a.processes?.life_cycle_ident))
 
           if (!assignment) {
             return null
