@@ -56,28 +56,25 @@ const DisturbingSubstanceRow = ({
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
 
   const [inputValue, setInputValue] = useState(disturbingSubstanceSelection.disturbingSubstanceName || "")
-  const isUserInput = useRef(false)
+
+  // Debounce the input value with a 1-second delay
+  const debouncedInputValue = useDebounce<string | null>(inputValue, 1000)
 
   useEffect(() => {
     setInputValue(disturbingSubstanceSelection.disturbingSubstanceName || "")
-    isUserInput.current = false
   }, [disturbingSubstanceSelection.disturbingSubstanceName])
 
   useEffect(() => {
-    if (isUserInput.current) {
-      const handler = setTimeout(() => {
-        handleUpdateDisturbingSubstance({
-          ...disturbingSubstanceSelection,
-          disturbingSubstanceName: inputValue,
-        })
-        isUserInput.current = false
-      }, 1000)
-      return () => {
-        clearTimeout(handler)
-      }
+    // Only save if the value has actually changed from what's in disturbingSubstanceSelection
+    if (debouncedInputValue !== disturbingSubstanceSelection.disturbingSubstanceName) {
+      handleUpdateDisturbingSubstance({
+        ...disturbingSubstanceSelection,
+        disturbingSubstanceName: debouncedInputValue,
+      })
     }
-  }, [inputValue, handleUpdateDisturbingSubstance, disturbingSubstanceSelection])
+  }, [debouncedInputValue, disturbingSubstanceSelection.disturbingSubstanceName, disturbingSubstanceSelection.id])
 
+  // Handle S0 selection - clear input when S0 is selected
   useEffect(() => {
     if (disturbingSubstanceSelection.disturbingSubstanceClassId === DisturbingSubstanceClassId.S0) {
       setInputValue("")
@@ -127,7 +124,15 @@ const DisturbingSubstanceRow = ({
           disabled={s0Selected}
           onChange={(e) => {
             setInputValue(e.target.value)
-            isUserInput.current = true
+          }}
+          onBlur={() => {
+            // Also save on blur for immediate feedback when user leaves the field
+            if (inputValue !== disturbingSubstanceSelection.disturbingSubstanceName) {
+              handleUpdateDisturbingSubstance({
+                ...disturbingSubstanceSelection,
+                disturbingSubstanceName: inputValue,
+              })
+            }
           }}
         />
       </div>
