@@ -1,3 +1,35 @@
+## [Release 0.4.3] - 2025-09-09
+
+### Added
+
+- **Internationalization:**
+  - Added translations for material geometry units (m, m², m³, pieces); DE: pieces → Stück
+  - Expanded unit handling for m²/m³ edge cases
+- **Footer:**
+  - Updated user testing guide link structure and added German PDF documentation
+- **Documentation:**
+  - First draft API documentation and rendered spec
+  - Draft implementation guide
+
+### Fixed
+
+- Layers no longer filtered out when there are no processes with life_cycle_ident 'A1-3'
+- Corrected spelling of "Rückbaupotenzial" in CSV export and UI
+- Corrected Bauteileeditor URL on login page
+- Fixed umlaut issues in filenames
+
+### Improved / Refactored
+
+- **Data Access (LegacyDbDal):** Prefer aggregated 'A1-3' lifecycle ident checks over separate A1/A2/A3
+- **Circularity Metric Formatting:** Centralized formatting via client-side hook; updated `ComponentsList` and `Results`; improved consistency
+- **PDF Export:** Reorganized sections and updated translation keys (DE/EN/ES); removed unused imports and consolidated; flipped first two sections for clarity
+
+### Chore
+
+- **Tests:** Updated Playwright tests to align with new unit translations
+
+---
+
 ## [Release 0.4.2] - 2025-08-06
 
 ### Added
