@@ -672,7 +672,7 @@ const translationsPlattformGeneric = {
     links: {
       userTestingGuide: {
         linkText: "Benutzerguide",
-        href: "/20250407-elca-circularity-index-v0-3-user-documentation-DE.pdf",
+        href: "/20250909-elca-circularity-index-v0-4-user-documentation-DE.pdf",
       },
       privacyPolicy: "Datenschutz",
       imprint: "Impressum",
