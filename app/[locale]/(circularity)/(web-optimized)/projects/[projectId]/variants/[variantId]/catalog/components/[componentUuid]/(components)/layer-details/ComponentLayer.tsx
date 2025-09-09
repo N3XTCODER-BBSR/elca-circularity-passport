@@ -97,7 +97,7 @@ const ComponentLayer = ({
           ? `${format.number(layerData.volume, {
               minimumFractionDigits: 0,
               maximumFractionDigits: 2,
-            })} m3`
+            })} m³`
           : "N/A",
       isRequired: true,
       testId: "volume",

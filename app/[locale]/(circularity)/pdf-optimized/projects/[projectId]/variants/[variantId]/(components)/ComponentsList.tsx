@@ -1,9 +1,8 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/formatCircularityMetric"
 import { formatNumber, formatRoman } from "lib/presentation-logic/formatters"
-import { formatUnit } from "lib/presentation-logic/circularity/formatUnit"
-import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
 
 interface Material {
   name: string
@@ -34,9 +33,11 @@ interface ComponentsListProps {
   locale: string
 }
 
-export function ComponentsList({ components, locale }: ComponentsListProps) {
+export function ComponentsList({ components, locale: _locale }: ComponentsListProps) {
   const t = useTranslations("CircularityTool.sections.pdfExport.components")
   const { formatCircularityMetric } = useCircularityFormatter()
+
+  const refUnitsTranslations = useTranslations("Units.RefUnits")
 
   return (
     <div className="space-y-6">
@@ -60,14 +61,14 @@ export function ComponentsList({ components, locale }: ComponentsListProps) {
               <div>{formatNumber(component.quantity, 2)}</div>
 
               <div className="font-semibold">{t("referenceUnit")}</div>
-              <div>{formatUnit(component.referenceUnit)}</div>
+              <div>{refUnitsTranslations(component.referenceUnit)}</div>
             </div>
           </div>
 
           {/* Materials table */}
           <div className="keep-together mt-4">
             <div className="mb-2 text-right text-sm italic text-gray-600">
-              {t("dataPerUnit", { formattedUnit: formatUnit(component.referenceUnit) })}
+              {t("dataPerUnit", { formattedUnit: refUnitsTranslations(component.referenceUnit) })}
             </div>
             <table className="w-full">
               <thead className="border-b border-gray-300 text-sm">

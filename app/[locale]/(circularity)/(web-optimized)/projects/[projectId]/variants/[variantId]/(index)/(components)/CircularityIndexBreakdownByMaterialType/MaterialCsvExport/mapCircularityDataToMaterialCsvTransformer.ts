@@ -23,15 +23,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 
-import { formatCsvRows, convertCsvToUtf8Buffer } from "app/(utils)/csvExportUtils"
+import { convertCsvToUtf8Buffer, formatCsvRows } from "app/(utils)/csvExportUtils"
 import { ElcaElementWithComponents } from "lib/domain-logic/circularity/misc/domain-types"
 import { CalculateCircularityDataForLayerReturnType } from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { EOLScenarioMap } from "lib/domain-logic/circularity/utils/circularityMappings"
 import {
   calculateMaterialCompatibility,
   getDisturbingSubstancesString,
 } from "lib/domain-logic/circularity/utils/getDisturbingSubstancesString"
-import { EOLScenarioMap } from "lib/domain-logic/circularity/utils/circularityMappings"
-import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 
 // CSV Headers
 const CSV_HEADERS = {
@@ -41,7 +40,7 @@ const CSV_HEADERS = {
   LAYER_DATA: "Schichten der Bauteilkomponente",
   BASE_DATA: "Basisdaten / Einheit (m², m, Stück) je Bauteilschicht",
   CIRCULARITY_UNBUILT: "Zirkularitätspotenzial - Unverbaut",
-  DISMANTLING_POTENTIAL: "Rückbaupotential",
+  DISMANTLING_POTENTIAL: "Rückbaupotenzial",
   MATERIAL_COMPATIBILITY: "Materialverträglichkeit",
   CIRCULARITY_BUILT: "Zirkularitätspotenzial - Verbaut (Final)",
 } as const

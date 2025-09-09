@@ -23,6 +23,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 
+import { useFormatter } from "next-intl"
 import { getFormatter } from "next-intl/server"
 
 /**
@@ -46,4 +47,26 @@ export const formatCircularityMetricServer = async (
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   })
+} /**
+ * React hook that provides a consistent interface for formatting circularity metrics
+ * This hook is designed for client-side components and provides the formatter function
+ *
+ * @returns An object with a formatCircularityMetric function
+ */
+
+export const useCircularityFormatter = () => {
+  const format = useFormatter()
+
+  return {
+    formatCircularityMetric: (value: number | null | undefined): string => {
+      if (value == null || Number.isNaN(value)) {
+        return "-"
+      }
+
+      return format.number(value, {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      })
+    },
+  }
 }

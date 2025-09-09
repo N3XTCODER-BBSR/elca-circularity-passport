@@ -37,6 +37,8 @@ type BuildingBaseInformationProps = {
 
 const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passportData, className }) => {
   const t = useTranslations("Grp.Web.sections.overview.buildingBaseInformation")
+  const unitsTranslations = useTranslations("Units")
+  const areaUnitsTranslations = useTranslations("Units.Area")
   const format = useFormatter()
 
   const buildingBaseInfoKeyValues: KeyValueTuple[] = [
@@ -58,7 +60,10 @@ const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passp
     { key: t("numberOfUndergroundFloors"), value: passportData.buildingBaseData.numberOfBasementFloors },
     {
       key: t("netFloorArea.abbreviation"),
-      value: format.number(passportData.buildingBaseData.nrf, { maximumFractionDigits: 2 }) + " m2",
+      value:
+        format.number(passportData.buildingBaseData.nrf, { maximumFractionDigits: 2 }) +
+        " " +
+        areaUnitsTranslations("m2"),
       testId: "nrf",
       tooltip: {
         id: "nrf",
@@ -76,7 +81,10 @@ const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passp
     },
     {
       key: t("grossFloorArea.abbreviation"),
-      value: format.number(passportData.buildingBaseData.bgf, { maximumFractionDigits: 2 }) + " m2",
+      value:
+        format.number(passportData.buildingBaseData.bgf, { maximumFractionDigits: 2 }) +
+        " " +
+        areaUnitsTranslations("m2"),
       tooltip: {
         id: "bgf",
         content: t("grossFloorArea.description"),
@@ -84,7 +92,10 @@ const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passp
     },
     {
       key: t("grossVolume.abbreviation"),
-      value: format.number(passportData.buildingBaseData.bri, { maximumFractionDigits: 2 }) + " m3",
+      value:
+        format.number(passportData.buildingBaseData.bri, { maximumFractionDigits: 2 }) +
+        " " +
+        unitsTranslations("M3.short"),
       tooltip: {
         id: "bri",
         content: t("grossVolume.description"),
@@ -92,11 +103,17 @@ const BuildingBaseInformation: React.FC<BuildingBaseInformationProps> = ({ passp
     },
     {
       key: t("plotArea"),
-      value: format.number(passportData.buildingBaseData.plotArea, { maximumFractionDigits: 2 }) + " m2",
+      value:
+        format.number(passportData.buildingBaseData.plotArea, { maximumFractionDigits: 2 }) +
+        " " +
+        areaUnitsTranslations("m2"),
     },
     {
       key: t("totalBuildingMass"),
-      value: format.number(passportData.buildingBaseData.totalBuildingMass, { maximumFractionDigits: 1 }) + " kg",
+      value:
+        format.number(passportData.buildingBaseData.totalBuildingMass, { maximumFractionDigits: 1 }) +
+        " " +
+        unitsTranslations("Kg.short"),
       testId: "total-building-mass",
     },
   ]

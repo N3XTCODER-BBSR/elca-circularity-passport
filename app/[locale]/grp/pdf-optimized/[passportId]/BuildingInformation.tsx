@@ -48,15 +48,15 @@ const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportD
       numberOfLines: 2,
     },
     {
-      key: "Netto-Raumfläche (m2 NRF)", // TODO: i18n
+      key: "Netto-Raumfläche (m² NRF)", // TODO: i18n
       value: dinEnrichedPassportData.buildingBaseData.nrf.toFixed(2),
     },
     {
-      key: "Brutto-Grundfläche (m2 BGF)", // TODO: i18n
+      key: "Brutto-Grundfläche (m² BGF)", // TODO: i18n
       value: dinEnrichedPassportData.buildingBaseData.bgf.toFixed(2),
     },
     {
-      key: "Brutto-Rauminhalt (m3 BRI)", // TODO: i18n
+      key: "Brutto-Rauminhalt (m³ BRI)", // TODO: i18n
       value: dinEnrichedPassportData.buildingBaseData.bri.toFixed(2),
     },
     {
@@ -76,7 +76,7 @@ const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportD
       value: dinEnrichedPassportData.buildingBaseData.numberOfBasementFloors,
     },
     {
-      key: "Grundstücksfläche (m2)", // TODO: i18n
+      key: "Grundstücksfläche (m²)", // TODO: i18n
       value: dinEnrichedPassportData.buildingBaseData.plotArea.toFixed(2),
     },
     // TODO (L): check and validate (with automatic tests) units and conversions. gesamtmasse should be (t), but seems to be (kg)

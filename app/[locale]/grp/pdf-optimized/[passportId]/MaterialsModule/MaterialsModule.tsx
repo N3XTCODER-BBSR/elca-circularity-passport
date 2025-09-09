@@ -97,7 +97,7 @@ const BuildingInformation = ({ dinEnrichedPassportData }: { dinEnrichedPassportD
                   {format.number(aggregatedDataByBuildingComponentCategory.totalMassRelativeToNrf, {
                     maximumFractionDigits: 2,
                   })}{" "}
-                  {unit}/m2 NRF
+                  {unit}/m² NRF
                 </TextXSLeading4>
               </dl>
             </div>

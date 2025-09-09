@@ -83,7 +83,7 @@ test.describe("Circularity tool", () => {
       test("displays volume for other material with m3 unit correctly", async ({ page }) => {
         await expect(
           page.locator("[data-testid=component-layer__div__17]").locator("[data-testid=volume-value__dd]")
-        ).toHaveText("10 m3")
+        ).toHaveText("10 m³")
       })
     })
     test.describe("Component Page 1", () => {
@@ -93,7 +93,7 @@ test.describe("Circularity tool", () => {
 
       test("displays component overview correctly", async ({ page }) => {
         await expect(page.locator("[data-testid=description-item__dd__number-installed]")).toHaveText("1")
-        await expect(page.locator("[data-testid=description-item__dd__ref-unit]")).toHaveText("m2")
+        await expect(page.locator("[data-testid=description-item__dd__ref-unit]")).toHaveText("m²")
       })
 
       test("displays material basic information (mass) correctly", async ({ page }) => {
@@ -217,7 +217,7 @@ test.describe("Circularity tool", () => {
       page = newPage
 
       await expect(page.locator("[data-testid=total-building-mass-value__dd]")).toHaveText(/50[.,]8 kg/)
-      await expect(page.locator("[data-testid=nrf-value__dd]")).toHaveText(/100 m2/)
+      await expect(page.locator("[data-testid=nrf-value__dd]")).toHaveText(/100 m²/)
 
       const passportUrl = page.url()
       const passportComponent2Url = `${passportUrl}/catalog/components/${componentUuid2}`

@@ -87,7 +87,7 @@
 //                 <div className="mb-[4pt]">
 //                   <TextXSLeading4 light>Flachenbezogen</TextXSLeading4>
 //                   <br />
-//                   <TextXSLeading4 semiBold>{aggregatedPenrtTotalPerNrf.toFixed(2)} KwH/m2 NRF</TextXSLeading4>
+//                   <TextXSLeading4 semiBold>{aggregatedPenrtTotalPerNrf.toFixed(2)} KwH/m² NRF</TextXSLeading4>
 //                 </div>
 //                 <div>
 //                   <TextXSLeading4 light>Gesamt</TextXSLeading4>

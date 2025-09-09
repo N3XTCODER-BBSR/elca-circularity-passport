@@ -50,7 +50,7 @@ import {
   EOLScenarioMap,
 } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { CallServerActionError } from "lib/errors"
-import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/formatCircularityMetric"
 import { DismantlingPotentialClassId, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import BuiltS4SpecificScenarioModal from "./disturbing-substances/BuiltS4SpecificScenarioModal"
 import DisturbingSubstances from "./DisturbingSubstances"

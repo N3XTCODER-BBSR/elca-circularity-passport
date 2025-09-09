@@ -8,14 +8,14 @@
 
 ### Fixed
 
-  - Fixed missing dismantling class handling (0 values no longer converted to null)
-  - Fixed technology factor in CSV export with proper validation
-  - Fixed address formatting for PDF reports
-  - Fixed PDF export button being covered by hidden project-variant-switcher link
-  - Fixed navbar accessibility by preventing hidden menu from intercepting clicks
-  - Fixed chart height issues on overview page
-  - Removed disabled state for dismantling potential and contaminants buttons
-  - Fixed client component hook usage instead of server functions
+- Fixed missing dismantling class handling (0 values no longer converted to null)
+- Fixed technology factor in CSV export with proper validation
+- Fixed address formatting for PDF reports
+- Fixed PDF export button being covered by hidden project-variant-switcher link
+- Fixed navbar accessibility by preventing hidden menu from intercepting clicks
+- Fixed chart height issues on overview page
+- Removed disabled state for dismantling potential and contaminants buttons
+- Fixed client component hook usage instead of server functions
 
 ### Improved / Refactored
 

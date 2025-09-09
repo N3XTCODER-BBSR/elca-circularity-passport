@@ -37,6 +37,7 @@ type ComponentLayerProps = {
 const ComponentLayer = ({ layerData, layerNumber }: ComponentLayerProps) => {
   const t = useTranslations("Grp.Web.sections.detailPage.componentLayer")
   const unitsTranslations = useTranslations("Units")
+  const geometryUnitsTranslations = useTranslations("Units.Geometry")
   const format = useFormatter()
 
   return (
@@ -68,7 +69,7 @@ const ComponentLayer = ({ layerData, layerNumber }: ComponentLayerProps) => {
               <dt className="text-sm font-medium text-gray-900">{t("materialGeometry")}</dt>
               <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                 {format.number(layerData.materialGeometry.amount, { maximumFractionDigits: 2 })}{" "}
-                {layerData.materialGeometry.unit}
+                {geometryUnitsTranslations(layerData.materialGeometry.unit)}
               </dd>
             </div>
           </dl>

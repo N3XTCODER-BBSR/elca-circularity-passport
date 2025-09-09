@@ -30,7 +30,7 @@ import CircularityBarChart, {
 } from "app/[locale]/grp/(components)/domain-specific/modules/passport-overview/circularity/CircularityBarChart"
 import { DinEnrichedBuildingComponent } from "lib/domain-logic/grp/data-schema/versions/v1/enrichtComponentsArrayWithDin276Labels"
 import aggregateCircularityData from "lib/domain-logic/grp/modules/passport-overview/circularity/circularity-data-aggregation"
-import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/formatCircularityMetric"
 import DummyAccordion from "../../../DummyAccordion"
 
 type CircularityProps = {

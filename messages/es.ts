@@ -574,9 +574,9 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           "Informe de Resultados de la Herramienta de Circularidad con Catálogo de Componentes para el Criterio U.05 Circularidad BNB",
         sections: {
           projectData: "1. Datos del Proyecto",
-          components: "2. Base",
+          results: "2. Resultados",
+          components: "3. Base",
           componentsSubtitle: "Lista de todos los componentes",
-          results: "3. Resultados",
         },
         projectData: {
           projectName: "Nombre del Proyecto:",
@@ -642,6 +642,25 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
     KgCo2Eq: {
       short: "kg Co2eq",
     },
+    Geometry: {
+      m: "m",
+      m2: "m²",
+      m3: "m³",
+      pieces: "piezas",
+    },
+    Nrf: {
+      m2Nrf: "m² NRF",
+    },
+    Area: {
+      m2: "m²",
+    },
+    RefUnits: {
+      m2: "m²",
+      m: "m",
+      m3: "m³",
+      pieces: "piezas",
+      st: "ud.",
+    },
   },
   GenericComponents: {
     TotalAndNrfRelativeValuesDisplay: {
@@ -656,7 +675,10 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
   },
   Footer: {
     links: {
-      userTestingGuide: "Guía de Usuario",
+      userTestingGuide: {
+        linkText: "Guía de Usuario",
+        href: "/20250407-elca-circularity-index-v0-3-user-documentation.pdf",
+      },
       privacyPolicy: "Política de Privacidad",
       imprint: "Aviso legal",
       accessibility: "Accesibilidad",

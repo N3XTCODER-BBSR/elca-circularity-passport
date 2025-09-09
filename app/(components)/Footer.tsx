@@ -35,12 +35,12 @@ function Footer() {
         <ul className="ml-6 flex flex-row items-center space-x-6">
           <li>
             <a
-              href="/20250407-elca-circularity-index-v0-3-user-documentation.pdf"
+              href={tFooter("links.userTestingGuide.href")}
               className="rounded-md bg-teal-700 px-4 py-2 text-white transition-colors hover:bg-teal-500"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {tFooter("links.userTestingGuide")}
+              {tFooter("links.userTestingGuide.linkText")}
             </a>
           </li>
           <li>

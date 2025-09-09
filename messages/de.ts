@@ -546,9 +546,9 @@ const translationsPlattformGeneric = {
         title: "Ergebnisbericht Zirkularitätstool mit Bauteilkatalog für Kriterium U.05 Kreislaufähigkeit BNB",
         sections: {
           projectData: "1. Projektdaten",
-          components: "2. Grundlage",
+          results: "2. Ergebnis",
+          components: "3. Grundlage",
           componentsSubtitle: "Liste aller Bauteile",
-          results: "3. Ergebnis",
         },
         projectData: {
           projectName: "Projektname:",
@@ -637,6 +637,25 @@ const translationsPlattformGeneric = {
     KgCo2Eq: {
       short: "kg Co2eq",
     },
+    Geometry: {
+      m: "m",
+      m2: "m²",
+      m3: "m³",
+      pieces: "Stück",
+    },
+    Nrf: {
+      m2Nrf: "m² NRF",
+    },
+    Area: {
+      m2: "m²",
+    },
+    RefUnits: {
+      m2: "m²",
+      m: "m",
+      m3: "m³",
+      pieces: "Stück",
+      st: "St",
+    },
   },
   GenericComponents: {
     TotalAndNrfRelativeValuesDisplay: {
@@ -651,7 +670,10 @@ const translationsPlattformGeneric = {
   },
   Footer: {
     links: {
-      userTestingGuide: "Benutzerguide",
+      userTestingGuide: {
+        linkText: "Benutzerguide",
+        href: "/20250407-elca-circularity-index-v0-3-user-documentation-DE.pdf",
+      },
       privacyPolicy: "Datenschutz",
       imprint: "Impressum",
       accessibility: "Barrierefreiheit",

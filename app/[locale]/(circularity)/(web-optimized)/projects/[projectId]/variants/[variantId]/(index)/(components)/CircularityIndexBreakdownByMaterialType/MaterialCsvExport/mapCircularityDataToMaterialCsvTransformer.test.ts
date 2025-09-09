@@ -33,9 +33,6 @@ import {
   TBs_ProductDefinitionEOLCategoryScenario,
 } from "prisma/generated/client"
 import { mapCircularityDataToMaterialCsvTransformer } from "./mapCircularityDataToMaterialCsvTransformer"
-import { createReadStream } from "fs"
-import { Readable } from "stream"
-import csv from "csv-parser"
 
 /**
  * Helper to create a mock layer object for testing.
@@ -191,7 +188,7 @@ const CSV_STRINGS = {
   LAYER_DATA: '"Schichten der Bauteilkomponente"',
   BASE_DATA: '"Basisdaten / Einheit (m², m, Stück) je Bauteilschicht"',
   CIRCULARITY_UNBUILT: '"Zirkularitätspotenzial - Unverbaut"',
-  DISMANTLING_POTENTIAL: '"Rückbaupotential"',
+  DISMANTLING_POTENTIAL: '"Rückbaupotenzial"',
   MATERIAL_COMPATIBILITY: '"Materialverträglichkeit"',
   CIRCULARITY_BUILT: '"Zirkularitätspotenzial - Verbaut (Final)"',
 

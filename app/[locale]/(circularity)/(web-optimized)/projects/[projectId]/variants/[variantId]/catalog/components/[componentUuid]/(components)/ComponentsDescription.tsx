@@ -25,6 +25,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 
+import { useFormatter, useTranslations } from "next-intl"
+
 import { ElcaElementWithComponents, EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import { getTotalMass } from "lib/domain-logic/circularity/utils/getTotalsForEnrichedElcaElementComponent/getTotalMass"
 import {
@@ -35,8 +37,7 @@ import { getTotalWeightedCircularityPotential } from "lib/domain-logic/circulari
 import { getTotalWeightedDismantlingPotential } from "lib/domain-logic/circularity/utils/getTotalsForEnrichedElcaElementComponent/getTotalWeightedDismantlingPotential"
 import { getDinCodeGroupLevel } from "lib/presentation-logic/circularity/formatDinCode"
 import { formatVolumeWithUnit } from "lib/presentation-logic/circularity/formatVolumeWithUnit"
-import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
-import { useFormatter, useTranslations } from "next-intl"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/formatCircularityMetric"
 
 import {
   CircularityPotentialBadge,
@@ -55,6 +56,7 @@ export const ComponentDescription = ({
   const t = useTranslations("Circularity.Components")
   const headersTranslations = useTranslations("Circularity.Components.headers")
   const unitsTranslations = useTranslations("Units")
+  const refUnitsTranslations = useTranslations("Units.RefUnits")
 
   const dinGroupLevelNumber = getDinCodeGroupLevel(componentData.din_code)
 
@@ -66,7 +68,12 @@ export const ComponentDescription = ({
   let totalVolumeString = ""
   try {
     const totalVolume = getTotalVolume(componentData.layers)
-    totalVolumeString = formatVolumeWithUnit(totalVolume, format)
+    totalVolumeString = formatVolumeWithUnit(
+      totalVolume,
+      format,
+      { maximumFractionDigits: 2 },
+      unitsTranslations("M3.short")
+    )
   } catch (error) {
     if (error instanceof MissingVolumeError) {
       totalVolumeString = "N/A"
@@ -84,7 +91,11 @@ export const ComponentDescription = ({
           value={format.number(componentData.quantity, { maximumFractionDigits: 2 })}
           testId="number-installed"
         />
-        <DescriptionItem label={t("referenceUnit")} value={componentData.unit} testId="ref-unit" />
+        <DescriptionItem
+          label={t("referenceUnit")}
+          value={refUnitsTranslations(componentData.unit)}
+          testId="ref-unit"
+        />
       </dl>
       <div className="border-gray-20 grid grid-cols-3 border-t">
         <HorizontalDescriptionItem

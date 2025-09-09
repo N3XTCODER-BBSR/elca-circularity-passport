@@ -232,7 +232,7 @@ const CircularityInfo = (props: CircularityInfoProps) => {
         <Area>
           <div className="flex flex-row justify-between">
             <Heading4>
-              Rückbaupotential <Required />
+              Rückbaupotenzial <Required />
             </Heading4>
             {props.layerData.dismantlingPotentialClassId === null && (
               <ErrorText className="mr-4">Please select the rebuild potential</ErrorText>

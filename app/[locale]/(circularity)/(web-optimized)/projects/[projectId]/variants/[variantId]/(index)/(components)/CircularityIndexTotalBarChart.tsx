@@ -25,7 +25,7 @@
 import { ResponsiveBar } from "@nivo/bar"
 import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
 import { circularityMetricBarChartColorMapping } from "lib/domain-logic/shared/styleConstants"
-import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/formatCircularityMetric"
 import { chartMargin } from "lib/presentation-logic/circularity/chartHeightUtils"
 
 const CircularityIndexTotalBarChart = ({

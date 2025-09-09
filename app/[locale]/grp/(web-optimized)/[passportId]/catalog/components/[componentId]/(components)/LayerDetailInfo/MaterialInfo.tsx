@@ -48,7 +48,7 @@ const MaterialInfo = ({ material }: { material: Material }) => {
     { key: t("materialDescription"), value: material.trade.trade },
     { key: t("lvNumber"), value: material.trade.lvNumber },
     { key: t("itemInLv"), value: material.trade.itemInLv },
-    // { key: `${t("area")} [m2]`, value: material.trade. },
+    // { key: `${t("area")} [m²]`, value: material.trade. },
   ]
 
   // const productValues = [

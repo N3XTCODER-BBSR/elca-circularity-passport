@@ -91,7 +91,7 @@
 //                 <div className="mb-[4pt]">
 //                   <TextXSLeading4 light>Flachenbezogen</TextXSLeading4>
 //                   <br />
-//                   <TextXSLeading4 semiBold>{aggregatedGwpTotalPerNrf.toFixed(2)} kg CO2-eq/m2 NRF</TextXSLeading4>
+//                   <TextXSLeading4 semiBold>{aggregatedGwpTotalPerNrf.toFixed(2)} kg CO2-eq/m² NRF</TextXSLeading4>
 //                 </div>
 //                 <div>
 //                   <TextXSLeading4 light>Gesamt</TextXSLeading4>

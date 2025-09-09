@@ -32,23 +32,23 @@ import getDataForPdfExportForProjectVariantId from "app/[locale]/(circularity)/(
 import { ensureVariantAccessible } from "app/[locale]/(circularity)/(utils)/ensureAccessible"
 import ensureUserIsAuthenticated from "lib/auth/ensureAuthenticated"
 import { ensureUserAuthorizationToProject } from "lib/auth/ensureAuthorized"
+import { validateAndUseOneTimePdfToken } from "lib/auth/pdfTokenAuth"
 import { DimensionalFieldName } from "lib/domain-logic/circularity/misc/domain-types"
 import { getProjectCircularityData } from "lib/domain-logic/circularity/misc/getProjectCircularityData"
 import { getProjectById } from "lib/domain-logic/circularity/projects/getProjectById"
 import { getVariantById } from "lib/domain-logic/circularity/projects/getProjectVariantById"
-import { calculateTotalMetricValuesForProject } from "lib/domain-logic/circularity/utils/calculateTotalMetricValues"
-import { dismantlingPotentialClassIdMapping } from "lib/domain-logic/circularity/utils/circularityMappings"
-import { validateAndUseOneTimePdfToken } from "lib/auth/pdfTokenAuth"
-import { ComponentsList } from "./(components)/ComponentsList"
-import { ProjectData } from "./(components)/ProjectData"
-import { Results } from "./(components)/Results"
-import { Section } from "./(components)/Section"
 import {
   calculateBnbCircularityPoints,
   calculateBnbDismantlingPoints,
 } from "lib/domain-logic/circularity/utils/calculateBnbPoints"
-import { formatProjectAddress } from "lib/presentation-logic/formatters"
+import { calculateTotalMetricValuesForProject } from "lib/domain-logic/circularity/utils/calculateTotalMetricValues"
+import { dismantlingPotentialClassIdMapping } from "lib/domain-logic/circularity/utils/circularityMappings"
 import { formatCircularityMetricServer } from "lib/presentation-logic/circularity/formatCircularityMetric"
+import { formatProjectAddress } from "lib/presentation-logic/formatters"
+import { ComponentsList } from "./(components)/ComponentsList"
+import { ProjectData } from "./(components)/ProjectData"
+import { Results } from "./(components)/Results"
+import { Section } from "./(components)/Section"
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("CircularityTool.pages")
@@ -174,11 +174,6 @@ async function PdfPage({
             creationDate={currentDate}
           />
         </Section>
-
-        <Section title={t("sections.components")} subtitle={t("sections.componentsSubtitle")}>
-          <ComponentsList components={components} locale="de" />
-        </Section>
-
         <Section title={t("sections.results")}>
           <div className="text-s mb-6 grid grid-cols-[auto,1fr] gap-x-8 gap-y-2 text-gray-500">
             <div>{t("results.dismantlingPotential")}</div>
@@ -198,6 +193,10 @@ async function PdfPage({
             weightedCircularityPoints={calculateBnbCircularityPoints(totalMetricValues.eolBuiltPoints)}
             locale="de"
           />
+        </Section>
+
+        <Section title={t("sections.components")} subtitle={t("sections.componentsSubtitle")}>
+          <ComponentsList components={components} locale="de" />
         </Section>
       </main>
     </div>

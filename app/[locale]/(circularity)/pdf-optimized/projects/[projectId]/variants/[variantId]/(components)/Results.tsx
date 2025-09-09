@@ -2,10 +2,10 @@
 
 import { useTranslations } from "next-intl"
 import {
-  calculateBnbDismantlingPoints,
   calculateBnbCircularityPoints,
+  calculateBnbDismantlingPoints,
 } from "lib/domain-logic/circularity/utils/calculateBnbPoints"
-import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/formatCircularityMetric"
 
 interface ResultsProps {
   dismantlingPoints: number
@@ -15,13 +15,7 @@ interface ResultsProps {
   locale: string
 }
 
-export function Results({
-  dismantlingPoints,
-  circularityPoints,
-  weightedDismantlingPoints,
-  weightedCircularityPoints,
-  locale,
-}: ResultsProps) {
+export function Results({ weightedDismantlingPoints, weightedCircularityPoints }: ResultsProps) {
   const t = useTranslations("CircularityTool.sections.pdfExport.results")
   const { formatCircularityMetric } = useCircularityFormatter()
 

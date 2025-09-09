@@ -570,9 +570,9 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
         title: "Circularity Tool Result Report with Component Catalog for Criterion U.05 Circularity BNB",
         sections: {
           projectData: "1. Project Data",
-          components: "2. Basis",
+          results: "2. Results",
+          components: "3. Basis",
           componentsSubtitle: "List of all component components",
-          results: "3. Results",
         },
         projectData: {
           projectName: "Project Name:",
@@ -638,6 +638,25 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
     KgCo2Eq: {
       short: "kg CO2eq",
     },
+    Geometry: {
+      m: "m",
+      m2: "m²",
+      m3: "m³",
+      pieces: "pieces",
+    },
+    Nrf: {
+      m2Nrf: "m² NRF",
+    },
+    Area: {
+      m2: "m²",
+    },
+    RefUnits: {
+      m2: "m²",
+      m: "m",
+      m3: "m³",
+      pieces: "pieces",
+      st: "pcs",
+    },
   },
   GenericComponents: {
     TotalAndNrfRelativeValuesDisplay: {
@@ -652,7 +671,10 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
   },
   Footer: {
     links: {
-      userTestingGuide: "User Testing Guide",
+      userTestingGuide: {
+        linkText: "User Testing Guide",
+        href: "/20250407-elca-circularity-index-v0-3-user-documentation.pdf",
+      },
       privacyPolicy: "Privacy Policy",
       imprint: "Imprint",
       accessibility: "Accessibility",

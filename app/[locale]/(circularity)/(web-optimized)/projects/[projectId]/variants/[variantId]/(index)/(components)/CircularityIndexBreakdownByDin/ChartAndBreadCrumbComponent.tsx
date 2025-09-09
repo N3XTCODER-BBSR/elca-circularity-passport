@@ -28,9 +28,9 @@ import { ResponsiveBar } from "@nivo/bar"
 import React, { useState } from "react"
 import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
 import { circularityMetricBarChartColorMapping } from "lib/domain-logic/shared/styleConstants"
-import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
-import { useMetricOptions } from "../../(utils)/useMetricOptions"
 import { calculateChartHeight, chartMargin } from "lib/presentation-logic/circularity/chartHeightUtils"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/formatCircularityMetric"
+import { useMetricOptions } from "../../(utils)/useMetricOptions"
 
 export type ChartDataLeaf = {
   isLeaf: true

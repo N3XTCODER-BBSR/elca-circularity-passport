@@ -33,7 +33,7 @@ import Toggle from "app/(components)/generic/Toggle"
 import { toggleExcludedProduct } from "app/[locale]/(circularity)/(server-actions)/toggleExcludedProduct"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
-import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/formatCircularityMetric"
 import {
   calculateMaterialCompatibility,
   getDisturbingSubstancesString,

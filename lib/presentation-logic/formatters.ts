@@ -34,6 +34,7 @@ export const formatNumber = (value: number, decimals: number = 1) =>
     maximumFractionDigits: decimals,
   }).format(value)
 
+// TODO: consider to also move this into translation files / i18n
 /**
  * Maps Arabic numerals to Roman numerals
  */

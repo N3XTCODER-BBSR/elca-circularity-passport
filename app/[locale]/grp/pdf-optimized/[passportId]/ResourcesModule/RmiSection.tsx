@@ -92,7 +92,7 @@
 //                   <TextXSLeading4 light>Flachenbezogen</TextXSLeading4>
 //                   <br />
 //                   <TextXSLeading4 semiBold>
-//                     {aggregatedDataRmi.aggregatedDataTotalPerNrf2m.toFixed(2)} t / m2 NRF
+//                     {aggregatedDataRmi.aggregatedDataTotalPerNrf2m.toFixed(2)} t / m² NRF
 //                   </TextXSLeading4>
 //                 </div>
 //                 <div>
@@ -116,7 +116,7 @@
 //                     </div>
 //                   </td>
 //                   <td className="whitespace-nowrap px-[3mm] py-[1mm] text-gray-900">
-//                     {aggregatedDataRmiRenewable.aggregatedDataTotalPerNrf2m.toFixed(2)} t / m2 NRF
+//                     {aggregatedDataRmiRenewable.aggregatedDataTotalPerNrf2m.toFixed(2)} t / m² NRF
 //                   </td>
 //                   <td className="whitespace-nowrap px-[3mm] py-[1mm] text-gray-900">
 //                     {aggregatedDataRmiRenewable.aggregatedDataTotal.toFixed(2)} t
@@ -129,7 +129,7 @@
 //                     </div>
 //                   </td>
 //                   <td className="whitespace-nowrap px-[3mm] py-[1mm] text-gray-900">
-//                     {aggregatedDataRmiNonRenewable.aggregatedDataTotalPerNrf2m.toFixed(2)} t / m2 NRF
+//                     {aggregatedDataRmiNonRenewable.aggregatedDataTotalPerNrf2m.toFixed(2)} t / m² NRF
 //                   </td>
 //                   <td className="whitespace-nowrap px-[3mm] py-[1mm] text-gray-900">
 //                     {aggregatedDataRmiNonRenewable.aggregatedDataTotal.toFixed(2)} t

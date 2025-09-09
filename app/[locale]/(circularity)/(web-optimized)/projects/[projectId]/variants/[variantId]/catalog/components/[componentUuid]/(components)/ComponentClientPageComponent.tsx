@@ -55,6 +55,19 @@ export const ComponentPageClientComponent = ({
   availableTBaustoffProductIdAndNames,
 }: ComponentPageClientComponentProps) => {
   const t = useTranslations("Circularity.Components")
+  const refUnitsTranslations = useTranslations("Units.RefUnits")
+
+  // Helper function to translate reference units
+  const translateRefUnit = (unit: string): string => {
+    // The unit parameter comes from the database and should already be in the correct format
+    // for translation keys (e.g., "m2", "m3", "pieces", "st")
+    try {
+      return refUnitsTranslations(unit)
+    } catch {
+      // Fallback to original unit if translation fails
+      return unit
+    }
+  }
 
   const { data: componentData } = useQuery({
     queryKey: ["componentData", projectId, variantId, componentUuid],
@@ -84,7 +97,7 @@ export const ComponentPageClientComponent = ({
               </div>
             </div>
             <div className="mb-12 flex flex-col gap-2">
-              <Heading3>{t("buildingMaterialsHeading", { refUnit: componentData.unit })}</Heading3>
+              <Heading3>{t("buildingMaterialsHeading", { refUnit: translateRefUnit(componentData.unit) })}</Heading3>
               {layers.length < 1 && nonLayers.length < 1 && (
                 <span className="text-sm font-medium text-gray-900">{t("noBuildingMaterials")}</span>
               )}

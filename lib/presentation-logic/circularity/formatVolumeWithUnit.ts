@@ -36,15 +36,17 @@ interface NumberFormatter {
  *
  * @param totalVolume The volume value to format
  * @param format The formatter to use for number formatting
+ * @param unit The unit to display (defaults to "m³")
  * @returns A formatted string with the volume and unit, or an appropriate placeholder
  */
 export function formatVolumeWithUnit(
   totalVolume: number | null | undefined,
   format: NumberFormatter,
-  options = { maximumFractionDigits: 2 }
+  options = { maximumFractionDigits: 2 },
+  unit = "m³"
 ): string {
   try {
-    return totalVolume ? `${format.number(totalVolume, options)} m3` : "-"
+    return totalVolume ? `${format.number(totalVolume, options)} ${unit}` : "-"
   } catch (error) {
     if (error instanceof MissingVolumeError) {
       return "N/A"

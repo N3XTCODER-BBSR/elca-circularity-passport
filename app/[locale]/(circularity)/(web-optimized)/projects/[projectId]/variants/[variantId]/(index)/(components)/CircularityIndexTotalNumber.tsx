@@ -26,7 +26,7 @@
 
 import { useTranslations } from "next-intl"
 import { MetricType } from "lib/domain-logic/circularity/misc/domain-types"
-import { useCircularityFormatter } from "lib/presentation-logic/circularity/useCircularityFormatter"
+import { useCircularityFormatter } from "lib/presentation-logic/circularity/formatCircularityMetric"
 import CircularityIndexTotalBarChart from "./CircularityIndexTotalBarChart"
 import { chartMargin } from "lib/presentation-logic/circularity/chartHeightUtils"
 
