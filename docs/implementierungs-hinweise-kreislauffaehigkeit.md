@@ -4,7 +4,7 @@
 
 ### Ziel und Zielgruppe
 
-Diese Dokumentation richtet sich an **LCA-Softwareanbieter**, die die BNB Zirkularitätsindikatoren in ihre Software integrieren möchten. Die BNB Zirkularitätsindikatoren sind eine **Erweiterung der eLCA-Software**, die es ermöglicht, die Kreislauffähigkeit von Gebäuden gemäß dem **BNB-Steckbrief U.05 "Kreislauffähigkeit"** zu berechnen.
+Diese Dokumentation richtet sich an **LCA-Softwareanbieter**, die die BNB Zirkularitätsindikatoren in ihre Software integrieren möchten. Die BNB Zirkularitätsindikatoren sind eine **Erweiterung der LCA-Software**, die es ermöglicht, die Kreislauffähigkeit von Gebäuden gemäß dem **BNB-Steckbrief U.05 "Kreislauffähigkeit"** zu berechnen.
 
 Die Dokumentation geht dabei insbesondere ein auf:
 
