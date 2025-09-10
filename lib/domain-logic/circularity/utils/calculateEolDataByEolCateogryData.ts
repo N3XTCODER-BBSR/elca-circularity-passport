@@ -38,6 +38,7 @@ export function calculateEolDataByEolCateogryData(eolCategory: TBs_ProductDefini
   const potentialClassName = getEolClassNameByPoints(potentialPoints)
 
   const totalPoints = realPoints - (realPoints - potentialPoints) * eolCategory.technologyFactor
+
   const totalClassName = getEolClassNameByPoints(totalPoints)
 
   return {

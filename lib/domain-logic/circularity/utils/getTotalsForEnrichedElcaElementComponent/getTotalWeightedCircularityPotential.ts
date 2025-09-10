@@ -24,8 +24,16 @@
  */
 import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import { calculateVolumeWeightedAverage, validateVolumeData } from "./volumeWeightedAverageUtils"
 
-export const getTotalWeightedCircularityPotential = (layers: EnrichedElcaElementComponent[]) => {
+/**
+ * Calculates the volume-weighted average circularity potential for all building layers.
+ *
+ * @param layers - Array of enriched ELCA element components
+ * @returns The volume-weighted average circularity potential, or null if no valid data
+ */
+export const getTotalWeightedCircularityPotential = (layers: EnrichedElcaElementComponent[]): number | null => {
+  // Process layers: calculate circularity data and filter out invalid ones
   const filteredData = layers
     .map((layer) => {
       const circularData = calculateCircularityDataForLayer(layer)
@@ -33,15 +41,19 @@ export const getTotalWeightedCircularityPotential = (layers: EnrichedElcaElement
       return { layer, circularityPotential }
     })
     .filter(({ layer, circularityPotential }) => !layer.isExcluded && circularityPotential !== null)
-    .map(({ layer, circularityPotential }) => ({ volume: layer.volume!, circularityPotential: circularityPotential! }))
+    .map(({ layer, circularityPotential }) => ({
+      volume: layer.volume!,
+      value: circularityPotential!,
+    }))
 
-  if (filteredData.length === 0 || filteredData.some(({ volume }) => volume === null)) {
+  // Return null if no valid layers or if any layer is missing volume data
+  if (!validateVolumeData(filteredData)) {
     return null
   }
 
+  // Calculate total volume across all valid layers
   const totalVolume = filteredData.reduce((sum, { volume }) => sum + volume, 0)
 
-  return filteredData.reduce((acc, { volume, circularityPotential }) => {
-    return acc + circularityPotential! * (volume / totalVolume)
-  }, 0)
+  // Calculate volume-weighted average using utility function
+  return calculateVolumeWeightedAverage(filteredData, totalVolume)
 }

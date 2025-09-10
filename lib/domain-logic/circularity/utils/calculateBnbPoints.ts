@@ -24,19 +24,29 @@
  */
 
 /**
+ * Higher-order function that returns a configured linear score calculator.
+ *
+ * @param maxPoints - The maximum points to return
+ * @param maxValue - The maximum threshold (returns maxPoints if value >= maxValue)
+ * @param minValue - The minimum threshold (returns 0 if value <= minValue)
+ * @returns A function that calculates the linear score for a given input value
+ */
+function getLinearScoreCalculator(maxPoints: number, maxValue: number, minValue: number) {
+  return (value: number): number => {
+    if (value >= maxValue) return maxPoints
+    if (value <= minValue) return 0
+    // Interpolate and round to nearest integer
+    return Math.round(((value - minValue) / (maxValue - minValue)) * maxPoints)
+  }
+}
+
+/**
  * Calculates the interpolated points for Rückbaubarkeit (dismantling) according to official rules.
  *
  * @param rueckbau - The weighted Rückbaupotenzial (RGeb)
  * @returns The calculated points (0-25, rounded)
  */
-export function calculateBnbDismantlingPoints(rueckbau: number): number {
-  const Rmax = 45
-  const Rmin = 7.5
-  if (rueckbau >= Rmax) return 25
-  if (rueckbau <= Rmin) return 0
-  // Interpolate and round to nearest integer
-  return Math.round(((rueckbau - Rmin) / (Rmax - Rmin)) * 25)
-}
+export const calculateBnbDismantlingPoints = getLinearScoreCalculator(25, 45, 7.5)
 
 /**
  * Calculates the interpolated points for Zirkularität according to official rules.
@@ -44,11 +54,4 @@ export function calculateBnbDismantlingPoints(rueckbau: number): number {
  * @param zirkularitaet - The weighted Zirkularitätspotenzial (ZGeb)
  * @returns The calculated points (0-50, rounded)
  */
-export function calculateBnbCircularityPoints(zirkularitaet: number): number {
-  const Zmax = 60
-  const Zmin = 20
-  if (zirkularitaet >= Zmax) return 50
-  if (zirkularitaet <= Zmin) return 0
-  // Interpolate and round to nearest integer
-  return Math.round(((zirkularitaet - Zmin) / (Zmax - Zmin)) * 50)
-}
+export const calculateBnbCircularityPoints = getLinearScoreCalculator(50, 60, 20)

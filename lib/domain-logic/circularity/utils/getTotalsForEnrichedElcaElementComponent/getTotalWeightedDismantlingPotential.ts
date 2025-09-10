@@ -24,32 +24,31 @@
  */
 import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import { dismantlingPotentialClassIdMapping } from "lib/domain-logic/circularity/utils/circularityMappings"
+import { calculateVolumeWeightedAverage, validateVolumeData } from "./volumeWeightedAverageUtils"
 
-export const getTotalWeightedDismantlingPotential = (layers: EnrichedElcaElementComponent[]) => {
+/**
+ * Calculates the volume-weighted average dismantling potential for all building layers.
+ *
+ * @param layers - Array of enriched ELCA element components
+ * @returns The volume-weighted average dismantling potential, or null if no valid data
+ */
+export const getTotalWeightedDismantlingPotential = (layers: EnrichedElcaElementComponent[]): number | null => {
+  // Filter out invalid layers: must have dismantling class and not be excluded
   const filteredData = layers
-    .filter((layer) => {
-      return (
-        layer.dismantlingPotentialClassId !== null &&
-        layer.dismantlingPotentialClassId !== undefined &&
-        !layer.isExcluded
-      )
-    })
-    .map((layer) => {
-      return {
-        volume: layer.volume,
-        dismantlingPotential: dismantlingPotentialClassIdMapping[layer.dismantlingPotentialClassId!].points,
-      }
-    })
+    .filter((layer) => layer.dismantlingPotentialClassId != null && !layer.isExcluded)
+    .map((layer) => ({
+      volume: layer.volume,
+      value: dismantlingPotentialClassIdMapping[layer.dismantlingPotentialClassId!].points,
+    }))
 
-  if (filteredData.length === 0 || filteredData.some(({ volume }) => volume === null)) {
+  // Return null if no valid layers or if any layer is missing volume data
+  if (!validateVolumeData(filteredData)) {
     return null
   }
 
+  // Calculate total volume across all valid layers
   const totalVolume = filteredData.reduce((sum, { volume }) => sum + volume!, 0)
 
-  return filteredData.reduce<number | null>((acc, { volume, dismantlingPotential }) => {
-    const weightedDismantlingPotential = dismantlingPotential * (volume! / totalVolume)
-
-    return weightedDismantlingPotential + (acc || 0)
-  }, null)
+  // Calculate volume-weighted average using utility function
+  return calculateVolumeWeightedAverage(filteredData, totalVolume)
 }
