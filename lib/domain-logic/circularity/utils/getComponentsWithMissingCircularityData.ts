@@ -23,6 +23,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 
+import isLayerIncompleteAndNotExcluded from "lib/domain-logic/shared/isLayerIncompleteAndNotExcluded"
 import { CalculateCircularityDataForLayerReturnType } from "./calculate-circularity-data-for-layer"
 import { ElcaElementWithComponents } from "../misc/domain-types"
 
@@ -37,10 +38,6 @@ export function getComponentUuidsWithMissingCircularityData(
   circularityData: ElcaElementWithComponents<CalculateCircularityDataForLayerReturnType>[]
 ): string[] {
   return circularityData
-    .filter((component) =>
-      component.layers.some(
-        (layer) => layer.volume == null || layer.dismantlingPoints == null || layer.eolBuilt?.points == null
-      )
-    )
+    .filter((component) => component.layers.some(isLayerIncompleteAndNotExcluded))
     .map((component) => component.element_uuid)
 }

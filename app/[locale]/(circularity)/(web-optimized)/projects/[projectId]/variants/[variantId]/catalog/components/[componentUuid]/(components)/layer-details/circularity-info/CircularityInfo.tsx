@@ -67,7 +67,6 @@ const CircularityInfo = (props: CircularityInfoProps) => {
           </StyledDd>
         </TwoColGrid>
       </Area>
-
       {showCircularityDetails && (
         <CircularityDetails
           layerData={circulartyEnrichedLayerData}

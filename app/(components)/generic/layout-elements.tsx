@@ -22,6 +22,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
+import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { twMerge } from "tailwind-merge"
 
 interface LayoutElementProps {
@@ -100,8 +101,15 @@ export const Heading4 = ({ children }: LayoutElementProps) => (
   <h4 className="mb-8 text-base font-semibold leading-6 text-gray-900">{children}</h4>
 )
 
-export const ErrorText = ({ children, className }: LayoutElementProps) => (
-  <span className={`text-sm text-error ${className}`}>{children}</span>
+export const ErrorText = ({
+  children,
+  className,
+  withExclamationTriangle = false,
+}: LayoutElementProps & { withExclamationTriangle?: boolean }) => (
+  <div className="flex items-center text-red" role="alert">
+    {withExclamationTriangle && <ExclamationTriangleIcon className="mr-2 size-5" aria-hidden="true" />}
+    <span className={`text-sm text-error ${className}`}>{children}</span>
+  </div>
 )
 
 export const Required = ({ className }: { className?: string }) => (

@@ -25,8 +25,8 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { Accordion } from "@szhsin/react-accordion"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useFormatter, useTranslations } from "next-intl"
-import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
+import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { twMerge } from "tailwind-merge"
 import { AccordionItemFull } from "app/(components)/generic/AccordionItem"
@@ -485,11 +485,16 @@ const CircularityDetails = ({ projectId, variantId, layerData, componentUuid }: 
           <Heading4>
             {circularityInfoTranslations("EolBuiltSection.title")} <Required />
           </Heading4>
+          {layerData.disturbingSubstanceSelections.length > 1 &&
+            layerData.disturbingSubstanceSelections.some((s) => s.disturbingSubstanceClassId === null) && (
+              <ErrorText className="mr-4" withExclamationTriangle>
+                {circularityInfoTranslations("EolBuiltSection.allDisturbingSubstancesNeedAClass")}
+              </ErrorText>
+            )}
           {layerData.disturbingSubstances.noDisturbingSubstancesOrOnlyNullClassesSelected && (
-            <div className="flex items-center text-red" role="alert">
-              <ExclamationTriangleIcon className="mr-2 size-5" aria-hidden="true" />
-              <p className="text-sm">{circularityInfoTranslations("EolBuiltSection.emptyState")}</p>
-            </div>
+            <ErrorText className="mr-4" withExclamationTriangle>
+              {circularityInfoTranslations("EolBuiltSection.emptyState")}
+            </ErrorText>
           )}
           <div className="flex w-full flex-row items-center justify-between">
             <DisturbingSubstances

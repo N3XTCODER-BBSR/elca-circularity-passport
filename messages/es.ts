@@ -407,6 +407,7 @@ const translationsPlattformGeneric: TranslationsPlattformGeneric = {
           },
           EolBuiltSection: {
             title: "Potencial de Circularidad - Construido",
+            allDisturbingSubstancesNeedAClass: "Todas las sustancias contaminantes necesitan una clase.",
             emptyState:
               "Seleccione sustancias contaminantes; si no hay ninguna, seleccione 'Sin sustancias contaminantes - S0'.",
             eolScenarioS4: "Escenario EoL en caso de S4",

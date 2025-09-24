@@ -404,6 +404,7 @@ const translationsPlatformGeneric: TranslationsPlattformGeneric = {
           },
           EolBuiltSection: {
             title: "Circularity Potential - Built",
+            allDisturbingSubstancesNeedAClass: "All disturbing substances need a class.",
             emptyState:
               "Please select disturbing substances; if there are none, select 'No disturbing substances - S0'.",
             eolScenarioS4: "EoL Scenario in case of S4",

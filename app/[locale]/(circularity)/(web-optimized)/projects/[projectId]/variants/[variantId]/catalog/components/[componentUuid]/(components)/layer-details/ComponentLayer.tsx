@@ -33,6 +33,7 @@ import SideBySideDescriptionListsWithHeadline, {
 } from "app/(components)/generic/SideBySideDescriptionListsWithHeadline"
 import { EnrichedElcaElementComponent } from "lib/domain-logic/circularity/misc/domain-types"
 import calculateCircularityDataForLayer from "lib/domain-logic/circularity/utils/calculate-circularity-data-for-layer"
+import isLayerIncompleteAndNotExcluded from "lib/domain-logic/shared/isLayerIncompleteAndNotExcluded"
 import { SelectOption } from "lib/presentation-logic/helper-types"
 import CircularityInfo from "./circularity-info/CircularityInfo"
 import ProductHeader from "../ProductHeader"
@@ -119,14 +120,11 @@ const ComponentLayer = ({
       className="mb-6 overflow-hidden border border-gray-200 bg-white p-6"
       data-testid={`component-layer__div__${layerData.component_id}`}
     >
-      {!layerData.isExcluded &&
-        (layerData.volume == null ||
-          circulartyEnrichedLayerData.dismantlingPoints == null ||
-          circulartyEnrichedLayerData.eolBuilt?.points == null) && (
-          <div className="mb-6 flex">
-            <Badge testId={layerData.component_id.toString()}>{layerTranslations("incomplete")}</Badge>
-          </div>
-        )}
+      {isLayerIncompleteAndNotExcluded(circulartyEnrichedLayerData) && (
+        <div className="mb-6 flex">
+          <Badge testId={layerData.component_id.toString()}>{layerTranslations("incomplete")}</Badge>
+        </div>
+      )}
       <ProductHeader
         layerData={layerData}
         layerNumber={layerNumber}

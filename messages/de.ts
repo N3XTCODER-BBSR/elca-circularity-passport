@@ -405,6 +405,7 @@ const translationsPlattformGeneric = {
           EolBuiltSection: {
             title: "Zirkularitätspotenzial - Verbaut",
             emptyState: "Wählen Sie bitte Störstoffe aus, wenn es keine gibt, wählen Sie 'Keine Störstoffe - S0'.",
+            allDisturbingSubstancesNeedAClass: "Alle Störstoffe müssen eine Klasse haben.",
             eolScenarioS4: "EoL-Szenario im Falle von S4",
             selectEolScenario: "Bitte ein neues EoL Szenario manuell auswählen",
             overrideEolScenarioButton: "+ EoL Szenario verbaut (spezifisch)",
