@@ -56,23 +56,42 @@ const DisturbingSubstanceRow = ({
   const t = useTranslations("Circularity.Components.Layers.CircularityInfo")
 
   const [inputValue, setInputValue] = useState(disturbingSubstanceSelection.disturbingSubstanceName || "")
+  const handleUpdateRef = useRef(handleUpdateDisturbingSubstance)
+
+  useEffect(() => {
+    handleUpdateRef.current = handleUpdateDisturbingSubstance
+  }, [handleUpdateDisturbingSubstance])
 
   // Debounce the input value with a 1-second delay
   const debouncedInputValue = useDebounce<string | null>(inputValue, 1000)
 
   useEffect(() => {
+    // Sync only when the row identity changes, not on every prop name change,
+    // to avoid overwriting user input while typing during refetches.
     setInputValue(disturbingSubstanceSelection.disturbingSubstanceName || "")
-  }, [disturbingSubstanceSelection.disturbingSubstanceName])
+  }, [disturbingSubstanceSelection.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // Only save if the value has actually changed from what's in disturbingSubstanceSelection
-    if (debouncedInputValue !== disturbingSubstanceSelection.disturbingSubstanceName) {
-      handleUpdateDisturbingSubstance({
+    const normalizedDebounced = debouncedInputValue && debouncedInputValue.trim() === "" ? null : debouncedInputValue
+    const normalizedCurrent =
+      disturbingSubstanceSelection.disturbingSubstanceName &&
+      disturbingSubstanceSelection.disturbingSubstanceName.trim() === ""
+        ? null
+        : disturbingSubstanceSelection.disturbingSubstanceName
+
+    if (normalizedDebounced !== normalizedCurrent) {
+      handleUpdateRef.current({
         ...disturbingSubstanceSelection,
-        disturbingSubstanceName: debouncedInputValue,
+        disturbingSubstanceName: normalizedDebounced ?? null,
       })
     }
-  }, [debouncedInputValue, disturbingSubstanceSelection.disturbingSubstanceName, disturbingSubstanceSelection.id])
+  }, [
+    debouncedInputValue,
+    disturbingSubstanceSelection.id,
+    disturbingSubstanceSelection.disturbingSubstanceName,
+    disturbingSubstanceSelection.disturbingSubstanceClassId,
+  ])
 
   // Handle S0 selection - clear input when S0 is selected
   useEffect(() => {
@@ -127,10 +146,16 @@ const DisturbingSubstanceRow = ({
           }}
           onBlur={() => {
             // Also save on blur for immediate feedback when user leaves the field
-            if (inputValue !== disturbingSubstanceSelection.disturbingSubstanceName) {
+            const normalizedInput = inputValue && inputValue.trim() === "" ? null : inputValue
+            const normalizedCurrent =
+              disturbingSubstanceSelection.disturbingSubstanceName &&
+              disturbingSubstanceSelection.disturbingSubstanceName.trim() === ""
+                ? null
+                : disturbingSubstanceSelection.disturbingSubstanceName
+            if (normalizedInput !== normalizedCurrent) {
               handleUpdateDisturbingSubstance({
                 ...disturbingSubstanceSelection,
-                disturbingSubstanceName: inputValue,
+                disturbingSubstanceName: normalizedInput ?? null,
               })
             }
           }}
@@ -168,9 +193,9 @@ const DisturbingSubstances = ({
   handleRemoveDisturbingSubstanceRow,
   layerId,
 }: DisturbingSubstancesProps) => {
-  const [disturbingSubstanceRows, setDisturbingSubstanceRows] = useState<DisturbingSubstanceSelectionWithNullabelId[]>(
-    []
-  )
+  const [disturbingSubstanceRows, setDisturbingSubstanceRows] = useState<
+    DisturbingSubstanceSelectionWithNullabelIdAndLocalId[]
+  >([])
 
   const isPending = useIsMutating() > 0
 
@@ -263,7 +288,7 @@ const DisturbingSubstances = ({
       </Heading4>
       {disturbingSubstanceRows.map((row, index) => (
         <DisturbingSubstanceRow
-          key={index}
+          key={row.id ?? row.localId}
           s0Selected={s0Selected}
           disturbingSubstanceClasses={
             index === 0 ? disturbingSubstanceClassesForFirstRow : disturbingSubstanceClassesOtherThanS0
