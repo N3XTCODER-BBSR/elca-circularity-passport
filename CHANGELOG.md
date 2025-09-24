@@ -1,3 +1,12 @@
+## [Release 0.4.4] - 2025-09-24
+
+### Fixed
+
+- Fixed missing validation for 'disturbing substance doesn't have a selected class
+- Fixed stoerstoffklassen UI bug
+
+---
+
 ## [Release 0.4.3] - 2025-09-09
 
 ### Added
