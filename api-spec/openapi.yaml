@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: tBaustoffe API
-  description: API for accessing tBaustoff materials data
+  description: API for accessing tBaustoff products data
   version: 0.0.1-draft
   contact:
     name: eLCA Support
@@ -15,10 +15,10 @@ info:
 #   - url: https://staging-api.elca.example.com/v1
 #     description: Staging server
 paths:
-  /materials:
+  /products:
     get:
-      summary: Get all materials
-      operationId: getMaterials
+      summary: Get all products
+      operationId: getProducts
       parameters:
         - name: limit
           in: query
@@ -37,12 +37,13 @@ paths:
             minimum: 0
             default: 0
           description: Number of items to skip for pagination
-        - name: version
+        - name: releaseTag
           in: query
           required: false
           schema:
             type: string
-          description: Specific version to retrieve
+          description: Specific release tag to retrieve
+          example: "2025-09-29"
       responses:
         '200':
           description: Successful response
@@ -57,7 +58,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Material'
+                      $ref: '#/components/schemas/Product'
                   meta:
                     $ref: '#/components/schemas/PaginationMeta'
         '400':
@@ -72,17 +73,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /materials/{uuid}:
+  /products/{uuid}:
     get:
-      summary: Get single material by UUID
-      operationId: getMaterialsUuid
+      summary: Get single product by UUID
+      operationId: getProductsUuid
       parameters:
         - name: uuid
           in: path
           required: true
           schema:
             type: string
-          description: The uuid to retrieve
+          description: The uuid of the Product to retrieve
+          example: "1780bc87-ea01-4b92-9894-d0c384876849"
       responses:
         '200':
           description: Successful response
@@ -94,7 +96,7 @@ paths:
                   - data
                 properties:
                   data:
-                    $ref: '#/components/schemas/Material'                  
+                    $ref: '#/components/schemas/Product'                  
         '400':
           description: Bad request - invalid parameters
           content:
@@ -155,12 +157,19 @@ components:
     Release:
       type: object
       required:
-        - version
+        - uuid
+        - releaseTag
       properties:
-        version:
+        uuid:
           type: string
-          description: tBaustoff release 
-    Material:
+          description: tBaustoff release uuid
+          format: uuid
+          example: "1780bc87-ea01-4b92-9894-d0c384876849"
+        releaseTag:
+          type: string
+          description: tBaustoff release tag
+          example: "2025-09-29"
+    Product:
       type: object
       required:
         - uuid
@@ -169,14 +178,17 @@ components:
       properties:
         uuid:
           type: string
-          description: tBaustoff unique identifier for the material
-        release:
+          description: tBaustoff unique identifier for the product
+          example: "1780bc87-ea01-4b92-9894-d0c384876849"
+        releaseTag:
           type: string
-          description: tBaustoff release
+          description: tBaustoff release tag
+          example: "2025-09-29"
         name:
           type: string
-          description: Name of the material
+          description: Name of the product
           maxLength: 500
+          example: "Expandierter Kork"
         eolCategory:
           $ref: '#/components/schemas/EOLCategory'
           nullable: true
@@ -201,8 +213,9 @@ components:
         name:
           type: string
           description: Name of the EOL category
+          example: "Expandierter Kork"
         eolScenarioUnbuiltReal:
-          type: enum
+          type: string
           description: End-of-life scenario for unbuilt real state
           enum:
             - WV
@@ -216,8 +229,9 @@ components:
             - EB
             - Dep+
             - Dep-
+          example: "EB"
         eolScenarioUnbuiltPotential:
-          type: enum
+          type: string
           description: End-of-life scenario for unbuilt potential state
           enum:
             - WV
@@ -231,42 +245,42 @@ components:
             - EB
             - Dep+
             - Dep-
+          example: "WV"
         technologyFactor:
-          type: float
+          type: number
           description: Technology factor for the category
           minimum: 0
           maximum: 1
-        # materials:
+          example: 0.25
+        # products:
         #   type: array
         #   items:
-        #     $ref: '#/components/schemas/Material'
-        #   description: List of related materials
+        #     $ref: '#/components/schemas/Product'
+        #   description: List of related products
     OekobaudatMapping:
       type: object
       required:
-        - oebdUuid
-        - oebdVersionUuid
+        - oebdProcessUuid
+        - oebdReleaseUuid
       properties:
-        oebdUuid:
+        oebdProcessUuid:
           type: string
           description: Oekobaudat process UUID
           format: uuid
-        oebdVersionUuid:
+          example: "bb5df017-7c84-4f33-bc4a-526e84e601ac"
+        oebdReleaseUuid:
           type: string
-          description: Oekobaudat materialversion UUID
+          description: Oekobaudat productrelease UUID
           format: uuid
-        oebdRelease:
-          type: string
-          description: Oekobaudat database release
-          format: string
-        # materialId:
+          example: "a2a205d3-0841-492e-83b2-5a54c1170456"
+        # productId:
         #   type: integer
         #   description: Foreign key to tBaustoff product
         #   nullable: true
-        # material:
-        #   $ref: '#/components/schemas/Material'
+        # product:
+        #   $ref: '#/components/schemas/Product'
         #   nullable: true
-        #   description: Related material
+        #   description: Related product
     PaginationMeta:
       type: object
       required:
@@ -320,8 +334,3 @@ components:
       description: JWT token for API authentication
 security:
   - BearerAuth: []
-tags:
-  - name: Materials
-    description: Operations for accessing material circularity data
-  - name: Releases
-    description: List of released versions
