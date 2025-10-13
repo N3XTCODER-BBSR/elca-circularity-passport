@@ -37,7 +37,6 @@ model TBS_Release {
 
   // Back-relations
   eolCategories     TBs_ProductDefinitionEOLCategory[]
-  oekobaudatMappings TBs_OekobaudatMapping[]
 
   @@map("TBS_Release")
 }
@@ -58,7 +57,6 @@ model TBs_OekobaudatMapping {
   oebd_versionUuid String                 @map("oebd_release_uuid")
   tBs_productId    Int?                   @map("ProductInReleaseId")
   tBs_product      TBs_ProductDefinition? @relation(name: "ProductToMapping", fields: [tBs_productId], references: [id])
-  release          TBS_Release            @relation(fields: [oebd_versionUuid], references: [uuid])
 
   @@id([oebd_processUuid, oebd_versionUuid])
   @@map("TBS_OEBDMappingInRelease")

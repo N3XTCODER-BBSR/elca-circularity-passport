@@ -206,7 +206,8 @@ async function seedCircularityTool() {
               where: {
                 oebd_processUuid_oebd_versionUuid: {
                   oebd_processUuid: value,
-                  oebd_versionUuid: versionUuid,
+                  // Link mapping to the configured release, not raw CSV version
+                  oebd_versionUuid: releaseUuid,
                 },
               },
               update: {
@@ -214,7 +215,7 @@ async function seedCircularityTool() {
               },
               create: {
                 oebd_processUuid: value,
-                oebd_versionUuid: versionUuid,
+                oebd_versionUuid: releaseUuid,
                 tBs_productId: tBaustoff.id,
               },
             })
