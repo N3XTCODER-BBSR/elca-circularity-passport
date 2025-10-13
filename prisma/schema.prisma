@@ -37,8 +37,6 @@ model TBS_Release {
 
   // Back-relations
   eolCategories     TBs_ProductDefinitionEOLCategory[]
-
-  @@map("TBS_Release")
 }
 
 model Passport {
@@ -59,7 +57,6 @@ model TBs_OekobaudatMapping {
   tBs_product      TBs_ProductDefinition @relation(name: "ProductToMapping", fields: [tBs_productId], references: [id])
 
   @@id([oebd_processUuid, oebd_versionUuid])
-  @@map("TBS_OEBDMappingInRelease")
 }
 
 model TBs_ProductDefinition {
@@ -71,8 +68,6 @@ model TBs_ProductDefinition {
   tBs_ProductDefinitionEOLCategory   TBs_ProductDefinitionEOLCategory @relation(fields: [tBs_ProductDefinitionEOLCategoryId], references: [id])
   userEnrichedProductData            UserEnrichedProductData[]
   oekobaudatTBaustoffMappings        TBs_OekobaudatMapping[]           @relation(name: "ProductToMapping")
-
-  @@map("TBS_ProductInRelease")
 }
 
 enum DismantlingPotentialClassId {
@@ -108,8 +103,6 @@ model TBs_ProductDefinitionEOLCategory {
 
   // Back-relation
   tBaustoffProducts TBs_ProductDefinition[]
-
-  @@map("TBS_EOLCategoryInRelease")
 }
 
 enum DisturbingSubstanceClassId {
