@@ -25,8 +25,9 @@
 import csv from "csv-parser"
 import fs from "fs"
 import path from "path"
-import { cleanupTbsProductDefinitionDuplicates } from "./cleanupTbsProductDefinitionDuplicates"
+// import { cleanupTbsProductDefinitionDuplicates } from "./cleanupTbsProductDefinitionDuplicates"
 import { updateProcessCategoryNumbers } from "./updateProcessCategoryNumbers"
+import { randomUUID } from "crypto"
 
 import { TBs_ProductDefinitionEOLCategoryScenario } from "../generated/client"
 import { prisma } from "../prismaClient" // needs to be relative path
@@ -85,6 +86,13 @@ const mapToEOLCategoryScenario = (value: string): TBs_ProductDefinitionEOLCatego
 }
 async function seedCircularityTool() {
   const csvData = await readCsvFile(csvFilePath)
+  const releaseUuid = process.env.TBS_RELEASE_UUID ?? "default"
+  // Ensure release exists for linking categories/mappings
+  await prisma.tBS_Release.upsert({
+    where: { uuid: releaseUuid },
+    update: {},
+    create: { uuid: releaseUuid, tag: process.env.TBS_RELEASE_TAG ?? "imported-from-legacy" },
+  })
   const eolCategoryCache = new Map<string, number>() // Cache with numeric IDs
   for (const row of csvData) {
     try {
@@ -154,10 +162,12 @@ async function seedCircularityTool() {
         } else {
           const newCategory = await prisma.tBs_ProductDefinitionEOLCategory.create({
             data: {
+              uuid: randomUUID(),
               name: row.eolCategoryName,
               eolScenarioUnbuiltReal: eolScenarioReal,
               eolScenarioUnbuiltPotential: eolScenarioPotential,
               technologyFactor: parseFloat(row.technologyFactor),
+              release: { connect: { uuid: releaseUuid } },
             },
           })
           eolCategoryId = newCategory.id
@@ -169,15 +179,16 @@ async function seedCircularityTool() {
       let tBaustoff = await prisma.tBs_ProductDefinition.findFirst({
         where: {
           name: row.tBaustoffName,
-          tBs_version: "2024-Q4",
+          // tBs_version: "2024-Q4",
           tBs_ProductDefinitionEOLCategoryId: eolCategoryId,
         },
       })
       if (!tBaustoff) {
         tBaustoff = await prisma.tBs_ProductDefinition.create({
           data: {
+            uuid: randomUUID(),
             name: row.tBaustoffName,
-            tBs_version: "2024-Q4",
+            // tBs_version: "2024-Q4",
             tBs_ProductDefinitionEOLCategoryId: eolCategoryId,
             processCategoryNumber: row.processCategoryNumber || null,
           },
@@ -222,19 +233,19 @@ async function main() {
     return
   }
 
-  // Optionally run duplicate cleanup if env var is set
-  if (process.env.DELETE_DUPLICATES_FROM_TBAUSTOFF_MAPPING === "true") {
-    console.log("DELETE_DUPLICATES_FROM_TBAUSTOFF_MAPPING=true: Running tBaustoff duplicate cleanup script...")
-    try {
-      await cleanupTbsProductDefinitionDuplicates()
-      console.log("Duplicate cleanup completed.")
-    } catch (e) {
-      console.error("Duplicate cleanup script failed. Aborting seeding.", e)
-      process.exit(1)
-    }
-  } else {
-    console.log("DELETE_DUPLICATES_FROM_TBAUSTOFF_MAPPING=false: Skipping tBaustoff duplicate cleanup script...")
-  }
+  // // Optionally run duplicate cleanup if env var is set
+  // if (process.env.DELETE_DUPLICATES_FROM_TBAUSTOFF_MAPPING === "true") {
+  //   console.log("DELETE_DUPLICATES_FROM_TBAUSTOFF_MAPPING=true: Running tBaustoff duplicate cleanup script...")
+  //   try {
+  //     await cleanupTbsProductDefinitionDuplicates()
+  //     console.log("Duplicate cleanup completed.")
+  //   } catch (e) {
+  //     console.error("Duplicate cleanup script failed. Aborting seeding.", e)
+  //     process.exit(1)
+  //   }
+  // } else {
+  //   console.log("DELETE_DUPLICATES_FROM_TBAUSTOFF_MAPPING=false: Skipping tBaustoff duplicate cleanup script...")
+  // }
 
   // Optionally run process category number update if env var is set
   if (process.env.UPDATE_PROCESS_CATEGORY_NUMBERS === "true") {
