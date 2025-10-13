@@ -31,6 +31,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model TBS_Release {
+  uuid String @id
+  tag  String
+
+  // Back-relations
+  eolCategories     TBs_ProductDefinitionEOLCategory[]
+  oekobaudatMappings TBs_OekobaudatMapping[]
+
+  @@map("TBS_Release")
+}
+
 model Passport {
   id               String   @id @default(cuid())
   uuid             String   @unique
@@ -43,23 +54,27 @@ model Passport {
 
 // TODO (M): consider to define logic-constraints in this file on prisma schema as well
 model TBs_OekobaudatMapping {
-  oebd_processUuid String                 @map("oekobaudatProcessUuid")
-  oebd_versionUuid String                 @map("oekobaudatVersionUuid")
-  tBs_productId    Int?                   @map("tBaustoffProductId")
+  oebd_processUuid String                 @map("oebd_processUuid")
+  oebd_versionUuid String                 @map("oebd_release_uuid")
+  tBs_productId    Int?                   @map("ProductInReleaseId")
   tBs_product      TBs_ProductDefinition? @relation(name: "ProductToMapping", fields: [tBs_productId], references: [id])
+  release          TBS_Release            @relation(fields: [oebd_versionUuid], references: [uuid])
 
   @@id([oebd_processUuid, oebd_versionUuid])
+  @@map("TBS_OEBDMappingInRelease")
 }
 
 model TBs_ProductDefinition {
   id                                 Int                               @id @default(autoincrement())
-  tBs_version                        String                            @map("tBaustoffVersion")
+  uuid                               String                            @unique @map("uuid")
   name                               String
   processCategoryNumber              String?
-  tBs_ProductDefinitionEOLCategoryId Int?                              @map("tBaustoff_ProductEOLCategoryId")
+  tBs_ProductDefinitionEOLCategoryId Int?                              @map("eolCategoryInReleaseId")
   tBs_ProductDefinitionEOLCategory   TBs_ProductDefinitionEOLCategory? @relation(fields: [tBs_ProductDefinitionEOLCategoryId], references: [id])
   userEnrichedProductData            UserEnrichedProductData[]
   oekobaudatTBaustoffMappings        TBs_OekobaudatMapping[]           @relation(name: "ProductToMapping")
+
+  @@map("TBS_ProductInRelease")
 }
 
 enum DismantlingPotentialClassId {
@@ -85,13 +100,18 @@ enum TBs_ProductDefinitionEOLCategoryScenario {
 
 model TBs_ProductDefinitionEOLCategory {
   id                          Int                                      @id @default(autoincrement())
+  uuid                        String                                   @unique @map("uuid")
   name                        String                                   @unique
   eolScenarioUnbuiltReal      TBs_ProductDefinitionEOLCategoryScenario
   eolScenarioUnbuiltPotential TBs_ProductDefinitionEOLCategoryScenario
   technologyFactor            Float
+  releaseUuid                 String                                   @map("releaseUuid")
+  release                     TBS_Release                              @relation(fields: [releaseUuid], references: [uuid])
 
   // Back-relation
   tBaustoffProducts TBs_ProductDefinition[]
+
+  @@map("TBS_EOLCategoryInRelease")
 }
 
 enum DisturbingSubstanceClassId {
