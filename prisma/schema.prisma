@@ -61,7 +61,7 @@ model TBs_OekobaudatMapping {
 
 model TBs_ProductDefinition {
   id                                 Int                               @id @default(autoincrement())
-  uuid                               String                            @unique @map("uuid")
+  uuid                               String?                            @unique @map("uuid")
   name                               String
   processCategoryNumber              String?
   tBs_ProductDefinitionEOLCategoryId Int                             @map("tBaustoff_ProductEOLCategoryId")
@@ -93,13 +93,13 @@ enum TBs_ProductDefinitionEOLCategoryScenario {
 
 model TBs_ProductDefinitionEOLCategory {
   id                          Int                                      @id @default(autoincrement())
-  uuid                        String                                   @unique @map("uuid")
+  uuid                        String?                                   @unique @map("uuid")
   name                        String                                   @unique
   eolScenarioUnbuiltReal      TBs_ProductDefinitionEOLCategoryScenario
   eolScenarioUnbuiltPotential TBs_ProductDefinitionEOLCategoryScenario
   technologyFactor            Float
-  releaseUuid                 String                                   @map("releaseUuid")
-  release                     TBS_Release                              @relation(fields: [releaseUuid], references: [uuid])
+  releaseUuid                 String?                                   @map("releaseUuid")
+  release                     TBS_Release?                              @relation(fields: [releaseUuid], references: [uuid])
 
   // Back-relation
   tBaustoffProducts TBs_ProductDefinition[]
