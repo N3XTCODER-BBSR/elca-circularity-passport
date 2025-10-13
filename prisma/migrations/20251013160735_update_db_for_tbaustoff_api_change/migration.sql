@@ -47,7 +47,7 @@ CREATE TABLE "TBS_ProductInRelease" (
     "uuid" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "processCategoryNumber" TEXT,
-    "eolCategoryInReleaseId" INTEGER,
+    "eolCategoryInReleaseId" INTEGER NOT NULL,
 
     CONSTRAINT "TBS_ProductInRelease_pkey" PRIMARY KEY ("id")
 );
@@ -78,7 +78,7 @@ CREATE UNIQUE INDEX "TBS_EOLCategoryInRelease_name_key" ON "TBS_EOLCategoryInRel
 ALTER TABLE "TBS_OEBDMappingInRelease" ADD CONSTRAINT "TBS_OEBDMappingInRelease_ProductInReleaseId_fkey" FOREIGN KEY ("ProductInReleaseId") REFERENCES "TBS_ProductInRelease"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TBS_ProductInRelease" ADD CONSTRAINT "TBS_ProductInRelease_eolCategoryInReleaseId_fkey" FOREIGN KEY ("eolCategoryInReleaseId") REFERENCES "TBS_EOLCategoryInRelease"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "TBS_ProductInRelease" ADD CONSTRAINT "TBS_ProductInRelease_eolCategoryInReleaseId_fkey" FOREIGN KEY ("eolCategoryInReleaseId") REFERENCES "TBS_EOLCategoryInRelease"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TBS_EOLCategoryInRelease" ADD CONSTRAINT "TBS_EOLCategoryInRelease_releaseUuid_fkey" FOREIGN KEY ("releaseUuid") REFERENCES "TBS_Release"("uuid") ON DELETE RESTRICT ON UPDATE CASCADE;

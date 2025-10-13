@@ -67,8 +67,8 @@ model TBs_ProductDefinition {
   uuid                               String                            @unique @map("uuid")
   name                               String
   processCategoryNumber              String?
-  tBs_ProductDefinitionEOLCategoryId Int?                              @map("eolCategoryInReleaseId")
-  tBs_ProductDefinitionEOLCategory   TBs_ProductDefinitionEOLCategory? @relation(fields: [tBs_ProductDefinitionEOLCategoryId], references: [id])
+  tBs_ProductDefinitionEOLCategoryId Int                              @map("eolCategoryInReleaseId")
+  tBs_ProductDefinitionEOLCategory   TBs_ProductDefinitionEOLCategory @relation(fields: [tBs_ProductDefinitionEOLCategoryId], references: [id])
   userEnrichedProductData            UserEnrichedProductData[]
   oekobaudatTBaustoffMappings        TBs_OekobaudatMapping[]           @relation(name: "ProductToMapping")
 
