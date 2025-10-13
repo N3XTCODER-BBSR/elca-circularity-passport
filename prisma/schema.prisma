@@ -55,8 +55,8 @@ model Passport {
 model TBs_OekobaudatMapping {
   oebd_processUuid String                 @map("oebd_processUuid")
   oebd_versionUuid String                 @map("oebd_release_uuid")
-  tBs_productId    Int?                   @map("ProductInReleaseId")
-  tBs_product      TBs_ProductDefinition? @relation(name: "ProductToMapping", fields: [tBs_productId], references: [id])
+  tBs_productId    Int                   @map("ProductInReleaseId")
+  tBs_product      TBs_ProductDefinition @relation(name: "ProductToMapping", fields: [tBs_productId], references: [id])
 
   @@id([oebd_processUuid, oebd_versionUuid])
   @@map("TBS_OEBDMappingInRelease")

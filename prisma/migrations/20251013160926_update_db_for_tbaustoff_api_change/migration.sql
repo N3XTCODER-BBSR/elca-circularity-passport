@@ -36,7 +36,7 @@ CREATE TABLE "TBS_Release" (
 CREATE TABLE "TBS_OEBDMappingInRelease" (
     "oebd_processUuid" TEXT NOT NULL,
     "oebd_release_uuid" TEXT NOT NULL,
-    "ProductInReleaseId" INTEGER,
+    "ProductInReleaseId" INTEGER NOT NULL,
 
     CONSTRAINT "TBS_OEBDMappingInRelease_pkey" PRIMARY KEY ("oebd_processUuid","oebd_release_uuid")
 );
@@ -75,7 +75,7 @@ CREATE UNIQUE INDEX "TBS_EOLCategoryInRelease_uuid_key" ON "TBS_EOLCategoryInRel
 CREATE UNIQUE INDEX "TBS_EOLCategoryInRelease_name_key" ON "TBS_EOLCategoryInRelease"("name");
 
 -- AddForeignKey
-ALTER TABLE "TBS_OEBDMappingInRelease" ADD CONSTRAINT "TBS_OEBDMappingInRelease_ProductInReleaseId_fkey" FOREIGN KEY ("ProductInReleaseId") REFERENCES "TBS_ProductInRelease"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "TBS_OEBDMappingInRelease" ADD CONSTRAINT "TBS_OEBDMappingInRelease_ProductInReleaseId_fkey" FOREIGN KEY ("ProductInReleaseId") REFERENCES "TBS_ProductInRelease"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TBS_ProductInRelease" ADD CONSTRAINT "TBS_ProductInRelease_eolCategoryInReleaseId_fkey" FOREIGN KEY ("eolCategoryInReleaseId") REFERENCES "TBS_EOLCategoryInRelease"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
