@@ -51,9 +51,9 @@ model Passport {
 
 // TODO (M): consider to define logic-constraints in this file on prisma schema as well
 model TBs_OekobaudatMapping {
-  oebd_processUuid String                 @map("oebd_processUuid")
-  oebd_versionUuid String                 @map("oebd_release_uuid")
-  tBs_productId    Int                   @map("ProductInReleaseId")
+  oebd_processUuid String                 @map("oekobaudatProcessUuid")
+  oebd_versionUuid String                 @map("oekobaudatVersionUuid")
+  tBs_productId    Int                    @map("tBaustoffProductId")
   tBs_product      TBs_ProductDefinition @relation(name: "ProductToMapping", fields: [tBs_productId], references: [id])
 
   @@id([oebd_processUuid, oebd_versionUuid])
@@ -64,7 +64,7 @@ model TBs_ProductDefinition {
   uuid                               String                            @unique @map("uuid")
   name                               String
   processCategoryNumber              String?
-  tBs_ProductDefinitionEOLCategoryId Int                              @map("eolCategoryInReleaseId")
+  tBs_ProductDefinitionEOLCategoryId Int                             @map("tBaustoff_ProductEOLCategoryId")
   tBs_ProductDefinitionEOLCategory   TBs_ProductDefinitionEOLCategory @relation(fields: [tBs_ProductDefinitionEOLCategoryId], references: [id])
   userEnrichedProductData            UserEnrichedProductData[]
   oekobaudatTBaustoffMappings        TBs_OekobaudatMapping[]           @relation(name: "ProductToMapping")
