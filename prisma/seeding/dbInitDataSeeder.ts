@@ -200,14 +200,14 @@ async function seedCircularityTool() {
         if (key.startsWith("oekobaudatUuid____") && value !== "nicht vorhanden") {
           const splitKey = key.split("____")
           if (splitKey.length > 1 && splitKey[1]) {
-            const versionUuid = splitKey[1].replace(/_/g, "-")
+            const oebdVersionUuid = splitKey[1].replace(/_/g, "-")
             // NOTE: duplicate data in source csv, check with IBO
             await prisma.tBs_OekobaudatMapping.upsert({
               where: {
                 oebd_processUuid_oebd_versionUuid: {
                   oebd_processUuid: value,
                   // Link mapping to the configured release, not raw CSV version
-                  oebd_versionUuid: releaseUuid,
+                  oebd_versionUuid: oebdVersionUuid,
                 },
               },
               update: {
@@ -215,7 +215,7 @@ async function seedCircularityTool() {
               },
               create: {
                 oebd_processUuid: value,
-                oebd_versionUuid: releaseUuid,
+                oebd_versionUuid: oebdVersionUuid,
                 tBs_productId: tBaustoff.id,
               },
             })
