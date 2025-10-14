@@ -33,7 +33,7 @@ import { TBs_ProductDefinitionEOLCategoryScenario } from "../generated/client"
 import { prisma } from "../prismaClient" // needs to be relative path
 const csvFilePath = path.resolve(
   __dirname,
-  "./v1_initial_release_obd_tbaustoff_mapping__70ee17c1-b144-45d1-97c2-f600f238e112.csv"
+  "./tbaustoff_release_source_data/v1_initial_release_obd_tbaustoff_mapping__70ee17c1-b144-45d1-97c2-f600f238e112.csv"
 )
 type CsvRow = {
   oekobaudatName: string
@@ -50,6 +50,9 @@ type CsvRow = {
   // Newly added optional UUIDs produced by the CSV UUID notebook
   productUuid?: string
   eolCategoryUuid?: string
+  // Release info per row (optional, falls back to env if missing)
+  releaseUuid?: string
+  releaseTag?: string
 }
 async function readCsvFile(filePath: string): Promise<CsvRow[]> {
   const rows: CsvRow[] = []
@@ -117,6 +120,21 @@ async function seedCircularityTool() {
         console.warn(`Skipping row with " S4" in ProductDefinition name: ${JSON.stringify(row)}`)
         continue
       }
+      // Upsert release per row (prefer values from CSV)
+      const effectiveReleaseUuid =
+        (row as any).releaseUuid && (row as any).releaseUuid !== ""
+          ? (row as any).releaseUuid
+          : process.env.TBS_RELEASE_UUID ?? "default"
+      const effectiveReleaseTag =
+        (row as any).releaseTag && (row as any).releaseTag !== ""
+          ? (row as any).releaseTag
+          : process.env.TBS_RELEASE_TAG ?? "imported-from-legacy"
+      await prisma.tBS_Release.upsert({
+        where: { uuid: effectiveReleaseUuid },
+        update: { tag: effectiveReleaseTag },
+        create: { uuid: effectiveReleaseUuid, tag: effectiveReleaseTag },
+      })
+
       // Map to enums
       const eolScenarioReal = mapToEOLCategoryScenario(row.eolScenarioReal)
       const eolScenarioPotential = mapToEOLCategoryScenario(row.eolScenarioPotential)
@@ -148,6 +166,7 @@ async function seedCircularityTool() {
         eolScenarioReal,
         eolScenarioPotential,
         technologyFactor: technologyFactor,
+        releaseUuid: effectiveReleaseUuid,
       })
       let eolCategoryId: number
       const eolCategoryUuidFromCsv =
@@ -161,10 +180,17 @@ async function seedCircularityTool() {
           : await prisma.tBs_ProductDefinitionEOLCategory.findFirst({
               where: {
                 name: row.eolCategoryName,
+                releaseUuid: effectiveReleaseUuid,
               },
             })
         if (existingCategory) {
           eolCategoryId = existingCategory.id
+          if ((existingCategory as any).releaseUuid == null) {
+            await prisma.tBs_ProductDefinitionEOLCategory.update({
+              where: { id: existingCategory.id },
+              data: { release: { connect: { uuid: effectiveReleaseUuid } } },
+            })
+          }
         } else {
           const newCategory = await prisma.tBs_ProductDefinitionEOLCategory.create({
             data: {
@@ -173,7 +199,7 @@ async function seedCircularityTool() {
               eolScenarioUnbuiltReal: eolScenarioReal,
               eolScenarioUnbuiltPotential: eolScenarioPotential,
               technologyFactor: parseFloat(row.technologyFactor),
-              release: { connect: { uuid: releaseUuid } },
+              release: { connect: { uuid: effectiveReleaseUuid } },
             },
           })
           eolCategoryId = newCategory.id
