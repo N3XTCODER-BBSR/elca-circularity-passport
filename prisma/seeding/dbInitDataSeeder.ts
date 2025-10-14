@@ -33,7 +33,7 @@ import { TBs_ProductDefinitionEOLCategoryScenario } from "../generated/client"
 import { prisma } from "../prismaClient" // needs to be relative path
 const csvFilePath = path.resolve(
   __dirname,
-  "./tbaustoff_release_source_data/v1_initial_release_obd_tbaustoff_mapping__70ee17c1-b144-45d1-97c2-f600f238e112.csv"
+  "./tbaustoff_release_source_data/v1_initial_release_obd_tbaustoff_mapping__70ee17c1-b144-45d1-97c2-f600f238e112_with_uuids_1760456920.csv"
 )
 type CsvRow = {
   oekobaudatName: string
