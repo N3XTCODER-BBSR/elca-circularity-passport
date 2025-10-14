@@ -31,7 +31,10 @@ import { randomUUID } from "crypto"
 
 import { TBs_ProductDefinitionEOLCategoryScenario } from "../generated/client"
 import { prisma } from "../prismaClient" // needs to be relative path
-const csvFilePath = path.resolve(__dirname, "./obd_tbaustoff_mapping.csv")
+const csvFilePath = path.resolve(
+  __dirname,
+  "./v1_initial_release_obd_tbaustoff_mapping__70ee17c1-b144-45d1-97c2-f600f238e112.csv"
+)
 type CsvRow = {
   oekobaudatName: string
   oekobaudatUuid____448d1096_2017_4901_a560_f652a83c737e____2020_II: string

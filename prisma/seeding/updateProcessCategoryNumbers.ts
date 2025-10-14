@@ -3,7 +3,10 @@ import fs from "fs"
 import path from "path"
 import { prisma } from "../prismaClient"
 
-const csvFilePath = path.resolve(__dirname, "./obd_tbaustoff_mapping.csv")
+const csvFilePath = path.resolve(
+  __dirname,
+  "./v1_initial_release_obd_tbaustoff_mapping__70ee17c1-b144-45d1-97c2-f600f238e112.csv"
+)
 
 type CsvRow = {
   tBaustoffName: string
