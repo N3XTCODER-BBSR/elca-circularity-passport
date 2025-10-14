@@ -44,6 +44,9 @@ type CsvRow = {
   eolScenarioPotential: string
   technologyFactor: string
   processCategoryNumber: string
+  // Newly added optional UUIDs produced by the CSV UUID notebook
+  productUuid?: string
+  eolCategoryUuid?: string
 }
 async function readCsvFile(filePath: string): Promise<CsvRow[]> {
   const rows: CsvRow[] = []
@@ -144,25 +147,25 @@ async function seedCircularityTool() {
         technologyFactor: technologyFactor,
       })
       let eolCategoryId: number
+      const eolCategoryUuidFromCsv =
+        (row as any).eolCategoryUuid && (row as any).eolCategoryUuid !== "" ? (row as any).eolCategoryUuid : undefined
       // Check if the EOLCategory exists in cache or DB
       if (eolCategoryCache.has(eolCategoryKey)) {
         eolCategoryId = eolCategoryCache.get(eolCategoryKey)!
       } else {
-        const existingCategory = await prisma.tBs_ProductDefinitionEOLCategory.findFirst({
-          where: {
-            name: row.eolCategoryName,
-            // NOTE: Duplicate data in source csv, check with IBO
-            // eolScenarioUnbuiltReal: eolScenarioReal,
-            // eolScenarioUnbuiltPotential: eolScenarioPotential,
-            // technologyFactor: parseFloat(row.technologyFactor),
-          },
-        })
+        const existingCategory = eolCategoryUuidFromCsv
+          ? await prisma.tBs_ProductDefinitionEOLCategory.findFirst({ where: { uuid: eolCategoryUuidFromCsv } })
+          : await prisma.tBs_ProductDefinitionEOLCategory.findFirst({
+              where: {
+                name: row.eolCategoryName,
+              },
+            })
         if (existingCategory) {
           eolCategoryId = existingCategory.id
         } else {
           const newCategory = await prisma.tBs_ProductDefinitionEOLCategory.create({
             data: {
-              uuid: randomUUID(),
+              uuid: eolCategoryUuidFromCsv ?? randomUUID(),
               name: row.eolCategoryName,
               eolScenarioUnbuiltReal: eolScenarioReal,
               eolScenarioUnbuiltPotential: eolScenarioPotential,
@@ -176,17 +179,20 @@ async function seedCircularityTool() {
       }
 
       // Create the TBs_ProductDefinition only if it does not exist yet (by name, version, and categoryId)
-      let tBaustoff = await prisma.tBs_ProductDefinition.findFirst({
-        where: {
-          name: row.tBaustoffName,
-          // tBs_version: "2024-Q4",
-          tBs_ProductDefinitionEOLCategoryId: eolCategoryId,
-        },
-      })
+      const productUuidFromCsv =
+        (row as any).productUuid && (row as any).productUuid !== "" ? (row as any).productUuid : undefined
+      let tBaustoff = productUuidFromCsv
+        ? await prisma.tBs_ProductDefinition.findFirst({ where: { uuid: productUuidFromCsv } })
+        : await prisma.tBs_ProductDefinition.findFirst({
+            where: {
+              name: row.tBaustoffName,
+              tBs_ProductDefinitionEOLCategoryId: eolCategoryId,
+            },
+          })
       if (!tBaustoff) {
         tBaustoff = await prisma.tBs_ProductDefinition.create({
           data: {
-            uuid: randomUUID(),
+            uuid: productUuidFromCsv ?? randomUUID(),
             name: row.tBaustoffName,
             // tBs_version: "2024-Q4",
             tBs_ProductDefinitionEOLCategoryId: eolCategoryId,
