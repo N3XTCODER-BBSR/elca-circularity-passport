@@ -15,35 +15,11 @@ info:
 #   - url: https://staging-api.elca.example.com/v1
 #     description: Staging server
 paths:
-  /products:
+  /releases:
     get:
-      summary: Get all products
-      operationId: getProducts
-      parameters:
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 1000
-            default: 100
-          description: Maximum number of items to return
-        - name: offset
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-            default: 0
-          description: Number of items to skip for pagination
-        - name: releaseTag
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Specific release tag to retrieve
-          example: "2025-09-29"
+      summary: Get list of available releases
+      operationId: getReleases
+      parameters: []
       responses:
         '200':
           description: Successful response
@@ -53,14 +29,47 @@ paths:
                 type: object
                 required:
                   - data
-                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Release'
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /releases/{releaseUuid}/products:
+    get:
+      summary: Get all products
+      operationId: getProducts
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
                 properties:
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Product'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMeta'
         '400':
           description: Bad request - invalid parameters
           content:
@@ -73,7 +82,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /products/{uuid}:
+  /releases/{releaseUuid}/products/{uuid}:
     get:
       summary: Get single product by UUID
       operationId: getProductsUuid
@@ -97,43 +106,6 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Product'                  
-        '400':
-          description: Bad request - invalid parameters
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: Item not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /releases:
-    get:
-      summary: Get list of available releases
-      operationId: getReleases
-      parameters: []
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - data
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Release'
         '400':
           description: Bad request - invalid parameters
           content:
@@ -180,10 +152,10 @@ components:
           type: string
           description: tBaustoff unique identifier for the product
           example: "1780bc87-ea01-4b92-9894-d0c384876849"
-        releaseTag:
+        releaseUuid:
           type: string
-          description: tBaustoff release tag
-          example: "2025-09-29"
+          description: tBaustoff release uuid
+          example: "1780bc87-ea01-4b92-9894-d0c384876849"
         name:
           type: string
           description: Name of the product
@@ -214,6 +186,11 @@ components:
           type: string
           description: Name of the EOL category
           example: "Expandierter Kork"
+        categoryUuid:
+          type: string
+          description: UUID of the EOL category
+          format: uuid
+          example: "1780bc87-ea01-4b92-9894-d0c384876849"
         eolScenarioUnbuiltReal:
           type: string
           description: End-of-life scenario for unbuilt real state
@@ -281,30 +258,6 @@ components:
         #   $ref: '#/components/schemas/Product'
         #   nullable: true
         #   description: Related product
-    PaginationMeta:
-      type: object
-      required:
-        - total
-        - limit
-        - offset
-        - hasNext
-        - hasPrevious
-      properties:
-        total:
-          type: integer
-          description: Total number of items available
-        limit:
-          type: integer
-          description: Number of items per page
-        offset:
-          type: integer
-          description: Number of items skipped
-        hasNext:
-          type: boolean
-          description: Whether there are more items available
-        hasPrevious:
-          type: boolean
-          description: Whether there are previous items available
     ErrorResponse:
       type: object
       required:

@@ -197,6 +197,14 @@ To create a new release, follow these steps:
    - Include a shorter summary of the changes as bullet points after a new line
    - Be more concise than the CHANGELOG.md entry but cover the key changes
 
+## OpenAPI specs for the tBaustoff-API endpoints
+
+Please use this command to build the human-friendly documentation based on our openapi-spec yaml (you have to be in the folder of the yaml 'api-spec'):
+
+```bash
+npx @redocly/cli build-docs openapi.yaml
+```
+
 ## Contribution
 
 We welcome contributions from the community! Check the [CONTRIBUTING.md](./CONTRIBUTING.md) file for details.
