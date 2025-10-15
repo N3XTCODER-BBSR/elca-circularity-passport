@@ -27,7 +27,7 @@ import { NextRequest, NextResponse } from "next/server"
 export const dynamic = "force-dynamic" // defaults to auto
 export const runtime = "nodejs" // defaults to edge
 
-export async function GET(request: NextRequest, { params }: { params: { releaseUuid: string, productUuid: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { releaseUuid: string; productUuid: string } }) {
   console.log("GET /releases/:releaseUuid/products/:productUuid", params)
   const { releaseUuid, productUuid } = params
   if (!releaseUuid || !productUuid) {
