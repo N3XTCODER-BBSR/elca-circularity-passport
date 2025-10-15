@@ -27,9 +27,15 @@ import { NextRequest, NextResponse } from "next/server"
 export const dynamic = "force-dynamic" // defaults to auto
 export const runtime = "nodejs" // defaults to edge
 
-export async function GET(request: NextRequest, { params }: { params: { releaseUuid: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { releaseUuid: string, productUuid: string } }) {
   console.log("GET /releases/:releaseUuid/products/:productUuid", params)
   const { releaseUuid, productUuid } = params
+  if (!releaseUuid || !productUuid) {
+    return NextResponse.json(
+      { error: { code: "MISSING_RELEASE_UUID_OR_PRODUCT_UUID", message: "releaseUuid and productUuid are required" } },
+      { status: 400 }
+    )
+  }
 
   // TODO: uncomment this when the release is in the product table
   // const product = await dbDalInstance.getOneProductInRelease(releaseUuid, productUuid)
