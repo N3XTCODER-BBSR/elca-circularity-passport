@@ -28,7 +28,7 @@ import {
   DisturbingSubstanceClassId,
   TBs_ProductDefinitionEOLCategoryScenario,
 } from "prisma/generated/client"
-import { Prisma } from "prisma/generated/client"
+import { Prisma, TBs_ProductDefinition } from "prisma/generated/client"
 import { prisma } from "prisma/prismaClient"
 
 const passportMetaDataSelect: Prisma.PassportSelect = {
@@ -406,4 +406,25 @@ export class DbDal {
   healthCheck = () => {
     return prisma.$queryRaw`SELECT 1`
   }
+
+  getAllProdcutsInRelease = async (releaseUuid: string): Promise<TBs_ProductDefinition[]> => {
+    return prisma.tBs_ProductDefinition.findMany({
+      where: {
+        tBs_ProductDefinitionEOLCategory: {
+          releaseUuid: releaseUuid,
+        },
+      },
+    })
+  }
+  
+  // TODO: uncomment this when the release is in the product table
+  // getOneProductInRelease = async (releaseUuid: string, productUuid: string) => {
+  //   return prisma.tBs_ProductDefinition.findFirst({
+  //     where: {
+  //       releaseUuid: releaseUuid,
+  //       uuid: productUuid,
+  //     },
+  //   })
+  // }
 }
+
