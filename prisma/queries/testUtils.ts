@@ -23,6 +23,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import crypto from "crypto"
+import { Prisma, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import { prisma, prismaLegacySuperUser } from "prisma/prismaClient"
 
 /**
@@ -104,14 +105,54 @@ export const createProductWithComponent = async (productId: number, componentId:
 export const createTBsProductDefinition = async (
   id: number,
   name: string = "Acetyliertes Holz",
-  processCategoryNumber: string | null = null
+  processCategoryNumber: string | null = null,
+  options?: { eolCategoryId?: number; releaseUuid?: string }
 ) => {
-  return await prisma.tBs_ProductDefinition.create({
+  const releaseUuid = options?.releaseUuid ?? "test-release"
+
+  // Ensure release exists when we need to create a default EOL category
+  if (!options?.eolCategoryId) {
+    await prisma.tBS_Release.upsert({
+      where: { uuid: releaseUuid },
+      update: {},
+      create: { uuid: releaseUuid, tag: "test" },
+    })
+  }
+
+  let resolvedEolCategoryId: number
+  if (options?.eolCategoryId) {
+    resolvedEolCategoryId = options.eolCategoryId
+  } else {
+    try {
+      const created = await prisma.tBs_ProductDefinitionEOLCategory.create({
+        data: {
+          name: "Default EOL",
+          eolScenarioUnbuiltReal: TBs_ProductDefinitionEOLCategoryScenario.WV,
+          eolScenarioUnbuiltPotential: TBs_ProductDefinitionEOLCategoryScenario.WV,
+          technologyFactor: 0.5,
+          release: { connect: { uuid: releaseUuid } },
+        },
+      })
+      resolvedEolCategoryId = created.id
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        const existing = await prisma.tBs_ProductDefinitionEOLCategory.findFirst({
+          where: { name: "Default EOL" },
+        })
+        if (!existing) throw error
+        resolvedEolCategoryId = existing.id
+      } else {
+        throw error
+      }
+    }
+  }
+
+  return prisma.tBs_ProductDefinition.create({
     data: {
       id,
-      tBs_version: "2024-Q4",
       name,
       processCategoryNumber,
+      tBs_ProductDefinitionEOLCategoryId: resolvedEolCategoryId,
     },
   })
 }
