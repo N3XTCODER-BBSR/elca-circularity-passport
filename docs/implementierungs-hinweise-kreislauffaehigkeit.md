@@ -1,25 +1,31 @@
-# BNB Zirkularitätsindikatoren – Implementierungsleitfaden
+# BNB Zirkularitätsindikatoren – Software-Implementierungsleitfaden
 
 ## Einleitung
 
 ### Ziel und Zielgruppe
 
-Diese Dokumentation richtet sich an **LCA-Softwareanbieter**, die die BNB Zirkularitätsindikatoren in ihre Software integrieren möchten. Die BNB Zirkularitätsindikatoren sind eine **Erweiterung der LCA-Software**, die es ermöglicht, die Kreislauffähigkeit von Gebäuden gemäß dem **BNB-Steckbrief U.05 "Kreislauffähigkeit"** zu berechnen.
+Diese Dokumentation richtet sich an **LCA-Softwareanbieter**, die die BNB Zirkularitätsindikatoren in ihre Software integrieren möchten.
 
-Die Dokumentation geht dabei insbesondere ein auf:
+**Wichtiger Hinweis:** Diese Dokumentation ist ein **Implementierungsleitfaden für Software-Entwickler** und ersetzt nicht die offizielle Methodik. Die **BNB-Steckbrief U.05 "Kreislauffähigkeit"** ist die **einzige verbindliche Quelle** für die Bewertungsmethodik, Begriffe, Berechnungsformeln und Bewertungskriterien. Dieser Leitfaden soll die technische Umsetzung in LCA-Software erleichtern.
 
-- den Kontext, insbesondere die existierende ÖKOBAUDAT-API/Datenquelle
+Die BNB Zirkularitätsindikatoren sind eine **Erweiterung der LCA-Software**, die es ermöglicht, die Kreislauffähigkeit von Gebäuden gemäß dem **BNB-Steckbrief U.05 "Kreislauffähigkeit"** zu berechnen.
+
+Diese Implementierungsdokumentation ergänzt den BNB-Steckbrief U.05 und geht dabei insbesondere ein auf:
+
+- den technischen Kontext, insbesondere die existierende ÖKOBAUDAT-API/Datenquelle
 - die neu entwickelte tBaustoff-API, welche vorhandenen Materialien aus ÖKOBAUDAT zusätzliche End-of-Life-Szenarien (EoL) zuordnet und damit die Berechnung des Zirkularitätspotenzials ermöglicht
-- die Berechnungsmethodik bzw. allgemeine Implementierungshinweise
+- **technische Implementierungshinweise** für die in BNB-Steckbrief U.05 definierte Berechnungsmethodik
 
 ### Kontext (BNB U.05, DIN 276, EN ISO 14040/44)
 
-- Was: Verbindliche Standards, Begriffe und Bewertungsgrenzen.
+**Referenz:** BNB-Steckbrief U.05 "Kreislauffähigkeit" - verbindliche Standards, Begriffe und Bewertungsgrenzen.
+
+- Was: Verbindliche Standards, Begriffe und Bewertungsgrenzen (definiert im BNB-Steckbrief U.05).
 - Warum: Compliance sicherstellen und gemeinsame Sprache nutzen.
 
 ### Systemgrenzen & Scope (KG 300, Cut-off-Regeln)
 
-Der Steckbrief grenzt den Bewertungsumfang klar ab: Nur die Baukonstruktion des Bauwerks (KG 300) wird bewertet. Gebäudetechnik (KG 400) und Außenanlagen gehören derzeit nicht zum Scope. Zusätzlich regeln Cut‑off‑Prinzipien, welche Bauteil-Schichten oder Baukomponenten erfasst werden müssen.
+Der BNB-Steckbrief U.05 grenzt den Bewertungsumfang klar ab: Nur die Baukonstruktion des Bauwerks (KG 300) wird bewertet. Gebäudetechnik (KG 400) und Außenanlagen gehören derzeit nicht zum Scope. Zusätzlich regeln Cut‑off‑Prinzipien, welche Bauteil-Schichten oder Baukomponenten erfasst werden müssen.
 
 #### Begriffe (kurz erklärt)
 
@@ -77,7 +83,7 @@ Hinweise:
 
 ### Formeln auf einen Blick
 
-Diese Gleichungen fassen die relevanten Rechenbausteine zusammen, die in beiden Metriken verwendet werden (Aggregation, TF‑Gewichtung, BNB‑Interpolation). Sie sind sprach‑ und framework‑unabhängig und dienen als Referenz für Implementierung, Tests und QS.
+Diese Gleichungen fassen die relevanten Rechenbausteine zusammen, die in beiden Metriken verwendet werden (Aggregation, TF‑Gewichtung, BNB‑Interpolation). Sie sind sprach‑ und framework‑unabhängig und dienen als **technische Referenz für die Software-Implementierung**, Tests und QS. Die vollständigen Formeln und deren Herleitung finden sich im BNB-Steckbrief U.05.
 
 #### Wann anwenden:
 
@@ -185,6 +191,8 @@ sequenceDiagram
 ## Indikator im Detail: Rückbaupotenzial (U.05.1)
 
 Die Rückbaupotenzial bewertet, wie leicht Bauteilschichten oder Baukomponenten beim Rückbau eines Gebäudes getrennt und möglichst ohne Störstoffe rückgewonnen werden können. Ergebnisse sind pro Schicht eine Rückbau-Klasse (I–IV) und zugehörige, fixe Rückbau-Punkte, die anschließend volumen‑gewichtet zu einem Bauteil‑ bzw. Gebäude‑Gesamtwert zusammengeführt. Der Indikator basiert auf Nutzerangaben zur Einbausituation, Fügungen und Verbindungsmittel, Zerstörungsgrad des rückgewonnenen Baumaterials (zerstörungsfrei/weitgehend zerstörungsfrei/ nur zerstörend rückbaubar) und benötigt keine tBaustoff‑ oder ÖKOBAUDAT‑API.
+
+**Implementierungshinweis:** Die vollständige Methodik und Bewertungskriterien für die Rückbau-Klassen I–IV sind im BNB-Steckbrief U.05 definiert.
 
 ### Zweck und Ergebnis
 
@@ -545,6 +553,8 @@ Dies ist unabhängig von EoL‑Berechnungen - die Einstufungen in Rückbau- und 
 | MAT-002     | Stahl S235    |   2.3 | t       | Tragwerk  | 9b1b2d34-aaaa-4bcd-bbbb-1234567890ab | 2024-II      | A          |
 
 ## Anhang: Quellcode‑Referenzen (Implementierung)
+
+**Wichtiger Hinweis:** Diese Code-Referenzen dienen der technischen Implementierung der im **BNB-Steckbrief U.05 "Kreislauffähigkeit"** definierten Methodik. Bei Unstimmigkeiten zwischen dieser Implementierung und dem BNB-Steckbrief U.05 hat der BNB-Steckbrief U.05 Vorrang.
 
 | Berechnungsaspekt                                           | Referenz im Repository                                                                                                                                                                                                                      |
 | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
