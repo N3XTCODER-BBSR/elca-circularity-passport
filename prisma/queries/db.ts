@@ -416,7 +416,7 @@ export class DbDal {
       },
     })
   }
-  
+
   // TODO: uncomment this when the release is in the product table
   // getOneProductInRelease = async (releaseUuid: string, productUuid: string) => {
   //   return prisma.tBs_ProductDefinition.findFirst({
@@ -427,4 +427,3 @@ export class DbDal {
   //   })
   // }
 }
-

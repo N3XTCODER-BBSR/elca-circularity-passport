@@ -31,6 +31,12 @@ export const runtime = "nodejs" // defaults to edge
 export async function GET(request: NextRequest, { params }: { params: { releaseUuid: string } }) {
   console.log("GET /releases/:releaseUuid/products", params)
   const { releaseUuid } = params
+  if (!releaseUuid) {
+    return NextResponse.json(
+      { error: { code: "MISSING_RELEASE_UUID", message: "releaseUuid is required" } },
+      { status: 400 }
+    )
+  }
   const products = await dbDalInstance.getAllProdcutsInRelease(releaseUuid)
 
   return NextResponse.json({ data: products })

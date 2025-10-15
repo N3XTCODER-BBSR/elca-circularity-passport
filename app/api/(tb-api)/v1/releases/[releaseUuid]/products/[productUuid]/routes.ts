@@ -33,6 +33,6 @@ export async function GET(request: NextRequest, { params }: { params: { releaseU
 
   // TODO: uncomment this when the release is in the product table
   // const product = await dbDalInstance.getOneProductInRelease(releaseUuid, productUuid)
-  const product = { data: { }}
+  const product = { data: {} }
   return NextResponse.json(product)
 }
