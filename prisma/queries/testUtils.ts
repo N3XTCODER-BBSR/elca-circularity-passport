@@ -23,7 +23,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See <http://www.gnu.org/licenses/>.
  */
 import crypto from "crypto"
-import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
+import { Prisma, TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
 import { prisma, prismaLegacySuperUser } from "prisma/prismaClient"
 
 /**

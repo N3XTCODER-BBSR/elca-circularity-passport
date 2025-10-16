@@ -33,7 +33,7 @@ const customJestConfig: Config = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   testEnvironment: "jest-environment-jsdom",
   modulePathIgnorePatterns: ["<rootDir>/dist/"],
-  testPathIgnorePatterns: ["<rootDir>/tests"],
+  testPathIgnorePatterns: ["<rootDir>/tests/e2e", "<rootDir>/tests/performance"],
   collectCoverage: true,
   globalSetup: "<rootDir>/tests/unit/dbSetup.ts",
   globalTeardown: "<rootDir>/tests/unit/dbTeardown.ts",
