@@ -485,7 +485,7 @@ export class DbDal {
   getAllProdcutsInRelease = async (
     releaseUuid: string
   ): Promise<
-    (TBs_ProductDefinition & {
+    (Omit<TBs_ProductDefinition, "id"> & {
       releaseUuid: string | null
       eolCategory?: {
         name: string
