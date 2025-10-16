@@ -57,4 +57,37 @@ describe("GET /api/(tb-api)/v1/releases/:releaseUuid/products", () => {
     expect(Array.isArray(json.data)).toBe(true)
     expect(json.data.length).toBeGreaterThan(0)
   })
+
+  test("test data structure", async () => {
+    const releaseUuid = "release-xyz"
+    const url = `${server.url}/api/v1/releases/${releaseUuid}/products`
+    const resp = await fetch(url)
+    expect(resp.status).toBe(200)
+    const json = (await resp.json()) as { data: any[] }
+    expect(Array.isArray(json.data)).toBe(true)
+    expect(json.data.length).toBeGreaterThan(0)
+    const item = json.data[0]
+
+    console.log(item)
+
+    // Product keys
+    expect(item).toHaveProperty("uuid")
+    expect(typeof item.uuid).toBe("string")
+    expect(item).toHaveProperty("releaseUuid")
+    expect(typeof item.releaseUuid).toBe("string")
+    expect(item).toHaveProperty("name")
+    expect(typeof item.name).toBe("string")
+
+    // OekobaudatMapping array
+    expect(item).toHaveProperty("oekobaudatMappings")
+    expect(Array.isArray(item.oekobaudatMappings)).toBe(true)
+
+    // EOLCategory object or null; if present, check required keys
+    expect(item).toHaveProperty("eolCategory")
+    expect(item.eolCategory).toHaveProperty("name")
+    expect(item.eolCategory).toHaveProperty("categoryUuid")
+    expect(item.eolCategory).toHaveProperty("eolScenarioUnbuiltReal")
+    expect(item.eolCategory).toHaveProperty("eolScenarioUnbuiltPotential")
+    expect(item.eolCategory).toHaveProperty("technologyFactor")
+  })
 })

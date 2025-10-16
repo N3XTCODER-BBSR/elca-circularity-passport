@@ -407,14 +407,31 @@ export class DbDal {
     return prisma.$queryRaw`SELECT 1`
   }
 
-  getAllProdcutsInRelease = async (releaseUuid: string): Promise<TBs_ProductDefinition[]> => {
-    return prisma.tBs_ProductDefinition.findMany({
+  getAllProdcutsInRelease = async (
+    releaseUuid: string
+  ): Promise<(TBs_ProductDefinition & { releaseUuid: string | null })[]> => {
+    const products = await prisma.tBs_ProductDefinition.findMany({
       where: {
         tBs_ProductDefinitionEOLCategory: {
           releaseUuid: releaseUuid,
         },
       },
+      include: {
+        tBs_ProductDefinitionEOLCategory: {
+          select: { releaseUuid: true },
+        },
+      },
     })
+    return products.map((p) => ({
+      // spread original product fields
+      id: p.id,
+      uuid: p.uuid,
+      name: p.name,
+      processCategoryNumber: p.processCategoryNumber,
+      tBs_ProductDefinitionEOLCategoryId: p.tBs_ProductDefinitionEOLCategoryId,
+      // add top-level releaseUuid
+      releaseUuid: p.tBs_ProductDefinitionEOLCategory?.releaseUuid ?? null,
+    }))
   }
 
   // TODO: uncomment this when the release is in the product table

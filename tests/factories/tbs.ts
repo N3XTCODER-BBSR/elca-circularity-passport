@@ -1,5 +1,6 @@
-import { prisma } from "prisma/prismaClient"
+import { randomUUID } from "node:crypto"
 import { TBs_ProductDefinitionEOLCategoryScenario } from "prisma/generated/client"
+import { prisma } from "prisma/prismaClient"
 
 export async function ensureRelease(uuid: string, tag = "test-tag") {
   await prisma.tBS_Release.upsert({ where: { uuid }, update: {}, create: { uuid, tag } })
@@ -11,6 +12,7 @@ export async function createEolCategory(name: string, releaseUuid: string) {
 
   const created = await prisma.tBs_ProductDefinitionEOLCategory.create({
     data: {
+      uuid: randomUUID(),
       name,
       eolScenarioUnbuiltReal: TBs_ProductDefinitionEOLCategoryScenario.WV,
       eolScenarioUnbuiltPotential: TBs_ProductDefinitionEOLCategoryScenario.WV,
@@ -24,6 +26,7 @@ export async function createEolCategory(name: string, releaseUuid: string) {
 export async function createProduct(name: string, eolCategoryId: number, processCategoryNumber: string | null) {
   return prisma.tBs_ProductDefinition.create({
     data: {
+      uuid: randomUUID(),
       name,
       processCategoryNumber,
       tBs_ProductDefinitionEOLCategoryId: eolCategoryId,
