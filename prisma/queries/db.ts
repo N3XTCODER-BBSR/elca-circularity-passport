@@ -69,6 +69,75 @@ export class DbDal {
     })
   }
 
+  getOneProductInRelease = async (
+    releaseUuid: string,
+    productUuid: string
+  ): Promise<
+    | (TBs_ProductDefinition & {
+        releaseUuid: string | null
+        eolCategory?: {
+          name: string
+          categoryUuid: string | null
+          eolScenarioUnbuiltReal: TBs_ProductDefinitionEOLCategoryScenario
+          eolScenarioUnbuiltPotential: TBs_ProductDefinitionEOLCategoryScenario
+          technologyFactor: number
+        } | null
+        oekobaudatMappings: { oebdProcessUuid: string; oebdReleaseUuid: string }[]
+      })
+    | null
+  > => {
+    const p = await prisma.tBs_ProductDefinition.findFirst({
+      where: {
+        uuid: productUuid,
+        tBs_ProductDefinitionEOLCategory: {
+          releaseUuid: releaseUuid,
+        },
+      },
+      include: {
+        tBs_ProductDefinitionEOLCategory: {
+          select: {
+            releaseUuid: true,
+            uuid: true,
+            name: true,
+            eolScenarioUnbuiltReal: true,
+            eolScenarioUnbuiltPotential: true,
+            technologyFactor: true,
+          },
+        },
+        oekobaudatTBaustoffMappings: {
+          select: {
+            oebd_processUuid: true,
+            oebd_versionUuid: true,
+          },
+        },
+      },
+    })
+
+    if (!p) return null
+
+    return {
+      id: p.id,
+      uuid: p.uuid,
+      name: p.name,
+      processCategoryNumber: p.processCategoryNumber,
+      tBs_ProductDefinitionEOLCategoryId: p.tBs_ProductDefinitionEOLCategoryId,
+      releaseUuid: p.tBs_ProductDefinitionEOLCategory?.releaseUuid ?? null,
+      eolCategory: p.tBs_ProductDefinitionEOLCategory
+        ? {
+            name: p.tBs_ProductDefinitionEOLCategory.name,
+            categoryUuid: p.tBs_ProductDefinitionEOLCategory.uuid ?? null,
+            eolScenarioUnbuiltReal: p.tBs_ProductDefinitionEOLCategory.eolScenarioUnbuiltReal,
+            eolScenarioUnbuiltPotential: p.tBs_ProductDefinitionEOLCategory.eolScenarioUnbuiltPotential,
+            technologyFactor: p.tBs_ProductDefinitionEOLCategory.technologyFactor,
+          }
+        : null,
+      oekobaudatMappings: p.oekobaudatTBaustoffMappings.map((m) => ({
+        oebdProcessUuid: m.oebd_processUuid,
+        oebdReleaseUuid: m.oebd_versionUuid,
+      })),
+    }
+  }
+
   findOneTimePdfToken = async (token: string) => {
     return await prisma.oneTimePdfToken.findUnique({
       where: { token },
