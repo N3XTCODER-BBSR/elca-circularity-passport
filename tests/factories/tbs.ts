@@ -33,3 +33,18 @@ export async function createProduct(name: string, eolCategoryId: number, process
     },
   })
 }
+
+export async function createOekobaudatMapping(productId: number, processUuid?: string, releaseUuid?: string) {
+  const oebdProcessUuid = processUuid ?? randomUUID()
+  const oebdVersionUuid = releaseUuid ?? randomUUID()
+  await prisma.tBs_OekobaudatMapping.upsert({
+    where: {
+      oebd_processUuid_oebd_versionUuid: {
+        oebd_processUuid: oebdProcessUuid,
+        oebd_versionUuid: oebdVersionUuid,
+      },
+    },
+    update: { tBs_productId: productId },
+    create: { oebd_processUuid: oebdProcessUuid, oebd_versionUuid: oebdVersionUuid, tBs_productId: productId },
+  })
+}

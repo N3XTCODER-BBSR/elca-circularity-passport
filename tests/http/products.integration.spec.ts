@@ -13,6 +13,7 @@ let dbContainer: StartedTestContainer
 let ensureRelease: (uuid: string, tag?: string) => Promise<void>
 let createEolCategory: (name: string, releaseUuid: string) => Promise<number>
 let createProduct: (name: string, eolCategoryId: number, processCategoryNumber: string | null) => Promise<any>
+let createOekobaudatMapping: (productId: number, processUuid?: string, releaseUuid?: string) => Promise<void>
 
 describe("GET /api/(tb-api)/v1/releases/:releaseUuid/products", () => {
   beforeAll(async () => {
@@ -29,6 +30,7 @@ describe("GET /api/(tb-api)/v1/releases/:releaseUuid/products", () => {
     ensureRelease = factories.ensureRelease
     createEolCategory = factories.createEolCategory
     createProduct = factories.createProduct
+    createOekobaudatMapping = factories.createOekobaudatMapping
   }, 120_000)
 
   afterAll(async () => {
@@ -46,7 +48,8 @@ describe("GET /api/(tb-api)/v1/releases/:releaseUuid/products", () => {
     const releaseUuid = "release-xyz"
     await ensureRelease(releaseUuid)
     const eolId = await createEolCategory("EOL-A", releaseUuid)
-    await createProduct("Product A", eolId, "1.2.3")
+    const product = await createProduct("Product A", eolId, "1.2.3")
+    await createOekobaudatMapping(product.id)
 
     const url = `${server.url}/api/v1/releases/${releaseUuid}/products`
     const resp = await fetch(url)

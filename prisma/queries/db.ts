@@ -409,7 +409,19 @@ export class DbDal {
 
   getAllProdcutsInRelease = async (
     releaseUuid: string
-  ): Promise<(TBs_ProductDefinition & { releaseUuid: string | null })[]> => {
+  ): Promise<
+    (TBs_ProductDefinition & {
+      releaseUuid: string | null
+      eolCategory?: {
+        name: string
+        categoryUuid: string | null
+        eolScenarioUnbuiltReal: TBs_ProductDefinitionEOLCategoryScenario
+        eolScenarioUnbuiltPotential: TBs_ProductDefinitionEOLCategoryScenario
+        technologyFactor: number
+      } | null
+      oekobaudatMappings: { oebdProcessUuid: string; oebdReleaseUuid: string }[]
+    })[]
+  > => {
     const products = await prisma.tBs_ProductDefinition.findMany({
       where: {
         tBs_ProductDefinitionEOLCategory: {
@@ -418,7 +430,20 @@ export class DbDal {
       },
       include: {
         tBs_ProductDefinitionEOLCategory: {
-          select: { releaseUuid: true },
+          select: {
+            releaseUuid: true,
+            uuid: true,
+            name: true,
+            eolScenarioUnbuiltReal: true,
+            eolScenarioUnbuiltPotential: true,
+            technologyFactor: true,
+          },
+        },
+        oekobaudatTBaustoffMappings: {
+          select: {
+            oebd_processUuid: true,
+            oebd_versionUuid: true,
+          },
         },
       },
     })
@@ -431,6 +456,21 @@ export class DbDal {
       tBs_ProductDefinitionEOLCategoryId: p.tBs_ProductDefinitionEOLCategoryId,
       // add top-level releaseUuid
       releaseUuid: p.tBs_ProductDefinitionEOLCategory?.releaseUuid ?? null,
+      // normalized eolCategory
+      eolCategory: p.tBs_ProductDefinitionEOLCategory
+        ? {
+            name: p.tBs_ProductDefinitionEOLCategory.name,
+            categoryUuid: p.tBs_ProductDefinitionEOLCategory.uuid ?? null,
+            eolScenarioUnbuiltReal: p.tBs_ProductDefinitionEOLCategory.eolScenarioUnbuiltReal,
+            eolScenarioUnbuiltPotential: p.tBs_ProductDefinitionEOLCategory.eolScenarioUnbuiltPotential,
+            technologyFactor: p.tBs_ProductDefinitionEOLCategory.technologyFactor,
+          }
+        : null,
+      // mappings
+      oekobaudatMappings: p.oekobaudatTBaustoffMappings.map((m) => ({
+        oebdProcessUuid: m.oebd_processUuid,
+        oebdReleaseUuid: m.oebd_versionUuid,
+      })),
     }))
   }
 
