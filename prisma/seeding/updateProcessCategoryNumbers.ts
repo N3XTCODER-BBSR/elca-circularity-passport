@@ -5,7 +5,7 @@ import { prisma } from "../prismaClient"
 
 const csvFilePath = path.resolve(
   __dirname,
-  "./v1_initial_release_obd_tbaustoff_mapping__70ee17c1-b144-45d1-97c2-f600f238e112.csv"
+  "./tbaustoff_release_source_data/v1_initial_release_obd_tbaustoff_mapping__70ee17c1-b144-45d1-97c2-f600f238e112.csv"
 )
 
 type CsvRow = {
