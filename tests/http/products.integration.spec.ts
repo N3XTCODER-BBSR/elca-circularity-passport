@@ -130,3 +130,45 @@ describe("GET /api/(tb-api)/v1/releases/:releaseUuid/products", () => {
     expect(item.eolCategory).toHaveProperty("technologyFactor")
   })
 })
+
+describe("GET /api/(tb-api)/v1/releases", () => {
+  beforeAll(async () => {
+    // Ensure Next server and DB are running from previous suite
+    if (!server || !dbContainer) {
+      const { container, dbUrl } = await setupPassportTestDB()
+      dbContainer = container
+      process.env.DATABASE_URL = dbUrl
+      server = await startNextForTests({ DATABASE_URL: dbUrl })
+    }
+  }, 120_000)
+
+  afterAll(async () => {
+    // Keep teardown managed by the previous suite's afterAll to avoid double-closing
+  })
+
+  test("list releases -> 200 + JSON array data", async () => {
+    const url = `${server.url}/api/v1/releases`
+    const resp = await fetch(url)
+    expect(resp.status).toBe(200)
+    const json = (await resp.json()) as { data: any[] }
+    expect(json).toHaveProperty("data")
+    expect(Array.isArray(json.data)).toBe(true)
+  })
+
+  test("each item matches basic Release shape", async () => {
+    const url = `${server.url}/api/v1/releases`
+    const resp = await fetch(url)
+    expect(resp.status).toBe(200)
+    const json = (await resp.json()) as { data: any[] }
+    const item = json.data[0]
+    if (item) {
+      // Minimal checks derived from the OpenAPI schema
+      expect(item).toHaveProperty("uuid")
+      expect(typeof item.uuid).toBe("string")
+      expect(item).toHaveProperty("tag")
+      expect(typeof item.tag === "string" || item.tag == null).toBe(true)
+      expect(item).toHaveProperty("createdAt")
+      expect(typeof item.createdAt === "string" || item.createdAt == null).toBe(true)
+    }
+  })
+})

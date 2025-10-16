@@ -44,6 +44,12 @@ export type PassportMetadata = Prisma.PassportGetPayload<{
 }>
 
 export class DbDal {
+  getReleases = async (): Promise<{ uuid: string; tag: string | null }[]> => {
+    const rows = await prisma.tBS_Release.findMany({
+      select: { uuid: true, tag: true },
+    })
+    return rows
+  }
   createOneTimePdfToken = async ({
     token,
     userId,
