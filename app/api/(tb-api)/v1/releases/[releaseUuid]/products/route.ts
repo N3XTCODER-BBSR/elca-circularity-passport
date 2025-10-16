@@ -34,7 +34,7 @@ export async function GET(request: NextRequest, { params }: { params: { releaseU
   if (!releaseUuid) {
     return NextResponse.json(
       { error: { code: "MISSING_RELEASE_UUID", message: "releaseUuid is required" } },
-      { status: 401 }
+      { status: 400 }
     )
   }
   const products = await dbDalInstance.getAllProdcutsInRelease(releaseUuid)
