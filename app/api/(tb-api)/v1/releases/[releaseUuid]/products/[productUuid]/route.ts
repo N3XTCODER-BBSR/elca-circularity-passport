@@ -45,5 +45,14 @@ export async function GET(request: NextRequest, { params }: { params: { releaseU
       { status: 404 }
     )
   }
-  return NextResponse.json({ data: product })
+  const { uuid, releaseUuid: relUuid, name, eolCategory, oekobaudatMappings } = product
+  return NextResponse.json({
+    data: {
+      uuid,
+      releaseUuid: relUuid,
+      name,
+      eolCategory,
+      oekobaudatMappings,
+    },
+  })
 }

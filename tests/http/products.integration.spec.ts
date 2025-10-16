@@ -121,13 +121,26 @@ describe("GET /api/(tb-api)/v1/releases/:releaseUuid/products", () => {
     expect(item).toHaveProperty("oekobaudatMappings")
     expect(Array.isArray(item.oekobaudatMappings)).toBe(true)
 
+    // Only allowed top-level fields
+    const allowedProductKeys = ["uuid", "releaseUuid", "name", "eolCategory", "oekobaudatMappings"]
+    expect(Object.keys(item).sort()).toEqual(allowedProductKeys.sort())
+
     // EOLCategory object
     expect(item).toHaveProperty("eolCategory")
-    expect(item.eolCategory).toHaveProperty("name")
-    expect(item.eolCategory).toHaveProperty("categoryUuid")
-    expect(item.eolCategory).toHaveProperty("eolScenarioUnbuiltReal")
-    expect(item.eolCategory).toHaveProperty("eolScenarioUnbuiltPotential")
-    expect(item.eolCategory).toHaveProperty("technologyFactor")
+    const allowedEolKeys = [
+      "name",
+      "categoryUuid",
+      "eolScenarioUnbuiltReal",
+      "eolScenarioUnbuiltPotential",
+      "technologyFactor",
+    ]
+    expect(Object.keys(item.eolCategory).sort()).toEqual(allowedEolKeys.sort())
+
+    // Each mapping only has allowed keys
+    const allowedMappingKeys = ["oebdProcessUuid", "oebdReleaseUuid"]
+    for (const m of item.oekobaudatMappings as any[]) {
+      expect(Object.keys(m).sort()).toEqual(allowedMappingKeys.sort())
+    }
   })
 })
 

@@ -46,5 +46,13 @@ export async function GET(request: NextRequest, { params }: { params: { releaseU
     )
   }
 
-  return NextResponse.json({ data: products })
+  const sanitized = products.map(({ uuid, releaseUuid: relUuid, name, eolCategory, oekobaudatMappings }) => ({
+    uuid,
+    releaseUuid: relUuid,
+    name,
+    eolCategory,
+    oekobaudatMappings,
+  }))
+
+  return NextResponse.json({ data: sanitized })
 }
