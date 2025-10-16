@@ -34,10 +34,17 @@ export async function GET(request: NextRequest, { params }: { params: { releaseU
   if (!releaseUuid) {
     return NextResponse.json(
       { error: { code: "MISSING_RELEASE_UUID", message: "releaseUuid is required" } },
-      { status: 400 }
+      { status: 401 }
     )
   }
   const products = await dbDalInstance.getAllProdcutsInRelease(releaseUuid)
+
+  if (!products || products.length === 0) {
+    return NextResponse.json(
+      { error: { code: "RELEASE_NOT_FOUND", message: "No products found for releaseUuid" } },
+      { status: 404 }
+    )
+  }
 
   return NextResponse.json({ data: products })
 }
