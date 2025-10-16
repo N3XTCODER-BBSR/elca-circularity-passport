@@ -1,0 +1,60 @@
+/**
+ * @jest-environment node
+ */
+/**
+ * HTTP-level tests for products endpoint using in-process Next server.
+ */
+import type { StartedTestContainer } from "testcontainers"
+import { setupPassportTestDB } from "tests/setUpDbs"
+import { type StartedNextServer, startNextForTests } from "./nextServer"
+
+let server: StartedNextServer
+let dbContainer: StartedTestContainer
+let ensureRelease: (uuid: string, tag?: string) => Promise<void>
+let createEolCategory: (name: string, releaseUuid: string) => Promise<number>
+let createProduct: (name: string, eolCategoryId: number, processCategoryNumber: string | null) => Promise<any>
+
+describe("GET /api/(tb-api)/v1/releases/:releaseUuid/products", () => {
+  beforeAll(async () => {
+    // start Postgres test DB and set DATABASE_URL env
+    const { container, dbUrl } = await setupPassportTestDB()
+    dbContainer = container
+    process.env.DATABASE_URL = dbUrl
+
+    // start Next server in-process with DB env so app connects to containerized DB
+    server = await startNextForTests({ DATABASE_URL: dbUrl })
+
+    // import factories AFTER DATABASE_URL is set to ensure prisma connects to test DB
+    const factories = await import("tests/factories/tbs")
+    ensureRelease = factories.ensureRelease
+    createEolCategory = factories.createEolCategory
+    createProduct = factories.createProduct
+  }, 120_000)
+
+  afterAll(async () => {
+    if (server) await server.close()
+    if (dbContainer) await dbContainer.stop()
+  })
+
+  test("false releaseUuid -> 404", async () => {
+    const url = `${server.url}/api/v1/releases/nonexistent-release/products`
+    const resp = await fetch(url)
+    expect(resp.status).toBe(404)
+  })
+
+  test("valid releaseUuid -> 200 + JSON", async () => {
+    const releaseUuid = "release-xyz"
+    await ensureRelease(releaseUuid)
+    const eolId = await createEolCategory("EOL-A", releaseUuid)
+    await createProduct("Product A", eolId, "1.2.3")
+
+    const url = `${server.url}/api/v1/releases/${releaseUuid}/products`
+    const resp = await fetch(url)
+    expect(resp.status).toBe(200)
+    type ProductsResponse = { data: unknown[] }
+    const json = (await resp.json()) as ProductsResponse
+    expect(json).toHaveProperty("data")
+    expect(Array.isArray(json.data)).toBe(true)
+    expect(json.data.length).toBeGreaterThan(0)
+  })
+})
