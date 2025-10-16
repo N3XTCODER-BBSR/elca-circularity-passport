@@ -32,7 +32,7 @@ export const runtime = "nodejs"
 export async function GET(_request: NextRequest) {
   try {
     const releases = await dbDalInstance.getReleases()
-    return NextResponse.json({ data: releases })
+    return NextResponse.json({ data: releases.map((r) => ({ uuid: r.uuid, releaseTag: r.tag })) })
   } catch (error) {
     return NextResponse.json({ error: { code: "INTERNAL_ERROR", message: (error as Error).message } }, { status: 500 })
   }
