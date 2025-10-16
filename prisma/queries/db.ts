@@ -449,7 +449,6 @@ export class DbDal {
     })
     return products.map((p) => ({
       // spread original product fields
-      id: p.id,
       uuid: p.uuid,
       name: p.name,
       processCategoryNumber: p.processCategoryNumber,
