@@ -9,11 +9,9 @@ info:
   license:
     name: AGPL-3.0
     url: https://www.gnu.org/licenses/agpl-3.0.html
-# servers:
-#   - url: https://api.elca.example.com/v1
-#     description: Materialion server
-#   - url: https://staging-api.elca.example.com/v1
-#     description: Staging server
+servers:
+  - url: https://api.eoldat.de/api/v1
+    description: API server base url
 paths:
   /releases:
     get:
