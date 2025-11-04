@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 /**
- * HTTP-level tests for products endpoint using in-process Next server.
+ * HTTP-level tests for materials endpoint using in-process Next server.
  */
 import type { StartedTestContainer } from "testcontainers"
 import { setupPassportTestDB } from "tests/setUpDbs"
@@ -15,7 +15,7 @@ let createEolCategory: (name: string, releaseUuid: string) => Promise<number>
 let createProduct: (name: string, eolCategoryId: number, processCategoryNumber: string | null) => Promise<any>
 let createOekobaudatMapping: (productId: number, processUuid?: string, releaseUuid?: string) => Promise<void>
 
-describe("GET /api/(tb-api)/v1/releases/:releaseUuid/products", () => {
+describe("GET /api/(tb-api)/v1/releases/:releaseUuid/materials", () => {
   beforeAll(async () => {
     // start Postgres test DB and set DATABASE_URL env
     const { container, dbUrl } = await setupPassportTestDB()
@@ -39,7 +39,7 @@ describe("GET /api/(tb-api)/v1/releases/:releaseUuid/products", () => {
   })
 
   test("false releaseUuid -> 404", async () => {
-    const url = `${server.url}/api/v1/releases/nonexistent-release/products`
+    const url = `${server.url}/api/v1/releases/nonexistent-release/materials`
     const resp = await fetch(url)
     expect(resp.status).toBe(404)
   })
@@ -51,11 +51,11 @@ describe("GET /api/(tb-api)/v1/releases/:releaseUuid/products", () => {
     const product = await createProduct("Product A", eolId, "1.2.3")
     await createOekobaudatMapping(product.id)
 
-    const url = `${server.url}/api/v1/releases/${releaseUuid}/products`
+    const url = `${server.url}/api/v1/releases/${releaseUuid}/materials`
     const resp = await fetch(url)
     expect(resp.status).toBe(200)
-    type ProductsResponse = { data: unknown[] }
-    const json = (await resp.json()) as ProductsResponse
+    type materialsResponse = { data: unknown[] }
+    const json = (await resp.json()) as materialsResponse
     expect(json).toHaveProperty("data")
     expect(Array.isArray(json.data)).toBe(true)
     expect(json.data.length).toBeGreaterThan(0)
@@ -63,7 +63,7 @@ describe("GET /api/(tb-api)/v1/releases/:releaseUuid/products", () => {
 
   test("test data structure", async () => {
     const releaseUuid = "release-xyz"
-    const url = `${server.url}/api/v1/releases/${releaseUuid}/products`
+    const url = `${server.url}/api/v1/releases/${releaseUuid}/materials`
     const resp = await fetch(url)
     expect(resp.status).toBe(200)
     const json = (await resp.json()) as { data: any[] }
@@ -101,7 +101,7 @@ describe("GET /api/(tb-api)/v1/releases/:releaseUuid/products", () => {
     const product = await createProduct("Product B", eolId, null)
     await createOekobaudatMapping(product.id)
 
-    const url = `${server.url}/api/v1/releases/${releaseUuid}/products/${product.uuid}`
+    const url = `${server.url}/api/v1/releases/${releaseUuid}/materials/${product.uuid}`
     const resp = await fetch(url)
     expect(resp.status).toBe(200)
     const json = (await resp.json()) as { data: any }
