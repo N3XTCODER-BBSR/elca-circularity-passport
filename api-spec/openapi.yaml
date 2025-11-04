@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: tBaustoffe API
-  description: API for accessing tBaustoff products data
+  description: API for accessing eolDat materials data
   version: 0.0.1-draft
   contact:
     name: eLCA Support
@@ -11,7 +11,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
 # servers:
 #   - url: https://api.elca.example.com/v1
-#     description: Production server
+#     description: Materialion server
 #   - url: https://staging-api.elca.example.com/v1
 #     description: Staging server
 paths:
@@ -52,10 +52,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /releases/{releaseUuid}/products:
+  /releases/{releaseUuid}/materials:
     get:
-      summary: Get all products
-      operationId: getProducts
+      summary: Get all materials
+      operationId: getmaterials
       responses:
         '200':
           description: Successful response
@@ -69,7 +69,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Product'
+                      $ref: '#/components/schemas/Material'
         '400':
           description: Bad request - invalid parameters
           content:
@@ -82,17 +82,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /releases/{releaseUuid}/products/{uuid}:
+  /releases/{releaseUuid}/materials/{uuid}:
     get:
-      summary: Get single product by UUID
-      operationId: getProductsUuid
+      summary: Get single material by UUID
+      operationId: getmaterialsUuid
       parameters:
         - name: uuid
           in: path
           required: true
           schema:
             type: string
-          description: The uuid of the Product to retrieve
+          description: The uuid of the Material to retrieve
           example: "1780bc87-ea01-4b92-9894-d0c384876849"
       responses:
         '200':
@@ -105,7 +105,7 @@ paths:
                   - data
                 properties:
                   data:
-                    $ref: '#/components/schemas/Product'                  
+                    $ref: '#/components/schemas/Material'                  
         '400':
           description: Bad request - invalid parameters
           content:
@@ -141,7 +141,7 @@ components:
           type: string
           description: tBaustoff release tag
           example: "2025-09-29"
-    Product:
+    Material:
       type: object
       required:
         - uuid
@@ -150,7 +150,7 @@ components:
       properties:
         uuid:
           type: string
-          description: tBaustoff unique identifier for the product
+          description: tBaustoff unique identifier for the material
           example: "1780bc87-ea01-4b92-9894-d0c384876849"
         releaseUuid:
           type: string
@@ -158,7 +158,7 @@ components:
           example: "1780bc87-ea01-4b92-9894-d0c384876849"
         name:
           type: string
-          description: Name of the product
+          description: Name of the Material
           maxLength: 500
           example: "Expandierter Kork"
         eolCategory:
@@ -229,11 +229,11 @@ components:
           minimum: 0
           maximum: 1
           example: 0.25
-        # products:
+        # materials:
         #   type: array
         #   items:
-        #     $ref: '#/components/schemas/Product'
-        #   description: List of related products
+        #     $ref: '#/components/schemas/Material'
+        #   description: List of related materials
     OekobaudatMapping:
       type: object
       required:
@@ -247,17 +247,17 @@ components:
           example: "bb5df017-7c84-4f33-bc4a-526e84e601ac"
         oebdReleaseUuid:
           type: string
-          description: Oekobaudat productrelease UUID
+          description: Oekobaudat Materialrelease UUID
           format: uuid
           example: "a2a205d3-0841-492e-83b2-5a54c1170456"
-        # productId:
+        # MaterialId:
         #   type: integer
-        #   description: Foreign key to tBaustoff product
+        #   description: Foreign key to tBaustoff Material
         #   nullable: true
-        # product:
-        #   $ref: '#/components/schemas/Product'
+        # Material:
+        #   $ref: '#/components/schemas/Material'
         #   nullable: true
-        #   description: Related product
+        #   description: Related Material
     ErrorResponse:
       type: object
       required:
