@@ -94,14 +94,14 @@ describe("GET /api/(tb-api)/v1/releases/:releaseUuid/materials", () => {
     expect(item.eolCategory).toHaveProperty("technologyFactor")
   })
 
-  test("single product data structure", async () => {
+  test("single material data structure", async () => {
     const releaseUuid = "release-xyz"
     // seed a second product to fetch directly
     const eolId = await createEolCategory("EOL-B", releaseUuid)
-    const product = await createProduct("Product B", eolId, null)
-    await createOekobaudatMapping(product.id)
+    const material = await createProduct("Product B", eolId, null)
+    await createOekobaudatMapping(material.id)
 
-    const url = `${server.url}/api/v1/releases/${releaseUuid}/materials/${product.uuid}`
+    const url = `${server.url}/api/v1/releases/${releaseUuid}/materials/${material.uuid}`
     const resp = await fetch(url)
     expect(resp.status).toBe(200)
     const json = (await resp.json()) as { data: any }
