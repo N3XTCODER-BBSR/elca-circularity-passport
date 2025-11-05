@@ -16,8 +16,10 @@ BEGIN;
     enforce 0 ≤ factor ≤ 1 before casting to double precision
 
   Execution:
-  - Run this file via psql so that \copy reads from your local filesystem
+  - Run this file via psql from the project root directory so that \copy can find the CSV file
+  - Example: psql $DATABASE_URL -f prisma/data-migration/2025-10-30-backfill-tbaustoff-uuids.sql
   - All changes are wrapped in a transaction; temp tables are dropped explicitly
+  - The CSV file path is relative to the current working directory (project root)
 */
 
 -- Raw temp table mirroring the CSV's 20 columns
@@ -46,7 +48,20 @@ CREATE TEMP TABLE _tbaustoff_uuid_source_raw (
 );
 
 -- Load full CSV into raw table
-\copy _tbaustoff_uuid_source_raw FROM '/Users/purcymarte/code/elca-passport/prisma/seeding/tbaustoff_release_source_data/v1_initial_release_obd_tbaustoff_mapping__70ee17c1-b144-45d1-97c2-f600f238e112_with_uuids_1760456920.csv' CSV HEADER
+-- Path is relative to the current working directory (should be project root when running via psql)
+\copy _tbaustoff_uuid_source_raw FROM 'prisma/seeding/tbaustoff_release_source_data/v1_initial_release_obd_tbaustoff_mapping__70ee17c1-b144-45d1-97c2-f600f238e112_with_uuids_1760456920.csv' CSV HEADER
+
+-- Validate that the CSV file was found and loaded successfully
+DO $$
+DECLARE
+  row_count INTEGER;
+BEGIN
+  SELECT COUNT(*) INTO row_count FROM _tbaustoff_uuid_source_raw;
+  
+  IF row_count = 0 THEN
+    RAISE EXCEPTION 'CSV file not found or empty. Expected file: prisma/seeding/tbaustoff_release_source_data/v1_initial_release_obd_tbaustoff_mapping__70ee17c1-b144-45d1-97c2-f600f238e112_with_uuids_1760456920.csv. Please ensure the file exists and the script is run from the project root directory.';
+  END IF;
+END $$;
 
 -- Working temp table with just the needed columns (typed)
 CREATE TEMP TABLE _tbaustoff_uuid_source (
