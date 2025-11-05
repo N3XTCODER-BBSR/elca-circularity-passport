@@ -1,3 +1,34 @@
+## [Release 0.5.0] - 2025-11-05
+
+### Added
+
+- API: endpoint for releases and endpoint for single material (formerly product)
+- Data migration: backfill tBaustoff UUIDs; extended seeding CSV with releaseUuid/releaseTag and all required columns
+
+### Changed
+
+- Public API routes renamed from `/products` to `/materials`
+- Documentation renamed Products → Materials; API name updated to EOLDAT
+
+### Fixed
+
+- Seeding: use relative CSV path and validate presence; correct CSV path in scripts
+- API: fix expected id type; return only specific fields; correct `releaseTag` property name and version tag
+- Tests: unflake/fix release endpoint tests
+
+### Documentation
+
+- Implementation guide updated to reference EOLDAT and current endpoints; re-rendered/updated API docs (incl. production base URL)
+
+### Database / Migrations
+
+- TBs structure updates and related migrations (incl. dropping overly restrictive category indexes)
+
+### Chore / Infra / Tests
+
+- CNAME added/updated for docs site
+- Test naming tidy-up and cleanup of commented tests; additional tests for data structure and Oekobaudat mappings
+
 ## [Release 0.4.4] - 2025-09-24
 
 ### Fixed

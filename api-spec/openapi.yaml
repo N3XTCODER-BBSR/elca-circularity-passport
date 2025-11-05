@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: EOLDAT API
   description: API for accessing EOLDAT materials data
-  version: 0.0.1-draft
+  version: 0.0.1
   contact:
     name: eLCA Support
     email: elcadevs@n3xtcoder.org
