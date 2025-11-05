@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
-  title: tBaustoffe API
-  description: API for accessing eolDat materials data
+  title: EOLDAT API
+  description: API for accessing EOLDAT materials data
   version: 0.0.1-draft
   contact:
     name: eLCA Support
