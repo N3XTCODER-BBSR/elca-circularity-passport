@@ -6,19 +6,17 @@
 
 Diese Dokumentation richtet sich an **LCA-Softwareanbieter**, die die BNB Zirkularitätsindikatoren in ihre Software integrieren möchten.
 
-**Wichtiger Hinweis:** Diese Dokumentation ist ein **Implementierungsleitfaden für Software-Entwickler** und ersetzt nicht die offizielle Methodik. Die **BNB-Steckbrief U.05 "Kreislauffähigkeit"** ist die **einzige verbindliche Quelle** für die Bewertungsmethodik, Begriffe, Berechnungsformeln und Bewertungskriterien. Dieser Leitfaden soll die technische Umsetzung in LCA-Software erleichtern.
+**Wichtiger Hinweis:** Diese Dokumentation ist ein **Implementierungsleitfaden für Software-Entwickler** und ersetzt nicht die offizielle Methodik. Die **BNB-Steckbrief U.05 "Kreislauffähigkeit"** ist die **einzige verbindliche Quelle** für die Bewertungsmethodik, Begriffe, Berechnungsformeln und Bewertungskriterien. Dieser Leitfaden soll die technische Umsetzung in LCA-Software erleichtern. Der BNB-Steckbrief U.05 „Kreislauffähigkeit“ wird Anfang 2026 öffentlich verfügbar sein.
 
 Die BNB Zirkularitätsindikatoren sind eine **Erweiterung der LCA-Software**, die es ermöglicht, die Kreislauffähigkeit von Gebäuden gemäß dem **BNB-Steckbrief U.05 "Kreislauffähigkeit"** zu berechnen.
 
 Diese Implementierungsdokumentation ergänzt den BNB-Steckbrief U.05 und geht dabei insbesondere ein auf:
 
 - den technischen Kontext, insbesondere die existierende ÖKOBAUDAT-API/Datenquelle
-- die neu entwickelte tBaustoff-API, welche vorhandenen Materialien aus ÖKOBAUDAT zusätzliche End-of-Life-Szenarien (EoL) zuordnet und damit die Berechnung des Zirkularitätspotenzials ermöglicht
+- die neu entwickelte EOLDAT-API, welche vorhandenen Materialien aus ÖKOBAUDAT zusätzliche End-of-Life-Szenarien (EoL) zuordnet und damit die Berechnung des Zirkularitätspotenzials ermöglicht
 - **technische Implementierungshinweise** für die in BNB-Steckbrief U.05 definierte Berechnungsmethodik
 
 ### Kontext (BNB U.05, DIN 276, EN ISO 14040/44)
-
-**Referenz:** BNB-Steckbrief U.05 "Kreislauffähigkeit" - verbindliche Standards, Begriffe und Bewertungsgrenzen.
 
 - Was: Verbindliche Standards, Begriffe und Bewertungsgrenzen (definiert im BNB-Steckbrief U.05).
 - Warum: Compliance sicherstellen und gemeinsame Sprache nutzen.
@@ -37,7 +35,7 @@ Der BNB-Steckbrief U.05 grenzt den Bewertungsumfang klar ab: Nur die Baukonstruk
   - EoL verbaut = projektspezifisches Zirkulariätspotenzial im eingebauten Zustand, basierend auf Unverbaut‑Punkten und wird durch Störstoffklassen (S1–S3 Abzüge; S4 mit Specific‑Szenario) angepasst (Details in Abschnitt Zirkularitätspotenzial).
 - EoL‑Szenario vs. EoL‑Kategorie:
   - EoL‑Szenario = codierter Verwertungs- oder Beseitigungsweg (z. B. WV, CL+, RC−) → diesem sind Punkte oder eine Klasse (A-G) zugeordnet
-  - EoL‑Kategorie = tBaustoff‑Datenobjekt für Unverbaut mit {real, potential, technologyFactor}, das die Referenzszenarien und tf bündelt (Details in Abschnitt Zirkularitätspotenzial).
+  - EoL‑Kategorie = EOLDAT‑Datenobjekt für Unverbaut mit {real, potential, technologyFactor}, das die Referenzszenarien und tf bündelt (Details in Abschnitt Zirkularitätspotenzial).
 - Technologiefaktor (tf): Gewicht 0.0–1.0 zur Mischung von Real und Potenzial im Unverbaut‑Pfad → Total. Mehr dazu in Abschnitt Zirkularitätspotenzial.
 - EoL‑Punkte und EoL‑Klasse: EoL Punkte des unverbauten Materials werden aus der Formel für die Gewichtung zwischen realen und zukünftig erwartbaren EoL Szenarien abgeleitet; Klassen (A–G) aus Punkteschwellen. Mehr dazu im Abschnitt Referenztabellen.
 - Störstoffklassen (S0–S4): materialabhängige Kompatibilitätsklassen; S0 bedeutet "kein Störstoff vorhanden", S1–S3 führen zu Abzügen, S4 erfordert Specific‑Szenario. Mehr dazu in „Zirkularitätspotenzial Verbaut“.
@@ -61,11 +59,11 @@ Der BNB-Steckbrief U.05 grenzt den Bewertungsumfang klar ab: Nur die Baukonstruk
 
 In der BNB Zirkularitätsbewertungsmethodik werden drei eigenständige High‑Level‑Metriken bewertet. Jede Metrik hat klar abgegrenzte Eingaben, eine entsprechende Berechnungslogik und einen definierten Output (BNB‑Punkte). Die Details folgen in den jeweiligen Kapiteln.
 
-| Metrik                          | Max. BNB-Punkte | Eingaben                                                | Datenabhängigkeit                 | Aggregation                         | Output                                 | Hinweise                                                                                                            |
-| ------------------------------- | --------------- | ------------------------------------------------------- | --------------------------------- | ----------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Rückbaupotenzial (U.05.1)       | 25              | Klasse I–IV (Nutzerinput)                               | Keine                             | Volumen‑gewichtet                   | Schicht/Bauteil: Klasse/Punkte         | Feste Punkte je Material.                                                                                           |
-| Zirkularitätspotenzial (U.05.2) | 50              | Unverbaut: Real/Potenzial + tf; Verbaut: Specific/S1–S4 | ÖKOBAUDAT + tBaustoff‑Mapping‑API | Volumen‑gewichtet                   | Schicht/Bauteil: EoL‑Klasse/Punkte     | Unverbaut Total = tf‑Gewichtung; Verbaut: S0–S3 Abzüge, S4 erfordert Specific‑Szenario; „verbaut“ meist maßgeblich. |
-| Zirkularitätsinventar (U.05.3)  | 0/25            | CSV‑Vollständigkeit                                     | Keine                             | Keine Mittelung (Alles‑oder‑Nichts) | Inventar vollständig/nicht vollständig | Erfordert vollständigen, maschinenlesbaren CSV‑Nachweis.                                                            |
+| Metrik                          | Max. BNB-Punkte | Eingaben                                                | Datenabhängigkeit              | Aggregation                         | Output                                 | Hinweise                                                                                                            |
+| ------------------------------- | --------------- | ------------------------------------------------------- | ------------------------------ | ----------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Rückbaupotenzial (U.05.1)       | 25              | Klasse I–IV (Nutzerinput)                               | Keine                          | Volumen‑gewichtet                   | Schicht/Bauteil: Klasse/Punkte         | Feste Punkte je Material.                                                                                           |
+| Zirkularitätspotenzial (U.05.2) | 50              | Unverbaut: Real/Potenzial + tf; Verbaut: Specific/S1–S4 | ÖKOBAUDAT + EOLDAT‑Mapping‑API | Volumen‑gewichtet                   | Schicht/Bauteil: EoL‑Klasse/Punkte     | Unverbaut Total = tf‑Gewichtung; Verbaut: S0–S3 Abzüge, S4 erfordert Specific‑Szenario; „verbaut" meist maßgeblich. |
+| Zirkularitätsinventar (U.05.3)  | 0/25            | CSV‑Vollständigkeit                                     | Keine                          | Keine Mittelung (Alles‑oder‑Nichts) | Inventar vollständig/nicht vollständig | Erfordert vollständigen, maschinenlesbaren CSV‑Nachweis.                                                            |
 
 Hinweise:
 
@@ -132,10 +130,10 @@ Die konkreten Interpolations‑Parameter sind von der Metrik abhängig und laute
 
 ### Vorabüberblick – Schritte der Metrik-Berechnungen
 
-Das folgende Diagramm soll bereits einen groben Überblick über die involvierten Metrik-Berechnungen und insbesondere der einbezogenen tBaustoff-API und der ÖKOBAUDAT-API/Datenquelle geben.
+Das folgende Diagramm soll bereits einen groben Überblick über die involvierten Metrik-Berechnungen und insbesondere der einbezogenen EOLDAT-API und der ÖKOBAUDAT-API/Datenquelle geben.
 
-Zunächst lädt die LCA‑Software die benötigten Grunddaten: Aus der ÖKOBAUDAT‑API werden Materialeinträge inklusive Release‑UUID bezogen, aus der tBaustoff‑API die Unverbaut‑Referenzen (real, potential, TF) für die Materialauswahl. Auf dieser Basis wählt der Nutzer je Baukomponente bzw. Schicht das passende ÖKOBAUDAT‑Material.
-Zusätzlich zu den Basisdaten aus der ÖKOBAUDAT‑API, sind auch die zirkluratätsrelevanten Informationen aus der tBaustoff-API für die jeweilige Schicht relevant: der automatisch vorgeschlagene tBaustoff‑Match kann vom Nutzer bestätigt oder – falls fachlich erforderlich – durch ein anderes, besser passendes tBaustoff‑Produkt ersetzt werden.
+Zunächst lädt die LCA‑Software die benötigten Grunddaten: Aus der ÖKOBAUDAT‑API werden Materialeinträge inklusive Release‑UUID bezogen, aus der EOLDAT‑API die Unverbaut‑Referenzen (real, potential, TF) für die Materialauswahl. Auf dieser Basis wählt der Nutzer je Baukomponente bzw. Schicht das passende ÖKOBAUDAT‑Material.
+Zusätzlich zu den Basisdaten aus der ÖKOBAUDAT‑API, sind auch die zirkluratätsrelevanten Informationen aus der EOLDAT-API für die jeweilige Schicht relevant: der automatisch vorgeschlagene EOLDAT‑Match kann vom Nutzer bestätigt oder – falls fachlich erforderlich – durch ein anderes, besser passendes EOLDAT‑Produkt ersetzt werden.
 
 Für jede gewählte Schicht legt der Nutzer das Rückbaupotenzial über eine Rückbau‑Klasse (I–IV) fest.
 
@@ -150,27 +148,27 @@ sequenceDiagram
     participant User as Architekt/Bauherr
     participant Vendor as LCA Software
     participant OebdAPI as ÖKOBAUDAT API
-    participant TbAPI as tBaustoff API
+    participant EoldatAPI as EOLDAT API
 
-    Note over User,TbAPI: Gebäudeplanung – Kreislauffähigkeits‑Bewertung
+    Note over User,EoldatAPI: Gebäudeplanung – Kreislauffähigkeits‑Bewertung
 
     %% Vendor holt ÖKOBAUDAT‑Referenzen
     Vendor->>OebdAPI: GET OEKOBAUDAT/api/:releaseUuid/materials
     OebdAPI-->>Vendor: Materialdaten inkl. Versions‑UUID
 
-    %% Vendor holt tBaustoff-Daten
-    Vendor->>TbAPI: GET TBAUSTOFF/api/materials
-    TbAPI-->>Vendor: { real, potential, tf, obdMappingMetaData }[] (EoL‑Unverbaut‑Referenz)
+    %% Vendor holt EOLDAT-Daten
+    Vendor->>EoldatAPI: GET /releases/{releaseUuid}/materials
+    EoldatAPI-->>Vendor: Material[] mit eolCategory { real, potential, tf }, oekobaudatMappings
 
     rect rgba(255, 245, 157, 0.35)
     Note over User,Vendor: Je Baukomponenten und Schicht
     %% User wählt Material
     User->>Vendor: Wählt "Beton C25/30" (OBD‑Material)
 
-    %% User wählt bestätigt automatch (anhand von tBaustoff-Mapping) oder überschreibt tBaustoff
-    User->>Vendor: Besätigt automatischen Match für tBaustoff "Beton C25/30"
+    %% User wählt bestätigt automatch (anhand von EOLDAT-Mapping) oder überschreibt EOLDAT
+    User->>Vendor: Besätigt automatischen Match für EOLDAT "Beton C25/30"
 
-    User->>Vendor: [alternativ: überschreibt mit eigener tBaustoff-Auswahl]
+    User->>Vendor: [alternativ: überschreibt mit eigener EOLDAT-Auswahl]
 
     User->>Vendor: Bestimmt Rückbau-Klasse I-IV
     Vendor->>Vendor: Rückbaupotenzial
@@ -190,7 +188,7 @@ sequenceDiagram
 
 ## Indikator im Detail: Rückbaupotenzial (U.05.1)
 
-Die Rückbaupotenzial bewertet, wie leicht Bauteilschichten oder Baukomponenten beim Rückbau eines Gebäudes getrennt und möglichst ohne Störstoffe rückgewonnen werden können. Ergebnisse sind pro Schicht eine Rückbau-Klasse (I–IV) und zugehörige, fixe Rückbau-Punkte, die anschließend volumen‑gewichtet zu einem Bauteil‑ bzw. Gebäude‑Gesamtwert zusammengeführt. Der Indikator basiert auf Nutzerangaben zur Einbausituation, Fügungen und Verbindungsmittel, Zerstörungsgrad des rückgewonnenen Baumaterials (zerstörungsfrei/weitgehend zerstörungsfrei/ nur zerstörend rückbaubar) und benötigt keine tBaustoff‑ oder ÖKOBAUDAT‑API.
+Die Rückbaupotenzial bewertet, wie leicht Bauteilschichten oder Baukomponenten beim Rückbau eines Gebäudes getrennt und möglichst ohne Störstoffe rückgewonnen werden können. Ergebnisse sind pro Schicht eine Rückbau-Klasse (I–IV) und zugehörige, fixe Rückbau-Punkte, die anschließend volumen‑gewichtet zu einem Bauteil‑ bzw. Gebäude‑Gesamtwert zusammengeführt. Der Indikator basiert auf Nutzerangaben zur Einbausituation, Fügungen und Verbindungsmittel, Zerstörungsgrad des rückgewonnenen Baumaterials (zerstörungsfrei/weitgehend zerstörungsfrei/ nur zerstörend rückbaubar) und benötigt keine EOLDAT‑ oder ÖKOBAUDAT‑API.
 
 **Implementierungshinweis:** Die vollständige Methodik und Bewertungskriterien für die Rückbau-Klassen I–IV sind im BNB-Steckbrief U.05 definiert.
 
@@ -236,7 +234,7 @@ Das Zirkularitätspotenzial (U.05.2) misst die Kreislauffähigkeit von rückgeba
 
 Die Metrik hat zwei Ergebnisvarianten: Unverbaut (Ausgangswert des unverbauten Materials) und Verbaut (projektmaßgeblich). Unverbaut basiert auf zwei EoL-Szenarien (real/potential), den derzeitig üblichen und zukünftig erwartbaren Verwertungswegen, und dem Technologiefaktor (TF). Das Zirkularitätspotenzial verbaut berücksichtigt zusätzlich Störstoffklassen nicht trennbarer Materialverbünde (S0–S4). S1-S3 führen zu Punkteabzügen, S4 zu einer gänzlich neuen Einstufung des EoL Szenarios (daür liegen spezifische Datensätze vor). In der Praxis wird das finale Zirkularitätspotenzial (verbaut) typischerweise als maßgeblicher Projektwert verwendet; der Datensatz Zirkularitätspotenzial "Unverbaut" dient der Datentransparenz.
 
-Das Zirkularitätspotenzial ist die einzige Metrik mit Datenabhängigkeit zur tBaustoff‑API (EoL-Szenarien und TF) und zur Identifikation via ÖKOBAUDAT. Details zu Begriffen folgen im nächsten Abschnitt, danach werden die Bestimmungs-Methodiken für die Metriken und die tBaustoff-API erläutert.
+Das Zirkularitätspotenzial ist die einzige Metrik mit Datenabhängigkeit zur EOLDAT‑API (EoL-Szenarien und TF) und zur Identifikation via ÖKOBAUDAT. Details zu Begriffen folgen im nächsten Abschnitt, danach werden die Bestimmungs-Methodiken für die Metriken und die EOLDAT-API erläutert.
 
 ### Weitere grundlegende Begriffe vorweg
 
@@ -246,13 +244,13 @@ Die Unterscheidung zwischen verbautem und unverbautem Zirkularitätspotenzial wu
 
 - EoL (End‑of‑Life) beschreibt, was mit einem Material am Lebensende geschieht.
 - EoL‑Szenarien sind laut BNB Systematik standardisierte EoL-Kategorien (WV, CL-, CL+, RC-, RC+, SV, EV-, EV+, EB, Dep-, Dep+), die sich nach den Haupt-EoL-Wegen des Abfallrechts "Vorbereitung zur Wiederverwendung", "stoffliche Verwertung", "energetische Verwertung" und "Beseitigung" (energetisch, Deponierung) orientieren und damit die Grundlage für die Bewertung bilden.
-- Die EoL-Szenarien werden für ein ÖKOBAUDAT‑Material über die tBaustoff‑API bereitgestellt und weiter unten in Referenztabellen präzisiert.
+- Die EoL-Szenarien werden für ein ÖKOBAUDAT‑Material über die EOLDAT‑API bereitgestellt und weiter unten in Referenztabellen präzisiert.
 
 #### reale und potentielle EoL-Szenarien:
 
 - „real“ = aktuelles, technologisch heute erreichbares EoL‑Szenario
 - „potential“ = erwartetes, zukunftsorientiertes EoL‑Szenario
-- Beide Szenarien werden über die tBaustoff‑API geliefert (siehe Abschnitt „3.8 API‑Interaktion“).
+- Beide Szenarien werden über die EOLDAT‑API geliefert (siehe Abschnitt „3.8 API‑Interaktion").
 
 #### Spezifische EoL-Szenarien
 
@@ -276,7 +274,7 @@ Die Unterscheidung zwischen verbautem und unverbautem Zirkularitätspotenzial wu
 
 #### EoL‑Kategorie
 
-- Datenobjekt aus der tBaustoff‑API, das die unverbauten Referenzwerte eines Materials bündelt: `real`‑EoL-Szenario, `potential`‑EoL-Szenario und `technologyEolFactor (TF)`. Dient als unmittelbare Grundlage für die Unverbaut‑Berechnung (TF‑Gewichtung) und wird pro ÖKOBAUDAT‑Material/Version geliefert.
+- Datenobjekt aus der EOLDAT‑API, das die unverbauten Referenzwerte eines Materials bündelt: `real`‑EoL-Szenario, `potential`‑EoL-Szenario und `technologyEolFactor (TF)`. Dient als unmittelbare Grundlage für die Unverbaut‑Berechnung (TF‑Gewichtung) und wird pro ÖKOBAUDAT‑Material/Version geliefert.
 
 #### Technologiefaktor (TF)
 
@@ -302,8 +300,8 @@ Im nächsten Schritt wenden wir die oben eingeführten Begriffe praktisch an.
 ### Methodik: Zirkularitätspotenzial Unverbaut
 
 Der Pfad EoL-Unverbaut liefert die Referenzbewertung eines Materials am Lebensende – unabhängig von spezifischen Einflüssen (z. B. Einbausituation, Störstoffe). Er dient als Ausgangsbasis für die spätere Bewertung EoL-Verbaut.
-Zwei Referenzszenarien (real/potential) aus der tBaustoff‑API werden mit dem Technologiefaktor (tf, ebenfalls aus der tBaustoff‑API) zu einem Total‑Punktwert (EoL Punkte, Ausgangswert) gewichtet.
-Die erwähnte tBaustoff-API wird in einem anderen Abschnitt weiter unten beschrieben.
+Zwei Referenzszenarien (real/potential) aus der EOLDAT‑API werden mit dem Technologiefaktor (tf, ebenfalls aus der EOLDAT‑API) zu einem Total‑Punktwert (EoL Punkte, Ausgangswert) gewichtet.
+Die erwähnte EOLDAT-API wird in einem anderen Abschnitt weiter unten beschrieben.
 
 #### Inputs
 
@@ -311,7 +309,7 @@ real‑Szenario, potential‑Szenario, tf
 
 #### Schritte
 
-1. EoL-Szenarien → zugehörige EoL Punkte (aus tbaustoff-API)
+1. EoL-Szenarien → zugehörige EoL Punkte (aus EOLDAT-API)
 2. tf‑Gewichtung zum Total‑Wert (EoL Punkte Unverbaut = Zirkularitätspotenzial Ausgangswert):
 
 ```
@@ -405,27 +403,27 @@ Zweck: Projektspezifische Kenntnisse (Herstellernachweise, ggf. mit Rücknahme- 
 
 Pro Schicht entstehen so Punkte und Klassen; die Aggregation erfolgt volumen‑gewichtet auf Bauteil‑/Gebäudeebene. In der Praxis gilt „verbaut“ meist als maßgeblicher Projektwert, „unverbaut“ dient als Referenz.
 
-### Die tBaustoff-API und die ÖKOBAUDAT-API
+### Die EOLDAT-API und die ÖKOBAUDAT-API
 
 #### Zweck und Einordnung
 
-- Wofür die tBaustoff-API gebraucht wird: sie stellt für ein gewähltes ÖKOBAUDAT‑Material die unverbauten Referenzwerte bereit – konkret die beiden EoL‑Szenarien (real/potential) und den Technologiefaktor (tf). Auf dieser Basis erfolgt die tf‑Gewichtung zum „Unverbaut – Total“.
-- Rolle von ÖKOBAUDAT: Die ÖKOBAUDAT‑Datenbank liefert die verlässliche Material‑Identifikation (Material‑UUID) und die korrekte Datenbasis je Veröffentlichung (Versions‑UUID/Release). Diese beiden Angaben sind der Schlüssel, um das passende tBaustoff‑Mapping abzurufen.
+- Wofür die EOLDAT-API gebraucht wird: sie stellt für ein gewähltes ÖKOBAUDAT‑Material die unverbauten Referenzwerte bereit – konkret die beiden EoL‑Szenarien (real/potential) und den Technologiefaktor (tf). Auf dieser Basis erfolgt die tf‑Gewichtung zum „Unverbaut – Total".
+- Rolle von ÖKOBAUDAT: Die ÖKOBAUDAT‑Datenbank liefert die verlässliche Material‑Identifikation (Material‑UUID) und die korrekte Datenbasis je Veröffentlichung (Versions‑UUID/Release). Diese beiden Angaben sind der Schlüssel, um das passende EOLDAT‑Mapping abzurufen.
 
 #### ÖKOBAUDAT – Basisdatenquelle (Kurzüberblick)
 
 - Identifikatoren:
   - Material‑UUID: eindeutiger Schlüssel je Materialdatensatz
   - Release‑UUID: bezeichnet die veröffentlichte Datenbankversion, in der der Datensatz geführt wird
-- Verwendung im Ablauf: Das Projekt referenziert Materialien mit (Material‑UUID, Versions‑UUID); diese Kombination dient als Lookup‑Schlüssel für die tBaustoff‑API.
+- Verwendung im Ablauf: Das Projekt referenziert Materialien mit (Material‑UUID, Versions‑UUID); diese Kombination dient als Lookup‑Schlüssel für die EOLDAT‑API.
 - Versionierung: Bei neuen Releases können Datensätze ergänzt oder angepasst werden. Für ein korrektes Mapping muss stets die tatsächlich verwendete Versions‑UUID übergeben werden.
 
-#### tBaustoff‑Mapping‑API
+#### EOLDAT‑Mapping‑API
 
-Die API-Spezifikationen der tBaustoff-API finden sich unter
+Die API-Spezifikationen der EOLDAT-API finden sich unter
 
 - [api-spec](../../api-spec)
-- oder online unter https://n3xtcoder.github.io/elca-app/api.html
+- oder online unter https://www.eoldat.de
 
 #### Fehlende Mappings & Overrides
 
@@ -433,14 +431,14 @@ In der Praxis gibt es zwei typische Situationen, in denen eine manuelle Auswahl 
 
 1. Kein automatisches Mapping (HTTP 404)
 
-   - Wann: Für die Kombination (materialUuid, oebdDbVersion[, tbaustoffVersion]) existiert kein Mapping‑Eintrag in der tBaustoff‑Datenbasis.
-   - Vorgehen: Nutzer wählt manuell ein fachlich passendes tBaustoff‑Produkt aus einer Produktliste (Suche/Filter nach Materialgruppe, Werkstoff, Anwendungsfall). Diese Liste stammt aus der tBaustoff‑Quelle (z. B. separater Katalog‑Endpoint oder bereitgestellter Katalog‑Export). OBD‑Matching‑Felder spielen hier keine Rolle; es zählt die fachliche Eignung.
+   - Wann: Für die Kombination (materialUuid, oebdDbVersion[, eoldatVersion]) existiert kein Mapping‑Eintrag in der EOLDAT‑Datenbasis.
+   - Vorgehen: Nutzer wählt manuell ein fachlich passendes EOLDAT‑Produkt aus einer Produktliste (Suche/Filter nach Materialgruppe, Werkstoff, Anwendungsfall). Diese Liste stammt aus der EOLDAT‑Quelle (z. B. separater Katalog‑Endpoint oder bereitgestellter Katalog‑Export). OBD‑Matching‑Felder spielen hier keine Rolle; es zählt die fachliche Eignung.
    - Wirkung: Die Berechnung nutzt die EoL‑Kategorie (real, potential, tf) des manuell gewählten Produkts für den Unverbaut‑Pfad (und darauf aufbauend den Verbaut‑Pfad).
-   - Hinweise/Validierung: Versionen prüfen (gewählte tBaustoff‑Version), Plausibilität dokumentieren (z. B. Begründungstext), optional Gegenprüfung per Fachreview.
+   - Hinweise/Validierung: Versionen prüfen (gewählte EOLDAT‑Version), Plausibilität dokumentieren (z. B. Begründungstext), optional Gegenprüfung per Fachreview.
 
 2. Override trotz vorhandenem Mapping
    - Wann: Ein automatisches Mapping ist vorhanden, soll aber projektspezifisch ersetzt werden (z. B. abweichender Werkstoffstandard, regional anderer EoL‑Korridor, Hersteller‑Spezifikum).
-   - Vorgehen: Nutzer kann das automatisch gemappte tBaustoff‑Produkt explizit durch ein anderes aus derselben Produktliste ersetzen (gleicher Ablauf wie bei 404: Auswahl → Setzen der EoL‑Kategorie → Weiterrechnen).
+   - Vorgehen: Nutzer kann das automatisch gemappte EOLDAT‑Produkt explizit durch ein anderes aus derselben Produktliste ersetzen (gleicher Ablauf wie bei 404: Auswahl → Setzen der EoL‑Kategorie → Weiterrechnen).
    - Wirkung: Wie oben – die EoL‑Kategorie des gewählten Produkts ersetzt die Mapping‑Grundlage. Specific‑Szenarien (z. B. S4‑Pflicht) können weiterhin gesetzt werden und haben dort Vorrang.
    - Hinweise/Validierung: Override kenntlich machen (UI‑Badge „manuell“), Begründung erfassen, optional Freigabeprozess.
 
@@ -451,19 +449,19 @@ Ablauf (kompakt)
 
 Prioritäten & Nachvollziehbarkeit
 
-- Reihenfolge der Wirksamkeit: Specific‑Szenario (falls gesetzt) > gewählte/zugeordnete tBaustoff‑EoL‑Kategorie (manuell oder automatisch) > tf‑Gewichtung (nur Unverbaut‑Pfad).
+- Reihenfolge der Wirksamkeit: Specific‑Szenario (falls gesetzt) > gewählte/zugeordnete EOLDAT‑EoL‑Kategorie (manuell oder automatisch) > tf‑Gewichtung (nur Unverbaut‑Pfad).
 - Audit/Provenienz: Manuelle Auswahl/Overrides mit Flag, Zeitstempel, Benutzer und Begründung speichern; im Reporting ausweisen (z. B. CSV‑Spalten „manuell“, „Quelle“).
 
 Sicherheit & Betrieb:
 
 - Authentifizierung: derzeit nicht erforderlich (öffentlicher Read‑Only‑Endpoint)
-- Caching: Antworten per (materialUuid, oebdDbVersion, tbaustoffVersion) cachen; sinnvolle TTL einstellen
+- Caching: Antworten per (materialUuid, oebdDbVersion, eoldatVersion) cachen; sinnvolle TTL einstellen
 
 #### Versionierung & Kompatibilität
 
-- ÖKOBAUDAT und tBaustoff entwickeln sich unabhängig; die API erlaubt die explizite Auswahl der tBaustoff‑Version
-- Implementierung: Mapping‑Antworten per (materialUuid, oebdDbVersion, tbaustoffVersion) cachen; bei Versionswechsel invalidieren
-- Fallback: Wenn `tbaustoffVersion` nicht angegeben ist, sollte die Implementierung die projektweit konfigurierte bzw. aktuelle stabile Version verwenden (Policy abhängig vom Deployment)
+- ÖKOBAUDAT und EOLDAT entwickeln sich unabhängig; die API erlaubt die explizite Auswahl der EOLDAT‑Version
+- Implementierung: Mapping‑Antworten per (materialUuid, oebdDbVersion, eoldatVersion) cachen; bei Versionswechsel invalidieren
+- Fallback: Wenn `eoldatVersion` nicht angegeben ist, sollte die Implementierung die projektweit konfigurierte bzw. aktuelle stabile Version verwenden (Policy abhängig vom Deployment)
 
 #### Gebäudeebene: Mapping auf BNB‑Punkte (Kurz)
 
@@ -478,7 +476,7 @@ Hinweise zur Anwendung:
 - Verbindlich und deterministisch: Werte nicht interpretieren oder anpassen.
 - Einheitliche Codes verwenden: Szenarien (`WV`, `CL_PLUS`, …), Klassen (A–J).
 - Nutzen Sie diese Tabellen konsistent in Backend‑Enums/Lookups und verweisen Sie im UI auf die fachlichen Labels.
-- Versionierung: Tabellen sind an die tBaustoff‑Datenversion gebunden; bei Versionswechsel neu einlesen. Die API‑Antwort enthält `metadata.tbaustoffVersion`.
+- Versionierung: Tabellen sind an die EOLDAT‑Datenversion gebunden; bei Versionswechsel neu einlesen. Die API‑Antwort enthält `metadata.eoldatVersion`.
 - S4‑Sonderfall: Keine Abzüge; Specific‑Szenario ist verpflichtend, Punkte direkt aus Szenario (siehe Abschnitt S4 – Specific‑Szenario).
 
 #### Szenario → Punkte (Unverbaut‑Referenz)
