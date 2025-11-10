@@ -15,7 +15,7 @@ const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
 const translationsGrpPlattformGeneric = {
   overview: {
     buildingBaseInformation: {
-      title: "Gebaude-Informationen",
+      title: "Stammdaten",
       buildingId: "Gebäude/Bauwerk-ID",
       coordinates: "Koordinaten",
       address: "Adresse",
@@ -62,7 +62,7 @@ const translationsGrpPlattformGeneric = {
     },
     module2Resources: {
       moduleTitle: "Modul 2",
-      moduleSubTitle: "Resourcen",
+      moduleSubTitle: "Ressourcen",
       rmi: {
         title: "Ressourcen (RMI)",
         categories: {
@@ -70,12 +70,12 @@ const translationsGrpPlattformGeneric = {
           nonRenewable: "Nicht-erneuerbar",
         },
         names: {
-          [MaterialResourceTypeNamesSchema.Enum.Forestry]: "Forst",
-          [MaterialResourceTypeNamesSchema.Enum.Aqua]: "Wasser",
-          [MaterialResourceTypeNamesSchema.Enum.Agrar]: "Agrar",
-          [MaterialResourceTypeNamesSchema.Enum.Fossil]: "Fossil",
-          [MaterialResourceTypeNamesSchema.Enum.Metallic]: "Metallisch",
-          [MaterialResourceTypeNamesSchema.Enum.Mineral]: "Mineralisch",
+          [MaterialResourceTypeNamesSchema.Enum.Forestry]: "forstwirtschaftlich",
+          [MaterialResourceTypeNamesSchema.Enum.Aqua]: "aquatisch",
+          [MaterialResourceTypeNamesSchema.Enum.Agrar]: "agrarisch",
+          [MaterialResourceTypeNamesSchema.Enum.Fossil]: "fossil",
+          [MaterialResourceTypeNamesSchema.Enum.Metallic]: "metallisch",
+          [MaterialResourceTypeNamesSchema.Enum.Mineral]: "mineralisch",
         },
         labels: {
           overlay: "{aggregatedValue, number, integer} t - {percentageValue, number, percentage}",
@@ -198,12 +198,12 @@ const translationsGrpPlattformGeneric = {
         primaryEnergy: "Primärenergie-Aufwand (nicht erneuerbar, gesamt)",
         recyclingContent: "Anteil Sekundärmaterial",
         globalWarmingPotential: "Treibhaus-Potenzial (gesamt)",
-        [MaterialResourceTypeNamesSchema.Enum.Forestry]: "Forst",
-        [MaterialResourceTypeNamesSchema.Enum.Aqua]: "Wasser",
-        [MaterialResourceTypeNamesSchema.Enum.Agrar]: "Agrar",
-        [MaterialResourceTypeNamesSchema.Enum.Fossil]: "Fossil",
-        [MaterialResourceTypeNamesSchema.Enum.Metallic]: "Metallisch",
-        [MaterialResourceTypeNamesSchema.Enum.Mineral]: "Mineralisch",
+        [MaterialResourceTypeNamesSchema.Enum.Forestry]: "forstwirtschaftlich",
+        [MaterialResourceTypeNamesSchema.Enum.Aqua]: "aquatisch",
+        [MaterialResourceTypeNamesSchema.Enum.Agrar]: "agrarisch",
+        [MaterialResourceTypeNamesSchema.Enum.Fossil]: "fossil",
+        [MaterialResourceTypeNamesSchema.Enum.Metallic]: "metallisch",
+        [MaterialResourceTypeNamesSchema.Enum.Mineral]: "mineralisch",
         total: "gesamt",
       },
       circularity: {

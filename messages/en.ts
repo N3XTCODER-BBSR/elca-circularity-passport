@@ -16,7 +16,7 @@ const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
 const translationsGrpPlatformGeneric = {
   overview: {
     buildingBaseInformation: {
-      title: "Building Base Information",
+      title: "Master Data",
       buildingId: "Building ID",
       coordinates: "Coordinates",
       address: "Address",
@@ -71,12 +71,12 @@ const translationsGrpPlatformGeneric = {
           nonRenewable: "Non-renewable",
         },
         names: {
-          [MaterialResourceTypeNamesSchema.Enum.Forestry]: "Forestry",
-          [MaterialResourceTypeNamesSchema.Enum.Aqua]: "Water",
-          [MaterialResourceTypeNamesSchema.Enum.Agrar]: "Agricultural",
-          [MaterialResourceTypeNamesSchema.Enum.Fossil]: "Fossil",
-          [MaterialResourceTypeNamesSchema.Enum.Metallic]: "Metallic",
-          [MaterialResourceTypeNamesSchema.Enum.Mineral]: "Mineral",
+          [MaterialResourceTypeNamesSchema.Enum.Forestry]: "forestry",
+          [MaterialResourceTypeNamesSchema.Enum.Aqua]: "aquatic",
+          [MaterialResourceTypeNamesSchema.Enum.Agrar]: "agricultural",
+          [MaterialResourceTypeNamesSchema.Enum.Fossil]: "fossil",
+          [MaterialResourceTypeNamesSchema.Enum.Metallic]: "metallic",
+          [MaterialResourceTypeNamesSchema.Enum.Mineral]: "mineral",
         },
         labels: {
           overlay: "{aggregatedValue, number, integer} t - {percentageValue, number, percentage}",
@@ -199,12 +199,12 @@ const translationsGrpPlatformGeneric = {
         primaryEnergy: "Primary Energy Consumption (non-renewable, total)",
         recyclingContent: "Recycling Content",
         globalWarmingPotential: "Global Warming Potential (total)",
-        Forestry: "Forestry",
-        Aqua: "Water",
-        Agrar: "Agricultural",
-        Fossil: "Fossil",
-        Metallic: "Metallic",
-        Mineral: "Mineral",
+        Forestry: "forestry",
+        Aqua: "aquatic",
+        Agrar: "agricultural",
+        Fossil: "fossil",
+        Metallic: "metallic",
+        Mineral: "mineral",
         total: "total",
       },
       circularity: {

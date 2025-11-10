@@ -17,7 +17,7 @@ const lifeCycleSubPhases: Record<LifeCycleSubPhaseId, string> = {
 const translationsGrpPlattformGeneric = {
   overview: {
     buildingBaseInformation: {
-      title: "Información básica del edificio",
+      title: "Datos maestros",
       buildingId: "ID del Edificio/Estructura",
       coordinates: "Coordenadas",
       address: "Dirección",
@@ -73,12 +73,12 @@ const translationsGrpPlattformGeneric = {
           nonRenewable: "No Renovable",
         },
         names: {
-          [MaterialResourceTypeNamesSchema.Enum.Forestry]: "Forestal",
-          [MaterialResourceTypeNamesSchema.Enum.Aqua]: "Agua",
-          [MaterialResourceTypeNamesSchema.Enum.Agrar]: "Agrícola",
-          [MaterialResourceTypeNamesSchema.Enum.Fossil]: "Fósil",
-          [MaterialResourceTypeNamesSchema.Enum.Metallic]: "Metálico",
-          [MaterialResourceTypeNamesSchema.Enum.Mineral]: "Mineral",
+          [MaterialResourceTypeNamesSchema.Enum.Forestry]: "forestal",
+          [MaterialResourceTypeNamesSchema.Enum.Aqua]: "acuático",
+          [MaterialResourceTypeNamesSchema.Enum.Agrar]: "agrícola",
+          [MaterialResourceTypeNamesSchema.Enum.Fossil]: "fósil",
+          [MaterialResourceTypeNamesSchema.Enum.Metallic]: "metálico",
+          [MaterialResourceTypeNamesSchema.Enum.Mineral]: "mineral",
         },
         labels: {
           overlay: "{aggregatedValue, number, integer} t - {percentageValue, number, percentage}",
@@ -201,12 +201,12 @@ const translationsGrpPlattformGeneric = {
         primaryEnergy: "Consumo de Energía Primaria (no renovable, total)",
         recyclingContent: "Contenido Reciclado",
         globalWarmingPotential: "Potencial de Calentamiento Global (total)",
-        Forestry: "Forestal",
-        Aqua: "Agua",
-        Agrar: "Agrícola",
-        Fossil: "Fósil",
-        Metallic: "Metálico",
-        Mineral: "Mineral",
+        Forestry: "forestal",
+        Aqua: "acuático",
+        Agrar: "agrícola",
+        Fossil: "fósil",
+        Metallic: "metálico",
+        Mineral: "mineral",
         total: "total",
       },
       circularity: {
